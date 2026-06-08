@@ -24,10 +24,6 @@ body {
   overflow: hidden;
 }
 
-/* ========================================
-   MAIN LAYOUT
-======================================== */
-
 .workstation {
   width: 100%;
   height: 100%;
@@ -53,10 +49,6 @@ body {
   overflow: hidden;
 }
 
-/* ========================================
-   LOGO
-======================================== */
-
 h1 {
   margin: 0;
   font-size: 30px;
@@ -69,10 +61,6 @@ h1 {
   color: #94a3b8;
 }
 
-/* ========================================
-   SEARCH
-======================================== */
-
 .search-box {
   display: flex;
   gap: 14px;
@@ -82,16 +70,12 @@ h1 {
 .search-box input {
   flex: 1;
   min-width: 0;
-
   height: 54px;
-
+  padding: 0 18px;
   border: 1px solid #475569;
   border-radius: 16px;
-
   background: #1e293b;
   color: white;
-
-  padding: 0 18px;
   font-size: 18px;
 }
 
@@ -103,49 +87,84 @@ h1 {
 .search-box button {
   height: 54px;
   padding: 0 28px;
-
   border: none;
   border-radius: 16px;
-
   background: #22c55e;
   color: #052e16;
-
   font-size: 16px;
   font-weight: 800;
   cursor: pointer;
 }
 
-/* ========================================
-   PANELS
-======================================== */
+.left-column {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: 150px minmax(0, 1fr);
+  gap: 14px;
+  overflow: hidden;
+}
 
-.left-panel,
-.right-panel,
-.chart-box {
-  background: #111827;
+/* Watchlist panel */
+
+.watchlist-panel {
+  min-height: 0;
+  padding: 12px;
   border: 1px solid #334155;
   border-radius: 20px;
-  min-height: 0;
+  background: #111827;
+  overflow: hidden;
 }
 
-.chart-tooltip {
-  position: absolute;
-  z-index: 999;
-  pointer-events: none;
+.watchlist-panel h3 {
+  margin: 0 0 10px;
+  color: #f8fafc;
+  font-size: 18px;
+  text-align: center;
+}
 
-  max-width: 180px;
+.watchlist-list {
+  height: 74px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 5px;
+}
 
-  padding: 8px;
+.watchlist-row {
+  width: 100%;
+  min-height: 24px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: #020617;
+  color: #e5e7eb;
   font-size: 12px;
-
-  background: rgba(2, 6, 23, 0.95);
-  border: 1px solid #334155;
-  border-radius: 10px;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
 }
 
-.left-panel,
-.right-panel {
+.watchlist-row:hover {
+  border-color: #22c55e;
+  background: #0f172a;
+}
+
+.watchlist-row.active {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.16);
+  color: #86efac;
+}
+
+/* Technicals panel */
+
+.left-panel {
+  min-height: 0;
   padding: 12px;
+  border: 1px solid #334155;
+  border-radius: 20px;
+  background: #111827;
   overflow-y: auto;
 }
 
@@ -155,27 +174,23 @@ h1 {
   font-size: 20px;
 }
 
-/* ========================================
-   METRICS
-======================================== */
-
 .metrics-grid {
   display: grid;
   gap: 10px;
 }
 
 .metric-card {
-  background: #020617;
-  border-radius: 14px;
-  padding: 10px;
   min-height: 68px;
+  padding: 10px;
+  border-radius: 14px;
+  background: #020617;
   text-align: center;
 }
 
 .metric-card span {
   display: block;
-  color: #93c5fd;
   margin-bottom: 5px;
+  color: #93c5fd;
   font-size: 11px;
 }
 
@@ -191,9 +206,7 @@ h1 {
   color: #ef4444;
 }
 
-/* ========================================
-   CENTER CHART
-======================================== */
+/* Center chart */
 
 .center-panel {
   min-width: 0;
@@ -205,17 +218,17 @@ h1 {
   padding: 12px;
   display: flex;
   flex-direction: column;
+  border: 1px solid #334155;
+  border-radius: 20px;
   background: #020617;
   overflow: hidden;
 }
 
 .chart-header {
   flex: 0 0 40px;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   gap: 8px;
   margin-bottom: 4px;
 }
@@ -232,14 +245,11 @@ h1 {
 }
 
 .timeframe {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 10px;
   background: #1e293b;
   color: #e5e7eb;
-
-  padding: 6px 10px;
-
-  border-radius: 10px;
-  border: none;
-
   font-size: 11px;
   font-weight: 700;
 }
@@ -249,23 +259,15 @@ h1 {
   color: #052e16;
 }
 
-/* ========================================
-   CHART GRID
-======================================== */
-
 .multi-chart-container {
   flex: 1;
-
   min-height: 0;
-
   display: grid;
   grid-template-rows:
     minmax(0, 3fr)
     minmax(50px, 0.7fr)
     minmax(90px, 1fr);
-
   gap: 4px;
-
   overflow: hidden;
 }
 
@@ -275,49 +277,47 @@ h1 {
   overflow: hidden;
 }
 
-.price-chart {
-  width: 100%;
-  height: 100%;
-}
-
-.volume-chart {
-  width: 100%;
-  height: 100%;
-}
-
+.price-chart,
+.volume-chart,
 .macd-chart {
   width: 100%;
   height: 100%;
 }
 
-/* force charts to scale */
 svg,
 canvas {
   max-width: 100% !important;
   max-height: 100% !important;
 }
 
+.chart-tooltip {
+  position: absolute;
+  z-index: 999;
+  pointer-events: none;
+  max-width: 180px;
+  padding: 8px;
+  font-size: 12px;
+  background: rgba(2, 6, 23, 0.95);
+  border: 1px solid #334155;
+  border-radius: 10px;
+}
+
 .chart-label {
   position: absolute;
-
   top: 4px;
   left: 8px;
-
+  color: #94a3b8;
   font-size: 11px;
   font-weight: 700;
-
-  color: #94a3b8;
 }
 
 .legend {
   margin-top: 4px;
-
   display: flex;
   justify-content: center;
   gap: 14px;
-
-  font-size: 11px;
   color: #94a3b8;
+  font-size: 11px;
 }
 
 .legend-blue::before {
@@ -330,21 +330,25 @@ canvas {
   color: #fbbf24;
 }
 
-/* ========================================
-   RIGHT PANEL
-======================================== */
+/* Right panel */
 
 .right-panel {
+  min-height: 0;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  border: 1px solid #334155;
+  border-radius: 20px;
+  background: #111827;
+  overflow-y: auto;
 }
 
 .panel-box {
-  background: #020617;
+  padding: 12px;
   border: 1px solid #334155;
   border-radius: 14px;
-  padding: 12px;
+  background: #020617;
 }
 
 .panel-header {
@@ -360,42 +364,38 @@ canvas {
 }
 
 .panel-header span {
-  background: #1e293b;
-
-  color: #93c5fd;
-
   padding: 6px 8px;
-
   border-radius: 8px;
-
+  background: #1e293b;
+  color: #93c5fd;
   font-size: 11px;
   font-weight: 700;
 }
 
 .panel-box h4 {
   margin: 8px 0;
-  text-align: center;
   color: #93c5fd;
   font-size: 16px;
+  text-align: center;
 }
 
 .panel-box p {
+  margin: 5px 0;
   font-size: 12px;
   line-height: 1.3;
-  margin: 5px 0;
 }
 
 .confidence {
-  text-align: center;
   color: #fbbf24;
   font-weight: 700;
+  text-align: center;
 }
 
 .score-value {
-  text-align: center;
+  color: #22c55e;
   font-size: 32px;
   font-weight: 800;
-  color: #22c55e;
+  text-align: center;
 }
 
 .reason-list {
@@ -403,8 +403,8 @@ canvas {
 }
 
 .setup-title {
-  text-align: center;
   color: #fbbf24 !important;
+  text-align: center;
 }
 
 .setup-mini-grid {
@@ -414,31 +414,64 @@ canvas {
 }
 
 .mini-stat {
-  background: #111827;
-  border-radius: 10px;
   padding: 8px;
+  border-radius: 10px;
+  background: #111827;
   text-align: center;
 }
 
 .mini-stat span {
   display: block;
-  font-size: 10px;
   color: #93c5fd;
+  font-size: 10px;
 }
 
 .mini-stat strong {
   font-size: 14px;
 }
 
-/* ========================================
-   SCROLLBARS
-======================================== */
+/* Scrollbars */
 
-::-webkit-scrollbar {
+.left-panel::-webkit-scrollbar,
+.right-panel::-webkit-scrollbar,
+.watchlist-list::-webkit-scrollbar {
   width: 8px;
 }
 
-::-webkit-scrollbar-thumb {
+.left-panel::-webkit-scrollbar-thumb,
+.right-panel::-webkit-scrollbar-thumb,
+.watchlist-list::-webkit-scrollbar-thumb {
   background: #475569;
   border-radius: 999px;
+}
+
+.left-panel::-webkit-scrollbar-track,
+.right-panel::-webkit-scrollbar-track,
+.watchlist-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.left-column {
+  overflow: hidden !important;
+}
+
+.watchlist-panel {
+  overflow: hidden !important;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.watchlist-panel::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+
+.watchlist-list {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+.watchlist-list::-webkit-scrollbar {
+  width: 8px;
 }

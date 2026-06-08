@@ -7,6 +7,7 @@ import ThesisPanel from "./components/ThesisPanel";
 import ScorePanel from "./components/ScorePanel";
 import SetupPanel from "./components/SetupPanel";
 import ResultPanel from "./components/ResultPanel";
+import Watchlist from "./components/Watchlist";
 import "./App.css";
 
 const TIMEFRAMES = [
@@ -19,6 +20,16 @@ const TIMEFRAMES = [
   { label: "1m", period: "1d", interval: "1m" },
 ];
 
+const WATCHLIST = [
+  "AAPL",
+  "NVDA",
+  "AMD",
+  "META",
+  "MSFT",
+  "PLTR",
+  "TSLA",
+];
+
 function App() {
   const [ticker, setTicker] = useState("AAPL");
   const [submittedTicker, setSubmittedTicker] = useState("AAPL");
@@ -26,6 +37,12 @@ function App() {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const handleWatchlistSelect = (symbol) => {
+    setTicker(symbol);
+    setSubmittedTicker(symbol);
+    analyzeTicker(symbol, timeframe);
+  };
 
   const analyzeTicker = async (symbol = submittedTicker, selectedTimeframe = timeframe) => {
     setLoading(true);
@@ -75,7 +92,15 @@ function App() {
 
           {analysis && (
             <div className="dashboard">
-              <MetricsPanel analysis={analysis} />
+              <div className="left-column">
+                <Watchlist
+                  stocks={WATCHLIST}
+                  selectedStock={submittedTicker}
+                  onSelectStock={handleWatchlistSelect}
+                />
+
+                <MetricsPanel analysis={analysis} />
+              </div>
               <ChartPanel
                 analysis={analysis}
                 timeframe={timeframe}
