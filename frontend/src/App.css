@@ -1,0 +1,444 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+.app,
+.workstation-wrapper {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ========================================
+   MAIN LAYOUT
+======================================== */
+
+.workstation {
+  width: 100%;
+  height: 100%;
+  padding: 20px 28px;
+  display: grid;
+  grid-template-rows: 72px minmax(0, 1fr);
+  gap: 14px;
+}
+
+.top-bar {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
+  align-items: center;
+  min-width: 0;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr) 300px;
+  gap: 14px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ========================================
+   LOGO
+======================================== */
+
+h1 {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.subtitle {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+/* ========================================
+   SEARCH
+======================================== */
+
+.search-box {
+  display: flex;
+  gap: 14px;
+  min-width: 0;
+}
+
+.search-box input {
+  flex: 1;
+  min-width: 0;
+
+  height: 54px;
+
+  border: 1px solid #475569;
+  border-radius: 16px;
+
+  background: #1e293b;
+  color: white;
+
+  padding: 0 18px;
+  font-size: 18px;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #22c55e;
+}
+
+.search-box button {
+  height: 54px;
+  padding: 0 28px;
+
+  border: none;
+  border-radius: 16px;
+
+  background: #22c55e;
+  color: #052e16;
+
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* ========================================
+   PANELS
+======================================== */
+
+.left-panel,
+.right-panel,
+.chart-box {
+  background: #111827;
+  border: 1px solid #334155;
+  border-radius: 20px;
+  min-height: 0;
+}
+
+.chart-tooltip {
+  position: absolute;
+  z-index: 999;
+  pointer-events: none;
+
+  max-width: 180px;
+
+  padding: 8px;
+  font-size: 12px;
+
+  background: rgba(2, 6, 23, 0.95);
+  border: 1px solid #334155;
+  border-radius: 10px;
+}
+
+.left-panel,
+.right-panel {
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.left-panel h2 {
+  margin: 0 0 12px;
+  text-align: center;
+  font-size: 20px;
+}
+
+/* ========================================
+   METRICS
+======================================== */
+
+.metrics-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.metric-card {
+  background: #020617;
+  border-radius: 14px;
+  padding: 10px;
+  min-height: 68px;
+  text-align: center;
+}
+
+.metric-card span {
+  display: block;
+  color: #93c5fd;
+  margin-bottom: 5px;
+  font-size: 11px;
+}
+
+.metric-card strong {
+  font-size: 16px;
+}
+
+.positive {
+  color: #22c55e;
+}
+
+.negative {
+  color: #ef4444;
+}
+
+/* ========================================
+   CENTER CHART
+======================================== */
+
+.center-panel {
+  min-width: 0;
+  min-height: 0;
+}
+
+.chart-box {
+  height: 100%;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  background: #020617;
+  overflow: hidden;
+}
+
+.chart-header {
+  flex: 0 0 40px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.chart-header h3 {
+  margin: 0;
+  font-size: 20px;
+  white-space: nowrap;
+}
+
+.timeframe-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.timeframe {
+  background: #1e293b;
+  color: #e5e7eb;
+
+  padding: 6px 10px;
+
+  border-radius: 10px;
+  border: none;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.timeframe.active {
+  background: #22c55e;
+  color: #052e16;
+}
+
+/* ========================================
+   CHART GRID
+======================================== */
+
+.multi-chart-container {
+  flex: 1;
+
+  min-height: 0;
+
+  display: grid;
+  grid-template-rows:
+    minmax(0, 3fr)
+    minmax(50px, 0.7fr)
+    minmax(90px, 1fr);
+
+  gap: 4px;
+
+  overflow: hidden;
+}
+
+.chart-section {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.price-chart {
+  width: 100%;
+  height: 100%;
+}
+
+.volume-chart {
+  width: 100%;
+  height: 100%;
+}
+
+.macd-chart {
+  width: 100%;
+  height: 100%;
+}
+
+/* force charts to scale */
+svg,
+canvas {
+  max-width: 100% !important;
+  max-height: 100% !important;
+}
+
+.chart-label {
+  position: absolute;
+
+  top: 4px;
+  left: 8px;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  color: #94a3b8;
+}
+
+.legend {
+  margin-top: 4px;
+
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.legend-blue::before {
+  content: "● ";
+  color: #38bdf8;
+}
+
+.legend-yellow::before {
+  content: "● ";
+  color: #fbbf24;
+}
+
+/* ========================================
+   RIGHT PANEL
+======================================== */
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panel-box {
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.panel-header span {
+  background: #1e293b;
+
+  color: #93c5fd;
+
+  padding: 6px 8px;
+
+  border-radius: 8px;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.panel-box h4 {
+  margin: 8px 0;
+  text-align: center;
+  color: #93c5fd;
+  font-size: 16px;
+}
+
+.panel-box p {
+  font-size: 12px;
+  line-height: 1.3;
+  margin: 5px 0;
+}
+
+.confidence {
+  text-align: center;
+  color: #fbbf24;
+  font-weight: 700;
+}
+
+.score-value {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 800;
+  color: #22c55e;
+}
+
+.reason-list {
+  text-align: center;
+}
+
+.setup-title {
+  text-align: center;
+  color: #fbbf24 !important;
+}
+
+.setup-mini-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.mini-stat {
+  background: #111827;
+  border-radius: 10px;
+  padding: 8px;
+  text-align: center;
+}
+
+.mini-stat span {
+  display: block;
+  font-size: 10px;
+  color: #93c5fd;
+}
+
+.mini-stat strong {
+  font-size: 14px;
+}
+
+/* ========================================
+   SCROLLBARS
+======================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 999px;
+}
