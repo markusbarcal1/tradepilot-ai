@@ -37,6 +37,7 @@ function App() {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [watchlistScores, setWatchlistScores] = useState({});
 
   const handleWatchlistSelect = (symbol) => {
     setTicker(symbol);
@@ -53,6 +54,13 @@ function App() {
         `http://127.0.0.1:8000/analyze/${symbol}?period=${selectedTimeframe.period}&interval=${selectedTimeframe.interval}`
       );
       setAnalysis(response.data);
+      setWatchlistScores((prevScores) => ({
+        ...prevScores,
+        [response.data.ticker]: {
+          trend: response.data.trend_score?.score,
+          entry: response.data.entry_score?.score,
+        },
+      }));
     } catch (err) {
       console.error(err);
       setAnalysis(null);
@@ -96,6 +104,7 @@ function App() {
                 <Watchlist
                   stocks={WATCHLIST}
                   selectedStock={submittedTicker}
+                  watchlistScores={watchlistScores}
                   onSelectStock={handleWatchlistSelect}
                 />
 
