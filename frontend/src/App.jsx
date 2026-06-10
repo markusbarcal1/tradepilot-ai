@@ -45,6 +45,37 @@ function App() {
     analyzeTicker(symbol, timeframe);
   };
 
+  const refreshWatchlistScores = async (selectedTimeframe = timeframe) => {
+  try {
+    const results = await Promise.all(
+      WATCHLIST.map(async (symbol) => {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/analyze/${symbol}?period=${selectedTimeframe.period}&interval=${selectedTimeframe.interval}`
+        );
+
+        return {
+          ticker: response.data.ticker,
+          trend: response.data.trend_score?.score,
+          entry: response.data.entry_score?.score,
+        };
+      })
+    );
+
+    const scoreMap = {};
+
+    results.forEach((item) => {
+      scoreMap[item.ticker] = {
+        trend: item.trend,
+        entry: item.entry,
+      };
+    });
+
+    setWatchlistScores(scoreMap);
+  } catch (err) {
+    console.error("Could not refresh watchlist scores:", err);
+  }
+};
+
   const analyzeTicker = async (symbol = submittedTicker, selectedTimeframe = timeframe) => {
     setLoading(true);
     setError("");
@@ -54,13 +85,7 @@ function App() {
         `http://127.0.0.1:8000/analyze/${symbol}?period=${selectedTimeframe.period}&interval=${selectedTimeframe.interval}`
       );
       setAnalysis(response.data);
-      setWatchlistScores((prevScores) => ({
-        ...prevScores,
-        [response.data.ticker]: {
-          trend: response.data.trend_score?.score,
-          entry: response.data.entry_score?.score,
-        },
-      }));
+
     } catch (err) {
       console.error(err);
       setAnalysis(null);
@@ -76,13 +101,15 @@ function App() {
     analyzeTicker(cleanTicker, timeframe);
   };
 
-  const handleTimeframeChange = (newTimeframe) => {
+  const handleTimeframeChange = async (newTimeframe) => {
     setTimeframe(newTimeframe);
     analyzeTicker(submittedTicker, newTimeframe);
+    refreshWatchlistScores(newTimeframe);
   };
 
   useEffect(() => {
     analyzeTicker("AAPL", TIMEFRAMES[2]);
+    refreshWatchlistScores(TIMEFRAMES[2]);
   }, []);
 
 
@@ -94,8 +121,8 @@ function App() {
           ticker={ticker}
           setTicker={setTicker}
           onAnalyze={handleAnalyzeClick}
+          loading={loading}
         />
-          {loading && <p className="status">Loading market data...</p>}
           {error && <p className="error">{error}</p>}
 
           {analysis && (
@@ -105,6 +132,7 @@ function App() {
                   stocks={WATCHLIST}
                   selectedStock={submittedTicker}
                   watchlistScores={watchlistScores}
+                  timeframe={timeframe}
                   onSelectStock={handleWatchlistSelect}
                 />
 

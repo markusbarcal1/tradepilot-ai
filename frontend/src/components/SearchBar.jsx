@@ -1,4 +1,4 @@
-function SearchBar({ ticker, setTicker, onAnalyze }) {
+function SearchBar({ ticker, setTicker, onAnalyze, loading }) {
   return (
     <div className="search-box">
       <input
@@ -9,7 +9,10 @@ function SearchBar({ ticker, setTicker, onAnalyze }) {
           if (e.key === "Enter") onAnalyze();
         }}
       />
-      <button onClick={onAnalyze}>Analyze</button>
+
+      <button onClick={onAnalyze} disabled={loading}>
+        {loading ? <span className="button-spinner"></span> : "Analyze"}
+      </button>
     </div>
   );
 }

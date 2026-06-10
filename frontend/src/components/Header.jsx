@@ -1,6 +1,6 @@
 import SearchBar from "./SearchBar";
 
-function Header({ ticker, setTicker, onAnalyze }) {
+function Header({ ticker, setTicker, onAnalyze, loading }) {
   return (
     <header className="top-bar">
       <div>
@@ -12,6 +12,7 @@ function Header({ ticker, setTicker, onAnalyze }) {
         ticker={ticker}
         setTicker={setTicker}
         onAnalyze={onAnalyze}
+        loading={loading}
       />
     </header>
   );

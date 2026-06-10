@@ -1,4 +1,33 @@
-function Watchlist({ stocks, selectedStock, watchlistScores, onSelectStock }) {
+function getScoreClass(score) {
+  if (score === undefined || score === null) return "score-empty";
+  if (score >= 80) return "score-strong";
+  if (score >= 60) return "score-good";
+  if (score >= 40) return "score-neutral";
+  return "score-weak";
+}
+
+function getTimeframeAbbreviation(label) {
+  switch (label) {
+    case "Monthly":
+      return "M";
+    case "Weekly":
+      return "W";
+    case "Daily":
+      return "D";
+    case "1h":
+      return "1H";
+    case "30m":
+      return "30M";
+    case "5m":
+      return "5M";
+    case "1m":
+      return "1M";
+    default:
+      return label;
+  }
+}
+
+function Watchlist({ stocks, selectedStock, watchlistScores, timeframe, onSelectStock }) {
   return (
     <div className="watchlist-panel">
       <h3>Watchlist</h3>
@@ -20,7 +49,17 @@ function Watchlist({ stocks, selectedStock, watchlistScores, onSelectStock }) {
               <span>{stock}</span>
 
               <span className="watchlist-scores">
-                T:{scores?.trend ?? "--"} E:{scores?.entry ?? "--"}
+                <span className="watchlist-timeframe">
+                  {getTimeframeAbbreviation(timeframe.label)}
+                </span>
+
+                <span className={getScoreClass(scores?.trend)}>
+                  T:{scores?.trend ?? "--"}
+                </span>
+
+                <span className={getScoreClass(scores?.entry)}>
+                  E:{scores?.entry ?? "--"}
+                </span>
               </span>
             </button>
           );
