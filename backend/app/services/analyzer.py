@@ -25,7 +25,7 @@ def clean_for_json(value):
 
     return value
 
-def find_support_resistance(data, lookback: int = 120, window: int = 3):
+def find_support_resistance(data, lookback: int = 160, window: int = 3):
     recent = data.tail(lookback).copy()
     current_price = float(recent["Close"].iloc[-1])
 
@@ -48,7 +48,16 @@ def find_support_resistance(data, lookback: int = 120, window: int = 3):
         if current_low < left_lows.min() and current_low < right_lows.min():
             swing_lows.append(current_low)
 
-    def build_zone_from_anchor(levels, anchor):
+    def get_strength(touch_count, distance_pct):
+        if touch_count >= 4 and distance_pct <= 5:
+            return "Strong"
+        if touch_count >= 3 and distance_pct <= 8:
+            return "Moderate"
+        if touch_count >= 2:
+            return "Weak"
+        return "Very Weak"
+
+    def build_zone_from_anchor(levels, anchor, zone_side):
         tolerance = current_price * 0.015
 
         clustered = [
@@ -56,30 +65,40 @@ def find_support_resistance(data, lookback: int = 120, window: int = 3):
             if abs(level - anchor) <= tolerance
         ]
 
+        if not clustered:
+            return None
+
         zone_low = round(min(clustered), 2)
         zone_high = round(max(clustered), 2)
         zone_mid = round((zone_low + zone_high) / 2, 2)
 
+        touch_count = len(clustered)
+        distance_pct = round(abs(current_price - zone_mid) / current_price * 100, 2)
+
         min_zone_width = current_price * 0.003
         zone_width = zone_high - zone_low
 
-        if zone_width < min_zone_width:
-            return {
-                "low": zone_mid,
-                "high": zone_mid,
-                "mid": zone_mid,
-                "display": f"${zone_mid}",
-                "is_zone": False,
-                "type": "level",
-            }
+        is_zone = zone_width >= min_zone_width
+
+        strength = get_strength(touch_count, distance_pct)
+
+        if is_zone:
+            display = f"${zone_low} - ${zone_high}"
+            zone_type = f"{zone_side}_zone"
+        else:
+            display = f"${zone_mid}"
+            zone_type = f"{zone_side}_level"
 
         return {
             "low": zone_low,
             "high": zone_high,
             "mid": zone_mid,
-            "display": f"${zone_low} - ${zone_high}",
-            "is_zone": True,
-            "type": "zone",
+            "display": display,
+            "is_zone": is_zone,
+            "type": zone_type,
+            "strength": strength,
+            "touch_count": touch_count,
+            "distance_pct": distance_pct,
         }
 
     valid_supports = sorted(
@@ -93,13 +112,13 @@ def find_support_resistance(data, lookback: int = 120, window: int = 3):
     )
 
     support_zone = (
-        build_zone_from_anchor(swing_lows, valid_supports[0])
+        build_zone_from_anchor(swing_lows, valid_supports[0], "support")
         if valid_supports
         else None
     )
 
     resistance_zone = (
-        build_zone_from_anchor(swing_highs, valid_resistances[0])
+        build_zone_from_anchor(swing_highs, valid_resistances[0], "resistance")
         if valid_resistances
         else None
     )
@@ -108,6 +127,8 @@ def find_support_resistance(data, lookback: int = 120, window: int = 3):
         recent_low = round(float(recent["Low"].min()), 2)
 
         if recent_low < current_price:
+            distance_pct = round(abs(current_price - recent_low) / current_price * 100, 2)
+
             support_zone = {
                 "low": recent_low,
                 "high": recent_low,
@@ -115,12 +136,17 @@ def find_support_resistance(data, lookback: int = 120, window: int = 3):
                 "display": f"${recent_low}",
                 "is_zone": False,
                 "type": "recent_low",
+                "strength": "Weak",
+                "touch_count": 1,
+                "distance_pct": distance_pct,
             }
 
     if resistance_zone is None:
         yearly_high = round(float(data["High"].tail(252).max()), 2)
 
         if yearly_high > current_price:
+            distance_pct = round(abs(yearly_high - current_price) / current_price * 100, 2)
+
             resistance_zone = {
                 "low": yearly_high,
                 "high": yearly_high,
@@ -128,6 +154,9 @@ def find_support_resistance(data, lookback: int = 120, window: int = 3):
                 "display": f"${yearly_high}",
                 "is_zone": False,
                 "type": "52_week_high",
+                "strength": "Weak",
+                "touch_count": 1,
+                "distance_pct": distance_pct,
             }
         else:
             resistance_zone = {
@@ -137,6 +166,9 @@ def find_support_resistance(data, lookback: int = 120, window: int = 3):
                 "display": "Price Discovery",
                 "is_zone": False,
                 "type": "price_discovery",
+                "strength": "N/A",
+                "touch_count": 0,
+                "distance_pct": None,
             }
 
     return {
@@ -147,7 +179,6 @@ def find_support_resistance(data, lookback: int = 120, window: int = 3):
 def generate_trade_thesis(price, sma_20, sma_50, rsi, rvol, macd, macd_signal, macd_hist, support_zone, resistance_zone):
     bull_case = []
     bear_case = []
-
     score = 50
 
     if price > sma_20:
@@ -195,14 +226,58 @@ def generate_trade_thesis(price, sma_20, sma_50, rsi, rvol, macd, macd_signal, m
         bear_case.append("RSI is oversold, signaling weakness but possible bounce risk.")
         score -= 5
 
+    if support_zone and support_zone.get("mid"):
+        support_strength = support_zone.get("strength", "Unknown")
+        support_touches = support_zone.get("touch_count", 0)
+        support_distance = support_zone.get("distance_pct")
+
+        if support_distance is not None:
+            if support_distance <= 3:
+                bull_case.append(
+                    f"Price is near {support_strength.lower()} support with {support_touches} prior touch(es)."
+                )
+                score += 8
+            elif support_distance <= 7:
+                bull_case.append(
+                    f"Support is within {support_distance}% below price, providing a nearby risk reference."
+                )
+                score += 4
+            else:
+                bear_case.append(
+                    f"Nearest support is {support_distance}% below price, leaving wider downside risk."
+                )
+                score -= 3
+
+    if resistance_zone and resistance_zone.get("mid"):
+        resistance_strength = resistance_zone.get("strength", "Unknown")
+        resistance_touches = resistance_zone.get("touch_count", 0)
+        resistance_distance = resistance_zone.get("distance_pct")
+
+        if resistance_distance is not None:
+            if resistance_distance <= 3:
+                bear_case.append(
+                    f"Price is close to {resistance_strength.lower()} resistance with {resistance_touches} prior touch(es)."
+                )
+                score -= 6
+            elif resistance_distance >= 7:
+                bull_case.append(
+                    f"Resistance is {resistance_distance}% above price, leaving meaningful upside room."
+                )
+                score += 6
+            else:
+                bull_case.append(
+                    f"Resistance is {resistance_distance}% above price, leaving some upside room."
+                )
+                score += 3
+
     support_text = support_zone["display"] if support_zone else "N/A"
     resistance_text = resistance_zone["display"] if resistance_zone else "N/A"
 
     risk_reward = "N/A"
 
     if support_zone and resistance_zone:
-        support_level = support_zone["mid"]
-        resistance_level = resistance_zone["mid"]
+        support_level = support_zone.get("mid")
+        resistance_level = resistance_zone.get("mid")
 
         if support_level and resistance_level and price > support_level:
             downside = price - support_level
