@@ -20,7 +20,7 @@ const TIMEFRAMES = [
   { label: "1m", period: "1d", interval: "1m" },
 ];
 
-const WATCHLIST = [
+const DEFAULT_WATCHLIST = [
   "AAPL",
   "NVDA",
   "AMD",
@@ -37,46 +37,28 @@ function App() {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [watchlistScores, setWatchlistScores] = useState({});
 
-  const handleWatchlistSelect = (symbol) => {
-    setTicker(symbol);
-    setSubmittedTicker(symbol);
-    analyzeTicker(symbol, timeframe);
+  const [watchlist, setWatchlist] = useState(() => {
+    const saved = localStorage.getItem("tradepilot-watchlist");
+    return saved ? JSON.parse(saved) : DEFAULT_WATCHLIST;
+  });
+
+  const [watchlistScores, setWatchlistScores] = useState({});
+  const [watchlistError, setWatchlistError] = useState("");
+  const [addingTicker, setAddingTicker] = useState(false);
+
+  const showWatchlistError = (message) => {
+    setWatchlistError(message);
+
+    setTimeout(() => {
+      setWatchlistError("");
+    }, 2500);
   };
 
-  const refreshWatchlistScores = async (selectedTimeframe = timeframe) => {
-  try {
-    const results = await Promise.all(
-      WATCHLIST.map(async (symbol) => {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/analyze/${symbol}?period=${selectedTimeframe.period}&interval=${selectedTimeframe.interval}`
-        );
-
-        return {
-          ticker: response.data.ticker,
-          trend: response.data.trend_score?.score,
-          entry: response.data.entry_score?.score,
-        };
-      })
-    );
-
-    const scoreMap = {};
-
-    results.forEach((item) => {
-      scoreMap[item.ticker] = {
-        trend: item.trend,
-        entry: item.entry,
-      };
-    });
-
-    setWatchlistScores(scoreMap);
-  } catch (err) {
-    console.error("Could not refresh watchlist scores:", err);
-  }
-};
-
-  const analyzeTicker = async (symbol = submittedTicker, selectedTimeframe = timeframe) => {
+  const analyzeTicker = async (
+    symbol = submittedTicker,
+    selectedTimeframe = timeframe
+  ) => {
     setLoading(true);
     setError("");
 
@@ -84,79 +66,184 @@ function App() {
       const response = await axios.get(
         `http://127.0.0.1:8000/analyze/${symbol}?period=${selectedTimeframe.period}&interval=${selectedTimeframe.interval}`
       );
-      setAnalysis(response.data);
 
+      setAnalysis(response.data);
     } catch (err) {
       console.error(err);
       setAnalysis(null);
-      setError("Could not analyze ticker. Check the symbol, interval, or backend server.");
+      setError(
+        "Could not analyze ticker. Check the symbol, interval, or backend server."
+      );
     } finally {
       setLoading(false);
     }
   };
 
+  const refreshWatchlistScores = async (
+    selectedTimeframe = timeframe,
+    symbols = watchlist
+  ) => {
+    try {
+      const results = await Promise.all(
+        symbols.map(async (symbol) => {
+          const response = await axios.get(
+            `http://127.0.0.1:8000/analyze/${symbol}?period=${selectedTimeframe.period}&interval=${selectedTimeframe.interval}`
+          );
+
+          return {
+            ticker: response.data.ticker,
+            trend: response.data.trend_score?.score,
+            entry: response.data.entry_score?.score,
+          };
+        })
+      );
+
+      const scoreMap = {};
+
+      results.forEach((item) => {
+        scoreMap[item.ticker] = {
+          trend: item.trend,
+          entry: item.entry,
+        };
+      });
+
+      setWatchlistScores(scoreMap);
+    } catch (err) {
+      console.error("Could not refresh watchlist scores:", err);
+    }
+  };
+
   const handleAnalyzeClick = () => {
     const cleanTicker = ticker.trim().toUpperCase();
+
+    if (!cleanTicker) return;
+
     setSubmittedTicker(cleanTicker);
     analyzeTicker(cleanTicker, timeframe);
   };
 
-  const handleTimeframeChange = async (newTimeframe) => {
+  const handleWatchlistSelect = (symbol) => {
+    setTicker(symbol);
+    setSubmittedTicker(symbol);
+    analyzeTicker(symbol, timeframe);
+  };
+
+  const handleTimeframeChange = (newTimeframe) => {
     setTimeframe(newTimeframe);
     analyzeTicker(submittedTicker, newTimeframe);
     refreshWatchlistScores(newTimeframe);
   };
 
+  const handleAddToWatchlist = async (symbol) => {
+    const cleanSymbol = symbol.trim().toUpperCase();
+
+    setWatchlistError("");
+
+    if (!cleanSymbol) return;
+
+    if (watchlist.includes(cleanSymbol)) {
+      showWatchlistError("Ticker already exists.");
+      return;
+    }
+
+    setAddingTicker(true);
+
+    try {
+      const response = await axios.get(
+        `http://127.0.0.1:8000/validate/${cleanSymbol}`
+      );
+
+      if (!response.data.valid) {
+        showWatchlistError("Invalid ticker symbol.");
+        return;
+      }
+
+      const updatedWatchlist = [...watchlist, cleanSymbol];
+
+      setWatchlist(updatedWatchlist);
+      refreshWatchlistScores(timeframe, updatedWatchlist);
+    } catch (err) {
+      console.error(err);
+      showWatchlistError("Could not validate ticker.");
+    } finally {
+      setAddingTicker(false);
+    }
+  };
+
+  const handleRemoveFromWatchlist = (symbol) => {
+    const updatedWatchlist = watchlist.filter((stock) => stock !== symbol);
+
+    setWatchlist(updatedWatchlist);
+
+    setWatchlistScores((prevScores) => {
+      const updatedScores = { ...prevScores };
+      delete updatedScores[symbol];
+      return updatedScores;
+    });
+  };
+
   useEffect(() => {
     analyzeTicker("AAPL", TIMEFRAMES[2]);
-    refreshWatchlistScores(TIMEFRAMES[2]);
+    refreshWatchlistScores(TIMEFRAMES[2], watchlist);
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem("tradepilot-watchlist", JSON.stringify(watchlist));
+  }, [watchlist]);
 
   return (
     <div className="app">
       <div className="workstation-wrapper">
-       <div className="workstation">
-        <Header
-          ticker={ticker}
-          setTicker={setTicker}
-          onAnalyze={handleAnalyzeClick}
-          loading={loading}
-        />
+        <div className="workstation">
+          <Header
+            ticker={ticker}
+            setTicker={setTicker}
+            onAnalyze={handleAnalyzeClick}
+            loading={loading}
+          />
+
           {error && <p className="error">{error}</p>}
 
           {analysis && (
             <div className="dashboard">
               <div className="left-column">
                 <Watchlist
-                  stocks={WATCHLIST}
+                  stocks={watchlist}
                   selectedStock={submittedTicker}
                   watchlistScores={watchlistScores}
                   timeframe={timeframe}
+                  addingTicker={addingTicker}
+                  watchlistError={watchlistError}
                   onSelectStock={handleWatchlistSelect}
+                  onAddStock={handleAddToWatchlist}
+                  onRemoveStock={handleRemoveFromWatchlist}
                 />
 
                 <MetricsPanel analysis={analysis} />
               </div>
+
               <ChartPanel
                 analysis={analysis}
                 timeframe={timeframe}
                 timeframes={TIMEFRAMES}
                 onTimeframeChange={handleTimeframeChange}
               />
+
               <aside className="right-panel">
                 <ThesisPanel tradeThesis={analysis.trade_thesis} />
+
                 <ScorePanel
                   title="Trend Score"
                   scoreData={analysis.trend_score}
                 />
+
                 <ScorePanel
                   title="Entry Score"
                   scoreData={analysis.entry_score}
                 />
-                <SetupPanel
-                  tradeSetup={analysis.trade_setup}
-                />
+
+                <SetupPanel tradeSetup={analysis.trade_setup} />
+
                 <ResultPanel analysis={analysis} />
               </aside>
             </div>

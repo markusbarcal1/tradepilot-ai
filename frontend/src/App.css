@@ -148,15 +148,17 @@ h1 {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 5px;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
 }
 
 .watchlist-row {
   width: 100%;
-  min-height: 24px;
+  min-height: 22px;
   padding: 0 12px;
   border: 1px solid transparent;
   border-radius: 9px;
@@ -169,6 +171,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  user-select: none;
 }
 
 .watchlist-scores {
@@ -215,6 +218,69 @@ h1 {
   border-color: #22c55e;
   background: rgba(34, 197, 94, 0.16);
   color: #86efac;
+}
+
+.watchlist-add-form {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.watchlist-add-form input {
+  flex: 1;
+  min-width: 0;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  background: #020617;
+  color: #e5e7eb;
+  font-size: 12px;
+  outline: none;
+}
+
+.watchlist-add-form input:focus {
+  border-color: #22c55e;
+}
+
+.watchlist-add-form button {
+  width: 28px;
+  height: 26px;
+  padding: 0;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.watchlist-add-form button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.watchlist-error {
+  color: #f87171;
+  font-size: 10px;
+  font-weight: 500;
+  text-align: center;
+  margin: 4px 0 6px;
+  opacity: 0.9;
+}
+
+.watchlist-remove {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.watchlist-remove:hover {
+  background: #334155;
+  color: #f87171;
 }
 
 /* Technicals panel */

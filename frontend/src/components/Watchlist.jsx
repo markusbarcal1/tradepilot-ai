@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 function getScoreClass(score) {
   if (score === undefined || score === null) return "score-empty";
   if (score >= 80) return "score-strong";
@@ -27,17 +29,51 @@ function getTimeframeAbbreviation(label) {
   }
 }
 
-function Watchlist({ stocks, selectedStock, watchlistScores, timeframe, onSelectStock }) {
+function Watchlist({
+  stocks,
+  selectedStock,
+  watchlistScores,
+  timeframe,
+  addingTicker,
+  watchlistError,
+  onSelectStock,
+  onAddStock,
+  onRemoveStock,
+}) {
+  const [newStock, setNewStock] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!newStock.trim()) return;
+
+    onAddStock(newStock);
+    setNewStock("");
+  };
+
   return (
     <div className="watchlist-panel">
       <h3>Watchlist</h3>
+
+      <form className="watchlist-add-form" onSubmit={handleSubmit}>
+        <input
+          value={newStock}
+          onChange={(e) => setNewStock(e.target.value.toUpperCase())}
+          placeholder="Add ticker"
+        />
+        <button type="submit" disabled={addingTicker}>
+          {addingTicker ? "…" : "+"}
+        </button>
+      </form>
+
+      {watchlistError && (<p className="watchlist-error">{watchlistError}</p>)}
 
       <div className="watchlist-list">
         {stocks.map((stock) => {
           const scores = watchlistScores[stock];
 
           return (
-            <button
+            <div
               key={stock}
               className={
                 selectedStock === stock
@@ -60,8 +96,18 @@ function Watchlist({ stocks, selectedStock, watchlistScores, timeframe, onSelect
                 <span className={getScoreClass(scores?.entry)}>
                   E:{scores?.entry ?? "--"}
                 </span>
+
+                <button
+                  className="watchlist-remove"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRemoveStock(stock);
+                  }}
+                >
+                  ×
+                </button>
               </span>
-            </button>
+            </div>
           );
         })}
       </div>

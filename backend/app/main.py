@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from app.services.analyzer import analyze_ticker
+import yfinance as yf
 
 app = FastAPI(title="TradePilot AI Backend")
 
@@ -25,6 +26,20 @@ def root():
 def health():
     return {"status": "ok"}
 
+@app.get("/validate/{ticker}")
+def validate_ticker(ticker: str):
+    try:
+        stock = yf.Ticker(ticker.upper())
+        history = stock.history(period="5d")
+
+        return {
+            "valid": not history.empty
+        }
+
+    except Exception:
+        return {
+            "valid": False
+        }
 
 @app.get("/analyze/{ticker}")
 def analyze(ticker: str, period: str = "max", interval: str = "1d"):
@@ -32,3 +47,5 @@ def analyze(ticker: str, period: str = "max", interval: str = "1d"):
         return analyze_ticker(ticker, period, interval)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+    
