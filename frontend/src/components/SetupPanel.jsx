@@ -24,29 +24,27 @@ function SetupPanel({ tradeSetup }) {
       <div className="setup-mini-grid">
         <MiniStat
           label="Entry"
-          value={
-            tradeSetup.entry
-              ? `$${tradeSetup.entry}`
-              : "N/A"
-          }
+          value={tradeSetup.entry ? `$${tradeSetup.entry}` : "N/A"}
         />
 
         <MiniStat
           label="Stop"
-          value={
-            tradeSetup.stop
-              ? `$${tradeSetup.stop}`
-              : "N/A"
-          }
+          value={tradeSetup.stop ? `$${tradeSetup.stop}` : "N/A"}
+        />
+
+        <MiniStat
+          label="Risk"
+          value={tradeSetup.risk_pct ? `${tradeSetup.risk_pct}%` : "N/A"}
         />
 
         <MiniStat
           label="Target"
-          value={
-            tradeSetup.target
-              ? `$${tradeSetup.target}`
-              : "N/A"
-          }
+          value={tradeSetup.target ? `$${tradeSetup.target}` : "N/A"}
+        />
+
+        <MiniStat
+          label="Reward"
+          value={tradeSetup.reward_pct ? `${tradeSetup.reward_pct}%` : "N/A"}
         />
 
         <MiniStat

@@ -9,7 +9,7 @@ function ThesisPanel({ tradeThesis }) {
       </div>
 
       <p className="confidence">
-        Confidence: {tradeThesis.confidence}%
+        {tradeThesis.evidence_label}: {tradeThesis.evidence_score}%
       </p>
 
       <h4>Bull Case</h4>

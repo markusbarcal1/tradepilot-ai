@@ -6,7 +6,6 @@ import ChartPanel from "./components/ChartPanel";
 import ThesisPanel from "./components/ThesisPanel";
 import ScorePanel from "./components/ScorePanel";
 import SetupPanel from "./components/SetupPanel";
-import ResultPanel from "./components/ResultPanel";
 import Watchlist from "./components/Watchlist";
 import "./App.css";
 
@@ -244,7 +243,6 @@ function App() {
 
                 <SetupPanel tradeSetup={analysis.trade_setup} />
 
-                <ResultPanel analysis={analysis} />
               </aside>
             </div>
           )}

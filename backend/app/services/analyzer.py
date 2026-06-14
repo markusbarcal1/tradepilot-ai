@@ -182,64 +182,64 @@ def generate_trade_thesis(price, sma_20, sma_50, rsi, rvol, macd, macd_signal, m
     score = 50
 
     if price > sma_20:
-        bull_case.append("Price is above the 20 SMA.")
+        bull_case.append("Price is holding above the short-term trend line.")
         score += 8
     else:
-        bear_case.append("Price is below the 20 SMA.")
+        bear_case.append("Price has slipped below the short-term trend line.")
         score -= 8
 
     if price > sma_50:
-        bull_case.append("Price is above the 50 SMA.")
+        bull_case.append("Price remains above the intermediate trend line.")
         score += 8
     else:
-        bear_case.append("Price is below the 50 SMA.")
+        bear_case.append("Price is trading below the intermediate trend line.")
         score -= 8
 
     if sma_20 > sma_50:
-        bull_case.append("20 SMA is above the 50 SMA, showing positive trend structure.")
+        bull_case.append("The 20 SMA remains above the 50 SMA, supporting a constructive trend structure.")
         score += 8
     else:
-        bear_case.append("20 SMA is below the 50 SMA, showing weaker trend structure.")
+        bear_case.append("The 20 SMA is below the 50 SMA, suggesting weaker trend structure.")
         score -= 8
 
     if macd > macd_signal and macd_hist > 0:
-        bull_case.append("MACD is above the signal line with positive histogram momentum.")
+        bull_case.append("Momentum is improving, with MACD above the signal line.")
         score += 10
     elif macd < macd_signal and macd_hist < 0:
-        bear_case.append("MACD is below the signal line with negative histogram momentum.")
+        bear_case.append("Momentum is weakening, with MACD below the signal line.")
         score -= 10
 
     if rvol >= 2:
-        bull_case.append("Relative volume is elevated, suggesting strong participation.")
+        bull_case.append("Relative volume is elevated, showing strong participation.")
         score += 8
     elif rvol < 0.8:
-        bear_case.append("Relative volume is weak, suggesting limited participation.")
+        bear_case.append("Relative volume is light, suggesting limited conviction behind the move.")
         score -= 5
 
     if rsi >= 70:
-        bear_case.append("RSI is overbought, increasing short-term pullback risk.")
+        bear_case.append("RSI is extended, increasing the risk of a short-term pullback.")
         score -= 8
     elif 50 <= rsi < 70:
         bull_case.append("RSI is in a healthy bullish momentum range.")
         score += 5
     elif rsi < 30:
-        bear_case.append("RSI is oversold, signaling weakness but possible bounce risk.")
+        bear_case.append("RSI is oversold, signaling weakness despite possible bounce potential.")
         score -= 5
 
     if support_zone and support_zone.get("mid"):
-        support_strength = support_zone.get("strength", "Unknown")
+        support_strength = support_zone.get("strength", "unknown").lower()
         support_touches = support_zone.get("touch_count", 0)
         support_distance = support_zone.get("distance_pct")
 
         if support_distance is not None:
             if support_distance <= 3:
                 bull_case.append(
-                    f"Price is near {support_strength.lower()} support with {support_touches} prior touch(es)."
+                    f"Price is trading near {support_strength} support that has been tested {support_touches} time(s)."
                 )
                 score += 8
             elif support_distance <= 7:
                 bull_case.append(
-                    f"Support is within {support_distance}% below price, providing a nearby risk reference."
+                    f"Support sits {support_distance}% below price, giving traders a nearby downside reference."
                 )
                 score += 4
             else:
@@ -249,14 +249,14 @@ def generate_trade_thesis(price, sma_20, sma_50, rsi, rvol, macd, macd_signal, m
                 score -= 3
 
     if resistance_zone and resistance_zone.get("mid"):
-        resistance_strength = resistance_zone.get("strength", "Unknown")
+        resistance_strength = resistance_zone.get("strength", "unknown").lower()
         resistance_touches = resistance_zone.get("touch_count", 0)
         resistance_distance = resistance_zone.get("distance_pct")
 
         if resistance_distance is not None:
             if resistance_distance <= 3:
                 bear_case.append(
-                    f"Price is close to {resistance_strength.lower()} resistance with {resistance_touches} prior touch(es)."
+                    f"Price is pressing into {resistance_strength} resistance that has been tested {resistance_touches} time(s)."
                 )
                 score -= 6
             elif resistance_distance >= 7:
@@ -290,18 +290,26 @@ def generate_trade_thesis(price, sma_20, sma_50, rsi, rvol, macd, macd_signal, m
 
     if score >= 75:
         thesis_rating = "Strong Bullish"
+        evidence_label = "Bullish Evidence"
     elif score >= 60:
         thesis_rating = "Bullish"
+        evidence_label = "Bullish Evidence"
     elif score >= 45:
         thesis_rating = "Neutral"
+        evidence_label = "Mixed Evidence"
     elif score >= 30:
         thesis_rating = "Bearish"
+        evidence_label = "Bearish Evidence"
     else:
         thesis_rating = "Strong Bearish"
+        evidence_label = "Bearish Evidence"
+
+    evidence_score = score if score >= 45 else 100 - score
 
     return {
         "rating": thesis_rating,
-        "confidence": score,
+        "evidence_label": evidence_label,
+        "evidence_score": evidence_score,
         "bull_case": bull_case,
         "bear_case": bear_case,
         "support": support_text,
@@ -311,34 +319,53 @@ def generate_trade_thesis(price, sma_20, sma_50, rsi, rvol, macd, macd_signal, m
 
 def calculate_trend_score(price, sma_20, sma_50, rsi, rvol, macd, macd_signal):
     score = 0
-    reasons = []
+    positives = []
+    negatives = []
 
     if price > sma_20:
-        score += 20
-        reasons.append("Price above 20 SMA")
+        score += 18
+        positives.append("Price is above the short-term trend line")
+    else:
+        negatives.append("Price is below the short-term trend line")
 
     if price > sma_50:
         score += 20
-        reasons.append("Price above 50 SMA")
+        positives.append("Price is above the intermediate trend line")
+    else:
+        negatives.append("Price is below the intermediate trend line")
 
     if sma_20 > sma_50:
-        score += 20
-        reasons.append("20 SMA above 50 SMA")
+        score += 22
+        positives.append("Short-term trend remains above the intermediate trend")
+    else:
+        negatives.append("Short-term trend is below the intermediate trend")
 
     if macd > macd_signal:
-        score += 20
-        reasons.append("MACD bullish")
+        score += 18
+        positives.append("Momentum is improving")
+    else:
+        negatives.append("Momentum is weakening")
 
     if 50 <= rsi <= 70:
         score += 15
-        reasons.append("RSI in bullish momentum range")
+        positives.append("RSI supports bullish momentum")
     elif rsi > 70:
         score += 8
-        reasons.append("RSI strong but extended")
-
-    if rvol >= 1:
+        positives.append("RSI is strong but extended")
+    elif 40 <= rsi < 50:
         score += 5
-        reasons.append("Volume above average")
+        positives.append("RSI is neutral but not deeply weak")
+    else:
+        negatives.append("RSI shows weak momentum")
+
+    if rvol >= 2:
+        score += 7
+        positives.append("Volume participation is strong")
+    elif rvol >= 1:
+        score += 5
+        positives.append("Volume is above average")
+    elif rvol < 0.7:
+        negatives.append("Volume participation is light")
 
     score = max(0, min(score, 100))
 
@@ -356,61 +383,119 @@ def calculate_trend_score(price, sma_20, sma_50, rsi, rvol, macd, macd_signal):
     return {
         "score": score,
         "grade": grade,
-        "reasons": reasons,
+        "positives": positives,
+        "negatives": negatives,
     }
 
 def calculate_entry_score(price, rvol, support_zone, resistance_zone, trade_setup):
     score = 0
-    reasons = []
+    positives = []
+    negatives = []
 
-    support = support_zone["mid"] if support_zone and support_zone.get("mid") else None
-    resistance = resistance_zone["mid"] if resistance_zone and resistance_zone.get("mid") else None
+    support = support_zone.get("mid") if support_zone else None
+    resistance = resistance_zone.get("mid") if resistance_zone else None
+
+    support_strength = support_zone.get("strength") if support_zone else None
+    resistance_strength = resistance_zone.get("strength") if resistance_zone else None
+
+    support_distance = support_zone.get("distance_pct") if support_zone else None
+    resistance_distance = resistance_zone.get("distance_pct") if resistance_zone else None
+
+    support_touches = support_zone.get("touch_count", 0) if support_zone else 0
+    resistance_touches = resistance_zone.get("touch_count", 0) if resistance_zone else 0
 
     rr = trade_setup.get("risk_reward")
 
     if isinstance(rr, (int, float)):
         if rr >= 3:
-            score += 35
-            reasons.append("Excellent risk/reward")
+            score += 30
+            positives.append(f"Reward/risk profile is excellent at {rr}:1")
         elif rr >= 2:
-            score += 25
-            reasons.append("Good risk/reward")
+            score += 22
+            positives.append(f"Reward/risk profile is favorable at {rr}:1")
         elif rr >= 1.5:
-            score += 15
-            reasons.append("Acceptable risk/reward")
+            score += 14
+            positives.append(f"Reward/risk profile is acceptable at {rr}:1")
         else:
-            reasons.append("Weak risk/reward")
+            score += 4
+            negatives.append(f"Reward/risk profile is limited at {rr}:1")
 
-    if support and price > support:
-        distance_to_support = (price - support) / price
+    if support and price > support and support_distance is not None:
+        if support_distance <= 2:
+            score += 22
+            positives.append(f"Price is sitting close to support ({support_distance}% below)")
+        elif support_distance <= 5:
+            score += 14
+            positives.append(f"Support is within reasonable range ({support_distance}% below)")
+        elif support_distance <= 9:
+            score += 6
+            positives.append(f"Support is nearby but not ideal ({support_distance}% below)")
+        else:
+            negatives.append(f"Nearest support is far below price ({support_distance}% below)")
 
-        if distance_to_support <= 0.02:
+        if support_touches > 0:
+            positives.append(f"Support has {support_touches} prior touch(es)")
+
+        if support_strength == "Strong":
+            score += 12
+            positives.append("Support has strong historical confirmation")
+        elif support_strength == "Moderate":
+            score += 8
+            positives.append("Support has moderate historical confirmation")
+        elif support_strength == "Weak":
+            score += 3
+            negatives.append("Support strength is weak")
+        elif support_strength == "Very Weak":
+            negatives.append("Support has very limited confirmation")
+
+    if resistance and price < resistance and resistance_distance is not None:
+        if resistance_distance >= 8:
             score += 20
-            reasons.append("Entry is close to support")
-        elif distance_to_support <= 0.05:
-            score += 10
-            reasons.append("Entry is reasonably near support")
+            positives.append(f"Strong upside room before resistance ({resistance_distance}% above)")
+        elif resistance_distance >= 4:
+            score += 12
+            positives.append(f"Some upside room before resistance ({resistance_distance}% above)")
+        elif resistance_distance >= 2:
+            score += 5
+            positives.append(f"Limited but usable upside room ({resistance_distance}% above)")
+        else:
+            score -= 8
+            negatives.append(f"Price is pressing too close to resistance ({resistance_distance}% above)")
 
-    if resistance and price < resistance:
-        distance_to_resistance = (resistance - price) / price
+        if resistance_touches > 0:
+            negatives.append(f"Resistance has {resistance_touches} prior touch(es)")
 
-        if distance_to_resistance >= 0.05:
-            score += 20
-            reasons.append("Strong upside room to resistance")
-        elif distance_to_resistance >= 0.02:
-            score += 10
-            reasons.append("Some upside room to resistance")
+        if resistance_strength in ["Weak", "Very Weak"]:
+            score += 5
+            positives.append("Resistance overhead appears relatively weak")
+        elif resistance_strength == "Moderate":
+            negatives.append("Resistance has moderate historical confirmation")
+        elif resistance_strength == "Strong":
+            score -= 5
+            negatives.append("Overhead resistance is historically strong")
 
     if rvol >= 2:
-        score += 20
-        reasons.append("Strong relative volume")
+        score += 18
+        positives.append("Strong relative volume supports the setup")
     elif rvol >= 1:
         score += 10
-        reasons.append("Above average volume")
+        positives.append("Volume is above average")
+    elif rvol < 0.7:
+        score -= 5
+        negatives.append("Weak relative volume reduces setup quality")
 
-    if trade_setup.get("setup_type") != "No Clear Setup":
+    setup_type = trade_setup.get("setup_type")
+    setup_bias = trade_setup.get("setup_bias")
+
+    if setup_type != "No Clear Setup":
         score += 10
-        reasons.append(f"{trade_setup.get('setup_type')} detected")
+
+        if setup_bias == "Bullish":
+            positives.append(f"{setup_type} bullish setup detected")
+        elif setup_bias == "Bearish":
+            negatives.append(f"{setup_type} bearish setup detected")
+        else:
+            positives.append(f"{setup_type} setup detected")
 
     score = max(0, min(score, 100))
 
@@ -428,20 +513,29 @@ def calculate_entry_score(price, rvol, support_zone, resistance_zone, trade_setu
     return {
         "score": score,
         "grade": grade,
-        "reasons": reasons,
+        "positives": positives,
+        "negatives": negatives,
     }
 
 def generate_trade_setup(price, trend, rsi, rvol, macd, macd_signal, macd_hist, support_zone, resistance_zone):
     setup_type = "No Clear Setup"
+    setup_bias = "Neutral"
     entry = None
     stop = None
     target = None
     risk_reward = "N/A"
+    risk_pct = None
+    reward_pct = None
     quality = "Low"
     notes = []
 
-    support = support_zone["mid"] if support_zone and support_zone.get("mid") else None
-    resistance = resistance_zone["mid"] if resistance_zone and resistance_zone.get("mid") else None
+    support = support_zone.get("mid") if support_zone else None
+    resistance = resistance_zone.get("mid") if resistance_zone else None
+
+    support_strength = support_zone.get("strength") if support_zone else None
+    resistance_strength = resistance_zone.get("strength") if resistance_zone else None
+    support_distance = support_zone.get("distance_pct") if support_zone else None
+    resistance_distance = resistance_zone.get("distance_pct") if resistance_zone else None
 
     bullish_momentum = macd > macd_signal and macd_hist > 0
     bearish_momentum = macd < macd_signal and macd_hist < 0
@@ -450,26 +544,33 @@ def generate_trade_setup(price, trend, rsi, rvol, macd, macd_signal, macd_hist, 
     below_resistance = resistance is not None and price < resistance
 
     near_resistance = (
-        resistance is not None and price < resistance and ((resistance - price) / price) <= 0.03
+        resistance is not None
+        and price < resistance
+        and ((resistance - price) / price) <= 0.03
     )
 
     near_support = (
-        support is not None and price > support and ((price - support) / price) <= 0.03
+        support is not None
+        and price > support
+        and ((price - support) / price) <= 0.03
     )
 
     # 1. Breakout Watch
     if resistance and below_resistance and bullish_momentum and near_resistance:
         setup_type = "Breakout Watch"
+        setup_bias = "Bullish"
         entry = round(resistance + (price * 0.002), 2)
         stop = round(support if support else price * 0.97, 2)
         target = round(entry + ((entry - stop) * 2), 2)
 
-        notes.append("Price is near resistance with bullish momentum.")
-        notes.append("Potential setup is a breakout above resistance.")
+        notes.append("Price is approaching resistance with improving momentum.")
+        notes.append("A breakout trigger would require confirmation above resistance.")
+        notes.append(f"Resistance strength is rated {resistance_strength or 'Unknown'}.")
 
     # 2. Pullback Bounce
     elif support and above_support and near_support and bullish_momentum and rsi < 70:
         setup_type = "Pullback Bounce"
+        setup_bias = "Bullish"
         entry = round(price, 2)
         stop = round(support * 0.985, 2)
 
@@ -478,12 +579,14 @@ def generate_trade_setup(price, trend, rsi, rvol, macd, macd_signal, macd_hist, 
         else:
             target = round(price + ((price - stop) * 2), 2)
 
-        notes.append("Price is holding near support with bullish momentum.")
-        notes.append("Potential setup is a bounce from support.")
+        notes.append("Price is holding near support while momentum improves.")
+        notes.append("This suggests a potential bounce setup from a defined risk area.")
+        notes.append(f"Support strength is rated {support_strength or 'Unknown'}.")
 
     # 3. Momentum Long
-    elif price > 0 and bullish_momentum and rsi >= 50 and rsi < 75:
+    elif price > 0 and bullish_momentum and 50 <= rsi < 75:
         setup_type = "Momentum Long"
+        setup_bias = "Bullish"
         entry = round(price, 2)
 
         if support and support < price:
@@ -496,25 +599,30 @@ def generate_trade_setup(price, trend, rsi, rvol, macd, macd_signal, macd_hist, 
         else:
             target = round(price + ((price - stop) * 2), 2)
 
-        notes.append("Bullish momentum is present.")
-        notes.append("RSI supports continuation without being extremely overbought.")
+        notes.append("Bullish momentum is active and RSI supports continuation.")
+        notes.append("The setup favors continuation as long as momentum holds.")
 
         if rvol >= 1:
-            notes.append("Volume is confirming the move.")
+            notes.append("Volume is supportive of the move.")
+        else:
+            notes.append("Volume confirmation is limited.")
 
     # 4. Breakdown Risk
     elif support and price < support and bearish_momentum:
         setup_type = "Breakdown Risk"
+        setup_bias = "Bearish"
         entry = round(price, 2)
         stop = round(support, 2)
         target = round(price - ((stop - price) * 2), 2)
 
-        notes.append("Price is below support with bearish momentum.")
-        notes.append("Potential downside continuation risk.")
+        notes.append("Price is trading below support with weakening momentum.")
+        notes.append("This increases the risk of downside continuation.")
+        notes.append(f"Former support strength was rated {support_strength or 'Unknown'}.")
 
     # 5. Momentum Short
     elif bearish_momentum and rsi < 50:
         setup_type = "Momentum Short"
+        setup_bias = "Bearish"
         entry = round(price, 2)
 
         if resistance and resistance > price:
@@ -527,14 +635,17 @@ def generate_trade_setup(price, trend, rsi, rvol, macd, macd_signal, macd_hist, 
         else:
             target = round(price - ((stop - price) * 2), 2)
 
-        notes.append("Bearish momentum is present.")
-        notes.append("RSI is below 50, showing weaker momentum.")
+        notes.append("Bearish momentum is active and RSI remains below 50.")
+        notes.append("The setup favors downside continuation unless momentum reverses.")
 
         if rvol >= 1:
-            notes.append("Volume is confirming the move.")
+            notes.append("Volume is supportive of the move.")
+        else:
+            notes.append("Volume confirmation is limited.")
 
     else:
-        notes.append("No clean entry setup detected from current technical conditions.")
+        notes.append("No clean trade setup is currently detected.")
+        notes.append("Conditions may need more confirmation before defining a trade plan.")
 
     if entry and stop and target:
         risk = abs(entry - stop)
@@ -543,28 +654,43 @@ def generate_trade_setup(price, trend, rsi, rvol, macd, macd_signal, macd_hist, 
         if risk > 0:
             rr = round(reward / risk, 2)
             risk_reward = rr
+            risk_pct = round((risk / entry) * 100, 2)
+            reward_pct = round((reward / entry) * 100, 2)
 
-            if rr >= 2:
-                quality = "High"
+            if rr >= 3:
+                quality = "High Conviction"
+            elif rr >= 2:
+                quality = "Attractive"
             elif rr >= 1.5:
-                quality = "Medium"
+                quality = "Acceptable"
             else:
-                quality = "Low"
+                quality = "Unfavorable"
 
-            if rvol < 0.8 and quality == "High":
-                quality = "Medium"
+            if rvol < 0.8 and quality in ["High Conviction", "Attractive"]:
+                quality = "Acceptable"
+                notes.append("Quality is reduced because relative volume is below average.")
 
-            if rvol < 0.6 and quality == "Medium":
-                quality = "Low"
+            if rvol < 0.6 and quality == "Acceptable":
+                quality = "Unfavorable"
+                notes.append("Quality is reduced further because volume participation is weak.")
+
+            notes.append(f"Estimated risk is {risk_pct}% from entry to stop.")
+            notes.append(f"Estimated reward is {reward_pct}% from entry to target.")
+            notes.append(f"Reward/risk ratio is {risk_reward}:1.")
 
     return {
         "setup_type": setup_type,
+        "setup_bias": setup_bias,
         "entry": entry,
         "stop": stop,
         "target": target,
         "risk_reward": risk_reward,
+        "risk_pct": risk_pct,
+        "reward_pct": reward_pct,
         "quality": quality,
         "notes": notes,
+        "support_distance_pct": support_distance,
+        "resistance_distance_pct": resistance_distance,
     }
 
 def analyze_ticker(ticker: str, period: str = "1y", interval: str = "1d"):
