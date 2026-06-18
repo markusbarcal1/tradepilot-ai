@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from app.services.analyzer import analyze_ticker
+from app.services.scanner import scan_market
 import yfinance as yf
 
 app = FastAPI(title="TradePilot AI Backend")
@@ -47,5 +48,13 @@ def analyze(ticker: str, period: str = "max", interval: str = "1d"):
         return analyze_ticker(ticker, period, interval)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+@app.get("/scan")
+def scan(
+    period: str = "1y",
+    interval: str = "1d",
+    limit: int = 10
+):
+    return scan_market(period, interval, limit)
     
     
