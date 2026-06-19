@@ -7,6 +7,7 @@ import ThesisPanel from "./components/ThesisPanel";
 import ScorePanel from "./components/ScorePanel";
 import SetupPanel from "./components/SetupPanel";
 import Watchlist from "./components/Watchlist";
+import ScannerPanel from "./components/ScannerPanel";
 import "./App.css";
 
 const TIMEFRAMES = [
@@ -216,6 +217,11 @@ function App() {
                   onSelectStock={handleWatchlistSelect}
                   onAddStock={handleAddToWatchlist}
                   onRemoveStock={handleRemoveFromWatchlist}
+                />
+                <ScannerPanel
+                  period={timeframe.period}
+                  interval={timeframe.interval}
+                  onSelectTicker={handleWatchlistSelect}
                 />
 
                 <MetricsPanel analysis={analysis} />

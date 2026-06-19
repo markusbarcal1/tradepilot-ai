@@ -9,53 +9,72 @@ function Metric({ label, value, className = "" }) {
 
 function MetricsPanel({ analysis }) {
   return (
-    <aside className="left-panel">
+    <div className="left-panel">
       <h2>{analysis.ticker}</h2>
 
-      <div className="metrics-grid">
-        <Metric label="Price" value={`$${analysis.price}`} />
-        <Metric label="20 SMA" value={analysis.sma_20} />
-        <Metric label="50 SMA" value={analysis.sma_50} />
-        <Metric label="RSI" value={analysis.rsi} />
-        <Metric
-          label="Volume"
-          value={analysis.current_volume?.toLocaleString()}
-        />
-        <Metric
-          label="Avg Volume"
-          value={analysis.average_volume?.toLocaleString()}
-        />
-        <Metric label="RVOL" value={`${analysis.rvol}x`} />
-        <Metric label="MACD" value={analysis.macd} />
-        <Metric label="Signal" value={analysis.macd_signal} />
+      <div className="metrics-list">
+        <div className="metric-row">
+          <span>Price</span>
+          <strong>${analysis.price}</strong>
+        </div>
+        <div className="metric-row">
+          <span>Support</span>
+          <strong>{analysis.support_zone?.display || "N/A"}</strong>
+        </div>
 
-        <Metric
-          label="Hist"
-          value={analysis.macd_hist}
-          className={
-            analysis.macd_hist >= 0 ? "positive" : "negative"
-          }
-        />
+        <div className="metric-row">
+          <span>Resistance</span>
+          <strong>{analysis.resistance_zone?.display || "N/A"}</strong>
+        </div>
 
-        <Metric
-          label="Support"
-          value={
-            analysis.support_zone
-              ? analysis.support_zone.display
-              : "N/A"
-          }
-        />
+        <div className="metric-row">
+          <span>20 SMA</span>
+          <strong>{analysis.sma_20}</strong>
+        </div>
 
-        <Metric
-          label="Resistance"
-          value={
-            analysis.resistance_zone
-              ? analysis.resistance_zone.display
-              : "N/A"
-          }
-        />
+        <div className="metric-row">
+          <span>50 SMA</span>
+          <strong>{analysis.sma_50}</strong>
+        </div>
+
+        <div className="metric-row">
+          <span>RSI</span>
+          <strong>{analysis.rsi}</strong>
+        </div>
+
+        <div className="metric-row">
+          <span>MACD</span>
+          <strong>{analysis.macd}</strong>
+        </div>
+
+        <div className="metric-row">
+          <span>Signal</span>
+          <strong>{analysis.macd_signal}</strong>
+        </div>
+
+        <div className="metric-row">
+          <span>Hist</span>
+          <strong className={analysis.macd_hist >= 0 ? "positive" : "negative"}>
+            {analysis.macd_hist}
+          </strong>
+        </div>
+
+        <div className="metric-row">
+          <span>Volume</span>
+          <strong>{analysis.current_volume?.toLocaleString()}</strong>
+        </div>
+
+        <div className="metric-row">
+          <span>Avg Volume</span>
+          <strong>{analysis.average_volume?.toLocaleString()}</strong>
+        </div>
+
+        <div className="metric-row">
+          <span>RVOL</span>
+          <strong>{analysis.rvol}x</strong>
+        </div>
       </div>
-    </aside>
+    </div>
   );
 }
 
