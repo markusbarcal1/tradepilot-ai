@@ -1,5 +1,9 @@
-import { useEffect, useState } from "react";
-import { analyzeTicker as fetchAnalysis, validateTicker } from "./api/client";
+import { useEffect, useRef, useState } from "react";
+import {
+  analyzeTicker as fetchAnalysis,
+  isRequestCanceled,
+  validateTicker,
+} from "./api/client";
 import Header from "./components/Header";
 import MetricsPanel from "./components/MetricsPanel";
 import ChartPanel from "./components/ChartPanel";
@@ -31,6 +35,10 @@ const DEFAULT_WATCHLIST = [
 ];
 
 function App() {
+  const analysisRequestRef = useRef({ controller: null, id: 0 });
+  const validationRequestRef = useRef({ controller: null, id: 0 });
+  const watchlistRequestRef = useRef({ controller: null, id: 0 });
+
   const [ticker, setTicker] = useState("AAPL");
   const [submittedTicker, setSubmittedTicker] = useState("AAPL");
   const [timeframe, setTimeframe] = useState(TIMEFRAMES[2]);
@@ -59,6 +67,12 @@ function App() {
     symbol = submittedTicker,
     selectedTimeframe = timeframe
   ) => {
+    analysisRequestRef.current.controller?.abort();
+
+    const controller = new AbortController();
+    const requestId = analysisRequestRef.current.id + 1;
+    analysisRequestRef.current = { controller, id: requestId };
+
     setLoading(true);
     setError("");
 
@@ -66,18 +80,30 @@ function App() {
       const response = await fetchAnalysis(
         symbol,
         selectedTimeframe.period,
-        selectedTimeframe.interval
+        selectedTimeframe.interval,
+        { signal: controller.signal }
       );
+
+      if (analysisRequestRef.current.id !== requestId) return;
 
       setAnalysis(response.data);
     } catch (err) {
+      if (
+        isRequestCanceled(err) ||
+        analysisRequestRef.current.id !== requestId
+      ) {
+        return;
+      }
+
       console.error(err);
       setAnalysis(null);
       setError(
         "Could not analyze ticker. Check the symbol, interval, or backend server."
       );
     } finally {
-      setLoading(false);
+      if (analysisRequestRef.current.id === requestId) {
+        setLoading(false);
+      }
     }
   };
 
@@ -85,13 +111,20 @@ function App() {
     selectedTimeframe = timeframe,
     symbols = watchlist
   ) => {
+    watchlistRequestRef.current.controller?.abort();
+
+    const controller = new AbortController();
+    const requestId = watchlistRequestRef.current.id + 1;
+    watchlistRequestRef.current = { controller, id: requestId };
+
     try {
       const results = await Promise.all(
         symbols.map(async (symbol) => {
           const response = await fetchAnalysis(
             symbol,
             selectedTimeframe.period,
-            selectedTimeframe.interval
+            selectedTimeframe.interval,
+            { signal: controller.signal }
           );
 
           return {
@@ -111,8 +144,17 @@ function App() {
         };
       });
 
+      if (watchlistRequestRef.current.id !== requestId) return;
+
       setWatchlistScores(scoreMap);
     } catch (err) {
+      if (
+        isRequestCanceled(err) ||
+        watchlistRequestRef.current.id !== requestId
+      ) {
+        return;
+      }
+
       console.error("Could not refresh watchlist scores:", err);
     }
   };
@@ -151,9 +193,18 @@ function App() {
     }
 
     setAddingTicker(true);
+    validationRequestRef.current.controller?.abort();
+
+    const controller = new AbortController();
+    const requestId = validationRequestRef.current.id + 1;
+    validationRequestRef.current = { controller, id: requestId };
 
     try {
-      const response = await validateTicker(cleanSymbol);
+      const response = await validateTicker(cleanSymbol, {
+        signal: controller.signal,
+      });
+
+      if (validationRequestRef.current.id !== requestId) return;
 
       if (!response.data.valid) {
         showWatchlistError("Invalid ticker symbol.");
@@ -165,10 +216,19 @@ function App() {
       setWatchlist(updatedWatchlist);
       refreshWatchlistScores(timeframe, updatedWatchlist);
     } catch (err) {
+      if (
+        isRequestCanceled(err) ||
+        validationRequestRef.current.id !== requestId
+      ) {
+        return;
+      }
+
       console.error(err);
       showWatchlistError("Could not validate ticker.");
     } finally {
-      setAddingTicker(false);
+      if (validationRequestRef.current.id === requestId) {
+        setAddingTicker(false);
+      }
     }
   };
 
@@ -192,6 +252,17 @@ function App() {
   useEffect(() => {
     localStorage.setItem("tradepilot-watchlist", JSON.stringify(watchlist));
   }, [watchlist]);
+
+  useEffect(() => {
+    return () => {
+      analysisRequestRef.current.controller?.abort();
+      validationRequestRef.current.controller?.abort();
+      watchlistRequestRef.current.controller?.abort();
+      analysisRequestRef.current.id += 1;
+      validationRequestRef.current.id += 1;
+      watchlistRequestRef.current.id += 1;
+    };
+  }, []);
 
   return (
     <div className="app">

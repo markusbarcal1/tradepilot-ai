@@ -7,25 +7,33 @@ const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-export function analyzeTicker(symbol, period, interval) {
+export function isRequestCanceled(error) {
+  return axios.isCancel(error);
+}
+
+export function analyzeTicker(symbol, period, interval, options = {}) {
   return api.get(`/analyze/${symbol}`, {
     params: {
       period,
       interval,
     },
+    signal: options.signal,
   });
 }
 
-export function validateTicker(symbol) {
-  return api.get(`/validate/${symbol}`);
+export function validateTicker(symbol, options = {}) {
+  return api.get(`/validate/${symbol}`, {
+    signal: options.signal,
+  });
 }
 
-export function scanMarket(period, interval, limit = 10) {
+export function scanMarket(period, interval, limit = 10, options = {}) {
   return api.get("/scan", {
     params: {
       period,
       interval,
       limit,
     },
+    signal: options.signal,
   });
 }

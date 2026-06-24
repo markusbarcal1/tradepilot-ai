@@ -1,26 +1,50 @@
-import { useEffect, useState } from "react";
-import { scanMarket } from "../api/client";
+import { useEffect, useRef, useState } from "react";
+import { isRequestCanceled, scanMarket } from "../api/client";
 
 function ScannerPanel({ period, interval, onSelectTicker }) {
+  const scannerRequestRef = useRef(0);
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const requestId = scannerRequestRef.current + 1;
+    scannerRequestRef.current = requestId;
+
     async function fetchScanner() {
       setLoading(true);
 
       try {
-        const response = await scanMarket(period, interval, 10);
+        const response = await scanMarket(period, interval, 10, {
+          signal: controller.signal,
+        });
+
+        if (scannerRequestRef.current !== requestId) return;
+
         setResults(response.data.results || []);
       } catch (err) {
+        if (
+          isRequestCanceled(err) ||
+          scannerRequestRef.current !== requestId
+        ) {
+          return;
+        }
+
         console.error("Scanner failed:", err);
         setResults([]);
       } finally {
-        setLoading(false);
+        if (scannerRequestRef.current === requestId) {
+          setLoading(false);
+        }
       }
     }
 
     fetchScanner();
+
+    return () => {
+      controller.abort();
+      scannerRequestRef.current += 1;
+    };
   }, [period, interval]);
 
   return (
