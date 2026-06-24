@@ -67,8 +67,13 @@ def batch_analyze(request: BatchAnalyzeRequest):
 def scan(
     period: str = "1y",
     interval: str = "1d",
-    limit: int = 10
+    limit: int = 10,
+    universe: str = "test",
+    max_symbols: int = 25,
 ):
-    return scan_market(period, interval, limit)
+    try:
+        return scan_market(period, interval, limit, universe, max_symbols)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     
     
