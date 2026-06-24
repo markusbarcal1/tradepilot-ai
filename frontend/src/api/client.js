@@ -47,6 +47,8 @@ export function scanMarket(period, interval, limit = 10, options = {}) {
       period,
       interval,
       limit,
+      universe: options.universe,
+      max_symbols: options.maxSymbols,
     },
     signal: options.signal,
   });
