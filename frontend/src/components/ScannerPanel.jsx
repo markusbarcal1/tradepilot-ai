@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { scanMarket } from "../api/client";
 
 function ScannerPanel({ period, interval, onSelectTicker }) {
   const [results, setResults] = useState([]);
@@ -9,12 +10,8 @@ function ScannerPanel({ period, interval, onSelectTicker }) {
       setLoading(true);
 
       try {
-        const res = await fetch(
-          `http://localhost:8000/scan?period=${period}&interval=${interval}&limit=10`
-        );
-
-        const data = await res.json();
-        setResults(data.results || []);
+        const response = await scanMarket(period, interval, 10);
+        setResults(response.data.results || []);
       } catch (err) {
         console.error("Scanner failed:", err);
         setResults([]);

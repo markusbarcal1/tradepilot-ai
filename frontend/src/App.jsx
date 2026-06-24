@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { analyzeTicker as fetchAnalysis, validateTicker } from "./api/client";
 import Header from "./components/Header";
 import MetricsPanel from "./components/MetricsPanel";
 import ChartPanel from "./components/ChartPanel";
@@ -63,8 +63,10 @@ function App() {
     setError("");
 
     try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/analyze/${symbol}?period=${selectedTimeframe.period}&interval=${selectedTimeframe.interval}`
+      const response = await fetchAnalysis(
+        symbol,
+        selectedTimeframe.period,
+        selectedTimeframe.interval
       );
 
       setAnalysis(response.data);
@@ -86,8 +88,10 @@ function App() {
     try {
       const results = await Promise.all(
         symbols.map(async (symbol) => {
-          const response = await axios.get(
-            `http://127.0.0.1:8000/analyze/${symbol}?period=${selectedTimeframe.period}&interval=${selectedTimeframe.interval}`
+          const response = await fetchAnalysis(
+            symbol,
+            selectedTimeframe.period,
+            selectedTimeframe.interval
           );
 
           return {
@@ -149,9 +153,7 @@ function App() {
     setAddingTicker(true);
 
     try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/validate/${cleanSymbol}`
-      );
+      const response = await validateTicker(cleanSymbol);
 
       if (!response.data.valid) {
         showWatchlistError("Invalid ticker symbol.");
