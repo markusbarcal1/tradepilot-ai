@@ -1,4 +1,4 @@
-from app.services.analyzer import analyze_ticker
+from app.services.analyzer import analyze_tickers
 
 
 SCAN_UNIVERSE = [
@@ -10,11 +10,13 @@ SCAN_UNIVERSE = [
 
 def scan_market(period: str = "1y", interval: str = "1d", limit: int = 10):
     results = []
+    batch = analyze_tickers(SCAN_UNIVERSE, period, interval)
 
-    for symbol in SCAN_UNIVERSE:
+    for error in batch.get("errors", []):
+        print(f"Scanner failed for {error['ticker']}: {error['detail']}")
+
+    for analysis in batch.get("results", []):
         try:
-            analysis = analyze_ticker(symbol, period, interval)
-
             entry_score_data = analysis.get("entry_score", {})
             trend_score_data = analysis.get("trend_score", {})
             trade_setup = analysis.get("trade_setup", {})
@@ -38,7 +40,7 @@ def scan_market(period: str = "1y", interval: str = "1d", limit: int = 10):
                 continue
 
             results.append({
-                "ticker": analysis.get("ticker", symbol),
+                "ticker": analysis.get("ticker"),
                 "price": analysis.get("price"),
 
                 "entry_score": entry_score,
@@ -67,7 +69,7 @@ def scan_market(period: str = "1y", interval: str = "1d", limit: int = 10):
             })
 
         except Exception as e:
-            print(f"Scanner failed for {symbol}: {e}")
+            print(f"Scanner failed for {analysis.get('ticker')}: {e}")
 
     results.sort(
         key=lambda stock: (

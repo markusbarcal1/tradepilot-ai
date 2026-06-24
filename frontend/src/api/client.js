@@ -21,6 +21,20 @@ export function analyzeTicker(symbol, period, interval, options = {}) {
   });
 }
 
+export function analyzeTickers(symbols, period, interval, options = {}) {
+  return api.post(
+    "/analyze/batch",
+    {
+      symbols,
+      period,
+      interval,
+    },
+    {
+      signal: options.signal,
+    }
+  );
+}
+
 export function validateTicker(symbol, options = {}) {
   return api.get(`/validate/${symbol}`, {
     signal: options.signal,

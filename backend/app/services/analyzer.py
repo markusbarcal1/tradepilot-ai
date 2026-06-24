@@ -1,6 +1,13 @@
 from app.services.market_data import get_price_history
 from app.services.indicators import calculate_sma, calculate_rsi, calculate_macd
+from copy import deepcopy
 import math
+from threading import RLock
+from time import time
+
+ANALYSIS_CACHE_TTL_SECONDS = 60
+_analysis_cache = {}
+_analysis_cache_lock = RLock()
 
 def safe_float(value, decimals=2):
     try:
@@ -693,7 +700,75 @@ def generate_trade_setup(price, trend, rsi, rvol, macd, macd_signal, macd_hist, 
         "resistance_distance_pct": resistance_distance,
     }
 
+def _cache_key(ticker: str, period: str, interval: str):
+    return (ticker.strip().upper(), period, interval)
+
+
+def _get_cached_analysis(key):
+    with _analysis_cache_lock:
+        cached = _analysis_cache.get(key)
+
+        if not cached:
+            return None
+
+        expires_at, analysis = cached
+
+        if expires_at <= time():
+            del _analysis_cache[key]
+            return None
+
+        return deepcopy(analysis)
+
+
+def _set_cached_analysis(key, analysis):
+    with _analysis_cache_lock:
+        _analysis_cache[key] = (
+            time() + ANALYSIS_CACHE_TTL_SECONDS,
+            deepcopy(analysis),
+        )
+
+
 def analyze_ticker(ticker: str, period: str = "1y", interval: str = "1d"):
+    key = _cache_key(ticker, period, interval)
+    cached = _get_cached_analysis(key)
+
+    if cached is not None:
+        return cached
+
+    analysis = _analyze_ticker_uncached(key[0], period, interval)
+    _set_cached_analysis(key, analysis)
+
+    return deepcopy(analysis)
+
+
+def analyze_tickers(symbols, period: str = "1y", interval: str = "1d"):
+    results = []
+    errors = []
+
+    for symbol in symbols:
+        clean_symbol = str(symbol).strip().upper()
+
+        if not clean_symbol:
+            continue
+
+        try:
+            results.append(analyze_ticker(clean_symbol, period, interval))
+        except Exception as e:
+            errors.append({
+                "ticker": clean_symbol,
+                "detail": str(e),
+            })
+
+    return {
+        "period": period,
+        "interval": interval,
+        "count": len(results),
+        "results": results,
+        "errors": errors,
+    }
+
+
+def _analyze_ticker_uncached(ticker: str, period: str = "1y", interval: str = "1d"):
     data = get_price_history(ticker, period, interval)
     data = data.dropna(subset=["Open", "High", "Low", "Close"])
 

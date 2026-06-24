@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   analyzeTicker as fetchAnalysis,
+  analyzeTickers as fetchBatchAnalysis,
   isRequestCanceled,
   validateTicker,
 } from "./api/client";
@@ -117,30 +118,25 @@ function App() {
     const requestId = watchlistRequestRef.current.id + 1;
     watchlistRequestRef.current = { controller, id: requestId };
 
-    try {
-      const results = await Promise.all(
-        symbols.map(async (symbol) => {
-          const response = await fetchAnalysis(
-            symbol,
-            selectedTimeframe.period,
-            selectedTimeframe.interval,
-            { signal: controller.signal }
-          );
+    if (symbols.length === 0) {
+      setWatchlistScores({});
+      return;
+    }
 
-          return {
-            ticker: response.data.ticker,
-            trend: response.data.trend_score?.score,
-            entry: response.data.entry_score?.score,
-          };
-        })
+    try {
+      const response = await fetchBatchAnalysis(
+        symbols,
+        selectedTimeframe.period,
+        selectedTimeframe.interval,
+        { signal: controller.signal }
       );
 
       const scoreMap = {};
 
-      results.forEach((item) => {
+      (response.data.results || []).forEach((item) => {
         scoreMap[item.ticker] = {
-          trend: item.trend,
-          entry: item.entry,
+          trend: item.trend_score?.score,
+          entry: item.entry_score?.score,
         };
       });
 

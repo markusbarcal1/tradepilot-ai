@@ -1,8 +1,15 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from app.services.analyzer import analyze_ticker
+from pydantic import BaseModel
+from app.services.analyzer import analyze_ticker, analyze_tickers
 from app.services.scanner import scan_market
 import yfinance as yf
+
+
+class BatchAnalyzeRequest(BaseModel):
+    symbols: list[str]
+    period: str = "1y"
+    interval: str = "1d"
 
 app = FastAPI(title="TradePilot AI Backend")
 
@@ -48,6 +55,13 @@ def analyze(ticker: str, period: str = "max", interval: str = "1d"):
         return analyze_ticker(ticker, period, interval)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/analyze/batch")
+def batch_analyze(request: BatchAnalyzeRequest):
+    if not request.symbols:
+        raise HTTPException(status_code=400, detail="At least one symbol is required")
+
+    return analyze_tickers(request.symbols, request.period, request.interval)
     
 @app.get("/scan")
 def scan(
