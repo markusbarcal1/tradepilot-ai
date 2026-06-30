@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from app.services.analyzer import analyze_ticker, analyze_tickers
 from app.services.scanner import scan_market
+from app.paper_trading import init_paper_trading_db, router as paper_trading_router
 import yfinance as yf
 
 
@@ -23,6 +24,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def startup():
+    init_paper_trading_db()
+
+
+app.include_router(paper_trading_router)
 
 
 @app.get("/")
