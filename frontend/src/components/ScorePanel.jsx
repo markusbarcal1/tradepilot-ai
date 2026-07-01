@@ -1,8 +1,8 @@
-function ScorePanel({ title, scoreData }) {
+function ScorePanel({ title, scoreData, embedded = false }) {
   if (!scoreData) return null;
 
   return (
-    <div className="panel-box">
+    <div className={embedded ? "analysis-section" : "panel-box"}>
       <div className="panel-header">
         <h3>{title}</h3>
         <span>{scoreData.grade}</span>

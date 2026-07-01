@@ -11,8 +11,11 @@ import ChartPanel from "./components/ChartPanel";
 import ThesisPanel from "./components/ThesisPanel";
 import ScorePanel from "./components/ScorePanel";
 import SetupPanel from "./components/SetupPanel";
+import QuickTradePanel from "./components/QuickTradePanel";
+import PaperPortfolioSummary from "./components/PaperPortfolioSummary";
 import Watchlist from "./components/Watchlist";
 import ScannerPanel from "./components/ScannerPanel";
+import { getPaperPortfolio } from "./api/paperTrading";
 import "./App.css";
 
 const TIMEFRAMES = [
@@ -55,6 +58,9 @@ function App() {
   const [watchlistScores, setWatchlistScores] = useState({});
   const [watchlistError, setWatchlistError] = useState("");
   const [addingTicker, setAddingTicker] = useState(false);
+  const [paperPortfolio, setPaperPortfolio] = useState(null);
+  const [paperPortfolioLoading, setPaperPortfolioLoading] = useState(false);
+  const [paperPortfolioError, setPaperPortfolioError] = useState("");
 
   const showWatchlistError = (message) => {
     setWatchlistError(message);
@@ -155,6 +161,22 @@ function App() {
     }
   };
 
+  const refreshPaperPortfolio = async () => {
+    setPaperPortfolioLoading(true);
+    setPaperPortfolioError("");
+
+    try {
+      const response = await getPaperPortfolio();
+
+      setPaperPortfolio(response.data);
+    } catch (err) {
+      console.error("Could not refresh paper portfolio:", err);
+      setPaperPortfolioError("Paper portfolio unavailable.");
+    } finally {
+      setPaperPortfolioLoading(false);
+    }
+  };
+
   const handleAnalyzeClick = () => {
     const cleanTicker = ticker.trim().toUpperCase();
 
@@ -243,6 +265,7 @@ function App() {
   useEffect(() => {
     analyzeTicker("AAPL", TIMEFRAMES[2]);
     refreshWatchlistScores(TIMEFRAMES[2], watchlist);
+    refreshPaperPortfolio();
   }, []);
 
   useEffect(() => {
@@ -304,20 +327,42 @@ function App() {
               />
 
               <aside className="right-panel">
-                <ThesisPanel tradeThesis={analysis.trade_thesis} />
-
-                <ScorePanel
-                  title="Trend Score"
-                  scoreData={analysis.trend_score}
+                <PaperPortfolioSummary
+                  portfolio={paperPortfolio}
+                  loading={paperPortfolioLoading}
+                  error={paperPortfolioError}
                 />
 
-                <ScorePanel
-                  title="Entry Score"
-                  scoreData={analysis.entry_score}
-                />
+                <div className="right-card-grid">
+                  <div className="panel-box analysis-summary-card">
+                    <ThesisPanel
+                      tradeThesis={analysis.trade_thesis}
+                      embedded
+                    />
 
-                <SetupPanel tradeSetup={analysis.trade_setup} />
+                    <ScorePanel
+                      title="Trend Score"
+                      scoreData={analysis.trend_score}
+                      embedded
+                    />
 
+                    <ScorePanel
+                      title="Entry Score"
+                      scoreData={analysis.entry_score}
+                      embedded
+                    />
+                  </div>
+
+                  <div className="right-action-column">
+                    <SetupPanel tradeSetup={analysis.trade_setup} />
+
+                    <QuickTradePanel
+                      symbol={analysis.ticker}
+                      currentPrice={analysis.price}
+                      onTradeExecuted={refreshPaperPortfolio}
+                    />
+                  </div>
+                </div>
               </aside>
             </div>
           )}

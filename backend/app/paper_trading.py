@@ -3,6 +3,7 @@ import sqlite3
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
+from app.services.market_data import get_price_history
 
 
 STARTING_CASH = 10_000.0
@@ -112,6 +113,42 @@ def get_trade(connection, trade_id: int):
     ).fetchone()
 
 
+def round_money(value):
+    return round(float(value), 2)
+
+
+def round_percent(value):
+    return round(float(value), 2)
+
+
+def calculate_percent(numerator, denominator):
+    if abs(denominator) <= 1e-9:
+        return 0
+    return (numerator / denominator) * 100
+
+
+def get_position_market_prices(symbol: str):
+    try:
+        history = get_price_history(symbol, "5d", "1d")
+    except Exception as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Could not fetch current market price for {symbol}",
+        ) from exc
+
+    closes = history["Close"].dropna()
+    if closes.empty:
+        raise HTTPException(
+            status_code=400,
+            detail=f"No closing price data found for {symbol}",
+        )
+
+    current_price = float(closes.iloc[-1])
+    previous_close = float(closes.iloc[-2]) if len(closes) > 1 else current_price
+
+    return current_price, previous_close
+
+
 @router.get("/account")
 def read_account():
     with get_connection() as connection:
@@ -134,6 +171,73 @@ def read_trades():
             "SELECT * FROM paper_trades ORDER BY created_at DESC, id DESC"
         ).fetchall()
         return [row_to_dict(row) for row in rows]
+
+
+@router.get("/portfolio")
+def read_portfolio():
+    with get_connection() as connection:
+        account = get_default_account(connection)
+        rows = connection.execute(
+            "SELECT * FROM paper_positions ORDER BY symbol"
+        ).fetchall()
+
+    cash_balance = float(account["cash_balance"])
+    starting_cash = float(account["starting_cash"])
+    positions = []
+    market_value = 0.0
+    cost_basis = 0.0
+    open_pnl = 0.0
+    day_change = 0.0
+
+    for row in rows:
+        symbol = row["symbol"]
+        shares = float(row["shares"])
+        avg_cost = float(row["avg_cost"])
+        current_price, previous_close = get_position_market_prices(symbol)
+
+        position_market_value = shares * current_price
+        position_cost_basis = shares * avg_cost
+        unrealized_pnl = position_market_value - position_cost_basis
+        unrealized_pnl_percent = calculate_percent(
+            unrealized_pnl,
+            position_cost_basis,
+        )
+        position_day_change = (current_price - previous_close) * shares
+
+        market_value += position_market_value
+        cost_basis += position_cost_basis
+        open_pnl += unrealized_pnl
+        day_change += position_day_change
+
+        positions.append(
+            {
+                "symbol": symbol,
+                "shares": shares,
+                "avg_cost": round_money(avg_cost),
+                "current_price": round_money(current_price),
+                "market_value": round_money(position_market_value),
+                "unrealized_pnl": round_money(unrealized_pnl),
+                "unrealized_pnl_percent": round_percent(unrealized_pnl_percent),
+            }
+        )
+
+    account_equity = cash_balance + market_value
+    previous_equity = account_equity - day_change
+
+    return {
+        "cash_balance": round_money(cash_balance),
+        "starting_cash": round_money(starting_cash),
+        "positions_count": len(positions),
+        "positions": positions,
+        "market_value": round_money(market_value),
+        "account_equity": round_money(account_equity),
+        "open_pnl": round_money(open_pnl),
+        "open_pnl_percent": round_percent(calculate_percent(open_pnl, cost_basis)),
+        "day_change": round_money(day_change),
+        "day_change_percent": round_percent(
+            calculate_percent(day_change, previous_equity)
+        ),
+    }
 
 
 @router.post("/buy")

@@ -1,8 +1,8 @@
-function ThesisPanel({ tradeThesis }) {
+function ThesisPanel({ tradeThesis, embedded = false }) {
   if (!tradeThesis) return null;
 
   return (
-    <div className="panel-box">
+    <div className={embedded ? "analysis-section" : "panel-box"}>
       <div className="panel-header">
         <h3>Trade Thesis</h3>
         <span>{tradeThesis.rating}</span>
