@@ -13,6 +13,7 @@ import ScorePanel from "./components/ScorePanel";
 import SetupPanel from "./components/SetupPanel";
 import QuickTradePanel from "./components/QuickTradePanel";
 import PaperPortfolioSummary from "./components/PaperPortfolioSummary";
+import PortfolioPage from "./components/PortfolioPage";
 import Watchlist from "./components/Watchlist";
 import ScannerPanel from "./components/ScannerPanel";
 import { getPaperPortfolio } from "./api/paperTrading";
@@ -49,6 +50,7 @@ function App() {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [currentView, setCurrentView] = useState("dashboard");
 
   const [watchlist, setWatchlist] = useState(() => {
     const saved = localStorage.getItem("tradepilot-watchlist");
@@ -262,6 +264,29 @@ function App() {
     });
   };
 
+  const handleNavigate = (view) => {
+    if (view === "portfolio") {
+      refreshPaperPortfolio();
+      setCurrentView("portfolio");
+      return;
+    }
+
+    if (view === "dashboard") {
+      setCurrentView("dashboard");
+    }
+  };
+
+  const handlePortfolioSelect = (symbol) => {
+    const cleanSymbol = symbol.trim().toUpperCase();
+
+    if (!cleanSymbol) return;
+
+    setTicker(cleanSymbol);
+    setSubmittedTicker(cleanSymbol);
+    setCurrentView("dashboard");
+    analyzeTicker(cleanSymbol, timeframe);
+  };
+
   useEffect(() => {
     analyzeTicker("AAPL", TIMEFRAMES[2]);
     refreshWatchlistScores(TIMEFRAMES[2], watchlist);
@@ -292,11 +317,23 @@ function App() {
             setTicker={setTicker}
             onAnalyze={handleAnalyzeClick}
             loading={loading}
+            currentView={currentView}
+            onNavigate={handleNavigate}
           />
 
           {error && <p className="error">{error}</p>}
 
-          {analysis && (
+          {currentView === "portfolio" && (
+            <PortfolioPage
+              portfolio={paperPortfolio}
+              loading={paperPortfolioLoading}
+              error={paperPortfolioError}
+              onBack={() => setCurrentView("dashboard")}
+              onSelectSymbol={handlePortfolioSelect}
+            />
+          )}
+
+          {currentView === "dashboard" && analysis && (
             <div className="dashboard">
               <div className="left-column">
                 <Watchlist
@@ -311,8 +348,6 @@ function App() {
                   onRemoveStock={handleRemoveFromWatchlist}
                 />
                 <ScannerPanel
-                  period={timeframe.period}
-                  interval={timeframe.interval}
                   onSelectTicker={handleWatchlistSelect}
                 />
 

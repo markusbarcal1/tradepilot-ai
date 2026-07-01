@@ -1,6 +1,13 @@
 import SearchBar from "./SearchBar";
 
-function Header({ ticker, setTicker, onAnalyze, loading }) {
+function Header({
+  ticker,
+  setTicker,
+  onAnalyze,
+  loading,
+  currentView,
+  onNavigate,
+}) {
   return (
     <header className="top-bar">
       <div>
@@ -14,6 +21,28 @@ function Header({ ticker, setTicker, onAnalyze, loading }) {
         onAnalyze={onAnalyze}
         loading={loading}
       />
+
+      <nav className="top-nav" aria-label="Primary navigation">
+        {["Dashboard", "Watchlist", "Scanner", "Portfolio"].map((item) => {
+          const view = item.toLowerCase();
+          const isActive = currentView === view;
+
+          return (
+            <button
+              key={item}
+              type="button"
+              className={isActive ? "active" : ""}
+              onClick={() => onNavigate(view)}
+            >
+              {item}
+            </button>
+          );
+        })}
+
+        <button type="button" className="theme-toggle" aria-label="Theme">
+          ◐
+        </button>
+      </nav>
     </header>
   );
 }

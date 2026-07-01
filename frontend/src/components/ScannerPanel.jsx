@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { isRequestCanceled, scanMarket } from "../api/client";
 
+const SCANNER_TIMEFRAMES = [
+  { label: "Daily", period: "1y", interval: "1d" },
+  { label: "1h", period: "60d", interval: "1h" },
+  { label: "30m", period: "60d", interval: "30m" },
+  { label: "5m", period: "5d", interval: "5m" },
+  { label: "1m", period: "1d", interval: "1m" },
+];
+
 const SCANNER_UNIVERSES = [
   { value: "test", label: "Test" },
   { value: "mega_cap", label: "Mega Cap" },
@@ -11,9 +19,37 @@ const SCANNER_UNIVERSES = [
 ];
 
 const DEFAULT_UNIVERSE = "test";
+const DEFAULT_TIMEFRAME = SCANNER_TIMEFRAMES[0];
 const DEFAULT_SCAN_LIMIT = 10;
 const SP500_SCAN_SYMBOL_LIMIT = 100;
-const STORAGE_KEY = "tradepilot-scanner-universe";
+const STORAGE_KEY = "tradepilot-scanner-state";
+
+function getTimeframeByLabel(label) {
+  return (
+    SCANNER_TIMEFRAMES.find((item) => item.label === label) ||
+    DEFAULT_TIMEFRAME
+  );
+}
+
+function getStoredScannerState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+    if (!saved) return null;
+
+    return {
+      universe: SCANNER_UNIVERSES.some((item) => item.value === saved.universe)
+        ? saved.universe
+        : DEFAULT_UNIVERSE,
+      timeframe: getTimeframeByLabel(saved.timeframeLabel),
+      results: Array.isArray(saved.results) ? saved.results : [],
+      metadata: saved.metadata || null,
+      hasScanned: Boolean(saved.hasScanned),
+    };
+  } catch {
+    return null;
+  }
+}
 
 function getUniverseLabel(universe) {
   return (
@@ -22,67 +58,117 @@ function getUniverseLabel(universe) {
   );
 }
 
-function ScannerPanel({ period, interval, onSelectTicker }) {
-  const scannerRequestRef = useRef(0);
+function ScannerPanel({ onSelectTicker }) {
+  const scannerRequestRef = useRef({ controller: null, id: 0 });
   const [selectedUniverse, setSelectedUniverse] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return SCANNER_UNIVERSES.some((item) => item.value === saved)
-      ? saved
-      : DEFAULT_UNIVERSE;
+    return getStoredScannerState()?.universe || DEFAULT_UNIVERSE;
   });
-  const [results, setResults] = useState([]);
+  const [selectedTimeframe, setSelectedTimeframe] = useState(() => {
+    return getStoredScannerState()?.timeframe || DEFAULT_TIMEFRAME;
+  });
+  const [results, setResults] = useState(() => {
+    return getStoredScannerState()?.results || [];
+  });
+  const [scanMetadata, setScanMetadata] = useState(() => {
+    return getStoredScannerState()?.metadata || null;
+  });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [hasScanned, setHasScanned] = useState(() => {
+    return getStoredScannerState()?.hasScanned || false;
+  });
 
-  useEffect(() => {
+  const runScanner = async () => {
+    scannerRequestRef.current.controller?.abort();
+
     const controller = new AbortController();
-    const requestId = scannerRequestRef.current + 1;
-    scannerRequestRef.current = requestId;
+    const requestId = scannerRequestRef.current.id + 1;
+    scannerRequestRef.current = { controller, id: requestId };
 
-    async function fetchScanner() {
-      setLoading(true);
+    setLoading(true);
+    setError("");
+    setHasScanned(true);
 
-      try {
-        const response = await scanMarket(period, interval, DEFAULT_SCAN_LIMIT, {
+    try {
+      const response = await scanMarket(
+        selectedTimeframe.period,
+        selectedTimeframe.interval,
+        DEFAULT_SCAN_LIMIT,
+        {
           universe: selectedUniverse,
           maxSymbols:
             selectedUniverse === "sp500" ? SP500_SCAN_SYMBOL_LIMIT : undefined,
           signal: controller.signal,
-        });
-
-        if (scannerRequestRef.current !== requestId) return;
-
-        setResults(response.data.results || []);
-      } catch (err) {
-        if (
-          isRequestCanceled(err) ||
-          scannerRequestRef.current !== requestId
-        ) {
-          return;
         }
+      );
 
-        console.error("Scanner failed:", err);
-        setResults([]);
-      } finally {
-        if (scannerRequestRef.current === requestId) {
-          setLoading(false);
-        }
+      if (scannerRequestRef.current.id !== requestId) return;
+
+      const nextResults = response.data.results || [];
+      const nextMetadata = {
+        universe: selectedUniverse,
+        universeLabel: getUniverseLabel(selectedUniverse),
+        timeframeLabel: selectedTimeframe.label,
+        period: selectedTimeframe.period,
+        interval: selectedTimeframe.interval,
+        scannedAt: new Date().toISOString(),
+      };
+
+      setResults(nextResults);
+      setScanMetadata(nextMetadata);
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          universe: selectedUniverse,
+          timeframeLabel: selectedTimeframe.label,
+          results: nextResults,
+          metadata: nextMetadata,
+          hasScanned: true,
+        })
+      );
+    } catch (err) {
+      if (
+        isRequestCanceled(err) ||
+        scannerRequestRef.current.id !== requestId
+      ) {
+        return;
+      }
+
+      console.error("Scanner failed:", err);
+      setResults([]);
+      setError("Scanner failed. Try a different timeframe or universe.");
+    } finally {
+      if (scannerRequestRef.current.id === requestId) {
+        setLoading(false);
       }
     }
+  };
 
-    fetchScanner();
-
+  useEffect(() => {
     return () => {
-      controller.abort();
-      scannerRequestRef.current += 1;
+      scannerRequestRef.current.controller?.abort();
+      scannerRequestRef.current.id += 1;
     };
-  }, [period, interval, selectedUniverse]);
+  }, []);
 
   const handleUniverseChange = (event) => {
     const nextUniverse = event.target.value;
 
     setSelectedUniverse(nextUniverse);
-    localStorage.setItem(STORAGE_KEY, nextUniverse);
   };
+
+  const handleTimeframeChange = (event) => {
+    const nextTimeframe =
+      SCANNER_TIMEFRAMES.find((item) => item.label === event.target.value) ||
+      DEFAULT_TIMEFRAME;
+
+    setSelectedTimeframe(nextTimeframe);
+  };
+
+  const displayUniverseLabel =
+    scanMetadata?.universeLabel || getUniverseLabel(selectedUniverse);
+  const displayTimeframeLabel =
+    scanMetadata?.timeframeLabel || selectedTimeframe.label;
 
   return (
     <div className="scanner-panel">
@@ -98,22 +184,46 @@ function ScannerPanel({ period, interval, onSelectTicker }) {
             </option>
           ))}
         </select>
+
+        <select
+          value={selectedTimeframe.label}
+          onChange={handleTimeframeChange}
+          aria-label="Scanner timeframe"
+        >
+          {SCANNER_TIMEFRAMES.map((timeframe) => (
+            <option key={timeframe.label} value={timeframe.label}>
+              {timeframe.label}
+            </option>
+          ))}
+        </select>
+
+        <button type="button" onClick={runScanner} disabled={loading}>
+          {loading ? "Scanning..." : "Scan"}
+        </button>
       </div>
 
       <div className="scanner-header">
         <h3>Bullish Scanner</h3>
-        <span>{getUniverseLabel(selectedUniverse)} · {period} / {interval}</span>
+        <span>{displayUniverseLabel} · {displayTimeframeLabel}</span>
       </div>
 
       {loading && <div className="scanner-empty">Scanning market...</div>}
 
-      {!loading && results.length === 0 && (
+      {!loading && error && <div className="scanner-empty">{error}</div>}
+
+      {!loading && !error && !hasScanned && (
+        <div className="scanner-empty">
+          Choose filters, then click Scan.
+        </div>
+      )}
+
+      {!loading && !error && hasScanned && results.length === 0 && (
         <div className="scanner-empty">
           No bullish setups found right now.
         </div>
       )}
 
-      {!loading && results.map((stock) => (
+      {!loading && !error && results.map((stock) => (
         <div
           key={stock.ticker}
           className="scanner-card"
@@ -134,11 +244,8 @@ function ScannerPanel({ period, interval, onSelectTicker }) {
           </div>
 
           <div className="scanner-trade-plan">
-            Entry ${stock.entry} · Stop ${stock.stop} · Target ${stock.target}
-          </div>
-
-          <div className="scanner-risk">
-            R/R: {stock.risk_reward}:1
+            Entry ${stock.entry} · Stop ${stock.stop} · Target ${stock.target} ·
+            R/R {stock.risk_reward}:1
           </div>
         </div>
       ))}

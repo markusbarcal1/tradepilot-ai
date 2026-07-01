@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import datetime, timezone
 import sqlite3
 
 from fastapi import APIRouter, HTTPException
@@ -144,9 +145,30 @@ def get_position_market_prices(symbol: str):
         )
 
     current_price = float(closes.iloc[-1])
-    previous_close = float(closes.iloc[-2]) if len(closes) > 1 else current_price
+    previous_close = float(closes.iloc[-2]) if len(closes) > 1 else None
 
     return current_price, previous_close
+
+
+def parse_sqlite_timestamp(value: str):
+    if not value:
+        return None
+
+    try:
+        return datetime.fromisoformat(value)
+    except ValueError:
+        try:
+            return datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+        except ValueError:
+            return None
+
+
+def is_opened_today(created_at: str):
+    opened_at = parse_sqlite_timestamp(created_at)
+    if opened_at is None:
+        return False
+
+    return opened_at.date() == datetime.now(timezone.utc).date()
 
 
 @router.get("/account")
@@ -188,6 +210,7 @@ def read_portfolio():
     cost_basis = 0.0
     open_pnl = 0.0
     day_change = 0.0
+    day_reference_value = 0.0
 
     for row in rows:
         symbol = row["symbol"]
@@ -202,12 +225,19 @@ def read_portfolio():
             unrealized_pnl,
             position_cost_basis,
         )
-        position_day_change = (current_price - previous_close) * shares
+        day_reference_price = (
+            avg_cost
+            if is_opened_today(row["created_at"])
+            else previous_close or avg_cost
+        )
+        position_day_change = (current_price - day_reference_price) * shares
+        position_day_reference_value = day_reference_price * shares
 
         market_value += position_market_value
         cost_basis += position_cost_basis
         open_pnl += unrealized_pnl
         day_change += position_day_change
+        day_reference_value += position_day_reference_value
 
         positions.append(
             {
@@ -222,7 +252,6 @@ def read_portfolio():
         )
 
     account_equity = cash_balance + market_value
-    previous_equity = account_equity - day_change
 
     return {
         "cash_balance": round_money(cash_balance),
@@ -235,7 +264,7 @@ def read_portfolio():
         "open_pnl_percent": round_percent(calculate_percent(open_pnl, cost_basis)),
         "day_change": round_money(day_change),
         "day_change_percent": round_percent(
-            calculate_percent(day_change, previous_equity)
+            calculate_percent(day_change, day_reference_value)
         ),
     }
 
