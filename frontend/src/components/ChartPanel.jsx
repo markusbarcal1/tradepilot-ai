@@ -1,16 +1,33 @@
 import TradingChart from "./TradingChart";
 
+function formatLastUpdated(value) {
+  if (!value) return "Waiting for data";
+
+  return new Date(value).toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+}
+
 function ChartPanel({
   analysis,
   timeframe,
   timeframes,
+  lastUpdatedAt,
+  chartResetKey,
   onTimeframeChange,
 }) {
   return (
     <main className="center-panel">
       <div className="chart-box">
         <div className="chart-header">
-          <h3>{analysis.ticker} Candlestick Chart</h3>
+          <div>
+            <h3>{analysis.ticker} Candlestick Chart</h3>
+            <span className="last-updated">
+              Last updated {formatLastUpdated(lastUpdatedAt)}
+            </span>
+          </div>
 
           <div className="timeframe-buttons">
             {timeframes.map((tf) => (
@@ -29,7 +46,12 @@ function ChartPanel({
           </div>
         </div>
 
-        <TradingChart data={analysis.chart_data} analysis={analysis} />
+        <TradingChart
+          key={chartResetKey}
+          data={analysis.chart_data}
+          analysis={analysis}
+          resetKey={chartResetKey}
+        />
 
         <div className="legend">
           <span className="legend-blue">20 SMA</span>

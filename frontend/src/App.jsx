@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   analyzeTicker as fetchAnalysis,
   analyzeTickers as fetchBatchAnalysis,
@@ -17,6 +17,7 @@ import PortfolioPage from "./components/PortfolioPage";
 import Watchlist from "./components/Watchlist";
 import ScannerPanel from "./components/ScannerPanel";
 import { getPaperPortfolio, getPaperTrades } from "./api/paperTrading";
+import usePollingData from "./hooks/usePollingData";
 import "./App.css";
 
 const TIMEFRAMES = [
@@ -38,16 +39,22 @@ const DEFAULT_WATCHLIST = [
   "PLTR",
   "TSLA",
 ];
+const ANALYSIS_REFRESH_MS = 15_000;
+const PORTFOLIO_REFRESH_MS = 15_000;
+const WATCHLIST_REFRESH_MS = 45_000;
 
 function App() {
   const analysisRequestRef = useRef({ controller: null, id: 0 });
   const validationRequestRef = useRef({ controller: null, id: 0 });
   const watchlistRequestRef = useRef({ controller: null, id: 0 });
+  const didRunInitialLoadRef = useRef(false);
 
   const [ticker, setTicker] = useState("AAPL");
   const [submittedTicker, setSubmittedTicker] = useState("AAPL");
   const [timeframe, setTimeframe] = useState(TIMEFRAMES[2]);
   const [analysis, setAnalysis] = useState(null);
+  const [analysisUpdatedAt, setAnalysisUpdatedAt] = useState(null);
+  const [chartResetKey, setChartResetKey] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [currentView, setCurrentView] = useState("dashboard");
@@ -66,6 +73,7 @@ function App() {
   const [paperTrades, setPaperTrades] = useState([]);
   const [paperTradesLoading, setPaperTradesLoading] = useState(false);
   const [paperTradesError, setPaperTradesError] = useState("");
+  const [scannerState, setScannerState] = useState(null);
 
   const showWatchlistError = (message) => {
     setWatchlistError(message);
@@ -75,9 +83,10 @@ function App() {
     }, 2500);
   };
 
-  const analyzeTicker = async (
+  const analyzeTicker = useCallback(async (
     symbol = submittedTicker,
-    selectedTimeframe = timeframe
+    selectedTimeframe = timeframe,
+    options = {}
   ) => {
     analysisRequestRef.current.controller?.abort();
 
@@ -85,8 +94,10 @@ function App() {
     const requestId = analysisRequestRef.current.id + 1;
     analysisRequestRef.current = { controller, id: requestId };
 
-    setLoading(true);
-    setError("");
+    if (!options.background) {
+      setLoading(true);
+      setError("");
+    }
 
     try {
       const response = await fetchAnalysis(
@@ -99,6 +110,13 @@ function App() {
       if (analysisRequestRef.current.id !== requestId) return;
 
       setAnalysis(response.data);
+      setAnalysisUpdatedAt(new Date().toISOString());
+      if (!options.background) {
+        setChartResetKey(
+          `${response.data.ticker}-${selectedTimeframe.period}-${selectedTimeframe.interval}-${requestId}`
+        );
+      }
+      setError("");
     } catch (err) {
       if (
         isRequestCanceled(err) ||
@@ -108,18 +126,20 @@ function App() {
       }
 
       console.error(err);
-      setAnalysis(null);
-      setError(
-        "Could not analyze ticker. Check the symbol, interval, or backend server."
-      );
+      if (!options.background) {
+        setAnalysis(null);
+        setError(
+          "Could not analyze ticker. Check the symbol, interval, or backend server."
+        );
+      }
     } finally {
-      if (analysisRequestRef.current.id === requestId) {
+      if (analysisRequestRef.current.id === requestId && !options.background) {
         setLoading(false);
       }
     }
-  };
+  }, [submittedTicker, timeframe]);
 
-  const refreshWatchlistScores = async (
+  const refreshWatchlistScores = useCallback(async (
     selectedTimeframe = timeframe,
     symbols = watchlist
   ) => {
@@ -164,25 +184,32 @@ function App() {
 
       console.error("Could not refresh watchlist scores:", err);
     }
-  };
+  }, [timeframe, watchlist]);
 
-  const refreshPaperPortfolio = async () => {
-    setPaperPortfolioLoading(true);
-    setPaperPortfolioError("");
+  const refreshPaperPortfolio = useCallback(async (options = {}) => {
+    if (!options.background) {
+      setPaperPortfolioLoading(true);
+      setPaperPortfolioError("");
+    }
 
     try {
       const response = await getPaperPortfolio();
 
       setPaperPortfolio(response.data);
+      setPaperPortfolioError("");
     } catch (err) {
       console.error("Could not refresh paper portfolio:", err);
-      setPaperPortfolioError("Paper portfolio unavailable.");
+      if (!options.background) {
+        setPaperPortfolioError("Paper portfolio unavailable.");
+      }
     } finally {
-      setPaperPortfolioLoading(false);
+      if (!options.background) {
+        setPaperPortfolioLoading(false);
+      }
     }
-  };
+  }, []);
 
-  const refreshPaperTrades = async () => {
+  const refreshPaperTrades = useCallback(async () => {
     setPaperTradesLoading(true);
     setPaperTradesError("");
 
@@ -196,12 +223,12 @@ function App() {
     } finally {
       setPaperTradesLoading(false);
     }
-  };
+  }, []);
 
-  const refreshPaperTrading = () => {
-    refreshPaperPortfolio();
+  const refreshPaperTrading = useCallback((options = {}) => {
+    refreshPaperPortfolio(options);
     refreshPaperTrades();
-  };
+  }, [refreshPaperPortfolio, refreshPaperTrades]);
 
   const handleAnalyzeClick = () => {
     const cleanTicker = ticker.trim().toUpperCase();
@@ -312,10 +339,49 @@ function App() {
   };
 
   useEffect(() => {
-    analyzeTicker("AAPL", TIMEFRAMES[2]);
-    refreshWatchlistScores(TIMEFRAMES[2], watchlist);
-    refreshPaperTrading();
-  }, []);
+    if (didRunInitialLoadRef.current) return undefined;
+
+    const initialLoadId = window.setTimeout(() => {
+      if (didRunInitialLoadRef.current) return;
+
+      didRunInitialLoadRef.current = true;
+      analyzeTicker("AAPL", TIMEFRAMES[2]);
+      refreshWatchlistScores(TIMEFRAMES[2], watchlist);
+      refreshPaperTrading();
+    }, 0);
+
+    return () => {
+      window.clearTimeout(initialLoadId);
+    };
+  }, [analyzeTicker, refreshPaperTrading, refreshWatchlistScores, watchlist]);
+
+  usePollingData(
+    () => {
+      if (currentView !== "dashboard" || !submittedTicker) return;
+
+      analyzeTicker(submittedTicker, timeframe, { background: true });
+    },
+    ANALYSIS_REFRESH_MS,
+    currentView === "dashboard" && Boolean(analysis) && !loading
+  );
+
+  usePollingData(
+    () => {
+      refreshPaperPortfolio({ background: true });
+    },
+    PORTFOLIO_REFRESH_MS,
+    Boolean(paperPortfolio)
+  );
+
+  usePollingData(
+    () => {
+      if (currentView !== "dashboard") return;
+
+      refreshWatchlistScores(timeframe, watchlist);
+    },
+    WATCHLIST_REFRESH_MS,
+    currentView === "dashboard" && watchlist.length > 0
+  );
 
   useEffect(() => {
     localStorage.setItem("tradepilot-watchlist", JSON.stringify(watchlist));
@@ -375,6 +441,8 @@ function App() {
                   onRemoveStock={handleRemoveFromWatchlist}
                 />
                 <ScannerPanel
+                  savedState={scannerState}
+                  onStateChange={setScannerState}
                   onSelectTicker={handleWatchlistSelect}
                 />
 
@@ -385,6 +453,8 @@ function App() {
                 analysis={analysis}
                 timeframe={timeframe}
                 timeframes={TIMEFRAMES}
+                lastUpdatedAt={analysisUpdatedAt}
+                chartResetKey={chartResetKey}
                 onTimeframeChange={handleTimeframeChange}
               />
 

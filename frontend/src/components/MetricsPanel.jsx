@@ -1,12 +1,3 @@
-function Metric({ label, value, className = "" }) {
-  return (
-    <div className="metric-card">
-      <span>{label}</span>
-      <strong className={className}>{value}</strong>
-    </div>
-  );
-}
-
 function MetricsPanel({ analysis }) {
   return (
     <div className="left-panel">

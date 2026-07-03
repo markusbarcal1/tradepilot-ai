@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { isRequestCanceled, scanMarket } from "../api/client";
+import usePollingData from "../hooks/usePollingData";
 
 const SCANNER_TIMEFRAMES = [
   { label: "Daily", period: "1y", interval: "1d" },
@@ -22,33 +23,13 @@ const DEFAULT_UNIVERSE = "test";
 const DEFAULT_TIMEFRAME = SCANNER_TIMEFRAMES[0];
 const DEFAULT_SCAN_LIMIT = 10;
 const SP500_SCAN_SYMBOL_LIMIT = 100;
-const STORAGE_KEY = "tradepilot-scanner-state";
+const SCANNER_REFRESH_MS = 45_000;
 
 function getTimeframeByLabel(label) {
   return (
     SCANNER_TIMEFRAMES.find((item) => item.label === label) ||
     DEFAULT_TIMEFRAME
   );
-}
-
-function getStoredScannerState() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-    if (!saved) return null;
-
-    return {
-      universe: SCANNER_UNIVERSES.some((item) => item.value === saved.universe)
-        ? saved.universe
-        : DEFAULT_UNIVERSE,
-      timeframe: getTimeframeByLabel(saved.timeframeLabel),
-      results: Array.isArray(saved.results) ? saved.results : [],
-      metadata: saved.metadata || null,
-      hasScanned: Boolean(saved.hasScanned),
-    };
-  } catch {
-    return null;
-  }
 }
 
 function getUniverseLabel(universe) {
@@ -58,35 +39,52 @@ function getUniverseLabel(universe) {
   );
 }
 
-function ScannerPanel({ onSelectTicker }) {
+function getInitialScannerState(savedState) {
+  if (!savedState) return null;
+
+  return {
+    universe: SCANNER_UNIVERSES.some((item) => item.value === savedState.universe)
+      ? savedState.universe
+      : DEFAULT_UNIVERSE,
+    timeframe: getTimeframeByLabel(savedState.timeframeLabel),
+    results: Array.isArray(savedState.results) ? savedState.results : [],
+    metadata: savedState.metadata || null,
+    hasScanned: Boolean(savedState.hasScanned),
+  };
+}
+
+function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
   const scannerRequestRef = useRef({ controller: null, id: 0 });
+  const initialState = getInitialScannerState(savedState);
   const [selectedUniverse, setSelectedUniverse] = useState(() => {
-    return getStoredScannerState()?.universe || DEFAULT_UNIVERSE;
+    return initialState?.universe || DEFAULT_UNIVERSE;
   });
   const [selectedTimeframe, setSelectedTimeframe] = useState(() => {
-    return getStoredScannerState()?.timeframe || DEFAULT_TIMEFRAME;
+    return initialState?.timeframe || DEFAULT_TIMEFRAME;
   });
   const [results, setResults] = useState(() => {
-    return getStoredScannerState()?.results || [];
+    return initialState?.results || [];
   });
   const [scanMetadata, setScanMetadata] = useState(() => {
-    return getStoredScannerState()?.metadata || null;
+    return initialState?.metadata || null;
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [hasScanned, setHasScanned] = useState(() => {
-    return getStoredScannerState()?.hasScanned || false;
+    return initialState?.hasScanned || false;
   });
 
-  const runScanner = async () => {
+  const runScanner = async (options = {}) => {
     scannerRequestRef.current.controller?.abort();
 
     const controller = new AbortController();
     const requestId = scannerRequestRef.current.id + 1;
     scannerRequestRef.current = { controller, id: requestId };
 
-    setLoading(true);
-    setError("");
+    if (!options.background) {
+      setLoading(true);
+      setError("");
+    }
     setHasScanned(true);
 
     try {
@@ -115,17 +113,8 @@ function ScannerPanel({ onSelectTicker }) {
       };
 
       setResults(nextResults);
+      setError("");
       setScanMetadata(nextMetadata);
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({
-          universe: selectedUniverse,
-          timeframeLabel: selectedTimeframe.label,
-          results: nextResults,
-          metadata: nextMetadata,
-          hasScanned: true,
-        })
-      );
     } catch (err) {
       if (
         isRequestCanceled(err) ||
@@ -135,14 +124,24 @@ function ScannerPanel({ onSelectTicker }) {
       }
 
       console.error("Scanner failed:", err);
-      setResults([]);
-      setError("Scanner failed. Try a different timeframe or universe.");
+      if (!options.background) {
+        setResults([]);
+        setError("Scanner failed. Try a different timeframe or universe.");
+      }
     } finally {
-      if (scannerRequestRef.current.id === requestId) {
+      if (scannerRequestRef.current.id === requestId && !options.background) {
         setLoading(false);
       }
     }
   };
+
+  usePollingData(
+    () => {
+      runScanner({ background: true });
+    },
+    SCANNER_REFRESH_MS,
+    hasScanned
+  );
 
   useEffect(() => {
     return () => {
@@ -150,6 +149,23 @@ function ScannerPanel({ onSelectTicker }) {
       scannerRequestRef.current.id += 1;
     };
   }, []);
+
+  useEffect(() => {
+    onStateChange({
+      universe: selectedUniverse,
+      timeframeLabel: selectedTimeframe.label,
+      results,
+      metadata: scanMetadata,
+      hasScanned,
+    });
+  }, [
+    selectedUniverse,
+    selectedTimeframe,
+    results,
+    scanMetadata,
+    hasScanned,
+    onStateChange,
+  ]);
 
   const handleUniverseChange = (event) => {
     const nextUniverse = event.target.value;
@@ -197,7 +213,7 @@ function ScannerPanel({ onSelectTicker }) {
           ))}
         </select>
 
-        <button type="button" onClick={runScanner} disabled={loading}>
+        <button type="button" onClick={() => runScanner()} disabled={loading}>
           {loading ? "Scanning..." : "Scan"}
         </button>
       </div>

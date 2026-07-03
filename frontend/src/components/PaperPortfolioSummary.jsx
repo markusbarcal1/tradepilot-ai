@@ -48,7 +48,7 @@ function PaperPortfolioSummary({ portfolio, loading, error }) {
     <div className="panel-box paper-summary">
       <div className="paper-summary-header">
         <h3>Paper Portfolio</h3>
-        <span>{loading ? "Syncing" : "Live"}</span>
+        <span>{loading ? "Syncing" : "Paper"}</span>
       </div>
 
       <div className="paper-summary-content">
