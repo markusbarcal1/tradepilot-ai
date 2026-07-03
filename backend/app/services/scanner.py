@@ -3,7 +3,7 @@ from app.services.analyzer import analyze_tickers
 
 DEFAULT_UNIVERSE = "test"
 DEFAULT_MAX_SYMBOLS = 25
-MAX_ALLOWED_SYMBOLS = 100
+MAX_ALLOWED_SYMBOLS = 25
 
 SP500_UNIVERSE = [
     "MMM", "AOS", "ABT", "ABBV", "ACN", "ADBE", "AMD", "AES", "AFL", "A",
