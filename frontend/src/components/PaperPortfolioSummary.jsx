@@ -36,10 +36,10 @@ function getValueClass(value) {
 }
 
 function PaperPortfolioSummary({ portfolio, loading, error }) {
-  const cashBalance = portfolio?.cash_balance;
+  const cashBalance = portfolio?.cash ?? portfolio?.cash_balance;
   const accountEquity = portfolio?.account_equity;
-  const openPnl = portfolio?.open_pnl || 0;
-  const openPnlPercent = portfolio?.open_pnl_percent || 0;
+  const totalPl = portfolio?.total_pl ?? 0;
+  const totalPlPercent = portfolio?.total_pl_percent ?? 0;
   const dayChange = portfolio?.day_change || 0;
   const dayChangePercent = portfolio?.day_change_percent || 0;
   const openPositions = portfolio?.positions_count || 0;
@@ -62,11 +62,11 @@ function PaperPortfolioSummary({ portfolio, loading, error }) {
             <strong>{formatCurrency(accountEquity)}</strong>
           </div>
           <div className="paper-stat-tile">
-            <span>Open P/L</span>
-            <strong className={getValueClass(openPnl)}>
-              {formatSignedCurrency(openPnl)}
+            <span>Total P/L</span>
+            <strong className={getValueClass(totalPl)}>
+              {formatSignedCurrency(totalPl)}
             </strong>
-            <em className={getValueClass(openPnl)}>{formatPercent(openPnlPercent)}</em>
+            <em className={getValueClass(totalPl)}>{formatPercent(totalPlPercent)}</em>
           </div>
           <div className="paper-stat-tile">
             <span>Day Change</span>

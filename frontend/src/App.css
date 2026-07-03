@@ -1177,6 +1177,33 @@ canvas {
   flex-direction: column;
 }
 
+.portfolio-sections {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 0.9fr);
+  gap: 16px;
+}
+
+.portfolio-section {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.portfolio-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.portfolio-section-header h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 14px;
+}
+
 .portfolio-page-header {
   display: flex;
   justify-content: space-between;
@@ -1231,6 +1258,10 @@ canvas {
   color: #94a3b8;
 }
 
+.portfolio-empty.compact {
+  min-height: 120px;
+}
+
 .portfolio-table-wrap {
   min-height: 0;
   overflow: auto;
@@ -1279,6 +1310,22 @@ canvas {
 .portfolio-table button {
   height: 28px;
   padding: 0 10px;
+}
+
+.trade-history-panel .portfolio-table tbody tr {
+  cursor: default;
+}
+
+.trade-action {
+  font-weight: 900;
+}
+
+.trade-action.buy {
+  color: #22c55e;
+}
+
+.trade-action.sell {
+  color: #ef4444;
 }
 
 

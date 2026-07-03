@@ -16,7 +16,7 @@ import PaperPortfolioSummary from "./components/PaperPortfolioSummary";
 import PortfolioPage from "./components/PortfolioPage";
 import Watchlist from "./components/Watchlist";
 import ScannerPanel from "./components/ScannerPanel";
-import { getPaperPortfolio } from "./api/paperTrading";
+import { getPaperPortfolio, getPaperTrades } from "./api/paperTrading";
 import "./App.css";
 
 const TIMEFRAMES = [
@@ -63,6 +63,9 @@ function App() {
   const [paperPortfolio, setPaperPortfolio] = useState(null);
   const [paperPortfolioLoading, setPaperPortfolioLoading] = useState(false);
   const [paperPortfolioError, setPaperPortfolioError] = useState("");
+  const [paperTrades, setPaperTrades] = useState([]);
+  const [paperTradesLoading, setPaperTradesLoading] = useState(false);
+  const [paperTradesError, setPaperTradesError] = useState("");
 
   const showWatchlistError = (message) => {
     setWatchlistError(message);
@@ -179,6 +182,27 @@ function App() {
     }
   };
 
+  const refreshPaperTrades = async () => {
+    setPaperTradesLoading(true);
+    setPaperTradesError("");
+
+    try {
+      const response = await getPaperTrades();
+
+      setPaperTrades(response.data);
+    } catch (err) {
+      console.error("Could not refresh paper trades:", err);
+      setPaperTradesError("Trade history unavailable.");
+    } finally {
+      setPaperTradesLoading(false);
+    }
+  };
+
+  const refreshPaperTrading = () => {
+    refreshPaperPortfolio();
+    refreshPaperTrades();
+  };
+
   const handleAnalyzeClick = () => {
     const cleanTicker = ticker.trim().toUpperCase();
 
@@ -266,7 +290,7 @@ function App() {
 
   const handleNavigate = (view) => {
     if (view === "portfolio") {
-      refreshPaperPortfolio();
+      refreshPaperTrading();
       setCurrentView("portfolio");
       return;
     }
@@ -290,7 +314,7 @@ function App() {
   useEffect(() => {
     analyzeTicker("AAPL", TIMEFRAMES[2]);
     refreshWatchlistScores(TIMEFRAMES[2], watchlist);
-    refreshPaperPortfolio();
+    refreshPaperTrading();
   }, []);
 
   useEffect(() => {
@@ -328,6 +352,9 @@ function App() {
               portfolio={paperPortfolio}
               loading={paperPortfolioLoading}
               error={paperPortfolioError}
+              trades={paperTrades}
+              tradesLoading={paperTradesLoading}
+              tradesError={paperTradesError}
               onBack={() => setCurrentView("dashboard")}
               onSelectSymbol={handlePortfolioSelect}
             />
@@ -394,7 +421,7 @@ function App() {
                     <QuickTradePanel
                       symbol={analysis.ticker}
                       currentPrice={analysis.price}
-                      onTradeExecuted={refreshPaperPortfolio}
+                      onTradeExecuted={refreshPaperTrading}
                     />
                   </div>
                 </div>

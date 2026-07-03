@@ -192,7 +192,19 @@ def read_trades():
         rows = connection.execute(
             "SELECT * FROM paper_trades ORDER BY created_at DESC, id DESC"
         ).fetchall()
-        return [row_to_dict(row) for row in rows]
+        return [
+            {
+                "id": row["id"],
+                "timestamp": row["created_at"],
+                "created_at": row["created_at"],
+                "symbol": row["symbol"],
+                "side": row["side"],
+                "shares": row["shares"],
+                "price": row["price"],
+                "total_value": row["total_value"],
+            }
+            for row in rows
+        ]
 
 
 @router.get("/portfolio")
@@ -204,11 +216,9 @@ def read_portfolio():
         ).fetchall()
 
     cash_balance = float(account["cash_balance"])
-    starting_cash = float(account["starting_cash"])
+    starting_balance = float(account["starting_cash"])
     positions = []
     market_value = 0.0
-    cost_basis = 0.0
-    open_pnl = 0.0
     day_change = 0.0
     day_reference_value = 0.0
 
@@ -234,8 +244,6 @@ def read_portfolio():
         position_day_reference_value = day_reference_price * shares
 
         market_value += position_market_value
-        cost_basis += position_cost_basis
-        open_pnl += unrealized_pnl
         day_change += position_day_change
         day_reference_value += position_day_reference_value
 
@@ -252,16 +260,20 @@ def read_portfolio():
         )
 
     account_equity = cash_balance + market_value
+    total_pl = account_equity - starting_balance
+    total_pl_percent = calculate_percent(total_pl, starting_balance)
 
     return {
+        "cash": round_money(cash_balance),
         "cash_balance": round_money(cash_balance),
-        "starting_cash": round_money(starting_cash),
+        "starting_balance": round_money(starting_balance),
+        "starting_cash": round_money(starting_balance),
         "positions_count": len(positions),
         "positions": positions,
         "market_value": round_money(market_value),
         "account_equity": round_money(account_equity),
-        "open_pnl": round_money(open_pnl),
-        "open_pnl_percent": round_percent(calculate_percent(open_pnl, cost_basis)),
+        "total_pl": round_money(total_pl),
+        "total_pl_percent": round_percent(total_pl_percent),
         "day_change": round_money(day_change),
         "day_change_percent": round_percent(
             calculate_percent(day_change, day_reference_value)

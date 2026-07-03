@@ -1,3 +1,5 @@
+import TradeHistoryPanel from "./TradeHistoryPanel";
+
 function formatCurrency(value) {
   const number = Number(value);
 
@@ -26,7 +28,16 @@ function getValueClass(value) {
   return "neutral";
 }
 
-function PortfolioPage({ portfolio, loading, error, onBack, onSelectSymbol }) {
+function PortfolioPage({
+  portfolio,
+  loading,
+  error,
+  trades,
+  tradesLoading,
+  tradesError,
+  onBack,
+  onSelectSymbol,
+}) {
   const positions = portfolio?.positions || [];
 
   return (
@@ -46,70 +57,84 @@ function PortfolioPage({ portfolio, loading, error, onBack, onSelectSymbol }) {
         {loading && <p className="portfolio-muted">Loading portfolio...</p>}
         {error && <p className="portfolio-error">{error}</p>}
 
-        {!loading && positions.length === 0 && (
-          <div className="portfolio-empty">
-            <p>No open paper positions yet.</p>
-            <button type="button" onClick={onBack}>
-              Back to Dashboard
-            </button>
-          </div>
-        )}
+        <div className="portfolio-sections">
+          <div className="portfolio-section">
+            <div className="portfolio-section-header">
+              <h3>Open Positions</h3>
+            </div>
 
-        {positions.length > 0 && (
-          <div className="portfolio-table-wrap">
-            <table className="portfolio-table">
-              <thead>
-                <tr>
-                  <th>Symbol</th>
-                  <th>Shares</th>
-                  <th>Avg Cost</th>
-                  <th>Current Price</th>
-                  <th>Market Value</th>
-                  <th>Unrealized P/L</th>
-                  <th>Unrealized P/L %</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {positions.map((position) => (
-                  <tr
-                    key={position.symbol}
-                    onClick={() => onSelectSymbol(position.symbol)}
-                  >
-                    <td>
-                      <strong>{position.symbol}</strong>
-                    </td>
-                    <td>{position.shares}</td>
-                    <td>{formatCurrency(position.avg_cost)}</td>
-                    <td>{formatCurrency(position.current_price)}</td>
-                    <td>{formatCurrency(position.market_value)}</td>
-                    <td className={getValueClass(position.unrealized_pnl)}>
-                      {formatCurrency(position.unrealized_pnl)}
-                    </td>
-                    <td
-                      className={getValueClass(
-                        position.unrealized_pnl_percent
-                      )}
-                    >
-                      {formatPercent(position.unrealized_pnl_percent)}
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          onSelectSymbol(position.symbol);
-                        }}
+            {!loading && positions.length === 0 && (
+              <div className="portfolio-empty compact">
+                <p>No open paper positions yet.</p>
+                <button type="button" onClick={onBack}>
+                  Back to Dashboard
+                </button>
+              </div>
+            )}
+
+            {positions.length > 0 && (
+              <div className="portfolio-table-wrap">
+                <table className="portfolio-table">
+                  <thead>
+                    <tr>
+                      <th>Symbol</th>
+                      <th>Shares</th>
+                      <th>Avg Cost</th>
+                      <th>Current Price</th>
+                      <th>Market Value</th>
+                      <th>Unrealized P/L</th>
+                      <th>Unrealized P/L %</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {positions.map((position) => (
+                      <tr
+                        key={position.symbol}
+                        onClick={() => onSelectSymbol(position.symbol)}
                       >
-                        View / Analyze
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        <td>
+                          <strong>{position.symbol}</strong>
+                        </td>
+                        <td>{position.shares}</td>
+                        <td>{formatCurrency(position.avg_cost)}</td>
+                        <td>{formatCurrency(position.current_price)}</td>
+                        <td>{formatCurrency(position.market_value)}</td>
+                        <td className={getValueClass(position.unrealized_pnl)}>
+                          {formatCurrency(position.unrealized_pnl)}
+                        </td>
+                        <td
+                          className={getValueClass(
+                            position.unrealized_pnl_percent
+                          )}
+                        >
+                          {formatPercent(position.unrealized_pnl_percent)}
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              onSelectSymbol(position.symbol);
+                            }}
+                          >
+                            View / Analyze
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
-        )}
+
+          <TradeHistoryPanel
+            trades={trades}
+            loading={tradesLoading}
+            error={tradesError}
+          />
+        </div>
       </section>
     </main>
   );
