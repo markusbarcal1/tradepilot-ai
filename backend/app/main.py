@@ -1,8 +1,11 @@
+import json
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from app.services.analyzer import analyze_ticker, analyze_tickers
-from app.services.scanner import scan_market
+from app.services.scanner import DEFAULT_MAX_SYMBOLS, scan_market, stream_scan_market
 from app.paper_trading import init_paper_trading_db, router as paper_trading_router
 import yfinance as yf
 
@@ -78,10 +81,31 @@ def scan(
     interval: str = "1d",
     limit: int = 10,
     universe: str = "test",
-    max_symbols: int = 25,
+    max_symbols: int = DEFAULT_MAX_SYMBOLS,
 ):
     try:
         return scan_market(period, interval, limit, universe, max_symbols)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/scan/stream")
+def scan_stream(
+    period: str = "1y",
+    interval: str = "1d",
+    limit: int = 10,
+    universe: str = "test",
+    max_symbols: int = DEFAULT_MAX_SYMBOLS,
+):
+    def event_stream():
+        for message in stream_scan_market(period, interval, limit, universe, max_symbols):
+            yield (
+                f"event: {message['event']}\n"
+                f"data: {json.dumps(message['data'])}\n\n"
+            )
+
+    try:
+        return StreamingResponse(event_stream(), media_type="text/event-stream")
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     

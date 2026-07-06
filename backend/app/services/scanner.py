@@ -1,9 +1,9 @@
-from app.services.analyzer import analyze_tickers
+from app.services.analyzer import analyze_ticker, analyze_tickers
 
 
 DEFAULT_UNIVERSE = "test"
-DEFAULT_MAX_SYMBOLS = 25
-MAX_ALLOWED_SYMBOLS = 25
+DEFAULT_MAX_SYMBOLS = 100
+MAX_ALLOWED_SYMBOLS = 100
 
 SP500_UNIVERSE = [
     "MMM", "AOS", "ABT", "ABBV", "ACN", "ADBE", "AMD", "AES", "AFL", "A",
@@ -113,23 +113,10 @@ def get_safe_max_symbols(max_symbols: int):
     return min(max_symbols, MAX_ALLOWED_SYMBOLS)
 
 
-def scan_market(
-    period: str = "1y",
-    interval: str = "1d",
-    limit: int = 10,
-    universe: str = DEFAULT_UNIVERSE,
-    max_symbols: int = DEFAULT_MAX_SYMBOLS,
-):
+def _build_scan_results(analyses):
     results = []
-    universe_key, symbols = get_scan_universe(universe)
-    safe_max_symbols = get_safe_max_symbols(max_symbols)
-    symbols_to_scan = symbols[:safe_max_symbols]
-    batch = analyze_tickers(symbols_to_scan, period, interval)
 
-    for error in batch.get("errors", []):
-        print(f"Scanner failed for {error['ticker']}: {error['detail']}")
-
-    for analysis in batch.get("results", []):
+    for analysis in analyses:
         try:
             entry_score_data = analysis.get("entry_score", {})
             trend_score_data = analysis.get("trend_score", {})
@@ -193,6 +180,10 @@ def scan_market(
         reverse=True
     )
 
+    return results
+
+
+def _build_scan_response(period, interval, universe_key, symbols_to_scan, safe_max_symbols, limit, results):
     return {
         "period": period,
         "interval": interval,
@@ -202,4 +193,92 @@ def scan_market(
         "mode": "bullish",
         "count": len(results[:limit]),
         "results": results[:limit]
+    }
+
+
+def scan_market(
+    period: str = "1y",
+    interval: str = "1d",
+    limit: int = 10,
+    universe: str = DEFAULT_UNIVERSE,
+    max_symbols: int = DEFAULT_MAX_SYMBOLS,
+):
+    results = []
+    universe_key, symbols = get_scan_universe(universe)
+    safe_max_symbols = get_safe_max_symbols(max_symbols)
+    symbols_to_scan = symbols[:safe_max_symbols]
+    batch = analyze_tickers(symbols_to_scan, period, interval)
+
+    for error in batch.get("errors", []):
+        print(f"Scanner failed for {error['ticker']}: {error['detail']}")
+
+    results = _build_scan_results(batch.get("results", []))
+
+    return _build_scan_response(
+        period,
+        interval,
+        universe_key,
+        symbols_to_scan,
+        safe_max_symbols,
+        limit,
+        results,
+    )
+
+
+def stream_scan_market(
+    period: str = "1y",
+    interval: str = "1d",
+    limit: int = 10,
+    universe: str = DEFAULT_UNIVERSE,
+    max_symbols: int = DEFAULT_MAX_SYMBOLS,
+):
+    analyses = []
+    universe_key, symbols = get_scan_universe(universe)
+    safe_max_symbols = get_safe_max_symbols(max_symbols)
+    symbols_to_scan = symbols[:safe_max_symbols]
+    total = len(symbols_to_scan)
+
+    yield {
+        "event": "start",
+        "data": {
+            "period": period,
+            "interval": interval,
+            "universe": universe_key,
+            "scanned": 0,
+            "total": total,
+            "max_symbols": safe_max_symbols,
+        },
+    }
+
+    for index, symbol in enumerate(symbols_to_scan, start=1):
+        clean_symbol = str(symbol).strip().upper()
+
+        if clean_symbol:
+            try:
+                analyses.append(analyze_ticker(clean_symbol, period, interval))
+            except Exception as e:
+                print(f"Scanner failed for {clean_symbol}: {e}")
+
+        yield {
+            "event": "progress",
+            "data": {
+                "scanned": index,
+                "total": total,
+                "symbol": clean_symbol,
+            },
+        }
+
+    results = _build_scan_results(analyses)
+
+    yield {
+        "event": "complete",
+        "data": _build_scan_response(
+            period,
+            interval,
+            universe_key,
+            symbols_to_scan,
+            safe_max_symbols,
+            limit,
+            results,
+        ),
     }
