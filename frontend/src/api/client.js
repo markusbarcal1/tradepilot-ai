@@ -41,19 +41,6 @@ export function validateTicker(symbol, options = {}) {
   });
 }
 
-export function scanMarket(period, interval, limit = 10, options = {}) {
-  return api.get("/scan", {
-    params: {
-      period,
-      interval,
-      limit,
-      universe: options.universe,
-      max_symbols: options.maxSymbols,
-    },
-    signal: options.signal,
-  });
-}
-
 function buildScanParams(period, interval, limit, options) {
   const params = new URLSearchParams();
 

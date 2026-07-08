@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { isRequestCanceled, scanMarket, streamScanMarket } from "../api/client";
-import usePollingData from "../hooks/usePollingData";
+import { isRequestCanceled, streamScanMarket } from "../api/client";
 
 const SCANNER_TIMEFRAMES = [
   { label: "Daily", period: "1y", interval: "1d" },
@@ -11,19 +10,13 @@ const SCANNER_TIMEFRAMES = [
 ];
 
 const SCANNER_UNIVERSES = [
-  { value: "test", label: "Test" },
-  { value: "mega_cap", label: "Mega Cap" },
-  { value: "tech", label: "Tech" },
-  { value: "semiconductors", label: "Semiconductors" },
-  { value: "sp500_sample", label: "S&P 500 Sample" },
   { value: "sp500", label: "S&P 500" },
+  { value: "nasdaq", label: "Nasdaq" },
 ];
 
-const DEFAULT_UNIVERSE = "test";
+const DEFAULT_UNIVERSE = "sp500";
 const DEFAULT_TIMEFRAME = SCANNER_TIMEFRAMES[0];
 const DEFAULT_SCAN_LIMIT = 10;
-const SP500_SCAN_SYMBOL_LIMIT = 100;
-const SCANNER_REFRESH_MS = 45_000;
 
 function getTimeframeByLabel(label) {
   return (
@@ -75,59 +68,44 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
     return initialState?.hasScanned || false;
   });
 
-  const runScanner = async (options = {}) => {
+  const runScanner = async () => {
     scannerRequestRef.current.controller?.abort();
 
     const controller = new AbortController();
     const requestId = scannerRequestRef.current.id + 1;
     scannerRequestRef.current = { controller, id: requestId };
 
-    if (!options.background) {
-      setLoading(true);
-      setError("");
-      setScanProgress(null);
-    }
+    setLoading(true);
+    setError("");
+    setScanProgress(null);
     setHasScanned(true);
 
     try {
       const scanOptions = {
         universe: selectedUniverse,
-        maxSymbols:
-          selectedUniverse === "sp500" ? SP500_SCAN_SYMBOL_LIMIT : undefined,
         signal: controller.signal,
       };
-      let responseData;
+      const responseData = await streamScanMarket(
+        selectedTimeframe.period,
+        selectedTimeframe.interval,
+        DEFAULT_SCAN_LIMIT,
+        scanOptions,
+        ({ event, data }) => {
+          if (scannerRequestRef.current.id !== requestId) return;
 
-      if (options.background) {
-        const response = await scanMarket(
-          selectedTimeframe.period,
-          selectedTimeframe.interval,
-          DEFAULT_SCAN_LIMIT,
-          scanOptions
-        );
-        responseData = response.data;
-      } else {
-        responseData = await streamScanMarket(
-          selectedTimeframe.period,
-          selectedTimeframe.interval,
-          DEFAULT_SCAN_LIMIT,
-          scanOptions,
-          ({ event, data }) => {
-            if (scannerRequestRef.current.id !== requestId) return;
-
-            if (
-              (event === "start" || event === "progress") &&
-              Number.isFinite(data?.scanned) &&
-              Number.isFinite(data?.total)
-            ) {
-              setScanProgress({
-                scanned: data.scanned,
-                total: data.total,
-              });
-            }
+          if (
+            (event === "start" || event === "progress") &&
+            Number.isFinite(data?.scanned) &&
+            Number.isFinite(data?.total)
+          ) {
+            setScanProgress({
+              scanned: data.scanned,
+              total: data.total,
+              failed: data.failed || 0,
+            });
           }
-        );
-      }
+        }
+      );
 
       if (scannerRequestRef.current.id !== requestId) return;
 
@@ -140,6 +118,7 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
         interval: selectedTimeframe.interval,
         scannedCount: responseData.scanned_count,
         maxSymbols: responseData.max_symbols,
+        errorCount: responseData.error_count,
         scannedAt: new Date().toISOString(),
       };
 
@@ -156,28 +135,16 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
       }
 
       console.error("Scanner failed:", err);
-      if (!options.background) {
-        setResults([]);
-        setError("Scanner failed. Try a different timeframe or universe.");
-        setScanProgress(null);
-      }
+      setResults([]);
+      setError("Scanner failed. Try a different timeframe or universe.");
+      setScanProgress(null);
     } finally {
-      if (scannerRequestRef.current.id === requestId && !options.background) {
+      if (scannerRequestRef.current.id === requestId) {
         setLoading(false);
         setScanProgress(null);
       }
     }
   };
-
-  usePollingData(
-    () => {
-      if (loading) return;
-
-      runScanner({ background: true });
-    },
-    SCANNER_REFRESH_MS,
-    hasScanned
-  );
 
   useEffect(() => {
     return () => {
@@ -225,9 +192,15 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
     Number.isFinite(scanMetadata?.scannedCount)
       ? ` · ${scanMetadata.scannedCount} scanned`
       : "";
+  const failedCountLabel =
+    Number.isFinite(scanMetadata?.errorCount) && scanMetadata.errorCount > 0
+      ? ` · ${scanMetadata.errorCount} failed`
+      : "";
   const loadingScanLabel =
     Number.isFinite(scanProgress?.scanned) && Number.isFinite(scanProgress?.total)
-      ? `Scanning ${scanProgress.scanned}/${scanProgress.total} symbols`
+      ? `Scanning ${scanProgress.scanned}/${scanProgress.total} symbols${
+          scanProgress.failed ? ` · ${scanProgress.failed} failed` : ""
+        }`
       : "Scanning market...";
 
   return (
@@ -266,6 +239,7 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
         <h3>Bullish Scanner</h3>
         <span>
           {displayUniverseLabel} · {displayTimeframeLabel}{scannedCountLabel}
+          {failedCountLabel}
         </span>
       </div>
 

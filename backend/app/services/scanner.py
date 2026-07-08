@@ -1,9 +1,18 @@
+import csv
+from io import StringIO
+from time import time
+from urllib.request import urlopen
+
 from app.services.analyzer import analyze_ticker, analyze_tickers
 
 
-DEFAULT_UNIVERSE = "test"
-DEFAULT_MAX_SYMBOLS = 100
-MAX_ALLOWED_SYMBOLS = 100
+DEFAULT_UNIVERSE = "sp500"
+NASDAQ_LISTED_URL = "https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt"
+NASDAQ_UNIVERSE_CACHE_SECONDS = 12 * 60 * 60
+_nasdaq_universe_cache = {
+    "expires_at": 0,
+    "symbols": [],
+}
 
 SP500_UNIVERSE = [
     "MMM", "AOS", "ABT", "ABBV", "ACN", "ADBE", "AMD", "AES", "AFL", "A",
@@ -63,54 +72,88 @@ SP500_UNIVERSE = [
 ]
 
 SCAN_UNIVERSES = {
-    "test": [
-        "AAPL", "MSFT", "NVDA", "AMD", "META",
-        "TSLA", "PLTR", "AMZN", "GOOGL", "NFLX",
-        "AVGO", "COIN", "MSTR", "SMCI", "CRM"
-    ],
-    "mega_cap": [
-        "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL",
-        "META", "BRK-B", "LLY", "AVGO", "JPM",
-        "TSLA", "V", "UNH", "XOM", "MA"
-    ],
-    "tech": [
-        "AAPL", "MSFT", "NVDA", "META", "GOOGL",
-        "AMZN", "CRM", "ORCL", "ADBE", "NOW",
-        "INTU", "PANW", "CRWD", "SNOW", "PLTR"
-    ],
-    "semiconductors": [
-        "NVDA", "AMD", "AVGO", "TSM", "ASML",
-        "QCOM", "TXN", "MU", "INTC", "AMAT",
-        "LRCX", "KLAC", "ARM", "MRVL", "SMCI"
-    ],
-    "sp500_sample": [
-        "AAPL", "MSFT", "NVDA", "AMZN", "GOOGL",
-        "META", "JPM", "UNH", "XOM", "JNJ",
-        "PG", "HD", "COST", "BAC", "KO",
-        "PEP", "WMT", "DIS", "NFLX", "ADBE",
-        "CRM", "MCD", "ABT", "CSCO", "TMO"
-    ],
     "sp500": SP500_UNIVERSE,
 }
 
-SCAN_UNIVERSE = SCAN_UNIVERSES[DEFAULT_UNIVERSE]
+
+def _is_scannable_nasdaq_listing(row):
+    symbol = row.get("Symbol", "").strip()
+    security_name = row.get("Security Name", "").lower()
+
+    if not symbol or symbol.startswith("File Creation Time"):
+        return False
+
+    if row.get("Test Issue", "").strip().upper() != "N":
+        return False
+
+    if row.get("ETF", "").strip().upper() == "Y":
+        return False
+
+    excluded_terms = (
+        " warrant",
+        " warrants",
+        " right",
+        " rights",
+        " unit",
+        " units",
+        " preferred",
+        " preference",
+        " senior note",
+        " notes due",
+        " bond",
+        " debenture",
+    )
+
+    return not any(term in security_name for term in excluded_terms)
+
+
+def get_nasdaq_universe():
+    if (
+        _nasdaq_universe_cache["symbols"]
+        and _nasdaq_universe_cache["expires_at"] > time()
+    ):
+        return _nasdaq_universe_cache["symbols"]
+
+    try:
+        with urlopen(NASDAQ_LISTED_URL, timeout=20) as response:
+            data = response.read().decode("utf-8")
+    except Exception as e:
+        raise ValueError(f"Unable to load Nasdaq universe: {e}")
+
+    symbols = []
+    reader = csv.DictReader(StringIO(data), delimiter="|")
+
+    for row in reader:
+        if _is_scannable_nasdaq_listing(row):
+            symbols.append(row["Symbol"].strip().upper().replace(".", "-"))
+
+    _nasdaq_universe_cache["symbols"] = symbols
+    _nasdaq_universe_cache["expires_at"] = time() + NASDAQ_UNIVERSE_CACHE_SECONDS
+
+    return symbols
 
 
 def get_scan_universe(universe: str):
     universe_key = universe.strip().lower()
 
+    if universe_key == "nasdaq":
+        return universe_key, get_nasdaq_universe()
+
     if universe_key not in SCAN_UNIVERSES:
-        available = ", ".join(sorted(SCAN_UNIVERSES.keys()))
+        available = ", ".join(sorted([*SCAN_UNIVERSES.keys(), "nasdaq"]))
         raise ValueError(f"Unknown scanner universe '{universe}'. Available universes: {available}")
 
     return universe_key, SCAN_UNIVERSES[universe_key]
 
 
-def get_safe_max_symbols(max_symbols: int):
+def get_safe_max_symbols(max_symbols: int | None, universe_size: int):
+    if max_symbols is None:
+        return universe_size
+
     if max_symbols < 1:
         return 1
 
-    return min(max_symbols, MAX_ALLOWED_SYMBOLS)
+    return min(max_symbols, universe_size)
 
 
 def _build_scan_results(analyses):
@@ -183,7 +226,18 @@ def _build_scan_results(analyses):
     return results
 
 
-def _build_scan_response(period, interval, universe_key, symbols_to_scan, safe_max_symbols, limit, results):
+def _build_scan_response(
+    period,
+    interval,
+    universe_key,
+    symbols_to_scan,
+    safe_max_symbols,
+    limit,
+    results,
+    errors=None,
+):
+    errors = errors or []
+
     return {
         "period": period,
         "interval": interval,
@@ -191,6 +245,8 @@ def _build_scan_response(period, interval, universe_key, symbols_to_scan, safe_m
         "scanned_count": len(symbols_to_scan),
         "max_symbols": safe_max_symbols,
         "mode": "bullish",
+        "error_count": len(errors),
+        "errors": errors,
         "count": len(results[:limit]),
         "results": results[:limit]
     }
@@ -201,15 +257,15 @@ def scan_market(
     interval: str = "1d",
     limit: int = 10,
     universe: str = DEFAULT_UNIVERSE,
-    max_symbols: int = DEFAULT_MAX_SYMBOLS,
+    max_symbols: int | None = None,
 ):
-    results = []
     universe_key, symbols = get_scan_universe(universe)
-    safe_max_symbols = get_safe_max_symbols(max_symbols)
+    safe_max_symbols = get_safe_max_symbols(max_symbols, len(symbols))
     symbols_to_scan = symbols[:safe_max_symbols]
     batch = analyze_tickers(symbols_to_scan, period, interval)
+    errors = batch.get("errors", [])
 
-    for error in batch.get("errors", []):
+    for error in errors:
         print(f"Scanner failed for {error['ticker']}: {error['detail']}")
 
     results = _build_scan_results(batch.get("results", []))
@@ -222,6 +278,7 @@ def scan_market(
         safe_max_symbols,
         limit,
         results,
+        errors,
     )
 
 
@@ -230,11 +287,12 @@ def stream_scan_market(
     interval: str = "1d",
     limit: int = 10,
     universe: str = DEFAULT_UNIVERSE,
-    max_symbols: int = DEFAULT_MAX_SYMBOLS,
+    max_symbols: int | None = None,
 ):
     analyses = []
+    errors = []
     universe_key, symbols = get_scan_universe(universe)
-    safe_max_symbols = get_safe_max_symbols(max_symbols)
+    safe_max_symbols = get_safe_max_symbols(max_symbols, len(symbols))
     symbols_to_scan = symbols[:safe_max_symbols]
     total = len(symbols_to_scan)
 
@@ -258,6 +316,10 @@ def stream_scan_market(
                 analyses.append(analyze_ticker(clean_symbol, period, interval))
             except Exception as e:
                 print(f"Scanner failed for {clean_symbol}: {e}")
+                errors.append({
+                    "ticker": clean_symbol,
+                    "detail": str(e),
+                })
 
         yield {
             "event": "progress",
@@ -265,6 +327,7 @@ def stream_scan_market(
                 "scanned": index,
                 "total": total,
                 "symbol": clean_symbol,
+                "failed": len(errors),
             },
         }
 
@@ -280,5 +343,6 @@ def stream_scan_market(
             safe_max_symbols,
             limit,
             results,
+            errors,
         ),
     }
