@@ -271,8 +271,8 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
           </div>
 
           <div className="scanner-scores">
-            <span>Entry: {stock.entry_score}</span>
-            <span>Trend: {stock.trend_score}</span>
+            <span>Quality: {stock.trade_quality_score ?? stock.entry_score}</span>
+            <span>Technical: {stock.technical_score}</span>
           </div>
 
           <div className="scanner-setup">

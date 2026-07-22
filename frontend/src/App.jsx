@@ -8,7 +8,6 @@ import {
 import Header from "./components/Header";
 import MetricsPanel from "./components/MetricsPanel";
 import ChartPanel from "./components/ChartPanel";
-import ThesisPanel from "./components/ThesisPanel";
 import ScorePanel from "./components/ScorePanel";
 import SetupPanel from "./components/SetupPanel";
 import QuickTradePanel from "./components/QuickTradePanel";
@@ -166,8 +165,8 @@ function App() {
 
       (response.data.results || []).forEach((item) => {
         scoreMap[item.ticker] = {
-          trend: item.trend_score?.score,
-          entry: item.entry_score?.score,
+          technical: (item.technical_score ?? item.trend_score)?.score,
+          quality: (item.trade_quality_score ?? item.entry_score)?.score,
         };
       });
 
@@ -467,20 +466,15 @@ function App() {
 
                 <div className="right-card-grid">
                   <div className="panel-box analysis-summary-card">
-                    <ThesisPanel
-                      tradeThesis={analysis.trade_thesis}
+                    <ScorePanel
+                      title="Technical Score"
+                      scoreData={analysis.technical_score ?? analysis.trend_score}
                       embedded
                     />
 
                     <ScorePanel
-                      title="Trend Score"
-                      scoreData={analysis.trend_score}
-                      embedded
-                    />
-
-                    <ScorePanel
-                      title="Entry Score"
-                      scoreData={analysis.entry_score}
+                      title="Trade Quality Score"
+                      scoreData={analysis.trade_quality_score ?? analysis.entry_score}
                       embedded
                     />
                   </div>

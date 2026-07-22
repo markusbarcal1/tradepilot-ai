@@ -161,13 +161,20 @@ def _build_scan_results(analyses):
 
     for analysis in analyses:
         try:
-            entry_score_data = analysis.get("entry_score", {})
-            trend_score_data = analysis.get("trend_score", {})
+            trade_quality_score_data = (
+                analysis.get("trade_quality_score")
+                or analysis.get("entry_score", {})
+            )
+            technical_score_data = (
+                analysis.get("technical_score")
+                or analysis.get("trend_score", {})
+            )
             trade_setup = analysis.get("trade_setup", {})
-            trade_thesis = analysis.get("trade_thesis", {})
+            support_zone = analysis.get("support_zone") or {}
+            resistance_zone = analysis.get("resistance_zone") or {}
 
-            entry_score = entry_score_data.get("score", 0)
-            trend_score = trend_score_data.get("score", 0)
+            trade_quality_score = trade_quality_score_data.get("score", 0)
+            technical_score = technical_score_data.get("score", 0)
 
             setup_type = trade_setup.get("setup_type")
             setup_bias = trade_setup.get("setup_bias")
@@ -187,10 +194,16 @@ def _build_scan_results(analyses):
                 "ticker": analysis.get("ticker"),
                 "price": analysis.get("price"),
 
-                "entry_score": entry_score,
-                "entry_grade": entry_score_data.get("grade"),
-                "trend_score": trend_score,
-                "trend_grade": trend_score_data.get("grade"),
+                "trade_quality_score": trade_quality_score,
+                "trade_quality_grade": trade_quality_score_data.get("grade"),
+                # Deprecated compatibility aliases for older scanner clients.
+                "entry_score": trade_quality_score,
+                "entry_grade": trade_quality_score_data.get("grade"),
+                "technical_score": technical_score,
+                "technical_grade": technical_score_data.get("grade"),
+                # Deprecated compatibility aliases for older scanner clients.
+                "trend_score": technical_score,
+                "trend_grade": technical_score_data.get("grade"),
 
                 "setup_type": setup_type,
                 "setup_bias": setup_bias,
@@ -206,8 +219,8 @@ def _build_scan_results(analyses):
                 "rsi": analysis.get("rsi"),
                 "rvol": analysis.get("rvol"),
 
-                "support": trade_thesis.get("support"),
-                "resistance": trade_thesis.get("resistance"),
+                "support": support_zone.get("display", "N/A"),
+                "resistance": resistance_zone.get("display", "N/A"),
 
                 "notes": trade_setup.get("notes", []),
             })
@@ -217,8 +230,8 @@ def _build_scan_results(analyses):
 
     results.sort(
         key=lambda stock: (
-            stock["entry_score"],
-            stock["trend_score"]
+            stock["trade_quality_score"],
+            stock["technical_score"]
         ),
         reverse=True
     )

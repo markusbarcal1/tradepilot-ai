@@ -1,12 +1,5 @@
 import { useState } from "react";
-
-function getScoreClass(score) {
-  if (score === undefined || score === null) return "score-empty";
-  if (score >= 80) return "score-strong";
-  if (score >= 60) return "score-good";
-  if (score >= 40) return "score-neutral";
-  return "score-weak";
-}
+import { getScoreColorClass } from "../utils/scoreColors";
 
 function getTimeframeAbbreviation(label) {
   switch (label) {
@@ -89,12 +82,12 @@ function Watchlist({
                   {getTimeframeAbbreviation(timeframe.label)}
                 </span>
 
-                <span className={getScoreClass(scores?.trend)}>
-                  T:{scores?.trend ?? "--"}
+                <span className={getScoreColorClass(scores?.technical)}>
+                  T:{scores?.technical ?? "--"}
                 </span>
 
-                <span className={getScoreClass(scores?.entry)}>
-                  E:{scores?.entry ?? "--"}
+                <span className={getScoreColorClass(scores?.quality)}>
+                  Q:{scores?.quality ?? "--"}
                 </span>
 
                 <button
