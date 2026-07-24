@@ -75,6 +75,18 @@ def batch_analyze(request: BatchAnalyzeRequest):
 
     return analyze_tickers(request.symbols, request.period, request.interval)
     
+def _parse_eligibility_payload(payload: str | None):
+    if not payload:
+        return None
+
+    try:
+        parsed = json.loads(payload)
+    except json.JSONDecodeError:
+        return None
+
+    return parsed if isinstance(parsed, dict) else None
+
+
 @app.get("/scan")
 def scan(
     period: str = "1y",
@@ -82,9 +94,12 @@ def scan(
     limit: int = 10,
     universe: str = "sp500",
     max_symbols: int | None = None,
+    audit: bool = False,
+    max_workers: int | None = None,
+    eligibility: str | None = None,
 ):
     try:
-        return scan_market(period, interval, limit, universe, max_symbols)
+        return scan_market(period, interval, limit, universe, max_symbols, audit=audit, max_workers=max_workers, eligibility=_parse_eligibility_payload(eligibility))
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -96,6 +111,9 @@ def scan_stream(
     limit: int = 10,
     universe: str = "sp500",
     max_symbols: int | None = None,
+    audit: bool = False,
+    max_workers: int | None = None,
+    eligibility: str | None = None,
 ):
     def format_stream_message(message):
         return (
@@ -104,7 +122,7 @@ def scan_stream(
         )
 
     try:
-        stream = stream_scan_market(period, interval, limit, universe, max_symbols)
+        stream = stream_scan_market(period, interval, limit, universe, max_symbols, audit=audit, max_workers=max_workers, eligibility=_parse_eligibility_payload(eligibility))
         first_message = next(stream)
 
         def event_stream():

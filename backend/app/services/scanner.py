@@ -1,9 +1,14 @@
 import csv
+import logging
+import os
+import statistics
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from io import StringIO
-from time import time
+from time import perf_counter, time
 from urllib.request import urlopen
 
 from app.services.analyzer import analyze_ticker, analyze_tickers
+from app.services.eligibility import ScannerEligibilityConfig
 
 
 DEFAULT_UNIVERSE = "sp500"
@@ -74,6 +79,15 @@ SP500_UNIVERSE = [
 SCAN_UNIVERSES = {
     "sp500": SP500_UNIVERSE,
 }
+
+LOGGER = logging.getLogger("scanner.audit")
+if not LOGGER.handlers:
+    logging.basicConfig(level=logging.INFO)
+SCANNER_AUDIT_ENABLED_ENV = "SCANNER_AUDIT"
+SCANNER_MAX_WORKERS_ENV = "SCANNER_MAX_WORKERS"
+DEFAULT_SCANNER_MAX_WORKERS = 8
+MIN_SCANNER_MAX_WORKERS = 1
+MAX_SCANNER_MAX_WORKERS = 16
 
 
 def _is_scannable_nasdaq_listing(row):
@@ -156,9 +170,10 @@ def get_safe_max_symbols(max_symbols: int | None, universe_size: int):
     return min(max_symbols, universe_size)
 
 
-def _build_scan_results(analyses):
+def _build_scan_results(analyses, stage_timings=None):
     results = []
 
+    filtering_start = perf_counter()
     for analysis in analyses:
         try:
             trade_quality_score_data = (
@@ -228,13 +243,19 @@ def _build_scan_results(analyses):
         except Exception as e:
             print(f"Scanner failed for {analysis.get('ticker')}: {e}")
 
+    if stage_timings is not None:
+        stage_timings["filtering_seconds"] = perf_counter() - filtering_start
+
+    sorting_start = perf_counter()
     results.sort(
         key=lambda stock: (
-            stock["trade_quality_score"],
-            stock["technical_score"]
-        ),
-        reverse=True
+            -(stock["trade_quality_score"] or 0),
+            -(stock["technical_score"] or 0),
+            str(stock.get("ticker") or "")
+        )
     )
+    if stage_timings is not None:
+        stage_timings["sorting_seconds"] = perf_counter() - sorting_start
 
     return results
 
@@ -248,10 +269,13 @@ def _build_scan_response(
     limit,
     results,
     errors=None,
+    audit=None,
+    stage_timings=None,
 ):
     errors = errors or []
 
-    return {
+    serialization_start = perf_counter()
+    response = {
         "period": period,
         "interval": interval,
         "universe": universe_key,
@@ -264,6 +288,455 @@ def _build_scan_response(
         "results": results[:limit]
     }
 
+    if audit is not None:
+        response["audit"] = audit
+
+    if stage_timings is not None:
+        stage_timings["serialization_seconds"] = perf_counter() - serialization_start
+
+    return response
+
+
+def _is_audit_enabled(explicit=None):
+    if explicit is not None:
+        return bool(explicit)
+
+    raw = os.getenv(SCANNER_AUDIT_ENABLED_ENV, "").strip().lower()
+    return raw in {"1", "true", "yes", "on"}
+
+
+def _normalize_reason(reason):
+    if not reason:
+        return "unknown"
+
+    reason = str(reason).strip().lower().replace(" ", "_")
+    if not reason:
+        return "unknown"
+
+    return reason
+
+
+def _resolve_worker_count(max_workers=None):
+    if max_workers is None:
+        raw = os.getenv(SCANNER_MAX_WORKERS_ENV, "").strip()
+        if not raw:
+            return DEFAULT_SCANNER_MAX_WORKERS
+        max_workers = raw
+
+    if isinstance(max_workers, bool):
+        return DEFAULT_SCANNER_MAX_WORKERS
+
+    if isinstance(max_workers, str):
+        stripped = max_workers.strip()
+        if not stripped:
+            return DEFAULT_SCANNER_MAX_WORKERS
+        try:
+            max_workers = int(stripped)
+        except ValueError:
+            return DEFAULT_SCANNER_MAX_WORKERS
+
+    try:
+        resolved = int(max_workers)
+    except (TypeError, ValueError):
+        return DEFAULT_SCANNER_MAX_WORKERS
+
+    if resolved < MIN_SCANNER_MAX_WORKERS:
+        return MIN_SCANNER_MAX_WORKERS
+
+    if resolved > MAX_SCANNER_MAX_WORKERS:
+        return MAX_SCANNER_MAX_WORKERS
+
+    return resolved
+
+
+def _create_audit_context():
+    return {
+        "stage_timings": {},
+        "symbol_records": [],
+        "market_data_request_keys": set(),
+        "market_data_requests": 0,
+        "duplicate_market_data_requests": 0,
+        "market_data_request_details": [],
+        "last_fetch_seconds": None,
+    }
+
+
+def _merge_audit_context(target, source):
+    if target is None or source is None:
+        return
+
+    target_stage_timings = target.setdefault("stage_timings", {})
+    source_stage_timings = source.get("stage_timings", {})
+    for key, value in source_stage_timings.items():
+        target_stage_timings[key] = target_stage_timings.get(key, 0.0) + float(value or 0.0)
+
+    target_symbol_records = target.setdefault("symbol_records", [])
+    target_symbol_records.extend(source.get("symbol_records", []))
+
+    target.setdefault("market_data_request_keys", set()).update(source.get("market_data_request_keys", set()))
+    target["market_data_requests"] = target.get("market_data_requests", 0) + int(source.get("market_data_requests", 0))
+    target["duplicate_market_data_requests"] = target.get("duplicate_market_data_requests", 0) + int(source.get("duplicate_market_data_requests", 0))
+    target.setdefault("market_data_request_details", []).extend(source.get("market_data_request_details", []))
+
+    if source.get("last_fetch_seconds") is not None:
+        target["last_fetch_seconds"] = source.get("last_fetch_seconds")
+
+
+def _resolve_eligibility_config(eligibility=None):
+    if eligibility is None:
+        return None
+
+    if isinstance(eligibility, ScannerEligibilityConfig):
+        return eligibility
+
+    if isinstance(eligibility, dict):
+        return ScannerEligibilityConfig.from_dict(eligibility)
+
+    return ScannerEligibilityConfig.from_dict({})
+
+
+def _build_eligibility_summary(symbols_to_scan, eligibility_config, eligibility_records):
+    if eligibility_config is None or not eligibility_config.enabled:
+        return {
+            "enabled": False,
+            "symbols_checked": len(symbols_to_scan),
+            "symbols_eligible": 0,
+            "symbols_excluded": 0,
+            "reason_counts": {},
+        }
+
+    reason_counts = {}
+    for record in eligibility_records:
+        reason_code = (record or {}).get("reason_code") or "eligible"
+        reason_counts[reason_code] = reason_counts.get(reason_code, 0) + 1
+
+    excluded = [record for record in eligibility_records if isinstance(record, dict) and not record.get("eligible", True)]
+
+    return {
+        "enabled": True,
+        "symbols_checked": len(symbols_to_scan),
+        "symbols_eligible": len(symbols_to_scan) - len(excluded),
+        "symbols_excluded": len(excluded),
+        "reason_counts": reason_counts,
+    }
+
+
+def _process_symbol(symbol, period, interval, audit_context=None, eligibility_config=None):
+    clean_symbol = str(symbol).strip().upper()
+    if not clean_symbol:
+        return {
+            "symbol": clean_symbol,
+            "analysis": None,
+            "error": None,
+            "audit_context": None,
+        }
+
+    local_audit_context = _create_audit_context() if audit_context is not None else None
+
+    try:
+        try:
+            analysis = analyze_ticker(
+                clean_symbol,
+                period,
+                interval,
+                audit_context=local_audit_context,
+                eligibility_config=eligibility_config,
+            )
+        except TypeError:
+            analysis = analyze_ticker(clean_symbol, period, interval, audit_context=local_audit_context)
+        return {
+            "symbol": clean_symbol,
+            "analysis": analysis,
+            "error": None,
+            "audit_context": local_audit_context,
+        }
+    except Exception as exc:
+        if local_audit_context is not None:
+            from app.services.analyzer import _record_symbol_result
+
+            existing_symbols = {str(record.get("symbol", "")).strip().upper() for record in local_audit_context.get("symbol_records", [])}
+            if clean_symbol not in existing_symbols:
+                _record_symbol_result(local_audit_context, clean_symbol, "failed", stage="market_data_fetch", reason="market_data_error")
+
+        return {
+            "symbol": clean_symbol,
+            "analysis": None,
+            "error": {"ticker": clean_symbol, "detail": str(exc)},
+            "audit_context": local_audit_context,
+        }
+
+
+def _invoke_analyze_tickers(symbols, period, interval, audit_context=None, max_workers=None, eligibility_config=None):
+    worker_count = _resolve_worker_count(max_workers)
+
+    if worker_count <= 1:
+        if audit_context is None:
+            try:
+                return analyze_tickers(symbols, period, interval, eligibility_config=eligibility_config)
+            except TypeError:
+                return analyze_tickers(symbols, period, interval)
+
+        try:
+            return analyze_tickers(symbols, period, interval, audit_context=audit_context, eligibility_config=eligibility_config)
+        except TypeError:
+            try:
+                return analyze_tickers(symbols, period, interval, audit_context=audit_context)
+            except TypeError:
+                return analyze_tickers(symbols, period, interval)
+
+    if not symbols:
+        return {
+            "period": period,
+            "interval": interval,
+            "count": 0,
+            "results": [],
+            "errors": [],
+        }
+
+    results = []
+    errors = []
+    eligibility_records = []
+
+    try:
+        with ThreadPoolExecutor(max_workers=worker_count) as executor:
+            future_to_symbol = {
+                executor.submit(_process_symbol, symbol, period, interval, audit_context=audit_context, eligibility_config=eligibility_config): symbol
+                for symbol in symbols
+            }
+
+            for future in as_completed(future_to_symbol):
+                item = future.result()
+                analysis = item.get("analysis")
+                if analysis is not None:
+                    if isinstance(analysis, dict) and isinstance(analysis.get("eligibility"), dict) and not analysis.get("eligibility", {}).get("eligible", True):
+                        eligibility_records.append(analysis.get("eligibility"))
+                    else:
+                        results.append(analysis)
+                if item.get("error") is not None:
+                    errors.append(item["error"])
+                if audit_context is not None:
+                    _merge_audit_context(audit_context, item.get("audit_context"))
+    except Exception as exc:
+        LOGGER.warning("Concurrent execution unavailable; falling back to 1 worker: %s", exc)
+        if audit_context is None:
+            try:
+                return analyze_tickers(symbols, period, interval, eligibility_config=eligibility_config)
+            except TypeError:
+                return analyze_tickers(symbols, period, interval)
+
+        try:
+            return analyze_tickers(symbols, period, interval, audit_context=audit_context, eligibility_config=eligibility_config)
+        except TypeError:
+            try:
+                return analyze_tickers(symbols, period, interval, audit_context=audit_context)
+            except TypeError:
+                return analyze_tickers(symbols, period, interval)
+
+    return {
+        "period": period,
+        "interval": interval,
+        "count": len(results),
+        "results": results,
+        "errors": errors,
+        "eligibility_records": eligibility_records,
+    }
+
+
+def _materialize_audit_symbol_records(symbol_records, symbols_to_scan, analyses, errors):
+    seen_symbols = {
+        str(record.get("symbol", "")).strip().upper()
+        for record in symbol_records
+        if str(record.get("symbol", "")).strip()
+    }
+
+    for analysis in analyses:
+        symbol = str(analysis.get("ticker") or "").strip().upper()
+        if not symbol or symbol in seen_symbols:
+            continue
+
+        symbol_records.append({
+            "symbol": symbol,
+            "status": "completed",
+            "reason": None,
+            "total_seconds": 0.0,
+        })
+        seen_symbols.add(symbol)
+
+    for error in errors:
+        symbol = str(error.get("ticker") or "").strip().upper()
+        if not symbol or symbol in seen_symbols:
+            continue
+
+        symbol_records.append({
+            "symbol": symbol,
+            "status": "failed",
+            "stage": "market_data_fetch",
+            "reason": "market_data_error",
+            "total_seconds": 0.0,
+        })
+        seen_symbols.add(symbol)
+
+    for symbol in symbols_to_scan:
+        symbol_key = str(symbol).strip().upper()
+        if symbol_key and symbol_key not in seen_symbols:
+            symbol_records.append({
+                "symbol": symbol_key,
+                "status": "skipped",
+                "reason": "insufficient_history",
+                "total_seconds": 0.0,
+            })
+
+
+def _summarize_audit(symbol_records, stage_timings, total_duration, universe_key, period, interval, symbols_to_scan, safe_max_symbols, limit, results, errors, eligibility_summary=None):
+    completed = [record for record in symbol_records if record.get("status") == "completed"]
+    failed = [record for record in symbol_records if record.get("status") == "failed"]
+    skipped = [record for record in symbol_records if record.get("status") == "skipped"]
+
+    durations = [record.get("total_seconds", 0.0) for record in symbol_records if isinstance(record.get("total_seconds"), (int, float))]
+
+    def _stats(values):
+        if not values:
+            return {
+                "average": 0.0,
+                "median": 0.0,
+                "p90": 0.0,
+                "p95": 0.0,
+                "maximum": 0.0,
+            }
+
+        ordered = sorted(values)
+        count = len(ordered)
+        average = sum(ordered) / count
+        median = statistics.median(ordered)
+        p90_index = max(0, min(count - 1, int(round(count * 0.9)) - 1))
+        p95_index = max(0, min(count - 1, int(round(count * 0.95)) - 1))
+        return {
+            "average": round(average, 6),
+            "median": round(median, 6),
+            "p90": round(ordered[p90_index], 6),
+            "p95": round(ordered[p95_index], 6),
+            "maximum": round(ordered[-1], 6),
+        }
+
+    duration_stats = _stats(durations)
+    failure_reasons = {}
+    skip_reasons = {}
+
+    for record in failed:
+        reason = _normalize_reason(record.get("reason") or record.get("error_type") or record.get("stage") or "unexpected_exception")
+        failure_reasons[reason] = failure_reasons.get(reason, 0) + 1
+
+    for record in skipped:
+        reason = _normalize_reason(record.get("reason") or "skipped")
+        skip_reasons[reason] = skip_reasons.get(reason, 0) + 1
+
+    slowest_symbols = sorted(
+        symbol_records,
+        key=lambda record: float(record.get("total_seconds", 0.0) or 0.0),
+        reverse=True,
+    )[:10]
+
+    slowest_fetches = sorted(
+        [record for record in symbol_records if record.get("fetch_seconds") is not None],
+        key=lambda record: float(record.get("fetch_seconds", 0.0) or 0.0),
+        reverse=True,
+    )[:10]
+
+    slowest_analysis = sorted(
+        [record for record in symbol_records if record.get("analysis_seconds") is not None],
+        key=lambda record: float(record.get("analysis_seconds", 0.0) or 0.0),
+        reverse=True,
+    )[:10]
+
+    audit = {
+        "universe": universe_key,
+        "timeframe": interval,
+        "symbols_requested": len(symbols_to_scan),
+        "symbols_completed": len(completed),
+        "symbols_failed": len(failed),
+        "symbols_skipped": len(skipped),
+        "results_returned": len(results),
+        "total_duration_seconds": round(total_duration, 6),
+        "timing": {
+            "universe_loading_seconds": round(stage_timings.get("universe_loading_seconds", 0.0), 6),
+            "market_data_fetching_seconds": round(stage_timings.get("market_data_fetching_seconds", 0.0), 6),
+            "indicator_calculation_seconds": round(stage_timings.get("indicator_calculation_seconds", 0.0), 6),
+            "technical_scoring_seconds": round(stage_timings.get("technical_scoring_seconds", 0.0), 6),
+            "trade_quality_scoring_seconds": round(stage_timings.get("trade_quality_scoring_seconds", 0.0), 6),
+            "trade_setup_generation_seconds": round(stage_timings.get("trade_setup_generation_seconds", 0.0), 6),
+            "filtering_seconds": round(stage_timings.get("filtering_seconds", 0.0), 6),
+            "sorting_seconds": round(stage_timings.get("sorting_seconds", 0.0), 6),
+            "serialization_seconds": round(stage_timings.get("serialization_seconds", 0.0), 6),
+            "total_duration_seconds": round(total_duration, 6),
+        },
+        "symbols": symbol_records,
+        "slowest_symbols": [
+            {
+                "symbol": record.get("symbol"),
+                "total_seconds": round(float(record.get("total_seconds", 0.0) or 0.0), 6),
+            }
+            for record in slowest_symbols
+        ],
+        "slowest_market_data_fetches": [
+            {
+                "symbol": record.get("symbol"),
+                "fetch_seconds": round(float(record.get("fetch_seconds", 0.0) or 0.0), 6),
+            }
+            for record in slowest_fetches
+        ],
+        "slowest_analysis_operations": [
+            {
+                "symbol": record.get("symbol"),
+                "analysis_seconds": round(float(record.get("analysis_seconds", 0.0) or 0.0), 6),
+            }
+            for record in slowest_analysis
+        ],
+        "duration_stats": duration_stats,
+        "failure_reasons": failure_reasons,
+        "skip_reasons": skip_reasons,
+        "total_market_data_requests": stage_timings.get("total_market_data_requests", 0),
+        "unique_market_data_requests": stage_timings.get("unique_market_data_requests", 0),
+        "duplicate_market_data_requests": stage_timings.get("duplicate_market_data_requests", 0),
+        "execution_model": "thread_pool" if stage_timings.get("execution_model") == "thread_pool" else "sequential",
+        "worker_count": int(stage_timings.get("worker_count", 1)),
+        "maximum_in_flight_symbols": int(stage_timings.get("worker_count", 1)),
+        "refresh_interaction": {
+            "dashboard_refreshes_during_scan": False,
+            "same_symbol_requests_during_scan": False,
+            "scan_endpoint_overlap_possible": True,
+            "scan_button_disabled_during_active_scan": False,
+            "refresh_timer_initiates_scan": False,
+            "concurrent_requests_possible": True,
+        },
+        "market_data_method": "yfinance.Ticker.history",
+        "market_data_calls_per_symbol": 1,
+        "audit_mode": True,
+    }
+
+    if eligibility_summary is not None:
+        audit["eligibility"] = eligibility_summary
+
+    return audit
+
+
+def _log_audit_summary(audit):
+    LOGGER.info(
+        "[SCANNER_SUMMARY] universe=%s timeframe=%s execution_model=%s workers=%s requested=%s completed=%s failed=%s skipped=%s results=%s duration=%.6fs",
+        audit.get("universe"),
+        audit.get("timeframe"),
+        audit.get("execution_model"),
+        audit.get("worker_count"),
+        audit.get("symbols_requested"),
+        audit.get("symbols_completed"),
+        audit.get("symbols_failed"),
+        audit.get("symbols_skipped"),
+        audit.get("results_returned"),
+        audit.get("total_duration_seconds"),
+    )
+
+    for entry in audit.get("slowest_symbols", [])[:5]:
+        LOGGER.info("[SCANNER_SYMBOL] symbol=%s total=%.6fs", entry.get("symbol"), entry.get("total_seconds", 0.0))
+
 
 def scan_market(
     period: str = "1y",
@@ -271,17 +744,93 @@ def scan_market(
     limit: int = 10,
     universe: str = DEFAULT_UNIVERSE,
     max_symbols: int | None = None,
+    audit: bool | None = None,
+    max_workers: int | None = None,
+    eligibility: dict | None = None,
 ):
+    scan_start = perf_counter()
+    stage_timings = {
+        "universe_loading_seconds": 0.0,
+        "market_data_fetching_seconds": 0.0,
+        "indicator_calculation_seconds": 0.0,
+        "technical_scoring_seconds": 0.0,
+        "trade_quality_scoring_seconds": 0.0,
+        "trade_setup_generation_seconds": 0.0,
+        "filtering_seconds": 0.0,
+        "sorting_seconds": 0.0,
+        "serialization_seconds": 0.0,
+        "total_market_data_requests": 0,
+        "unique_market_data_requests": 0,
+        "duplicate_market_data_requests": 0,
+        "execution_model": "sequential",
+        "worker_count": 1,
+    }
+    audit_context = None
+
+    universe_start = perf_counter()
     universe_key, symbols = get_scan_universe(universe)
+    stage_timings["universe_loading_seconds"] = perf_counter() - universe_start
+
     safe_max_symbols = get_safe_max_symbols(max_symbols, len(symbols))
     symbols_to_scan = symbols[:safe_max_symbols]
-    batch = analyze_tickers(symbols_to_scan, period, interval)
+
+    worker_count = _resolve_worker_count(max_workers)
+    stage_timings["worker_count"] = worker_count
+    stage_timings["execution_model"] = "thread_pool" if worker_count > 1 else "sequential"
+
+    eligibility_config = _resolve_eligibility_config(eligibility)
+
+    audit_enabled = _is_audit_enabled(audit)
+    if audit_enabled:
+        audit_context = _create_audit_context()
+        audit_context["stage_timings"] = stage_timings
+    else:
+        audit_context = None
+
+    batch = _invoke_analyze_tickers(
+        symbols_to_scan,
+        period,
+        interval,
+        audit_context=audit_context,
+        max_workers=worker_count,
+        eligibility_config=eligibility_config,
+    )
     errors = batch.get("errors", [])
+    eligibility_records = batch.get("eligibility_records", [])
 
     for error in errors:
         print(f"Scanner failed for {error['ticker']}: {error['detail']}")
 
-    results = _build_scan_results(batch.get("results", []))
+    results = _build_scan_results(batch.get("results", []), stage_timings=stage_timings)
+
+    if audit_enabled:
+        stage_timings.update(audit_context.get("stage_timings", {}))
+        stage_timings["total_market_data_requests"] = audit_context.get("market_data_requests", 0)
+        stage_timings["unique_market_data_requests"] = len(audit_context.get("market_data_request_keys", set()))
+        stage_timings["duplicate_market_data_requests"] = audit_context.get("duplicate_market_data_requests", 0)
+        stage_timings["execution_model"] = "thread_pool" if worker_count > 1 else "sequential"
+        stage_timings["worker_count"] = worker_count
+
+        symbol_records = audit_context.get("symbol_records", [])
+        _materialize_audit_symbol_records(symbol_records, symbols_to_scan, batch.get("results", []), errors)
+
+        audit_summary = _summarize_audit(
+            symbol_records,
+            stage_timings,
+            perf_counter() - scan_start,
+            universe_key,
+            period,
+            interval,
+            symbols_to_scan,
+            safe_max_symbols,
+            limit,
+            results,
+            errors,
+            eligibility_summary=_build_eligibility_summary(symbols_to_scan, eligibility_config, eligibility_records),
+        )
+        _log_audit_summary(audit_summary)
+    else:
+        audit_summary = None
 
     return _build_scan_response(
         period,
@@ -292,6 +841,8 @@ def scan_market(
         limit,
         results,
         errors,
+        audit_summary,
+        stage_timings,
     )
 
 
@@ -301,6 +852,9 @@ def stream_scan_market(
     limit: int = 10,
     universe: str = DEFAULT_UNIVERSE,
     max_symbols: int | None = None,
+    audit: bool | None = None,
+    max_workers: int | None = None,
+    eligibility: dict | None = None,
 ):
     analyses = []
     errors = []
@@ -308,6 +862,13 @@ def stream_scan_market(
     safe_max_symbols = get_safe_max_symbols(max_symbols, len(symbols))
     symbols_to_scan = symbols[:safe_max_symbols]
     total = len(symbols_to_scan)
+    audit_context = None
+    audit_enabled = _is_audit_enabled(audit)
+    worker_count = _resolve_worker_count(max_workers)
+    eligibility_config = _resolve_eligibility_config(eligibility)
+
+    if audit_enabled:
+        audit_context = _create_audit_context()
 
     yield {
         "event": "start",
@@ -321,30 +882,101 @@ def stream_scan_market(
         },
     }
 
-    for index, symbol in enumerate(symbols_to_scan, start=1):
-        clean_symbol = str(symbol).strip().upper()
+    if worker_count <= 1:
+        for index, symbol in enumerate(symbols_to_scan, start=1):
+            clean_symbol = str(symbol).strip().upper()
 
-        if clean_symbol:
-            try:
-                analyses.append(analyze_ticker(clean_symbol, period, interval))
-            except Exception as e:
-                print(f"Scanner failed for {clean_symbol}: {e}")
-                errors.append({
-                    "ticker": clean_symbol,
-                    "detail": str(e),
-                })
+            if clean_symbol:
+                try:
+                    analyses.append(analyze_ticker(clean_symbol, period, interval, audit_context=audit_context))
+                except Exception as e:
+                    print(f"Scanner failed for {clean_symbol}: {e}")
+                    errors.append({
+                        "ticker": clean_symbol,
+                        "detail": str(e),
+                    })
 
-        yield {
-            "event": "progress",
-            "data": {
-                "scanned": index,
-                "total": total,
-                "symbol": clean_symbol,
-                "failed": len(errors),
-            },
-        }
+            yield {
+                "event": "progress",
+                "data": {
+                    "scanned": index,
+                    "total": total,
+                    "symbol": clean_symbol,
+                    "failed": len(errors),
+                },
+            }
+    else:
+        try:
+            with ThreadPoolExecutor(max_workers=worker_count) as executor:
+                future_to_symbol = {
+                    executor.submit(_process_symbol, symbol, period, interval, audit_context=audit_context, eligibility_config=eligibility_config): symbol
+                    for symbol in symbols_to_scan
+                }
 
-    results = _build_scan_results(analyses)
+                for future in as_completed(future_to_symbol):
+                    item = future.result()
+                    if item.get("analysis") is not None:
+                        analyses.append(item["analysis"])
+                    if item.get("error") is not None:
+                        errors.append(item["error"])
+                    if audit_context is not None:
+                        _merge_audit_context(audit_context, item.get("audit_context"))
+
+                    yield {
+                        "event": "progress",
+                        "data": {
+                            "scanned": len(analyses) + len(errors),
+                            "total": total,
+                            "symbol": item.get("symbol"),
+                            "failed": len(errors),
+                        },
+                    }
+        except Exception as exc:
+            LOGGER.warning("Concurrent execution unavailable for streaming scan; falling back to 1 worker: %s", exc)
+            for index, symbol in enumerate(symbols_to_scan, start=1):
+                clean_symbol = str(symbol).strip().upper()
+                if clean_symbol:
+                    try:
+                        analyses.append(analyze_ticker(clean_symbol, period, interval, audit_context=audit_context, eligibility_config=eligibility_config))
+                    except Exception as e:
+                        print(f"Scanner failed for {clean_symbol}: {e}")
+                        errors.append({
+                            "ticker": clean_symbol,
+                            "detail": str(e),
+                        })
+
+                yield {
+                    "event": "progress",
+                    "data": {
+                        "scanned": index,
+                        "total": total,
+                        "symbol": clean_symbol,
+                        "failed": len(errors),
+                    },
+                }
+
+    results = _build_scan_results(analyses, stage_timings=audit_context.get("stage_timings") if audit_context is not None else None)
+    audit_summary = None
+
+    if audit_enabled:
+        stage_timings = audit_context.get("stage_timings", {})
+        stage_timings["total_market_data_requests"] = audit_context.get("market_data_requests", 0)
+        stage_timings["unique_market_data_requests"] = len(audit_context.get("market_data_request_keys", set()))
+        stage_timings["duplicate_market_data_requests"] = audit_context.get("duplicate_market_data_requests", 0)
+        audit_summary = _summarize_audit(
+            audit_context.get("symbol_records", []),
+            stage_timings,
+            0.0,
+            universe_key,
+            period,
+            interval,
+            symbols_to_scan,
+            safe_max_symbols,
+            limit,
+            results,
+            errors,
+        )
+        _log_audit_summary(audit_summary)
 
     yield {
         "event": "complete",
@@ -357,5 +989,7 @@ def stream_scan_market(
             limit,
             results,
             errors,
+            audit_summary,
+            audit_context.get("stage_timings") if audit_context is not None else None,
         ),
     }

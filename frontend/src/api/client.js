@@ -56,6 +56,10 @@ function buildScanParams(period, interval, limit, options) {
     params.set("max_symbols", String(options.maxSymbols));
   }
 
+  if (options.eligibility) {
+    params.set("eligibility", JSON.stringify(options.eligibility));
+  }
+
   return params;
 }
 

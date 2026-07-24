@@ -1,9 +1,10 @@
 from app.services.market_data import get_price_history
 from app.services.indicators import calculate_sma, calculate_rsi, calculate_macd
+from app.services.eligibility import evaluate_market_data_eligibility
 from copy import deepcopy
 import math
 from threading import RLock
-from time import time
+from time import perf_counter, time
 
 ANALYSIS_CACHE_TTL_SECONDS = 60
 _analysis_cache = {}
@@ -1187,20 +1188,49 @@ def _set_cached_analysis(key, analysis):
         )
 
 
-def analyze_ticker(ticker: str, period: str = "1y", interval: str = "1d"):
+def _record_audit_duration(audit_context, stage_name, duration):
+    if audit_context is None:
+        return
+
+    stage_timings = audit_context.setdefault("stage_timings", {})
+    stage_timings[stage_name] = stage_timings.get(stage_name, 0.0) + duration
+
+
+def _record_symbol_result(audit_context, symbol, status, stage=None, reason=None, fetch_seconds=None, indicator_seconds=None, technical_score_seconds=None, trade_quality_score_seconds=None, setup_seconds=None, total_seconds=None):
+    if audit_context is None:
+        return
+
+    audit_context.setdefault("symbol_records", []).append({
+        "symbol": str(symbol).strip().upper(),
+        "status": status,
+        "stage": stage,
+        "reason": reason,
+        "fetch_seconds": round(fetch_seconds, 6) if fetch_seconds is not None else None,
+        "indicator_seconds": round(indicator_seconds, 6) if indicator_seconds is not None else None,
+        "technical_score_seconds": round(technical_score_seconds, 6) if technical_score_seconds is not None else None,
+        "trade_quality_score_seconds": round(trade_quality_score_seconds, 6) if trade_quality_score_seconds is not None else None,
+        "setup_seconds": round(setup_seconds, 6) if setup_seconds is not None else None,
+        "analysis_seconds": round(total_seconds, 6) if total_seconds is not None else None,
+        "total_seconds": round(total_seconds, 6) if total_seconds is not None else None,
+    })
+
+
+def analyze_ticker(ticker: str, period: str = "1y", interval: str = "1d", audit_context=None, eligibility_config=None):
     key = _cache_key(ticker, period, interval)
-    cached = _get_cached_analysis(key)
+    if eligibility_config is None or not getattr(eligibility_config, "enabled", False):
+        cached = _get_cached_analysis(key)
 
-    if cached is not None:
-        return cached
+        if cached is not None:
+            return cached
 
-    analysis = _analyze_ticker_uncached(key[0], period, interval)
-    _set_cached_analysis(key, analysis)
+    analysis = _analyze_ticker_uncached(key[0], period, interval, audit_context=audit_context, eligibility_config=eligibility_config)
+    if eligibility_config is None or not getattr(eligibility_config, "enabled", False):
+        _set_cached_analysis(key, analysis)
 
     return deepcopy(analysis)
 
 
-def analyze_tickers(symbols, period: str = "1y", interval: str = "1d"):
+def analyze_tickers(symbols, period: str = "1y", interval: str = "1d", audit_context=None, eligibility_config=None):
     results = []
     errors = []
 
@@ -1211,8 +1241,10 @@ def analyze_tickers(symbols, period: str = "1y", interval: str = "1d"):
             continue
 
         try:
-            results.append(analyze_ticker(clean_symbol, period, interval))
+            results.append(analyze_ticker(clean_symbol, period, interval, audit_context=audit_context, eligibility_config=eligibility_config))
         except Exception as e:
+            if audit_context is not None:
+                _record_symbol_result(audit_context, clean_symbol, "failed", stage="market_data_fetch", reason="market_data_error")
             errors.append({
                 "ticker": clean_symbol,
                 "detail": str(e),
@@ -1227,13 +1259,30 @@ def analyze_tickers(symbols, period: str = "1y", interval: str = "1d"):
     }
 
 
-def _analyze_ticker_uncached(ticker: str, period: str = "1y", interval: str = "1d"):
-    data = get_price_history(ticker, period, interval)
+def _analyze_ticker_uncached(ticker: str, period: str = "1y", interval: str = "1d", audit_context=None, eligibility_config=None):
+    symbol_started_at = perf_counter()
+    fetch_seconds = None
+    indicator_seconds = None
+    technical_score_seconds = None
+    trade_quality_score_seconds = None
+    setup_seconds = None
+
+    try:
+        data = get_price_history(ticker, period, interval, audit_context=audit_context)
+    except Exception as exc:
+        if audit_context is not None:
+            _record_symbol_result(audit_context, ticker, "failed", stage="market_data_fetch", reason="market_data_error")
+        raise exc
+
+    fetch_seconds = 0.0
+    if audit_context is not None:
+        fetch_seconds = audit_context.get("last_fetch_seconds", 0.0)
+
     data = data.dropna(subset=["Open", "High", "Low", "Close"])
 
     if interval == "1d":
         try:
-            intraday = get_price_history(ticker, "1d", "5m")
+            intraday = get_price_history(ticker, "1d", "5m", audit_context=audit_context)
             intraday = intraday.dropna(subset=["Open", "High", "Low", "Close"])
 
             if not intraday.empty:
@@ -1249,10 +1298,32 @@ def _analyze_ticker_uncached(ticker: str, period: str = "1y", interval: str = "1
         except Exception as e:
             print("Intraday daily candle update failed:", e)
 
+    eligibility_result = None
+    if eligibility_config is not None and getattr(eligibility_config, "enabled", False):
+        eligibility_result = evaluate_market_data_eligibility(ticker, data, eligibility_config)
+        if not eligibility_result.eligible:
+            if audit_context is not None:
+                _record_symbol_result(
+                    audit_context,
+                    ticker,
+                    "excluded",
+                    stage="eligibility",
+                    reason=eligibility_result.reason_code,
+                    total_seconds=perf_counter() - symbol_started_at,
+                )
+            return {
+                "ticker": ticker,
+                "price": safe_float(latest["Close"], 2) if "Close" in data.columns else None,
+                "eligibility": eligibility_result.to_dict(),
+            }
+
+    indicator_started_at = perf_counter()
     data["SMA_20"] = calculate_sma(data, 20)
     data["SMA_50"] = calculate_sma(data, 50)
     data["RSI"] = calculate_rsi(data)
     data["MACD"], data["MACD_SIGNAL"], data["MACD_HIST"] = calculate_macd(data)
+    indicator_seconds = perf_counter() - indicator_started_at
+    _record_audit_duration(audit_context, "indicator_calculation_seconds", indicator_seconds)
 
     latest = data.iloc[-1]
 
@@ -1311,18 +1382,7 @@ def _analyze_ticker_uncached(ticker: str, period: str = "1y", interval: str = "1
         support_zone, resistance_zone
     )
 
-    trade_setup = generate_trade_setup(
-    price,
-    trend,
-    rsi,
-    rvol,
-    macd,
-    macd_signal,
-    macd_hist,
-    support_zone,
-    resistance_zone,
-    )
-
+    technical_started_at = perf_counter()
     technical_score = calculate_technical_score(
         price,
         sma_20,
@@ -1334,7 +1394,25 @@ def _analyze_ticker_uncached(ticker: str, period: str = "1y", interval: str = "1
         support_zone,
         resistance_zone,
     )
+    technical_score_seconds = perf_counter() - technical_started_at
+    _record_audit_duration(audit_context, "technical_scoring_seconds", technical_score_seconds)
 
+    setup_started_at = perf_counter()
+    trade_setup = generate_trade_setup(
+    price,
+    trend,
+    rsi,
+    rvol,
+    macd,
+    macd_signal,
+    macd_hist,
+    support_zone,
+    resistance_zone,
+    )
+    setup_seconds = perf_counter() - setup_started_at
+    _record_audit_duration(audit_context, "trade_setup_generation_seconds", setup_seconds)
+
+    trade_quality_started_at = perf_counter()
     trade_quality_score = calculate_trade_quality_score(
         price,
         sma_20,
@@ -1347,6 +1425,8 @@ def _analyze_ticker_uncached(ticker: str, period: str = "1y", interval: str = "1
         resistance_zone,
         trade_setup,
     )
+    trade_quality_score_seconds = perf_counter() - trade_quality_started_at
+    _record_audit_duration(audit_context, "trade_quality_scoring_seconds", trade_quality_score_seconds)
 
     response = {
         "ticker": ticker.upper(),
@@ -1379,5 +1459,19 @@ def _analyze_ticker_uncached(ticker: str, period: str = "1y", interval: str = "1
         "risk_note": "This is not financial advice. Use position sizing and stop-loss rules.",
         "chart_data": chart_data,
     }
+
+    if audit_context is not None:
+        total_seconds = perf_counter() - symbol_started_at
+        _record_symbol_result(
+            audit_context,
+            ticker,
+            "completed",
+            fetch_seconds=fetch_seconds,
+            indicator_seconds=indicator_seconds,
+            technical_score_seconds=technical_score_seconds,
+            trade_quality_score_seconds=trade_quality_score_seconds,
+            setup_seconds=setup_seconds,
+            total_seconds=total_seconds,
+        )
 
     return clean_for_json(response)
