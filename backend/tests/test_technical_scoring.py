@@ -104,6 +104,20 @@ class PriceStructureFamilyTests(unittest.TestCase):
 
 
 class TechnicalScoreContractTests(unittest.TestCase):
+    def test_components_include_expandable_detail_contract(self):
+        result = calculate_technical_score(
+            110, 105, 100, 60, 1.5, 2, 1,
+            zone(100, 3), zone(125, 12),
+        )
+        for component in result["components"].values():
+            self.assertTrue(component["details"])
+            for detail in component["details"]:
+                self.assertIn("label", detail)
+                self.assertIn("score", detail)
+                self.assertIn("max_score", detail)
+                self.assertIn("explanation", detail)
+                self.assertIn("availability", detail)
+
     def test_legacy_contract_components_and_invariants(self):
         result = calculate_technical_score(
             110, 105, 100, 60, 2, 2, 1,
@@ -121,7 +135,7 @@ class TechnicalScoreContractTests(unittest.TestCase):
         for component in result["components"].values():
             self.assertTrue(0 <= component["score"] <= component["max_score"])
             self.assertEqual(
-                {"score", "max_score", "status", "positive_reasons", "negative_reasons", "inputs"},
+                {"score", "max_score", "status", "positive_reasons", "negative_reasons", "inputs", "details"},
                 set(component),
             )
 

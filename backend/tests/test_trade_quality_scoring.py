@@ -35,6 +35,16 @@ def setup(setup_type, entry, stop, target, bias="Bullish"):
 
 
 class TradeQualityScenarioTests(unittest.TestCase):
+    def test_components_include_expandable_detail_contract(self):
+        result = calculate_trade_quality_score(
+            100, 98, 95, 60, 1.5, 2, 1,
+            zone(95, 5), zone(110, 10),
+            setup("Momentum Long", entry=100, stop=95, target=110),
+        )
+        for component in result["components"].values():
+            self.assertTrue(component["details"])
+            self.assertTrue(all("score" in detail and "max_score" in detail
+                                for detail in component["details"]))
     def score(self, price, sma_20, sma_50, rsi, rvol, macd, signal,
               support, resistance, trade_setup):
         return calculate_trade_quality_score(

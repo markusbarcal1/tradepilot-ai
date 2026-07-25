@@ -1,5 +1,11 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { paperBuy, paperSell } from "../api/paperTrading";
+import useToast from "../hooks/useToast";
+import {
+  getOrderValidationNotification,
+  getTradeErrorNotification,
+  getTradeSuccessNotification,
+} from "../utils/tradeNotifications";
 
 function formatCurrency(value) {
   if (!Number.isFinite(value)) return "N/A";
@@ -18,11 +24,11 @@ function QuickTradePanel({
   priceChangePercent,
   onTradeExecuted,
 }) {
+  const { showToast } = useToast();
+  const submittingRef = useRef(false);
   const [side, setSide] = useState("buy");
   const [shares, setShares] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState("");
 
   const cleanSymbol = symbol?.trim().toUpperCase() || "";
   const numericShares = Number(shares);
@@ -35,14 +41,6 @@ function QuickTradePanel({
     Number.isFinite(Number(priceChange)) &&
     Number.isFinite(Number(priceChangePercent));
   const priceChangeClass = Number(priceChange) >= 0 ? "positive" : "negative";
-  const canSubmit =
-    cleanSymbol &&
-    Number.isFinite(numericPrice) &&
-    numericPrice > 0 &&
-    Number.isFinite(numericShares) &&
-    numericShares > 0 &&
-    !loading;
-
   const updateShares = (nextShares) => {
     const value = Number(nextShares);
 
@@ -57,26 +55,44 @@ function QuickTradePanel({
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!canSubmit) return;
+    if (submittingRef.current) return;
 
+    const order = {
+      symbol: cleanSymbol,
+      side,
+      shares: numericShares,
+      price: numericPrice,
+    };
+    const validationNotification = getOrderValidationNotification(order);
+    if (validationNotification) {
+      showToast(validationNotification);
+      return;
+    }
+
+    submittingRef.current = true;
     setLoading(true);
-    setMessage("");
-    setMessageType("");
 
     try {
       const tradeRequest = side === "buy" ? paperBuy : paperSell;
-      await tradeRequest(cleanSymbol, numericShares, numericPrice);
+      const response = await tradeRequest(cleanSymbol, numericShares, numericPrice);
+      const successNotification = getTradeSuccessNotification(response.data);
 
-      setMessage(
-        `${side === "buy" ? "Bought" : "Sold"} ${numericShares} ${cleanSymbol}`
-      );
-      setMessageType("success");
-      onTradeExecuted?.();
+      if (!successNotification) {
+        const malformedResponseError = new Error("Malformed trade response");
+        malformedResponseError.code = "MALFORMED_TRADE_RESPONSE";
+        throw malformedResponseError;
+      }
+
+      showToast(successNotification);
+      try {
+        onTradeExecuted?.();
+      } catch (refreshError) {
+        console.error("Trade succeeded, but portfolio refresh could not start:", refreshError);
+      }
     } catch (error) {
-      const detail = error.response?.data?.detail;
-      setMessage(detail || "Trade could not be executed.");
-      setMessageType("error");
+      showToast(getTradeErrorNotification(error, order));
     } finally {
+      submittingRef.current = false;
       setLoading(false);
     }
   };
@@ -156,7 +172,7 @@ function QuickTradePanel({
       <button
         type="submit"
         className={`trade-submit ${side}`}
-        disabled={!canSubmit}
+        disabled={loading}
       >
         {loading
           ? "Executing..."
@@ -164,12 +180,6 @@ function QuickTradePanel({
               cleanSymbol || "SYMBOL"
             }`}
       </button>
-
-      {message && (
-        <p className={`trade-message ${messageType}`}>
-          {message}
-        </p>
-      )}
 
       <p className="trade-note">
         <span>i</span>

@@ -9,6 +9,7 @@ from urllib.request import urlopen
 
 from app.services.analyzer import analyze_ticker, analyze_tickers
 from app.services.eligibility import ScannerEligibilityConfig
+from app.services.market_data import classify_market_data_error
 
 
 DEFAULT_UNIVERSE = "sp500"
@@ -16,7 +17,7 @@ NASDAQ_LISTED_URL = "https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.tx
 NASDAQ_UNIVERSE_CACHE_SECONDS = 12 * 60 * 60
 _nasdaq_universe_cache = {
     "expires_at": 0,
-    "symbols": [],
+    "symbols": (),
 }
 
 SP500_UNIVERSE = [
@@ -88,6 +89,7 @@ SCANNER_MAX_WORKERS_ENV = "SCANNER_MAX_WORKERS"
 DEFAULT_SCANNER_MAX_WORKERS = 8
 MIN_SCANNER_MAX_WORKERS = 1
 MAX_SCANNER_MAX_WORKERS = 16
+SCANNER_PROVIDER_FAILURE_CIRCUIT_THRESHOLD = 8
 
 
 def _is_scannable_nasdaq_listing(row):
@@ -126,7 +128,7 @@ def get_nasdaq_universe():
         _nasdaq_universe_cache["symbols"]
         and _nasdaq_universe_cache["expires_at"] > time()
     ):
-        return _nasdaq_universe_cache["symbols"]
+        return list(_nasdaq_universe_cache["symbols"])
 
     try:
         with urlopen(NASDAQ_LISTED_URL, timeout=20) as response:
@@ -141,10 +143,10 @@ def get_nasdaq_universe():
         if _is_scannable_nasdaq_listing(row):
             symbols.append(row["Symbol"].strip().upper().replace(".", "-"))
 
-    _nasdaq_universe_cache["symbols"] = symbols
+    _nasdaq_universe_cache["symbols"] = tuple(symbols)
     _nasdaq_universe_cache["expires_at"] = time() + NASDAQ_UNIVERSE_CACHE_SECONDS
 
-    return symbols
+    return list(symbols)
 
 
 def get_scan_universe(universe: str):
@@ -157,7 +159,9 @@ def get_scan_universe(universe: str):
         available = ", ".join(sorted([*SCAN_UNIVERSES.keys(), "nasdaq"]))
         raise ValueError(f"Unknown scanner universe '{universe}'. Available universes: {available}")
 
-    return universe_key, SCAN_UNIVERSES[universe_key]
+    # Scanner callers always receive an isolated working copy. Canonical
+    # universe constants are never exposed for filtering or truncation.
+    return universe_key, list(SCAN_UNIVERSES[universe_key])
 
 
 def get_safe_max_symbols(max_symbols: int | None, universe_size: int):
@@ -271,8 +275,28 @@ def _build_scan_response(
     errors=None,
     audit=None,
     stage_timings=None,
+    eligibility_summary=None,
 ):
     errors = errors or []
+    eligibility_summary = eligibility_summary or (audit or {}).get("eligibility", {})
+    temporary_failures = [
+        error for error in errors
+        if error.get("category") in {
+            "rate_limit",
+            "temporary_provider_failure",
+            "provider_circuit_open",
+        }
+    ]
+    invalid_symbols = [error for error in errors if error.get("invalid_ticker")]
+    unexpected_errors = [
+        error for error in errors
+        if error not in temporary_failures and error not in invalid_symbols
+    ]
+    skipped_by_eligibility = eligibility_summary.get("symbols_excluded", 0)
+    successfully_scanned = max(
+        0,
+        len(symbols_to_scan) - len(errors) - skipped_by_eligibility,
+    )
 
     serialization_start = perf_counter()
     response = {
@@ -284,6 +308,15 @@ def _build_scan_response(
         "mode": "bullish",
         "error_count": len(errors),
         "errors": errors,
+        "summary": {
+            "total_symbols": len(symbols_to_scan),
+            "eligible": successfully_scanned,
+            "skipped_by_eligibility": skipped_by_eligibility,
+            "scanned_successfully": successfully_scanned,
+            "temporary_data_failures": len(temporary_failures),
+            "genuinely_invalid_symbols": len(invalid_symbols),
+            "unexpected_errors": len(unexpected_errors),
+        },
         "count": len(results[:limit]),
         "results": results[:limit]
     }
@@ -451,17 +484,24 @@ def _process_symbol(symbol, period, interval, audit_context=None, eligibility_co
             "audit_context": local_audit_context,
         }
     except Exception as exc:
+        classification = classify_market_data_error(exc)
         if local_audit_context is not None:
             from app.services.analyzer import _record_symbol_result
 
             existing_symbols = {str(record.get("symbol", "")).strip().upper() for record in local_audit_context.get("symbol_records", [])}
             if clean_symbol not in existing_symbols:
-                _record_symbol_result(local_audit_context, clean_symbol, "failed", stage="market_data_fetch", reason="market_data_error")
+                _record_symbol_result(
+                    local_audit_context,
+                    clean_symbol,
+                    "failed",
+                    stage="market_data_fetch",
+                    reason=classification["category"],
+                )
 
         return {
             "symbol": clean_symbol,
             "analysis": None,
-            "error": {"ticker": clean_symbol, "detail": str(exc)},
+            "error": {"ticker": clean_symbol, "detail": str(exc), **classification},
             "audit_context": local_audit_context,
         }
 
@@ -496,6 +536,8 @@ def _invoke_analyze_tickers(symbols, period, interval, audit_context=None, max_w
     results = []
     errors = []
     eligibility_records = []
+    consecutive_provider_failures = 0
+    processed_futures = set()
 
     try:
         with ThreadPoolExecutor(max_workers=worker_count) as executor:
@@ -505,6 +547,7 @@ def _invoke_analyze_tickers(symbols, period, interval, audit_context=None, max_w
             }
 
             for future in as_completed(future_to_symbol):
+                processed_futures.add(future)
                 item = future.result()
                 analysis = item.get("analysis")
                 if analysis is not None:
@@ -514,8 +557,39 @@ def _invoke_analyze_tickers(symbols, period, interval, audit_context=None, max_w
                         results.append(analysis)
                 if item.get("error") is not None:
                     errors.append(item["error"])
+                    if item["error"].get("retryable"):
+                        consecutive_provider_failures += 1
+                    else:
+                        consecutive_provider_failures = 0
+                else:
+                    consecutive_provider_failures = 0
                 if audit_context is not None:
                     _merge_audit_context(audit_context, item.get("audit_context"))
+
+                if consecutive_provider_failures >= SCANNER_PROVIDER_FAILURE_CIRCUIT_THRESHOLD:
+                    completed_symbol = item.get("symbol")
+                    aborted = 0
+                    for pending_future, pending_symbol in future_to_symbol.items():
+                        if pending_future in processed_futures:
+                            continue
+                        clean_pending = str(pending_symbol).strip().upper()
+                        if clean_pending == completed_symbol:
+                            continue
+                        pending_future.cancel()
+                        aborted += 1
+                        errors.append({
+                            "ticker": clean_pending,
+                            "detail": "Scanner stopped requesting market data after repeated temporary provider failures",
+                            "category": "provider_circuit_open",
+                            "retryable": True,
+                            "invalid_ticker": False,
+                        })
+                    LOGGER.warning(
+                        "[SCANNER_PROVIDER_CIRCUIT_OPEN] consecutive_failures=%s aborted_symbols=%s",
+                        consecutive_provider_failures,
+                        aborted,
+                    )
+                    break
     except Exception as exc:
         LOGGER.warning("Concurrent execution unavailable; falling back to 1 worker: %s", exc)
         if audit_context is None:
@@ -590,7 +664,10 @@ def _materialize_audit_symbol_records(symbol_records, symbols_to_scan, analyses,
 def _summarize_audit(symbol_records, stage_timings, total_duration, universe_key, period, interval, symbols_to_scan, safe_max_symbols, limit, results, errors, eligibility_summary=None):
     completed = [record for record in symbol_records if record.get("status") == "completed"]
     failed = [record for record in symbol_records if record.get("status") == "failed"]
-    skipped = [record for record in symbol_records if record.get("status") == "skipped"]
+    skipped = [
+        record for record in symbol_records
+        if record.get("status") in {"skipped", "excluded"}
+    ]
 
     durations = [record.get("total_seconds", 0.0) for record in symbol_records if isinstance(record.get("total_seconds"), (int, float))]
 
@@ -770,6 +847,12 @@ def scan_market(
     universe_start = perf_counter()
     universe_key, symbols = get_scan_universe(universe)
     stage_timings["universe_loading_seconds"] = perf_counter() - universe_start
+    LOGGER.info(
+        "[SCANNER_UNIVERSE_LOADED] universe=%s symbol_count=%s source=%s persistent_write=false",
+        universe_key,
+        len(symbols),
+        "nasdaqtrader" if universe_key == "nasdaq" else "canonical_static",
+    )
 
     safe_max_symbols = get_safe_max_symbols(max_symbols, len(symbols))
     symbols_to_scan = symbols[:safe_max_symbols]
@@ -797,6 +880,11 @@ def scan_market(
     )
     errors = batch.get("errors", [])
     eligibility_records = batch.get("eligibility_records", [])
+    eligibility_summary = _build_eligibility_summary(
+        symbols_to_scan,
+        eligibility_config,
+        eligibility_records,
+    )
 
     for error in errors:
         print(f"Scanner failed for {error['ticker']}: {error['detail']}")
@@ -826,13 +914,13 @@ def scan_market(
             limit,
             results,
             errors,
-            eligibility_summary=_build_eligibility_summary(symbols_to_scan, eligibility_config, eligibility_records),
+            eligibility_summary=eligibility_summary,
         )
         _log_audit_summary(audit_summary)
     else:
         audit_summary = None
 
-    return _build_scan_response(
+    response = _build_scan_response(
         period,
         interval,
         universe_key,
@@ -843,7 +931,20 @@ def scan_market(
         errors,
         audit_summary,
         stage_timings,
+        eligibility_summary,
     )
+    LOGGER.info(
+        "[SCANNER_OUTCOME] universe=%s total=%s eligible=%s eligibility_skips=%s successful=%s temporary_failures=%s invalid=%s unexpected=%s persistent_writes=0",
+        universe_key,
+        response["summary"]["total_symbols"],
+        response["summary"]["eligible"],
+        response["summary"]["skipped_by_eligibility"],
+        response["summary"]["scanned_successfully"],
+        response["summary"]["temporary_data_failures"],
+        response["summary"]["genuinely_invalid_symbols"],
+        response["summary"]["unexpected_errors"],
+    )
+    return response
 
 
 def stream_scan_market(
@@ -859,6 +960,12 @@ def stream_scan_market(
     analyses = []
     errors = []
     universe_key, symbols = get_scan_universe(universe)
+    LOGGER.info(
+        "[SCANNER_UNIVERSE_LOADED] universe=%s symbol_count=%s source=%s persistent_write=false",
+        universe_key,
+        len(symbols),
+        "nasdaqtrader" if universe_key == "nasdaq" else "canonical_static",
+    )
     safe_max_symbols = get_safe_max_symbols(max_symbols, len(symbols))
     symbols_to_scan = symbols[:safe_max_symbols]
     total = len(symbols_to_scan)
@@ -883,18 +990,33 @@ def stream_scan_market(
     }
 
     if worker_count <= 1:
+        consecutive_provider_failures = 0
         for index, symbol in enumerate(symbols_to_scan, start=1):
             clean_symbol = str(symbol).strip().upper()
 
             if clean_symbol:
                 try:
-                    analyses.append(analyze_ticker(clean_symbol, period, interval, audit_context=audit_context))
+                    analyses.append(analyze_ticker(
+                        clean_symbol,
+                        period,
+                        interval,
+                        audit_context=audit_context,
+                        eligibility_config=eligibility_config,
+                    ))
+                    consecutive_provider_failures = 0
                 except Exception as e:
+                    classification = classify_market_data_error(e)
                     print(f"Scanner failed for {clean_symbol}: {e}")
                     errors.append({
                         "ticker": clean_symbol,
                         "detail": str(e),
+                        **classification,
                     })
+                    consecutive_provider_failures = (
+                        consecutive_provider_failures + 1
+                        if classification["retryable"]
+                        else 0
+                    )
 
             yield {
                 "event": "progress",
@@ -905,6 +1027,21 @@ def stream_scan_market(
                     "failed": len(errors),
                 },
             }
+            if consecutive_provider_failures >= SCANNER_PROVIDER_FAILURE_CIRCUIT_THRESHOLD:
+                for pending_symbol in symbols_to_scan[index:]:
+                    errors.append({
+                        "ticker": str(pending_symbol).strip().upper(),
+                        "detail": "Scanner stopped requesting market data after repeated temporary provider failures",
+                        "category": "provider_circuit_open",
+                        "retryable": True,
+                        "invalid_ticker": False,
+                    })
+                LOGGER.warning(
+                    "[SCANNER_PROVIDER_CIRCUIT_OPEN] consecutive_failures=%s aborted_symbols=%s",
+                    consecutive_provider_failures,
+                    total - index,
+                )
+                break
     else:
         try:
             with ThreadPoolExecutor(max_workers=worker_count) as executor:
@@ -912,13 +1049,22 @@ def stream_scan_market(
                     executor.submit(_process_symbol, symbol, period, interval, audit_context=audit_context, eligibility_config=eligibility_config): symbol
                     for symbol in symbols_to_scan
                 }
+                consecutive_provider_failures = 0
+                processed_futures = set()
 
                 for future in as_completed(future_to_symbol):
+                    processed_futures.add(future)
                     item = future.result()
                     if item.get("analysis") is not None:
                         analyses.append(item["analysis"])
                     if item.get("error") is not None:
                         errors.append(item["error"])
+                        if item["error"].get("retryable"):
+                            consecutive_provider_failures += 1
+                        else:
+                            consecutive_provider_failures = 0
+                    else:
+                        consecutive_provider_failures = 0
                     if audit_context is not None:
                         _merge_audit_context(audit_context, item.get("audit_context"))
 
@@ -931,6 +1077,37 @@ def stream_scan_market(
                             "failed": len(errors),
                         },
                     }
+
+                    if consecutive_provider_failures >= SCANNER_PROVIDER_FAILURE_CIRCUIT_THRESHOLD:
+                        aborted = 0
+                        for pending_future, pending_symbol in future_to_symbol.items():
+                            if pending_future in processed_futures:
+                                continue
+                            pending_future.cancel()
+                            aborted += 1
+                            errors.append({
+                                "ticker": str(pending_symbol).strip().upper(),
+                                "detail": "Scanner stopped requesting market data after repeated temporary provider failures",
+                                "category": "provider_circuit_open",
+                                "retryable": True,
+                                "invalid_ticker": False,
+                            })
+                        LOGGER.warning(
+                            "[SCANNER_PROVIDER_CIRCUIT_OPEN] consecutive_failures=%s aborted_symbols=%s",
+                            consecutive_provider_failures,
+                            aborted,
+                        )
+                        yield {
+                            "event": "progress",
+                            "data": {
+                                "scanned": total,
+                                "total": total,
+                                "symbol": item.get("symbol"),
+                                "failed": len(errors),
+                                "stopped_reason": "temporary_provider_failure",
+                            },
+                        }
+                        break
         except Exception as exc:
             LOGGER.warning("Concurrent execution unavailable for streaming scan; falling back to 1 worker: %s", exc)
             for index, symbol in enumerate(symbols_to_scan, start=1):
@@ -955,6 +1132,26 @@ def stream_scan_market(
                     },
                 }
 
+    eligibility_records = [
+        analysis.get("eligibility")
+        for analysis in analyses
+        if isinstance(analysis, dict)
+        and isinstance(analysis.get("eligibility"), dict)
+        and not analysis["eligibility"].get("eligible", True)
+    ]
+    analyses = [
+        analysis for analysis in analyses
+        if not (
+            isinstance(analysis, dict)
+            and isinstance(analysis.get("eligibility"), dict)
+            and not analysis["eligibility"].get("eligible", True)
+        )
+    ]
+    eligibility_summary = _build_eligibility_summary(
+        symbols_to_scan,
+        eligibility_config,
+        eligibility_records,
+    )
     results = _build_scan_results(analyses, stage_timings=audit_context.get("stage_timings") if audit_context is not None else None)
     audit_summary = None
 
@@ -975,21 +1172,36 @@ def stream_scan_market(
             limit,
             results,
             errors,
+            eligibility_summary=eligibility_summary,
         )
         _log_audit_summary(audit_summary)
 
+    response = _build_scan_response(
+        period,
+        interval,
+        universe_key,
+        symbols_to_scan,
+        safe_max_symbols,
+        limit,
+        results,
+        errors,
+        audit_summary,
+        audit_context.get("stage_timings") if audit_context is not None else None,
+        eligibility_summary,
+    )
+    LOGGER.info(
+        "[SCANNER_OUTCOME] universe=%s total=%s eligible=%s eligibility_skips=%s successful=%s temporary_failures=%s invalid=%s unexpected=%s persistent_writes=0",
+        universe_key,
+        response["summary"]["total_symbols"],
+        response["summary"]["eligible"],
+        response["summary"]["skipped_by_eligibility"],
+        response["summary"]["scanned_successfully"],
+        response["summary"]["temporary_data_failures"],
+        response["summary"]["genuinely_invalid_symbols"],
+        response["summary"]["unexpected_errors"],
+    )
+
     yield {
         "event": "complete",
-        "data": _build_scan_response(
-            period,
-            interval,
-            universe_key,
-            symbols_to_scan,
-            safe_max_symbols,
-            limit,
-            results,
-            errors,
-            audit_summary,
-            audit_context.get("stage_timings") if audit_context is not None else None,
-        ),
+        "data": response,
     }

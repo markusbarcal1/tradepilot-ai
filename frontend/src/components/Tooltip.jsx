@@ -11,6 +11,7 @@ function Tooltip({ label, content }) {
         type="button"
         aria-label={`About ${label}`}
         aria-describedby={tooltipId}
+        onClick={(event) => event.stopPropagation()}
       >
         ?
       </button>

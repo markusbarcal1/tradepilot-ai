@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   analyzeTicker as fetchAnalysis,
+  analyzeFinancials as fetchFinancials,
   analyzeTickers as fetchBatchAnalysis,
   isRequestCanceled,
   validateTicker,
@@ -9,6 +10,7 @@ import Header from "./components/Header";
 import MetricsPanel from "./components/MetricsPanel";
 import ChartPanel from "./components/ChartPanel";
 import ScorePanel from "./components/ScorePanel";
+import FinancialScorePanel from "./components/FinancialScorePanel";
 import SetupPanel from "./components/SetupPanel";
 import QuickTradePanel from "./components/QuickTradePanel";
 import PaperPortfolioSummary from "./components/PaperPortfolioSummary";
@@ -17,6 +19,11 @@ import Watchlist from "./components/Watchlist";
 import ScannerPanel from "./components/ScannerPanel";
 import { getPaperPortfolio, getPaperTrades } from "./api/paperTrading";
 import usePollingData from "./hooks/usePollingData";
+import useToast from "./hooks/useToast";
+import {
+  getAnalysisErrorNotification,
+  isValidAnalysisResponse,
+} from "./utils/analysisErrors";
 import "./App.css";
 
 const TIMEFRAMES = [
@@ -43,7 +50,9 @@ const PORTFOLIO_REFRESH_MS = 15_000;
 const WATCHLIST_REFRESH_MS = 45_000;
 
 function App() {
+  const { showToast } = useToast();
   const analysisRequestRef = useRef({ controller: null, id: 0 });
+  const financialRequestRef = useRef({ controller: null, id: 0 });
   const validationRequestRef = useRef({ controller: null, id: 0 });
   const watchlistRequestRef = useRef({ controller: null, id: 0 });
   const didRunInitialLoadRef = useRef(false);
@@ -55,7 +64,9 @@ function App() {
   const [analysisUpdatedAt, setAnalysisUpdatedAt] = useState(null);
   const [chartResetKey, setChartResetKey] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [financialAnalysis, setFinancialAnalysis] = useState(null);
+  const [financialLoading, setFinancialLoading] = useState(false);
+  const [financialError, setFinancialError] = useState("");
   const [currentView, setCurrentView] = useState("dashboard");
 
   const [watchlist, setWatchlist] = useState(() => {
@@ -82,6 +93,36 @@ function App() {
     }, 2500);
   };
 
+  const loadFinancialAnalysis = useCallback(async (symbol, options = {}) => {
+    financialRequestRef.current.controller?.abort();
+    const controller = new AbortController();
+    const requestId = financialRequestRef.current.id + 1;
+    financialRequestRef.current = { controller, id: requestId };
+
+    if (!options.background) {
+      setFinancialAnalysis(null);
+      setFinancialLoading(true);
+      setFinancialError("");
+    }
+
+    try {
+      const response = await fetchFinancials(symbol, { signal: controller.signal });
+      if (financialRequestRef.current.id !== requestId) return;
+      setFinancialAnalysis(response.data);
+      setFinancialError("");
+    } catch (err) {
+      if (isRequestCanceled(err) || financialRequestRef.current.id !== requestId) return;
+      console.error("Could not load financial analysis:", err);
+      if (!options.background) {
+        setFinancialError("Financial analysis is temporarily unavailable.");
+      }
+    } finally {
+      if (financialRequestRef.current.id === requestId && !options.background) {
+        setFinancialLoading(false);
+      }
+    }
+  }, []);
+
   const analyzeTicker = useCallback(async (
     symbol = submittedTicker,
     selectedTimeframe = timeframe,
@@ -95,7 +136,6 @@ function App() {
 
     if (!options.background) {
       setLoading(true);
-      setError("");
     }
 
     try {
@@ -106,37 +146,44 @@ function App() {
         { signal: controller.signal }
       );
 
-      if (analysisRequestRef.current.id !== requestId) return;
+      if (analysisRequestRef.current.id !== requestId) return false;
+
+      if (!isValidAnalysisResponse(response.data)) {
+        const malformedResponseError = new Error("Malformed analysis response");
+        malformedResponseError.code = "MALFORMED_ANALYSIS_RESPONSE";
+        throw malformedResponseError;
+      }
 
       setAnalysis(response.data);
+      setSubmittedTicker(response.data.ticker);
+      setTimeframe(selectedTimeframe);
       setAnalysisUpdatedAt(new Date().toISOString());
       if (!options.background) {
         setChartResetKey(
           `${response.data.ticker}-${selectedTimeframe.period}-${selectedTimeframe.interval}-${requestId}`
         );
+        loadFinancialAnalysis(response.data.ticker);
       }
-      setError("");
+      return true;
     } catch (err) {
       if (
         isRequestCanceled(err) ||
         analysisRequestRef.current.id !== requestId
       ) {
-        return;
+        return false;
       }
 
       console.error(err);
       if (!options.background) {
-        setAnalysis(null);
-        setError(
-          "Could not analyze ticker. Check the symbol, interval, or backend server."
-        );
+        showToast(getAnalysisErrorNotification(err, symbol));
       }
+      return false;
     } finally {
       if (analysisRequestRef.current.id === requestId && !options.background) {
         setLoading(false);
       }
     }
-  }, [submittedTicker, timeframe]);
+  }, [submittedTicker, timeframe, loadFinancialAnalysis, showToast]);
 
   const refreshWatchlistScores = useCallback(async (
     selectedTimeframe = timeframe,
@@ -234,20 +281,19 @@ function App() {
 
     if (!cleanTicker) return;
 
-    setSubmittedTicker(cleanTicker);
     analyzeTicker(cleanTicker, timeframe);
   };
 
   const handleWatchlistSelect = (symbol) => {
     setTicker(symbol);
-    setSubmittedTicker(symbol);
     analyzeTicker(symbol, timeframe);
   };
 
-  const handleTimeframeChange = (newTimeframe) => {
-    setTimeframe(newTimeframe);
-    analyzeTicker(submittedTicker, newTimeframe);
-    refreshWatchlistScores(newTimeframe);
+  const handleTimeframeChange = async (newTimeframe) => {
+    const succeeded = await analyzeTicker(submittedTicker, newTimeframe);
+    if (succeeded) {
+      refreshWatchlistScores(newTimeframe);
+    }
   };
 
   const handleAddToWatchlist = async (symbol) => {
@@ -332,7 +378,6 @@ function App() {
     if (!cleanSymbol) return;
 
     setTicker(cleanSymbol);
-    setSubmittedTicker(cleanSymbol);
     setCurrentView("dashboard");
     analyzeTicker(cleanSymbol, timeframe);
   };
@@ -389,9 +434,11 @@ function App() {
   useEffect(() => {
     return () => {
       analysisRequestRef.current.controller?.abort();
+      financialRequestRef.current.controller?.abort();
       validationRequestRef.current.controller?.abort();
       watchlistRequestRef.current.controller?.abort();
       analysisRequestRef.current.id += 1;
+      financialRequestRef.current.id += 1;
       validationRequestRef.current.id += 1;
       watchlistRequestRef.current.id += 1;
     };
@@ -409,8 +456,6 @@ function App() {
             currentView={currentView}
             onNavigate={handleNavigate}
           />
-
-          {error && <p className="error">{error}</p>}
 
           {currentView === "portfolio" && (
             <PortfolioPage
@@ -467,14 +512,24 @@ function App() {
                 <div className="right-card-grid">
                   <div className="panel-box analysis-summary-card">
                     <ScorePanel
+                      key={`technical-${analysis.ticker}-${analysis.period}-${analysis.interval}`}
                       title="Technical Score"
                       scoreData={analysis.technical_score ?? analysis.trend_score}
                       embedded
                     />
 
                     <ScorePanel
+                      key={`quality-${analysis.ticker}-${analysis.period}-${analysis.interval}`}
                       title="Trade Quality Score"
                       scoreData={analysis.trade_quality_score ?? analysis.entry_score}
+                      embedded
+                    />
+
+                    <FinancialScorePanel
+                      key={`financial-${analysis.ticker}`}
+                      data={financialAnalysis}
+                      loading={financialLoading}
+                      error={financialError}
                       embedded
                     />
                   </div>

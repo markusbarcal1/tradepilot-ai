@@ -5,9 +5,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from app.services.analyzer import analyze_ticker, analyze_tickers
+from app.services.financial_analysis import analyze_financials
+from app.services.market_data import MarketDataError, get_price_history
 from app.services.scanner import scan_market, stream_scan_market
 from app.paper_trading import init_paper_trading_db, router as paper_trading_router
-import yfinance as yf
 
 
 class BatchAnalyzeRequest(BaseModel):
@@ -49,24 +50,36 @@ def health():
 @app.get("/validate/{ticker}")
 def validate_ticker(ticker: str):
     try:
-        stock = yf.Ticker(ticker.upper())
-        history = stock.history(period="5d")
-
-        return {
-            "valid": not history.empty
-        }
-
-    except Exception:
-        return {
-            "valid": False
-        }
+        get_price_history(ticker.strip().upper(), period="5d", interval="1d")
+        return {"valid": True, "status": "valid"}
+    except MarketDataError as exc:
+        # Provider availability is not ticker validity. Returning 503 prevents
+        # callers from permanently presenting valid symbols as invalid.
+        raise HTTPException(
+            status_code=404 if getattr(exc, "invalid_ticker", False) else 503,
+            detail={
+                "code": exc.category,
+                "message": str(exc),
+                "retryable": exc.retryable,
+            },
+        ) from exc
 
 @app.get("/analyze/{ticker}")
 def analyze(ticker: str, period: str = "max", interval: str = "1d"):
     try:
         return analyze_ticker(ticker, period, interval)
+    except MarketDataError as e:
+        raise HTTPException(
+            status_code=404 if getattr(e, "invalid_ticker", False) else 503,
+            detail={"code": e.category, "message": str(e), "retryable": e.retryable},
+        ) from e
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/financial-analysis/{ticker}")
+def financial_analysis(ticker: str):
+    return analyze_financials(ticker)
 
 @app.post("/analyze/batch")
 def batch_analyze(request: BatchAnalyzeRequest):

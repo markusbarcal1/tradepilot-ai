@@ -1,4 +1,4 @@
-from app.services.market_data import get_price_history
+from app.services.market_data import classify_market_data_error, get_price_history
 from app.services.indicators import calculate_sma, calculate_rsi, calculate_macd
 from app.services.eligibility import evaluate_market_data_eligibility
 from copy import deepcopy
@@ -369,6 +369,224 @@ def _family_result(score, max_score, status, positives, negatives, inputs):
     }
 
 
+def _score_detail(key, label, value, score, max_score, status, explanation,
+                  formatted_value=None, reference=None, availability="available"):
+    return {
+        "key": key,
+        "label": label,
+        "value": value,
+        "formatted_value": formatted_value,
+        "score": score,
+        "max_score": max_score,
+        "status": status,
+        "explanation": explanation,
+        "reference": reference,
+        "availability": availability,
+    }
+
+
+def _technical_component_details(key, component, *, price, sma_20, sma_50, rsi,
+                                 rvol, macd, macd_signal, support_zone,
+                                 resistance_zone):
+    inputs = component["inputs"]
+    unavailable = component["status"] == "unavailable"
+    if unavailable:
+        return [_score_detail(
+            f"{key}_unavailable", "Scoring inputs", None, None,
+            component["max_score"], "unavailable",
+            component["negative_reasons"][0] if component["negative_reasons"] else
+            "Detailed scoring information is unavailable.",
+            "Data unavailable", availability="unavailable",
+        )]
+    if key == "trend":
+        factors = [
+            ("price_above_sma_20", "Price Above 20 SMA", price > sma_20, 14),
+            ("price_above_sma_50", "Price Above 50 SMA", price > sma_50, 14),
+            ("sma_20_above_sma_50", "20 SMA Above 50 SMA", sma_20 > sma_50, 12),
+        ]
+        return [_score_detail(
+            factor, label, value, maximum if value else 0, maximum,
+            "bullish" if value else "bearish",
+            f"{label} is {'supporting' if value else 'not supporting'} the current trend.",
+            "Yes" if value else "No",
+        ) for factor, label, value, maximum in factors]
+    if key == "momentum":
+        macd_points = 16 if macd > macd_signal else 8 if macd == macd_signal else 4
+        bucket = inputs["rsi_bucket"]
+        rsi_points = {"extended": 8, "supportive": 14, "neutral": 8,
+                      "weak": 5, "oversold": 3}.get(bucket, 0)
+        return [
+            _score_detail("macd_state", "MACD vs Signal", macd - macd_signal,
+                          macd_points, 16,
+                          "bullish" if macd > macd_signal else "weak",
+                          "Compares MACD with its signal line.",
+                          "Above signal" if macd > macd_signal else "At signal" if macd == macd_signal else "Below signal"),
+            _score_detail("rsi_range", "RSI Range", rsi, rsi_points, 14, bucket,
+                          "Interprets momentum strength and extension from RSI.",
+                          f"{rsi:.1f}", "Supportive range: 50–70"),
+        ]
+    if key == "participation":
+        return [_score_detail(
+            "relative_volume", "Relative Volume", rvol, component["score"], 15,
+            component["status"], "Measures participation relative to recent average volume.",
+            f"{rvol:.2f}x", "Elevated at 2.0x or higher",
+        )]
+
+    support_distance = support_zone.get("distance_pct") if isinstance(support_zone, dict) else None
+    resistance_distance = resistance_zone.get("distance_pct") if isinstance(resistance_zone, dict) else None
+    support_score = 0
+    if inputs["support_available"]:
+        bucket = inputs["support_distance_bucket"]
+        strength = inputs["support_strength"]
+        support_score = (
+            {"strong": 8, "moderate": 7, "weak": 6, "very weak": 5}.get(strength, 5)
+            if bucket == "nearby" else
+            (5 if strength in ("strong", "moderate") else 4)
+            if bucket == "usable" else
+            2 if strength in ("strong", "moderate") else 1
+        )
+    resistance_score = component["score"] - support_score
+    return [
+        _score_detail("support_distance", "Distance From Support", support_distance,
+                      support_score, 8,
+                      inputs["support_distance_bucket"] or "unavailable",
+                      "Measures the quality and proximity of the nearest support reference.",
+                      f"{support_distance:.1f}%" if support_distance is not None else "Data unavailable",
+                      availability="available" if support_distance is not None else "unavailable"),
+        _score_detail("resistance_distance", "Distance From Resistance", resistance_distance,
+                      resistance_score if resistance_distance is not None else None, 7,
+                      inputs["resistance_distance_bucket"] or "unavailable",
+                      "Measures remaining upside room before overhead resistance.",
+                      f"{resistance_distance:.1f}%" if resistance_distance is not None else "Data unavailable",
+                      availability="available" if resistance_distance is not None else "unavailable"),
+    ]
+
+
+def _trade_component_details(key, component, *, price, sma_20, sma_50, rsi,
+                             rvol, macd, macd_signal, support_zone,
+                             resistance_zone, trade_setup):
+    inputs = component["inputs"]
+    if component["status"] == "unavailable":
+        return [_score_detail(
+            f"{key}_unavailable", "Scoring inputs", None, None,
+            component["max_score"], "unavailable",
+            component["negative_reasons"][0] if component["negative_reasons"] else
+            "Detailed scoring information is unavailable.",
+            "Data unavailable", availability="unavailable",
+        )]
+    if key == "confirmation":
+        volume_points = {"strong": 10, "supportive": 7, "light": 3}.get(
+            inputs["relative_volume_bucket"], 0)
+        macd_points = 8 if inputs["macd_above_signal"] else 0
+        rsi_points = {"supportive": 7, "stabilizing": 3, "extended": 2}.get(
+            inputs["rsi_bucket"], 0)
+        return [
+            _score_detail("volume_confirmation", "Volume Confirmation", rvol,
+                          volume_points if rvol is not None else None, 10, inputs["relative_volume_bucket"] or "unavailable",
+                          "Measures whether relative volume confirms the proposed entry.",
+                          f"{rvol:.2f}x" if rvol is not None else "Data unavailable",
+                          availability="available" if rvol is not None else "unavailable"),
+            _score_detail("macd_confirmation", "MACD Confirmation",
+                          inputs["macd_above_signal"], macd_points if inputs["macd_above_signal"] is not None else None, 8,
+                          "confirmed" if macd_points else "unavailable" if inputs["macd_above_signal"] is None else "unconfirmed",
+                          "Checks whether MACD is above its signal line.",
+                          "Confirmed" if macd_points else "Data unavailable" if inputs["macd_above_signal"] is None else "Not confirmed",
+                          availability="available" if inputs["macd_above_signal"] is not None else "unavailable"),
+            _score_detail("rsi_confirmation", "RSI Confirmation", rsi,
+                          rsi_points if rsi is not None else None, 7, inputs["rsi_bucket"] or "unavailable",
+                          "Measures whether RSI supports entry momentum without excessive extension.",
+                          f"{rsi:.1f}" if rsi is not None else "Data unavailable",
+                          availability="available" if rsi is not None else "unavailable"),
+        ]
+    if key == "risk_reward":
+        setup = trade_setup if isinstance(trade_setup, dict) else {}
+        entry, stop, target = setup.get("entry"), setup.get("stop"), setup.get("target")
+        ratio = None
+        if all(_valid_number(value, minimum=0) is not None for value in (entry, stop, target)):
+            risk = entry - stop
+            ratio = (target - entry) / risk if risk > 0 else None
+        return [_score_detail(
+            "reward_to_risk", "Reward / Risk Plan", ratio,
+            component["score"], component["max_score"],
+            inputs["reward_to_risk_bucket"] or "unavailable",
+            "Combines the planned entry, stop, target, reward-to-risk ratio, and stop width.",
+            f"{ratio:.2f}x · Entry ${entry:.2f} · Stop ${stop:.2f} · Target ${target:.2f}"
+            if ratio is not None else "Data unavailable",
+            f"Stop distance: {inputs['stop_distance_bucket'] or 'unavailable'}",
+        )]
+    if key == "timing":
+        stage_points = {"Breakout Watch": 5, "Pullback Bounce": 5, "Momentum Long": 3}.get(
+            inputs["setup_stage"], 0)
+        extension_points = {"early": 7, "reasonable": 5, "late": 2}.get(
+            inputs["moving_average_extension_bucket"], 0)
+        rsi_points = {"extended": 2, "constructive": 3}.get(
+            inputs["rsi_timing_bucket"], 0)
+        return [
+            _score_detail("setup_stage", "Setup Stage", inputs["setup_stage"],
+                          stage_points, 5, "available",
+                          "Rewards a defined entry stage.", inputs["setup_stage"]),
+            _score_detail("moving_average_extension", "Moving-Average Extension",
+                          inputs["moving_average_extension_bucket"], extension_points if inputs["moving_average_extension_bucket"] else None, 7,
+                          inputs["moving_average_extension_bucket"] or "unavailable",
+                          "Measures whether price is early, reasonable, late, or chasing.",
+                          str(inputs["moving_average_extension_bucket"] or "Data unavailable").replace("_", " ").title(),
+                          availability="available" if inputs["moving_average_extension_bucket"] else "unavailable"),
+            _score_detail("rsi_timing", "RSI Timing", rsi, rsi_points if rsi is not None else None, 3,
+                          inputs["rsi_timing_bucket"] or "unavailable",
+                          "Uses RSI to identify constructive or extended entry timing.",
+                          f"{rsi:.1f}" if rsi is not None else "Data unavailable",
+                          availability="available" if rsi is not None else "unavailable"),
+        ]
+    if key == "confluence":
+        aligned = inputs.get("aligned_families") or []
+        return [_score_detail(
+            "aligned_families", "Aligned Score Families", len(aligned),
+            component["score"], component["max_score"], component["status"],
+            "Counts independently supportive Location, Confirmation, Risk / Reward, and Timing families.",
+            f"{len(aligned)} of 4", ", ".join(label.replace("_", " ").title() for label in aligned) or "No aligned families",
+        )]
+
+    setup_type = inputs.get("setup_type")
+    support_bucket = inputs.get("support_distance_bucket")
+    resistance_bucket = inputs.get("resistance_distance_bucket")
+    ma_bucket = inputs.get("moving_average_distance_bucket")
+    if setup_type == "Breakout Watch":
+        points = [6 if support_bucket == "defined" else 0,
+                  18 if resistance_bucket == "breakout_nearby" else 10 if resistance_bucket == "breakout_developing" else 0,
+                  6 if ma_bucket == "controlled" else 0]
+    elif setup_type == "Pullback Bounce":
+        support_points = (18 + (4 if inputs.get("support_strength") in ("strong", "moderate") else 2)
+                          if support_bucket == "nearby" else 10 if support_bucket == "usable" else 0)
+        points = [support_points, 0, 8 if ma_bucket == "nearby" else 4 if ma_bucket == "usable" else 0]
+    else:
+        points = [10 if support_bucket == "usable" else 5 if support_bucket == "distant" else 0,
+                  12 if resistance_bucket == "ample_room" else 8 if resistance_bucket == "usable_room" else 0,
+                  8 if ma_bucket == "controlled" else 3 if ma_bucket == "extended" else 0]
+    if setup_type == "Breakout Watch":
+        labels = [
+            ("support_location", "Support Location", support_bucket, points[0], 6),
+            ("resistance_room", "Breakout Location", resistance_bucket, points[1], 18),
+            ("moving_average_location", "Moving-Average Location", ma_bucket, points[2], 6),
+        ]
+    elif setup_type == "Pullback Bounce":
+        labels = [
+            ("support_location", "Support Location", support_bucket, points[0], 22),
+            ("moving_average_location", "Moving-Average Location", ma_bucket, points[2], 8),
+        ]
+    else:
+        labels = [
+            ("support_location", "Support Location", support_bucket, points[0], 10),
+            ("resistance_room", "Resistance Room", resistance_bucket, points[1], 12),
+            ("moving_average_location", "Moving-Average Location", ma_bucket, points[2], 8),
+        ]
+    return [_score_detail(
+        detail_key, label, value, earned if value else None, maximum, value or "unavailable",
+        f"Evaluates {label.lower()} for the {setup_type} setup.",
+        str(value or "Data unavailable").replace("_", " ").title(),
+        availability="available" if value else "unavailable",
+    ) for detail_key, label, value, earned, maximum in labels]
+
+
 def score_trend_family(price, sma_20, sma_50):
     max_score = TECHNICAL_FAMILY_WEIGHTS["trend"]
     price = _valid_number(price, minimum=0)
@@ -586,6 +804,12 @@ def calculate_technical_score(price, sma_20, sma_50, rsi, rvol, macd,
         "participation": score_participation_family(rvol),
         "price_structure": score_price_structure_family(price, support_zone, resistance_zone),
     }
+    for key, component in components.items():
+        component["details"] = _technical_component_details(
+            key, component, price=price, sma_20=sma_20, sma_50=sma_50,
+            rsi=rsi, rvol=rvol, macd=macd, macd_signal=macd_signal,
+            support_zone=support_zone, resistance_zone=resistance_zone,
+        )
     score = sum(component["score"] for component in components.values())
     positives = []
     negatives = []
@@ -960,6 +1184,13 @@ def calculate_trade_quality_score(price, sma_20, sma_50, rsi, rvol, macd,
         "timing": score_trade_timing(price, sma_20, sma_50, rsi, trade_setup),
     }
     components["confluence"] = score_trade_confluence(components, _bullish_setup(trade_setup))
+    for key, component in components.items():
+        component["details"] = _trade_component_details(
+            key, component, price=price, sma_20=sma_20, sma_50=sma_50,
+            rsi=rsi, rvol=rvol, macd=macd, macd_signal=macd_signal,
+            support_zone=support_zone, resistance_zone=resistance_zone,
+            trade_setup=trade_setup,
+        )
     score = max(0, min(100, sum(component["score"] for component in components.values())))
     positives = []
     negatives = []
@@ -1243,11 +1474,19 @@ def analyze_tickers(symbols, period: str = "1y", interval: str = "1d", audit_con
         try:
             results.append(analyze_ticker(clean_symbol, period, interval, audit_context=audit_context, eligibility_config=eligibility_config))
         except Exception as e:
+            classification = classify_market_data_error(e)
             if audit_context is not None:
-                _record_symbol_result(audit_context, clean_symbol, "failed", stage="market_data_fetch", reason="market_data_error")
+                _record_symbol_result(
+                    audit_context,
+                    clean_symbol,
+                    "failed",
+                    stage="market_data_fetch",
+                    reason=classification["category"],
+                )
             errors.append({
                 "ticker": clean_symbol,
                 "detail": str(e),
+                **classification,
             })
 
     return {
@@ -1271,7 +1510,14 @@ def _analyze_ticker_uncached(ticker: str, period: str = "1y", interval: str = "1
         data = get_price_history(ticker, period, interval, audit_context=audit_context)
     except Exception as exc:
         if audit_context is not None:
-            _record_symbol_result(audit_context, ticker, "failed", stage="market_data_fetch", reason="market_data_error")
+            classification = classify_market_data_error(exc)
+            _record_symbol_result(
+                audit_context,
+                ticker,
+                "failed",
+                stage="market_data_fetch",
+                reason=classification["category"],
+            )
         raise exc
 
     fetch_seconds = 0.0
@@ -1313,7 +1559,7 @@ def _analyze_ticker_uncached(ticker: str, period: str = "1y", interval: str = "1
                 )
             return {
                 "ticker": ticker,
-                "price": safe_float(latest["Close"], 2) if "Close" in data.columns else None,
+                "price": safe_float(data["Close"].iloc[-1], 2) if "Close" in data.columns else None,
                 "eligibility": eligibility_result.to_dict(),
             }
 
