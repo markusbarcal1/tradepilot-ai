@@ -6,6 +6,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from app.services.analyzer import analyze_ticker, analyze_tickers
 from app.services.financial_analysis import analyze_financials
+from app.services.valuation_analysis import analyze_valuation
 from app.services.market_data import MarketDataError, get_price_history
 from app.services.scanner import scan_market, stream_scan_market
 from app.paper_trading import init_paper_trading_db, router as paper_trading_router
@@ -80,6 +81,11 @@ def analyze(ticker: str, period: str = "max", interval: str = "1d"):
 @app.get("/financial-analysis/{ticker}")
 def financial_analysis(ticker: str):
     return analyze_financials(ticker)
+
+
+@app.get("/valuation-analysis/{ticker}")
+def valuation_analysis(ticker: str):
+    return analyze_valuation(ticker)
 
 @app.post("/analyze/batch")
 def batch_analyze(request: BatchAnalyzeRequest):

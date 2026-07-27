@@ -12,6 +12,9 @@ try {
   const { default: FinancialScorePanel } = await vite.ssrLoadModule(
     "/src/components/FinancialScorePanel.jsx"
   );
+  const { default: ValuationScorePanel } = await vite.ssrLoadModule(
+    "/src/components/ValuationScorePanel.jsx"
+  );
   const {
     getAnalysisErrorNotification,
     isValidAnalysisResponse,
@@ -33,6 +36,9 @@ try {
 
   const render = (props) => renderToStaticMarkup(
     React.createElement(FinancialScorePanel, props)
+  );
+  const renderValuation = (props) => renderToStaticMarkup(
+    React.createElement(ValuationScorePanel, props)
   );
 
   assert.match(render({ data: null, loading: true, error: "" }), /Loading financial data/);
@@ -155,6 +161,84 @@ try {
     error: "",
     data: { status: "available", score: 50 },
   }), /unexpected response/);
+
+  assert.match(
+    renderValuation({ data: null, loading: true, error: "" }),
+    /Loading valuation data/
+  );
+  assert.match(
+    renderValuation({ data: null, loading: false, error: "failed" }),
+    /temporarily unavailable/
+  );
+  assert.match(renderValuation({
+    loading: false,
+    error: "",
+    data: {
+      status: "unsupported",
+      score: null,
+      message: "Relative company valuation is not supported for this instrument.",
+    },
+  }), /not supported for this instrument/);
+
+  const valuationMarkup = renderValuation({
+    loading: false,
+    error: "",
+    data: {
+      status: "fairly_valued",
+      status_label: "Fairly Valued",
+      availability: "partial",
+      score: 62.4,
+      scoring_version: "2A.1",
+      sector_profile_label: "Technology",
+      used_default_profile: false,
+      current_price: 212.45,
+      currency: "USD",
+      coverage: { percentage: 88 },
+      categories: {
+        relative_valuation: {
+          score: 62.4,
+          max_score: 100,
+          details: [
+            {
+              key: "forward_pe", label: "Forward P/E",
+              value: 23.4, formatted_value: "23.40×",
+              score: 14.7, max_score: 20,
+              status: "good", availability: "available",
+              explanation: "Measures expected earnings valuation.",
+            },
+            {
+              key: "trailing_pe", label: "Trailing P/E",
+              value: null, raw_value: -18.2, formatted_value: "N/M",
+              score: null, max_score: 12,
+              status: "not_meaningful", availability: "not_meaningful",
+              reason: "Trailing earnings are negative",
+            },
+            {
+              key: "price_to_book", label: "Price / Book",
+              value: null, formatted_value: "N/A",
+              score: null, max_score: 0,
+              status: "unsupported_for_sector",
+              availability: "unsupported_for_sector",
+              reason: "Excluded from the Technology valuation profile",
+            },
+          ],
+        },
+      },
+    },
+  });
+  assert.match(valuationMarkup, /Valuation Score/);
+  assert.match(valuationMarkup, /Fairly Valued/);
+  assert.match(valuationMarkup, /62.4.*100/);
+  assert.match(valuationMarkup, /Current Price:.*\$212.45/);
+  assert.match(valuationMarkup, /Coverage: 88%/);
+  assert.match(valuationMarkup, /Scoring Profile: Technology/);
+  assert.match(valuationMarkup, /Forward P\/E/);
+  assert.match(valuationMarkup, /23.40×/);
+  assert.match(valuationMarkup, /Contribution:.*14.7.*20/);
+  assert.match(valuationMarkup, /N\/M/);
+  assert.match(valuationMarkup, /Not Meaningful/);
+  assert.match(valuationMarkup, /Unsupported For Sector/);
+  assert.match(valuationMarkup, /aria-expanded="false"/);
 
   assert.equal(isValidAnalysisResponse({
     ticker: "AAPL",

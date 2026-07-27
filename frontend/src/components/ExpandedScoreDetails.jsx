@@ -87,6 +87,9 @@ function ExpandedScoreDetails({
                   {typeof detail.explanation === "string" && detail.explanation && (
                     <p>{detail.explanation}</p>
                   )}
+                  {!detail.available
+                    && typeof detail.reason === "string"
+                    && detail.reason && <p>{detail.reason}</p>}
                   {typeof detail.reference === "string"
                     && detail.reference
                     && detail.available && <small>{detail.reference}</small>}

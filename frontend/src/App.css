@@ -1020,6 +1020,15 @@ canvas {
   text-transform: capitalize;
 }
 
+.valuation-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.7rem;
+  margin-top: 0.55rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
 .technical-breakdown {
   margin: 7px 0 5px;
   padding: 7px 8px;

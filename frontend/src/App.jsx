@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   analyzeTicker as fetchAnalysis,
   analyzeFinancials as fetchFinancials,
+  analyzeValuation as fetchValuation,
   analyzeTickers as fetchBatchAnalysis,
   isRequestCanceled,
   validateTicker,
@@ -11,6 +12,7 @@ import MetricsPanel from "./components/MetricsPanel";
 import ChartPanel from "./components/ChartPanel";
 import ScorePanel from "./components/ScorePanel";
 import FinancialScorePanel from "./components/FinancialScorePanel";
+import ValuationScorePanel from "./components/ValuationScorePanel";
 import SetupPanel from "./components/SetupPanel";
 import QuickTradePanel from "./components/QuickTradePanel";
 import PaperPortfolioSummary from "./components/PaperPortfolioSummary";
@@ -53,6 +55,7 @@ function App() {
   const { showToast } = useToast();
   const analysisRequestRef = useRef({ controller: null, id: 0 });
   const financialRequestRef = useRef({ controller: null, id: 0 });
+  const valuationRequestRef = useRef({ controller: null, id: 0 });
   const validationRequestRef = useRef({ controller: null, id: 0 });
   const watchlistRequestRef = useRef({ controller: null, id: 0 });
   const didRunInitialLoadRef = useRef(false);
@@ -67,6 +70,9 @@ function App() {
   const [financialAnalysis, setFinancialAnalysis] = useState(null);
   const [financialLoading, setFinancialLoading] = useState(false);
   const [financialError, setFinancialError] = useState("");
+  const [valuationAnalysis, setValuationAnalysis] = useState(null);
+  const [valuationLoading, setValuationLoading] = useState(false);
+  const [valuationError, setValuationError] = useState("");
   const [currentView, setCurrentView] = useState("dashboard");
 
   const [watchlist, setWatchlist] = useState(() => {
@@ -123,6 +129,36 @@ function App() {
     }
   }, []);
 
+  const loadValuationAnalysis = useCallback(async (symbol, options = {}) => {
+    valuationRequestRef.current.controller?.abort();
+    const controller = new AbortController();
+    const requestId = valuationRequestRef.current.id + 1;
+    valuationRequestRef.current = { controller, id: requestId };
+
+    if (!options.background) {
+      setValuationAnalysis(null);
+      setValuationLoading(true);
+      setValuationError("");
+    }
+
+    try {
+      const response = await fetchValuation(symbol, { signal: controller.signal });
+      if (valuationRequestRef.current.id !== requestId) return;
+      setValuationAnalysis(response.data);
+      setValuationError("");
+    } catch (err) {
+      if (isRequestCanceled(err) || valuationRequestRef.current.id !== requestId) return;
+      console.error("Could not load valuation analysis:", err);
+      if (!options.background) {
+        setValuationError("Valuation analysis is temporarily unavailable.");
+      }
+    } finally {
+      if (valuationRequestRef.current.id === requestId && !options.background) {
+        setValuationLoading(false);
+      }
+    }
+  }, []);
+
   const analyzeTicker = useCallback(async (
     symbol = submittedTicker,
     selectedTimeframe = timeframe,
@@ -163,6 +199,7 @@ function App() {
           `${response.data.ticker}-${selectedTimeframe.period}-${selectedTimeframe.interval}-${requestId}`
         );
         loadFinancialAnalysis(response.data.ticker);
+        loadValuationAnalysis(response.data.ticker);
       }
       return true;
     } catch (err) {
@@ -183,7 +220,7 @@ function App() {
         setLoading(false);
       }
     }
-  }, [submittedTicker, timeframe, loadFinancialAnalysis, showToast]);
+  }, [submittedTicker, timeframe, loadFinancialAnalysis, loadValuationAnalysis, showToast]);
 
   const refreshWatchlistScores = useCallback(async (
     selectedTimeframe = timeframe,
@@ -435,10 +472,12 @@ function App() {
     return () => {
       analysisRequestRef.current.controller?.abort();
       financialRequestRef.current.controller?.abort();
+      valuationRequestRef.current.controller?.abort();
       validationRequestRef.current.controller?.abort();
       watchlistRequestRef.current.controller?.abort();
       analysisRequestRef.current.id += 1;
       financialRequestRef.current.id += 1;
+      valuationRequestRef.current.id += 1;
       validationRequestRef.current.id += 1;
       watchlistRequestRef.current.id += 1;
     };
@@ -530,6 +569,14 @@ function App() {
                       data={financialAnalysis}
                       loading={financialLoading}
                       error={financialError}
+                      embedded
+                    />
+
+                    <ValuationScorePanel
+                      key={`valuation-${analysis.ticker}`}
+                      data={valuationAnalysis}
+                      loading={valuationLoading}
+                      error={valuationError}
                       embedded
                     />
                   </div>

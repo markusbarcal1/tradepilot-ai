@@ -27,6 +27,12 @@ export function analyzeFinancials(symbol, options = {}) {
   });
 }
 
+export function analyzeValuation(symbol, options = {}) {
+  return api.get(`/valuation-analysis/${symbol}`, {
+    signal: options.signal,
+  });
+}
+
 export function analyzeTickers(symbols, period, interval, options = {}) {
   return api.post(
     "/analyze/batch",

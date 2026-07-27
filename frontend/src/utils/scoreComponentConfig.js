@@ -12,6 +12,7 @@ const COMPONENTS = {
   growth: ["Growth", "Measures the direction and consistency of revenue, earnings, and cash-flow growth."],
   financial_health: ["Financial Health", "Measures liquidity, leverage, and the company’s ability to meet financial obligations."],
   cash_flow_quality: ["Cash Flow Quality", "Measures whether reported earnings are supported by actual operating and free cash flow."],
+  relative_valuation: ["Relative Valuation", "Measures how attractive current market multiples appear under the selected sector profile."],
 };
 
 export const SCORE_COMPONENT_ORDER = Object.keys(COMPONENTS);
