@@ -147,9 +147,6 @@ def calculate_metrics(snapshot):
         "operating_cash_flow_margin": safe_divide(ocf, revenue, require_positive_denominator=True),
     }
 
-    if (snapshot.sector or "").lower() == "financial services":
-        for key in ("debt_to_equity", "current_ratio", "interest_coverage", "net_debt_to_ebitda"):
-            metrics[key] = None
     return metrics
 
 

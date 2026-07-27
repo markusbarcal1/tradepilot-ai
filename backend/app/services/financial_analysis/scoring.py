@@ -120,6 +120,8 @@ def score_financial_metrics(metrics, profile=None):
     available_weight = 0
     available_metric_count = 0
     expected_metric_count = 0
+    configured_metric_count = 0
+    unsupported_metric_count = 0
     available_categories = 0
     normalized_category_points = 0.0
     available_category_weight = 0
@@ -129,9 +131,25 @@ def score_financial_metrics(metrics, profile=None):
         weighted_points = 0.0
         category_available_weight = 0
         category_available_metrics = 0
+        category_supported_metrics = 0
         metric_results = []
         for key, settings in category_settings["metrics"].items():
+            configured_metric_count += 1
+            if settings.get("unsupported"):
+                unsupported_metric_count += 1
+                metric_results.append({
+                    "key": key, "label": settings["label"], "value": None,
+                    "formatted_value": "N/A", "display_value": "N/A",
+                    "score": None, "max_score": 0,
+                    "status": "unsupported_for_sector",
+                    "availability": "unsupported_for_sector", "available": False,
+                    "reason": settings["unsupported_reason"],
+                    "explanation": METRIC_EXPLANATIONS[key],
+                    "reference": settings["unsupported_reason"],
+                })
+                continue
             expected_metric_count += 1
+            category_supported_metrics += 1
             value = valid_number(metrics.get(key))
             points = _metric_points(value, settings)
             common = {
@@ -163,8 +181,15 @@ def score_financial_metrics(metrics, profile=None):
                 **({"calculation_method": CALCULATION_METHODS[key]} if key in CALCULATION_METHODS else {}),
             })
 
-        expected_in_category = len(category_settings["metrics"])
-        category_coverage = category_available_metrics / expected_in_category if expected_in_category else 0
+        expected_in_category = category_supported_metrics
+        unsupported_in_category = len(category_settings["metrics"]) - expected_in_category
+        missing_in_category = expected_in_category - category_available_metrics
+        metric_count_coverage = (
+            category_available_metrics / expected_in_category if expected_in_category else 0
+        )
+        weighted_coverage = (
+            category_available_weight / max_score if max_score else 0
+        )
         if category_available_weight:
             available_categories += 1
             normalized = max(0.0, min(float(max_score), weighted_points / category_available_weight * max_score))
@@ -174,37 +199,89 @@ def score_financial_metrics(metrics, profile=None):
                 "score": round(normalized, 1), "max_score": max_score,
                 "label": score_label(round(normalized / max_score * 100)),
                 "available_weight": category_available_weight,
+                "supported_weight": max_score,
+                "configured_weight": max_score,
+                "configured_metrics": len(category_settings["metrics"]),
+                "supported_metrics": expected_in_category,
                 "available_metrics": category_available_metrics,
+                "missing_supported_metrics": missing_in_category,
+                "unsupported_metrics": unsupported_in_category,
                 "expected_metrics": expected_in_category,
-                "coverage": round(category_coverage, 4),
+                "coverage": round(weighted_coverage, 4),
+                "weighted_coverage": round(weighted_coverage, 4),
+                "metric_count_coverage": round(metric_count_coverage, 4),
+                "coverage_method": "weighted",
                 "metrics": metric_results, "details": metric_results,
                 "normalization_note": (
                     f"Category score normalized using {category_available_metrics} "
-                    f"of {expected_in_category} available metrics."
+                    f"of {expected_in_category} supported metrics."
+                    + (
+                        f" {unsupported_in_category} additional "
+                        f"{'metric is' if unsupported_in_category == 1 else 'metrics are'} "
+                        "excluded for this sector profile."
+                        if unsupported_in_category else ""
+                    )
                     if category_available_metrics < expected_in_category else None
                 ),
             }
-        else:
+        elif max_score:
             categories[category] = {
                 "score": None, "max_score": max_score, "label": "Unavailable",
-                "available_weight": 0, "available_metrics": 0,
+                "available_weight": 0, "supported_weight": max_score,
+                "configured_weight": max_score,
+                "configured_metrics": len(category_settings["metrics"]),
+                "supported_metrics": expected_in_category, "available_metrics": 0,
+                "missing_supported_metrics": missing_in_category,
+                "unsupported_metrics": unsupported_in_category,
                 "expected_metrics": expected_in_category, "coverage": 0.0,
+                "weighted_coverage": 0.0, "metric_count_coverage": 0.0,
+                "coverage_method": "weighted",
                 "metrics": metric_results, "details": metric_results,
-                "normalization_note": "No category metrics were available; this category was excluded from score normalization.",
+                "normalization_note": "Insufficient supported data to score this category.",
+            }
+        else:
+            categories[category] = {
+                "score": None, "max_score": 0, "label": "Not used",
+                "available_weight": 0, "supported_weight": 0, "configured_weight": 0,
+                "configured_metrics": len(category_settings["metrics"]),
+                "supported_metrics": 0, "available_metrics": 0,
+                "missing_supported_metrics": 0,
+                "unsupported_metrics": unsupported_in_category,
+                "expected_metrics": 0, "coverage": 0.0,
+                "weighted_coverage": 0.0, "metric_count_coverage": 0.0,
+                "coverage_method": "weighted",
+                "metrics": metric_results, "details": metric_results,
+                "normalization_note": "This category is not used by the selected sector profile.",
             }
 
     coverage_percentage = round(available_weight)
-    overall_coverage = available_metric_count / expected_metric_count if expected_metric_count else 0
+    weighted_coverage = available_weight / 100
+    metric_count_coverage = (
+        available_metric_count / expected_metric_count if expected_metric_count else 0
+    )
+    missing_supported_metric_count = expected_metric_count - available_metric_count
     confidence = "high" if coverage_percentage >= 80 else "moderate" if coverage_percentage >= 60 else "low" if coverage_percentage else "none"
     coverage_result = {
-        "percentage": coverage_percentage, "ratio": round(overall_coverage, 4),
+        "percentage": coverage_percentage, "ratio": round(weighted_coverage, 4),
+        "weighted_coverage": round(weighted_coverage, 4),
+        "metric_count_coverage": round(metric_count_coverage, 4),
+        "coverage_method": "weighted",
         "available_weight": available_weight, "total_weight": 100,
+        "supported_weight": 100, "configured_weight": 100,
+        "configured_metrics": configured_metric_count,
+        "supported_metrics": expected_metric_count,
         "available_metrics": available_metric_count, "expected_metrics": expected_metric_count,
+        "missing_supported_metrics": missing_supported_metric_count,
+        "unsupported_metrics": unsupported_metric_count,
         "confidence": confidence,
     }
     common_result = {
-        "coverage": coverage_result, "available_metrics": available_metric_count,
-        "expected_metrics": expected_metric_count, "categories": categories,
+        "coverage": coverage_result, "configured_metrics": configured_metric_count,
+        "available_metrics": available_metric_count,
+        "expected_metrics": expected_metric_count, "supported_metrics": expected_metric_count,
+        "missing_supported_metrics": missing_supported_metric_count,
+        "unsupported_metrics": unsupported_metric_count,
+        "categories": categories,
         "version": SCORE_VERSION,
     }
     if coverage_percentage < MINIMUM_COVERAGE_PERCENT or available_categories < MINIMUM_CATEGORIES:

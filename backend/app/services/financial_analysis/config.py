@@ -1,6 +1,6 @@
 """Central configuration for the general-company Financial Score."""
 
-SCORE_VERSION = "1.1"
+SCORE_VERSION = "1.2"
 CACHE_TTL_SECONDS = 12 * 60 * 60
 MINIMUM_COVERAGE_PERCENT = 50
 MINIMUM_CATEGORIES = 2

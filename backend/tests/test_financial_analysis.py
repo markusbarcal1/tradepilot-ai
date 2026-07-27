@@ -138,7 +138,8 @@ class FinancialScoringTests(unittest.TestCase):
         self.assertEqual("partial", result["status"])
         self.assertEqual(30.0, result["score"])
         self.assertEqual(1, result["categories"]["growth"]["available_metrics"])
-        self.assertEqual(0.25, result["categories"]["growth"]["coverage"])
+        self.assertEqual(0.28, result["categories"]["growth"]["coverage"])
+        self.assertEqual(0.25, result["categories"]["growth"]["metric_count_coverage"])
 
     def test_piecewise_anchor_interpolation_and_monotonicity(self):
         anchors = (0.0, 0.08, 0.12, 0.20)
@@ -206,16 +207,17 @@ class FinancialMetricsTests(unittest.TestCase):
         snapshot.values["total_revenue"] = 0
         self.assertIsNone(calculate_metrics(snapshot)["operating_cash_flow_margin"])
 
-    def test_financial_sector_omits_misleading_leverage_metrics(self):
+    def test_raw_metrics_are_sector_independent(self):
         snapshot = FinancialSnapshot(
             "BANK",
             sector="Financial Services",
             values={"debt_to_equity": 500, "current_ratio": 1.5, "total_debt": 10, "ebitda": 2},
         )
         result = calculate_metrics(snapshot)
-        self.assertTrue(all(result[key] is None for key in (
-            "debt_to_equity", "current_ratio", "interest_coverage", "net_debt_to_ebitda",
-        )))
+        self.assertEqual(5.0, result["debt_to_equity"])
+        self.assertEqual(1.5, result["current_ratio"])
+        self.assertEqual(5.0, result["net_debt_to_ebitda"])
+        self.assertIsNone(result["interest_coverage"])
 
 
 class FinancialServiceTests(unittest.TestCase):

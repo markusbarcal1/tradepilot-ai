@@ -33,6 +33,8 @@ export function normalizeScoreDetails(component) {
       label: typeof detail.label === "string" ? detail.label : "Score factor",
       displayValue: formatScoreDetailValue(detail),
       displayStatus: humanizeScoreStatus(detail.status),
-      available: detail.availability !== "unavailable" && detail.status !== "unavailable",
+      available: detail.availability
+        ? detail.availability === "available"
+        : detail.status !== "unavailable" && detail.status !== "unsupported_for_sector",
     }));
 }

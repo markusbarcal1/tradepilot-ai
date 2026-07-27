@@ -65,6 +65,10 @@ function normalizeFinancialState(data, loading, error) {
       ? data.coverage.confidence
       : "unknown",
     version: data.version,
+    profileLabel: typeof data.sector_profile_label === "string"
+      ? data.sector_profile_label
+      : "General Company",
+    usedDefaultProfile: data.used_default_profile === true,
   };
 }
 
@@ -161,6 +165,7 @@ function FinancialScorePanel({ data, loading, error, embedded = false }) {
                 scoreLabel="Financial Score"
                 regionId={detailsId}
                 labelledBy={titleId}
+                contextLabel={`Scoring Profile: ${state.profileLabel}${state.usedDefaultProfile ? " (default)" : ""}`}
               />
             </div>
           )}

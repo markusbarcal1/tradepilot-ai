@@ -4,7 +4,13 @@ import {
   scoreComponentLabel,
 } from "../utils/scoreComponentConfig";
 
-function ExpandedScoreDetails({ components, scoreLabel, regionId, labelledBy }) {
+function ExpandedScoreDetails({
+  components,
+  scoreLabel,
+  regionId,
+  labelledBy,
+  contextLabel = "",
+}) {
   if (!components || typeof components !== "object" || Array.isArray(components)) return null;
 
   const categories = Object.entries(components)
@@ -46,6 +52,9 @@ function ExpandedScoreDetails({ components, scoreLabel, regionId, labelledBy }) 
     >
       <div className="expanded-score-details-inner">
         <div className="expanded-score-details-title">Detailed metrics</div>
+        {contextLabel && (
+          <div className="expanded-score-details-context">{contextLabel}</div>
+        )}
         {categories.map((category) => (
           <section className="score-detail-category" key={category.key}>
             <div className="score-detail-category-heading">

@@ -82,11 +82,16 @@ try {
       score: 76.4,
       label: "Strong",
       version: "1.1",
+      sector: "Technology",
+      sector_profile: "technology",
+      sector_profile_label: "Technology",
+      used_default_profile: false,
       coverage: { percentage: 84, confidence: "high" },
       categories: {
         profitability: {
           score: 24,
           max_score: 30,
+          normalization_note: "Category score normalized using 3 of 4 supported metrics. 2 additional metrics are excluded for this sector profile.",
           details: [
             {
               key: "roic", label: "Return on Invested Capital",
@@ -98,6 +103,13 @@ try {
               value: null, formatted_value: "N/A", score: null,
               max_score: 5, status: "unavailable", availability: "unavailable",
             },
+            {
+              key: "gross_margin", label: "Gross Margin",
+              value: null, formatted_value: "N/A", score: null,
+              max_score: 0, status: "unsupported_for_sector",
+              availability: "unsupported_for_sector",
+              reason: "Not used for the Technology sector profile",
+            },
           ],
         },
       },
@@ -107,6 +119,37 @@ try {
   assert.match(enhancedMetricsMarkup, /18.4%/);
   assert.match(enhancedMetricsMarkup, /Return on Equity/);
   assert.match(enhancedMetricsMarkup, /N\/A/);
+  assert.match(enhancedMetricsMarkup, /Scoring Profile: Technology/);
+  assert.match(enhancedMetricsMarkup, /Unsupported For Sector/);
+  assert.match(enhancedMetricsMarkup, /Excluded from score/);
+  assert.match(enhancedMetricsMarkup, /3 of 4 supported metrics/);
+  assert.match(enhancedMetricsMarkup, /2 additional metrics are excluded/);
+  assert.doesNotMatch(enhancedMetricsMarkup, /3 of 4 available metrics/);
+  const defaultProfileMarkup = render({
+    loading: false,
+    error: "",
+    data: {
+      status: "available",
+      score: 60,
+      label: "Fair",
+      sector_profile: "default",
+      sector_profile_label: "General Company",
+      used_default_profile: true,
+      coverage: { percentage: 100, confidence: "high" },
+      categories: {
+        profitability: {
+          score: 18,
+          max_score: 30,
+          details: [{
+            key: "roic", label: "Return on Invested Capital",
+            formatted_value: "12.0%", score: 5.6, max_score: 8,
+            status: "strong", availability: "available",
+          }],
+        },
+      },
+    },
+  });
+  assert.match(defaultProfileMarkup, /Scoring Profile: General Company \(default\)/);
   assert.match(render({
     loading: false,
     error: "",
