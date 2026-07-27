@@ -74,6 +74,39 @@ try {
       },
     },
   }), /Limited Data/);
+  const enhancedMetricsMarkup = render({
+    loading: false,
+    error: "",
+    data: {
+      status: "partial",
+      score: 76.4,
+      label: "Strong",
+      version: "1.1",
+      coverage: { percentage: 84, confidence: "high" },
+      categories: {
+        profitability: {
+          score: 24,
+          max_score: 30,
+          details: [
+            {
+              key: "roic", label: "Return on Invested Capital",
+              value: 0.184, formatted_value: "18.4%", score: 7.4,
+              max_score: 8, status: "excellent", availability: "available",
+            },
+            {
+              key: "return_on_equity", label: "Return on Equity",
+              value: null, formatted_value: "N/A", score: null,
+              max_score: 5, status: "unavailable", availability: "unavailable",
+            },
+          ],
+        },
+      },
+    },
+  });
+  assert.match(enhancedMetricsMarkup, /Return on Invested Capital/);
+  assert.match(enhancedMetricsMarkup, /18.4%/);
+  assert.match(enhancedMetricsMarkup, /Return on Equity/);
+  assert.match(enhancedMetricsMarkup, /N\/A/);
   assert.match(render({
     loading: false,
     error: "",

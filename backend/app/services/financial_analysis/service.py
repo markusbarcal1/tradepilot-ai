@@ -3,7 +3,7 @@ from copy import deepcopy
 from threading import RLock
 from time import time
 
-from .config import CACHE_TTL_SECONDS
+from .config import CACHE_TTL_SECONDS, DEFAULT_SCORING_PROFILE
 from .metrics import calculate_metrics
 from .provider import fetch_financial_snapshot
 from .scoring import score_financial_metrics
@@ -15,12 +15,20 @@ UNSUPPORTED_TYPES = {"ETF", "MUTUALFUND", "INDEX", "CRYPTOCURRENCY"}
 
 
 def _unavailable(ticker, reason_code, message, provider="yfinance"):
+    expected_metrics = sum(
+        len(category["metrics"]) for category in DEFAULT_SCORING_PROFILE.values()
+    )
     return {
         "ticker": ticker,
         "status": "unavailable",
         "score": None,
         "label": "Unavailable",
-        "coverage": {"percentage": 0, "available_weight": 0, "total_weight": 100, "confidence": "none"},
+        "coverage": {
+            "percentage": 0, "ratio": 0, "available_weight": 0, "total_weight": 100,
+            "available_metrics": 0, "expected_metrics": expected_metrics, "confidence": "none",
+        },
+        "available_metrics": 0,
+        "expected_metrics": expected_metrics,
         "reason_code": reason_code,
         "message": message,
         "categories": {},
