@@ -5,11 +5,15 @@ from copy import deepcopy
 from threading import RLock
 from time import time
 
-from .config import CACHE_TTL_SECONDS, VALUATION_PROFILE_VERSION, VALUATION_SCORING_VERSION
+from .config import (
+    CACHE_TTL_SECONDS, INTRINSIC_VALUE_VERSION, VALUATION_PROFILE_VERSION,
+    VALUATION_SCORING_VERSION,
+)
 from .metrics import calculate_valuation_metrics, currency_consistency, valid_number
+from .intrinsic import calculate_intrinsic_value
 from .profiles import PROFILE_LABELS, SectorProfile, normalize_sector, resolve_valuation_profile
 from .provider import fetch_valuation_snapshot
-from .scoring import score_valuation_metrics
+from .scoring import combine_valuation_scores, score_valuation_metrics
 
 logger = logging.getLogger(__name__)
 _cache = {}
@@ -68,6 +72,24 @@ def _unavailable(symbol, reason_code, message, snapshot=None):
             "price_source": snapshot.price_source, "price_as_of": snapshot.price_as_of,
             "price_is_fallback": snapshot.price_is_fallback,
         })
+    result["relative_valuation"] = {
+        key: deepcopy(result[key]) for key in (
+            "score", "status", "status_label", "availability", "reason_code",
+            "message", "coverage", "categories", "scoring_version",
+        )
+    }
+    result["intrinsic_value"] = {
+        "status": "unavailable", "score": None, "score_label": "Unavailable",
+        "message": message, "fair_value_low": None,
+        "fair_value_mid": None, "fair_value_high": None, "confidence": "low",
+        "coverage": {"configured_models": 4, "supported_models": 0,
+                     "available_models": 0, "missing_supported_models": 0,
+                     "unsupported_models": 4, "available_weight": 0,
+                     "supported_weight": 0, "weighted_coverage": 0,
+                     "model_count_coverage": 0,
+                     "coverage_method": "configured_model_weight"},
+        "models": [], "version": INTRINSIC_VALUE_VERSION,
+    }
     return result
 
 
@@ -75,6 +97,7 @@ def analyze_valuation(ticker, provider=fetch_valuation_snapshot):
     symbol = str(ticker).strip().upper()
     cache_key = (
         symbol, VALUATION_SCORING_VERSION, VALUATION_PROFILE_VERSION,
+        INTRINSIC_VALUE_VERSION,
         getattr(provider, "__name__", provider.__class__.__name__),
     )
     now = time()
@@ -114,6 +137,36 @@ def analyze_valuation(ticker, provider=fetch_valuation_snapshot):
                 "price_as_of": snapshot.price_as_of,
                 "price_is_fallback": snapshot.price_is_fallback,
             })
+            # Preserve every Phase 2A field while exposing the two valuation
+            # components separately for additive Phase 2B consumers.
+            relative_component = {
+                key: deepcopy(result.get(key)) for key in (
+                    "score", "status", "status_label", "availability", "message",
+                    "reason_code", "coverage", "categories", "scoring_version",
+                ) if key in result
+            }
+            result["relative_valuation"] = relative_component
+            try:
+                result["intrinsic_value"] = calculate_intrinsic_value(snapshot, profile.value)
+            except Exception:
+                logger.exception("Intrinsic valuation failed for %s", symbol)
+                result["intrinsic_value"] = {
+                    "status": "unavailable",
+                    "score": None, "score_label": "Unavailable",
+                    "message": "Intrinsic value is temporarily unavailable.",
+                    "fair_value_low": None, "fair_value_mid": None,
+                    "fair_value_high": None, "confidence": "low",
+                    "coverage": {"configured_models": 4, "supported_models": 0,
+                                 "available_models": 0, "missing_supported_models": 0,
+                                 "unsupported_models": 4, "available_weight": 0,
+                                 "supported_weight": 0, "weighted_coverage": 0,
+                                 "model_count_coverage": 0,
+                                 "coverage_method": "configured_model_weight"},
+                    "models": [], "version": INTRINSIC_VALUE_VERSION,
+                }
+            result.update(combine_valuation_scores(
+                relative_component, result["intrinsic_value"]
+            ))
     except Exception:
         logger.exception("Valuation analysis provider failed for %s", symbol)
         result = _unavailable(

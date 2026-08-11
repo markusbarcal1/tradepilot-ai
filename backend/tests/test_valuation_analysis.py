@@ -14,6 +14,7 @@ from app.services.valuation_analysis.profiles import (
     validate_all_valuation_profiles,
 )
 from app.services.valuation_analysis.scoring import (
+    combine_valuation_scores,
     score_higher_is_better,
     score_lower_is_better,
     score_valuation_metrics,
@@ -339,7 +340,8 @@ class ValuationServiceTests(unittest.TestCase):
         result = analyze_valuation("UNITTEST-VALUATION", provider=provider)
         self.assertEqual("default", result["sector_profile"])
         self.assertTrue(result["used_default_profile"])
-        self.assertEqual("2A.1", result["scoring_version"])
+        self.assertEqual("2B.3", result["scoring_version"])
+        self.assertEqual("2A.1", result["relative_valuation"]["scoring_version"])
         self.assertEqual("current_price", result["price_source"])
         json.dumps(result, allow_nan=False)
 
@@ -359,6 +361,56 @@ class ValuationServiceTests(unittest.TestCase):
         result = analyze_valuation("UNITTEST-VALUATION-FAIL", provider=provider)
         self.assertEqual("provider_error", result["reason_code"])
         self.assertNotIn("secret", result["message"])
+
+
+class CombinedValuationScoreTests(unittest.TestCase):
+    @staticmethod
+    def component(score, coverage=1.0, status="available"):
+        return {"score": score, "status": status,
+                "coverage": {"weighted_coverage": coverage}}
+
+    def test_both_available_and_extreme_disagreement(self):
+        result = combine_valuation_scores(self.component(80), self.component(60))
+        self.assertEqual(70, result["score"])
+        self.assertEqual(1.0, result["coverage"]["weighted_coverage"])
+        extreme = combine_valuation_scores(self.component(100), self.component(0))
+        self.assertEqual(50, extreme["score"])
+
+    def test_missing_components_normalize_without_becoming_zero(self):
+        intrinsic_missing = combine_valuation_scores(
+            self.component(70), self.component(None, 0, "unavailable")
+        )
+        self.assertEqual(70, intrinsic_missing["score"])
+        self.assertEqual(0.5, intrinsic_missing["coverage"]["weighted_coverage"])
+        relative_missing = combine_valuation_scores(
+            self.component(None, 0, "unavailable"), self.component(60)
+        )
+        self.assertEqual(60, relative_missing["score"])
+        self.assertIsNone(combine_valuation_scores(
+            self.component(None, 0, "unavailable"),
+            self.component(None, 0, "unavailable"),
+        )["score"])
+
+    def test_component_weighted_coverage_is_informational(self):
+        full = combine_valuation_scores(self.component(80, 1), self.component(60, 1))
+        three_quarters = combine_valuation_scores(
+            self.component(80, 1), self.component(60, 0.75)
+        )
+        thin = combine_valuation_scores(self.component(80, 1), self.component(60, 0.4))
+        self.assertEqual(1.0, full["coverage"]["weighted_coverage"])
+        self.assertEqual(0.875, three_quarters["coverage"]["weighted_coverage"])
+        self.assertEqual(0.7, thin["coverage"]["weighted_coverage"])
+        self.assertEqual(70, full["score"])
+        self.assertEqual(70, three_quarters["score"])
+        self.assertEqual(70, thin["score"])
+
+    def test_bounds_and_classification_boundaries(self):
+        for score in (0, 24.99, 25, 44.99, 45, 69.99, 70, 84.99, 85, 100):
+            with self.subTest(score=score):
+                result = combine_valuation_scores(self.component(score), self.component(score))
+                self.assertEqual(valuation_classification(score)[0], result["status"])
+                self.assertGreaterEqual(result["score"], 0)
+                self.assertLessEqual(result["score"], 100)
 
 
 if __name__ == "__main__":

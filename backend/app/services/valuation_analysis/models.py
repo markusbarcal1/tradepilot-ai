@@ -16,3 +16,4 @@ class ValuationSnapshot:
     price_source: str | None = None
     price_is_fallback: bool = False
     values: dict[str, Any] = field(default_factory=dict)
+    history: dict[str, list[dict[str, Any]]] = field(default_factory=dict)

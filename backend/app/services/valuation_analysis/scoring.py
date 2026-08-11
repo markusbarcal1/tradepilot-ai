@@ -1,6 +1,10 @@
 """Graduated scoring and weight-based normalization for Relative Valuation."""
 
-from .config import METRIC_EXPLANATIONS, MINIMUM_COVERAGE_PERCENT, VALUATION_SCORING_VERSION
+from .config import (
+    METRIC_EXPLANATIONS, MINIMUM_COVERAGE_PERCENT,
+    RELATIVE_VALUATION_SCORING_VERSION, VALUATION_COMPONENT_WEIGHTS,
+    VALUATION_SCORING_VERSION,
+)
 from .metrics import valid_number
 
 ANCHOR_QUALITY = {"poor": 0.0, "acceptable": 0.4, "good": 0.7, "excellent": 1.0}
@@ -203,7 +207,7 @@ def score_valuation_metrics(metrics, profile):
             )
         },
         "categories": {"relative_valuation": category},
-        "scoring_version": VALUATION_SCORING_VERSION,
+        "scoring_version": RELATIVE_VALUATION_SCORING_VERSION,
     }
     if (
         normalized_score is None
@@ -224,4 +228,73 @@ def score_valuation_metrics(metrics, profile):
             "Valuation score is based on limited available data."
             if coverage["percentage"] < 100 else None
         ),
+    }
+
+
+def combine_valuation_scores(relative, intrinsic):
+    """Combine supported valuation components without scoring missing data as zero."""
+    components = {
+        "relative_valuation": {
+            "score": valid_number(relative.get("score")),
+            "weight": VALUATION_COMPONENT_WEIGHTS["relative_valuation"],
+            "coverage": valid_number(relative.get("coverage", {}).get("weighted_coverage")),
+            "supported": relative.get("status") != "unsupported",
+        },
+        "intrinsic_value": {
+            "score": valid_number(intrinsic.get("score")),
+            "weight": VALUATION_COMPONENT_WEIGHTS["intrinsic_value"],
+            "coverage": valid_number(intrinsic.get("coverage", {}).get("weighted_coverage")),
+            "supported": intrinsic.get("status") != "unsupported",
+        },
+    }
+    supported = [component for component in components.values() if component["supported"]]
+    available = [component for component in supported if component["score"] is not None]
+    supported_weight = sum(component["weight"] for component in supported)
+    available_weight = sum(component["weight"] for component in available)
+    score = (
+        sum(component["score"] * component["weight"] for component in available)
+        / available_weight
+        if available_weight else None
+    )
+    combined_coverage = (
+        sum(component["weight"] * min(1.0, max(0.0, component["coverage"] or 0.0))
+            for component in supported) / supported_weight
+        if supported_weight else 0.0
+    )
+    coverage = {
+        "configured_components": len(components),
+        "supported_components": len(supported),
+        "available_components": len(available),
+        "missing_supported_components": len(supported) - len(available),
+        "unsupported_components": len(components) - len(supported),
+        "available_weight": available_weight,
+        "supported_weight": supported_weight,
+        "weighted_coverage": round(combined_coverage, 4),
+        "percentage": round(combined_coverage * 100),
+        "ratio": round(combined_coverage, 4),
+        "coverage_method": "component_weighted",
+    }
+    serialized_components = {
+        key: {
+            "score": component["score"], "weight": component["weight"],
+            "coverage": min(1.0, max(0.0, component["coverage"] or 0.0)),
+            "supported": component["supported"],
+            "available": component["score"] is not None,
+        }
+        for key, component in components.items()
+    }
+    if score is None:
+        return {
+            "score": None, "status": "unavailable", "status_label": "Unavailable",
+            "availability": "unavailable", "coverage": coverage,
+            "score_components": serialized_components,
+            "scoring_version": VALUATION_SCORING_VERSION,
+        }
+    score = max(0.0, min(100.0, score))
+    status, label = valuation_classification(score)
+    return {
+        "score": round(score, 1), "status": status, "status_label": label,
+        "availability": "available" if combined_coverage == 1 else "partial",
+        "coverage": coverage, "score_components": serialized_components,
+        "scoring_version": VALUATION_SCORING_VERSION,
     }

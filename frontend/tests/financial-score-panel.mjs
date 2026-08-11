@@ -12,7 +12,11 @@ try {
   const { default: FinancialScorePanel } = await vite.ssrLoadModule(
     "/src/components/FinancialScorePanel.jsx"
   );
-  const { default: ValuationScorePanel } = await vite.ssrLoadModule(
+  const {
+    default: ValuationScorePanel,
+    IntrinsicValueContent,
+    ValuationExpandedContent,
+  } = await vite.ssrLoadModule(
     "/src/components/ValuationScorePanel.jsx"
   );
   const {
@@ -179,6 +183,11 @@ try {
       message: "Relative company valuation is not supported for this instrument.",
     },
   }), /not supported for this instrument/);
+  assert.doesNotMatch(renderValuation({
+    loading: false,
+    error: "",
+    data: { status: "unsupported", score: null, message: "Unsupported" },
+  }), /role="progressbar"[^>]*aria-label="Valuation Score"/);
 
   const valuationMarkup = renderValuation({
     loading: false,
@@ -187,13 +196,13 @@ try {
       status: "fairly_valued",
       status_label: "Fairly Valued",
       availability: "partial",
-      score: 62.4,
+      score: 64.8,
       scoring_version: "2A.1",
       sector_profile_label: "Technology",
       used_default_profile: false,
       current_price: 212.45,
       currency: "USD",
-      coverage: { percentage: 88 },
+      coverage: { percentage: 82 },
       categories: {
         relative_valuation: {
           score: 62.4,
@@ -224,21 +233,147 @@ try {
           ],
         },
       },
+      intrinsic_value: {
+        status: "available",
+        score: 67.2,
+        score_label: "Fair",
+        version: "2B.2",
+        fair_value_low: 142,
+        fair_value_mid: 151,
+        fair_value_high: 160,
+        confidence: "moderate",
+        price_difference_label: "Discount to Midpoint",
+        price_difference_percentage: 0.1325,
+        comparison_label: "Below Estimated Fair Value",
+        coverage: { weighted_coverage: 0.75 },
+        models: [{
+          model: "discounted_cash_flow", label: "Discounted Cash Flow",
+          status: "available", fair_value_low: 138, fair_value_mid: 149,
+          fair_value_high: 161, confidence: "moderate",
+        }],
+      },
     },
   });
   assert.match(valuationMarkup, /Valuation Score/);
   assert.match(valuationMarkup, /Fairly Valued/);
-  assert.match(valuationMarkup, /62.4.*100/);
+  assert.match(valuationMarkup, /64.8.*100/);
+  assert.doesNotMatch(valuationMarkup, /valuation-score-progress/);
+  assert.match(valuationMarkup, /aria-label="Relative Valuation"/);
+  assert.match(valuationMarkup, /aria-label="Intrinsic Value"/);
+  assert.match(valuationMarkup, /style="width:62.4%"/);
+  assert.match(valuationMarkup, /style="width:67.2%"/);
   assert.match(valuationMarkup, /Current Price:.*\$212.45/);
-  assert.match(valuationMarkup, /Coverage: 88%/);
-  assert.match(valuationMarkup, /Scoring Profile: Technology/);
-  assert.match(valuationMarkup, /Forward P\/E/);
-  assert.match(valuationMarkup, /23.40×/);
-  assert.match(valuationMarkup, /Contribution:.*14.7.*20/);
-  assert.match(valuationMarkup, /N\/M/);
-  assert.match(valuationMarkup, /Not Meaningful/);
-  assert.match(valuationMarkup, /Unsupported For Sector/);
+  assert.match(valuationMarkup, /Coverage: 82%/);
   assert.match(valuationMarkup, /aria-expanded="false"/);
+  assert.match(valuationMarkup, /Intrinsic Value/);
+  assert.match(valuationMarkup, /Relative Valuation/);
+  assert.match(valuationMarkup, /Intrinsic Value.*67.2.*100/);
+  assert.match(valuationMarkup, /Coverage: 82% · Current Price:.*\$212.45/);
+  assert.match(valuationMarkup, /aria-hidden="true"/);
+  assert.doesNotMatch(valuationMarkup, /valuation-subsection-toggle/);
+  assert.doesNotMatch(valuationMarkup, /valuation-subsection-chevron/);
+
+  const intrinsicFixture = {
+    status: "available", score: 67.2, fair_value_low: 142, fair_value_mid: 151,
+    fair_value_high: 160, current_price: 131, discount_to_midpoint: 0.1325,
+    price_difference_label: "Discount to Midpoint",
+    price_difference_percentage: 0.1325,
+    confidence: "moderate", comparison_label: "Below Estimated Fair Value",
+    coverage: { weighted_coverage: 0.75 },
+    models: [
+      { model: "discounted_cash_flow", label: "Discounted Cash Flow", status: "available", fair_value_low: 138, fair_value_mid: 149, fair_value_high: 161, confidence: "moderate" },
+      { model: "earnings_power", label: "Earnings Power", status: "available", fair_value_low: 130, fair_value_mid: 145, fair_value_high: 160, confidence: "high" },
+      { model: "historical_multiple_reversion", label: "Historical Multiple Reversion", status: "unavailable", reason: "History unavailable" },
+      { model: "owner_earnings", label: "Owner Earnings", status: "unsupported_for_sector", reason: "Not supported" },
+    ],
+  };
+  const expandedValuation = renderToStaticMarkup(React.createElement(
+    ValuationExpandedContent,
+    {
+      categories: {
+        relative_valuation: {
+          score: 62.4, max_score: 100,
+          details: [{
+            key: "forward_pe", label: "Forward P/E", formatted_value: "23.40×",
+            score: 14.7, max_score: 20, status: "good", availability: "available",
+          }],
+        },
+      },
+      titleId: "valuation-title", profileLabel: "Technology",
+      usedDefaultProfile: false, intrinsic: intrinsicFixture, currency: "USD",
+    }
+  ));
+  assert.match(expandedValuation, /Relative Valuation/);
+  assert.match(expandedValuation, /Forward P\/E/);
+  assert.match(expandedValuation, /23.40×/);
+  assert.match(expandedValuation, /Contribution:.*14.7.*20/);
+  assert.match(expandedValuation, /Scoring Profile: Technology/);
+  assert.match(expandedValuation, /Intrinsic Value/);
+  assert.match(expandedValuation, /Estimated Fair Value/);
+  assert.match(expandedValuation, /\$142\.00.*\$160\.00/);
+  assert.match(expandedValuation, /Midpoint/);
+  assert.match(expandedValuation, /Current Price/);
+  assert.match(expandedValuation, /Discount to Midpoint/);
+  assert.match(expandedValuation, /Confidence/);
+  assert.match(expandedValuation, /Model Coverage/);
+  assert.match(expandedValuation, /Status/);
+  assert.match(expandedValuation, /Below Estimated Fair Value/);
+  assert.match(expandedValuation, /Discounted Cash Flow/);
+  assert.match(expandedValuation, /Earnings Power/);
+  assert.match(expandedValuation, /Historical Multiple Reversion/);
+  assert.match(expandedValuation, /Owner Earnings/);
+  assert.match(expandedValuation, /Unavailable/);
+  assert.match(expandedValuation, /Unsupported/);
+  assert.doesNotMatch(expandedValuation, /<button/);
+  assert.doesNotMatch(expandedValuation, /aria-expanded/);
+  assert.doesNotMatch(expandedValuation, /valuation-subsection-chevron/);
+
+  const premiumMarkup = renderToStaticMarkup(React.createElement(
+    IntrinsicValueContent,
+    {
+      intrinsic: {
+        ...intrinsicFixture,
+        price_difference_label: "Premium to Midpoint",
+        price_difference_percentage: 1.47,
+      },
+      currency: "USD",
+    }
+  ));
+  assert.match(premiumMarkup, /Premium to Midpoint/);
+  assert.match(premiumMarkup, /147.0%/);
+  assert.doesNotMatch(premiumMarkup, /-147.0%/);
+
+  const unavailableIntrinsic = renderToStaticMarkup(React.createElement(
+    IntrinsicValueContent,
+    { intrinsic: { status: "unavailable", message: "Intrinsic value could not be calculated.", models: [] }, currency: "USD" }
+  ));
+  assert.match(unavailableIntrinsic, /could not be calculated/);
+
+  const unavailableIntrinsicCard = renderValuation({
+    loading: false, error: "",
+    data: {
+      status: "fairly_valued", status_label: "Fairly Valued",
+      availability: "available", score: 62.4, scoring_version: "2A.1",
+      coverage: { percentage: 100 }, current_price: 100, currency: "USD",
+      categories: { relative_valuation: { score: 62.4, max_score: 100, details: [] } },
+      intrinsic_value: {
+        status: "unavailable", score: null, version: "2B.2",
+        message: "Intrinsic value could not be calculated.",
+        coverage: { weighted_coverage: 0 }, models: [],
+      },
+    },
+  });
+  assert.match(unavailableIntrinsicCard, /Intrinsic Value/);
+  assert.match(unavailableIntrinsicCard, /N\/A.*100/);
+  assert.match(unavailableIntrinsicCard, /Intrinsic Value score unavailable/);
+
+  assert.match(renderValuation({
+    symbol: "MSFT", loading: true, error: "",
+    data: { ...JSON.parse(JSON.stringify({
+      status: "fairly_valued", availability: "partial", score: 62.4,
+      coverage: { percentage: 88 }, categories: {}, symbol: "AAPL",
+    })) },
+  }), /Loading valuation data/);
 
   assert.equal(isValidAnalysisResponse({
     ticker: "AAPL",

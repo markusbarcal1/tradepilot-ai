@@ -136,7 +136,6 @@ function App() {
     valuationRequestRef.current = { controller, id: requestId };
 
     if (!options.background) {
-      setValuationAnalysis(null);
       setValuationLoading(true);
       setValuationError("");
     }
@@ -574,6 +573,7 @@ function App() {
 
                     <ValuationScorePanel
                       key={`valuation-${analysis.ticker}`}
+                      symbol={analysis.ticker}
                       data={valuationAnalysis}
                       loading={valuationLoading}
                       error={valuationError}

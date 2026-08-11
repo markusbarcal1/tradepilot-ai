@@ -11,15 +11,38 @@ INCOME_ROWS = {
     "net_income": ("Net Income Common Stockholders", "Net Income"),
     "ebitda": ("EBITDA", "Normalized EBITDA"),
     "trailing_eps": ("Diluted EPS", "Basic EPS"),
+    "operating_income": ("Operating Income",),
+    "diluted_shares": ("Diluted Average Shares", "Basic Average Shares"),
+    "tax_provision": ("Tax Provision", "Income Tax Expense"),
+    "pretax_income": ("Pretax Income", "Income Before Tax"),
 }
 BALANCE_ROWS = {
     "common_equity": ("Common Stock Equity", "Stockholders Equity"),
+    "cash": ("Cash Cash Equivalents And Short Term Investments", "Cash And Cash Equivalents"),
+    "total_debt": ("Total Debt",),
+    "working_capital": ("Working Capital",),
 }
 CASH_FLOW_ROWS = {
     "operating_cash_flow": ("Operating Cash Flow", "Total Cash From Operating Activities"),
     "capital_expenditure": ("Capital Expenditure", "Capital Expenditures"),
     "free_cash_flow": ("Free Cash Flow",),
+    "depreciation_amortization": ("Depreciation And Amortization", "Depreciation"),
 }
+
+
+def _history(statement, aliases):
+    result = []
+    for period in sorted(_periods(statement)):
+        for alias in aliases:
+            try:
+                value = float(statement.loc[alias, period])
+                if value == value and value not in (float("inf"), float("-inf")):
+                    label = period.isoformat() if hasattr(period, "isoformat") else str(period)
+                    result.append({"period": label, "value": value})
+                    break
+            except (KeyError, TypeError, ValueError):
+                continue
+    return result[-5:]
 
 
 def _periods(statement):
@@ -114,6 +137,14 @@ def fetch_valuation_snapshot(ticker):
         "provider_ev_to_ebitda": info.get("enterpriseToEbitda"),
         "provider_price_to_sales": info.get("priceToSalesTrailing12Months"),
         "provider_price_to_book": info.get("priceToBook"),
+        "beta": info.get("beta"),
+        "total_debt": info.get("totalDebt") or _statement_value(balance, BALANCE_ROWS["total_debt"]),
+        "cash": info.get("totalCash") or _statement_value(balance, BALANCE_ROWS["cash"]),
+        # Intrinsic per-share models require statement-reported diluted shares;
+        # ordinary shares outstanding is not silently substituted.
+        "diluted_shares": _statement_value(income, INCOME_ROWS["diluted_shares"]),
+        "forward_revenue_growth": info.get("revenueGrowth"),
+        "cost_of_debt": None,
     }
     now = datetime.now(timezone.utc).isoformat()
     return ValuationSnapshot(
@@ -128,4 +159,16 @@ def fetch_valuation_snapshot(ticker):
         price_source=price_source,
         price_is_fallback=price_is_fallback,
         values=values,
+        history={
+            "revenue": _history(income, INCOME_ROWS["revenue"]),
+            "operating_income": _history(income, INCOME_ROWS["operating_income"]),
+            "net_income": _history(income, INCOME_ROWS["net_income"]),
+            "eps": _history(income, INCOME_ROWS["trailing_eps"]),
+            "diluted_shares": _history(income, INCOME_ROWS["diluted_shares"]),
+            "operating_cash_flow": _history(cashflow, CASH_FLOW_ROWS["operating_cash_flow"]),
+            "capital_expenditure": _history(cashflow, CASH_FLOW_ROWS["capital_expenditure"]),
+            "free_cash_flow": _history(cashflow, CASH_FLOW_ROWS["free_cash_flow"]),
+            "depreciation_amortization": _history(cashflow, CASH_FLOW_ROWS["depreciation_amortization"]),
+            "working_capital": _history(balance, BALANCE_ROWS["working_capital"]),
+        },
     )

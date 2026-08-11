@@ -1020,13 +1020,69 @@ canvas {
   text-transform: capitalize;
 }
 
-.valuation-metadata {
+.intrinsic-model > div,
+.intrinsic-value-summary > div {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 0.7rem;
-  margin-top: 0.55rem;
-  color: var(--text-muted);
-  font-size: 0.78rem;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.intrinsic-model span {
+  color: #94a3b8;
+}
+
+.intrinsic-value-content > p,
+.intrinsic-model small,
+.valuation-refreshing {
+  margin: 5px 0 0;
+  color: #94a3b8;
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.intrinsic-value-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 10px;
+  margin-top: 6px;
+}
+
+.intrinsic-value-summary span {
+  color: #94a3b8;
+  font-size: 9px;
+}
+
+.intrinsic-value-summary strong {
+  color: #f8fafc;
+  font-size: 9.5px;
+  text-align: right;
+}
+
+.intrinsic-model-list {
+  display: grid;
+  gap: 5px;
+  margin-top: 7px;
+}
+
+.intrinsic-model {
+  padding-top: 5px;
+  border-top: 1px solid rgba(51, 65, 85, 0.65);
+  font-size: 9px;
+}
+
+.intrinsic-model > div strong {
+  color: #e2e8f0;
+}
+
+.valuation-expanded-content {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.intrinsic-value-detail-section {
+  margin: 0 8px;
+  padding: 8px 1px 0;
+  border-top: 1px solid #293548;
 }
 
 .technical-breakdown {
@@ -1371,7 +1427,8 @@ canvas {
   transition: grid-template-rows 220ms ease, opacity 180ms ease;
 }
 
-.score-card-details-region > .expanded-score-details {
+.score-card-details-region > .expanded-score-details,
+.score-card-details-region > .valuation-expanded-region {
   min-height: 0;
   overflow: hidden;
 }

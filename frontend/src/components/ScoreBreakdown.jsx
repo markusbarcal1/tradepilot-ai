@@ -22,6 +22,9 @@ function ScoreBreakdown({ components, version, scoreLabel }) {
         key,
         score: scoreAvailable ? score : null,
         maxScore,
+        unavailableDisplay: typeof component.unavailable_display === "string"
+          ? component.unavailable_display
+          : "—",
         percentage: scoreAvailable
           ? Math.max(0, Math.min(100, (score / maxScore) * 100))
           : 0,
@@ -47,7 +50,7 @@ function ScoreBreakdown({ components, version, scoreLabel }) {
           <div className="technical-component" key={entry.key}>
             <div className="technical-component-meta">
               <Tooltip label={scoreComponentLabel(entry.key)} content={entry.tooltip} />
-              <strong>{entry.score ?? "—"} / {entry.maxScore}</strong>
+              <strong>{entry.score ?? entry.unavailableDisplay} / {entry.maxScore}</strong>
             </div>
             <div
               className="technical-component-track"
