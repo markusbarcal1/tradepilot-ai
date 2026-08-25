@@ -29,11 +29,18 @@ function Watchlist({
   timeframe,
   addingTicker,
   watchlistError,
+  positions = [],
   onSelectStock,
   onAddStock,
   onRemoveStock,
 }) {
   const [newStock, setNewStock] = useState("");
+  const positionSymbols = new Set(
+    positions
+      .filter((position) => Number(position.shares) > 0)
+      .map((position) => position.symbol?.trim().toUpperCase())
+      .filter(Boolean)
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -75,7 +82,16 @@ function Watchlist({
               }
               onClick={() => onSelectStock(stock)}
             >
-              <span>{stock}</span>
+              <span className="watchlist-symbol">
+                {stock}
+                {positionSymbols.has(stock.trim().toUpperCase()) && (
+                  <span
+                    className="watchlist-position-dot"
+                    aria-label="Open position"
+                    title="Open position"
+                  />
+                )}
+              </span>
 
               <span className="watchlist-scores">
                 <span className="watchlist-timeframe">

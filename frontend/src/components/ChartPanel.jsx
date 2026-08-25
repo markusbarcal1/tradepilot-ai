@@ -12,6 +12,9 @@ function formatLastUpdated(value) {
 
 function ChartPanel({
   analysis,
+  positionAverageCost,
+  positionShares,
+  theme,
   timeframe,
   timeframes,
   lastUpdatedAt,
@@ -50,7 +53,10 @@ function ChartPanel({
           key={chartResetKey}
           data={analysis.chart_data}
           analysis={analysis}
+          positionAverageCost={positionAverageCost}
+          positionShares={positionShares}
           resetKey={chartResetKey}
+          theme={theme}
         />
 
         <div className="legend">

@@ -7,12 +7,20 @@ function Header({
   loading,
   currentView,
   onNavigate,
+  theme,
+  onToggleTheme,
 }) {
   return (
     <header className="top-bar">
-      <div>
-        <h1>TradePilot AI</h1>
-        <p className="subtitle">AI-assisted trading intelligence dashboard</p>
+      <div className="brand-column">
+        <button
+          type="button"
+          className="brand-link"
+          onClick={() => onNavigate("dashboard")}
+          aria-label="Go to Dashboard"
+        >
+          <h1>TradePilot AI</h1>
+        </button>
       </div>
 
       <SearchBar
@@ -39,8 +47,14 @@ function Header({
           );
         })}
 
-        <button type="button" className="theme-toggle" aria-label="Theme">
-          ◐
+        <button
+          type="button"
+          className="theme-toggle"
+          onClick={onToggleTheme}
+          aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+        >
+          {theme === "dark" ? "☀" : "☾"}
         </button>
       </nav>
     </header>

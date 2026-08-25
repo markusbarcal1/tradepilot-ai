@@ -35,7 +35,7 @@ function getValueClass(value) {
   return "neutral";
 }
 
-function PaperPortfolioSummary({ portfolio, loading, error }) {
+function PaperPortfolioSummary({ portfolio, loading, error, onViewPortfolio }) {
   const cashBalance = portfolio?.cash ?? portfolio?.cash_balance;
   const accountEquity = portfolio?.account_equity;
   const totalPl = portfolio?.total_pl ?? 0;
@@ -82,7 +82,11 @@ function PaperPortfolioSummary({ portfolio, loading, error }) {
             <strong>{openPositions}</strong>
           </div>
 
-          <button type="button" className="paper-stat-tile portfolio-placeholder" disabled>
+          <button
+            type="button"
+            className="paper-stat-tile portfolio-placeholder"
+            onClick={onViewPortfolio}
+          >
             View Portfolio
           </button>
         </div>

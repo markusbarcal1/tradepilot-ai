@@ -26,14 +26,151 @@ function mapLine(data, key) {
     }));
 }
 
-function TradingChart({ data, analysis, resetKey }) {
+class HorizontalRayRenderer {
+  constructor(color) {
+    this.color = color;
+    this.point = null;
+  }
+
+  update(point) {
+    this.point = point;
+  }
+
+  draw(target) {
+    if (!this.point) return;
+
+    target.useMediaCoordinateSpace(({ context, mediaSize }) => {
+      const startX = Math.max(0, this.point.x);
+
+      if (startX >= mediaSize.width) return;
+
+      context.save();
+      context.beginPath();
+      context.setLineDash([2, 5]);
+      context.lineWidth = 1;
+      context.strokeStyle = this.color;
+      context.moveTo(startX, this.point.y);
+      context.lineTo(mediaSize.width, this.point.y);
+      context.stroke();
+      context.restore();
+    });
+  }
+}
+
+class HorizontalRayPaneView {
+  constructor(color) {
+    this.rayRenderer = new HorizontalRayRenderer(color);
+  }
+
+  update(point) {
+    this.rayRenderer.update(point);
+  }
+
+  zOrder() {
+    return "bottom";
+  }
+
+  renderer() {
+    return this.rayRenderer;
+  }
+}
+
+class HorizontalRayPrimitive {
+  constructor(color) {
+    this.point = null;
+    this.paneView = new HorizontalRayPaneView(color);
+  }
+
+  attached({ chart, series, requestUpdate }) {
+    this.chart = chart;
+    this.series = series;
+    this.requestUpdate = requestUpdate;
+  }
+
+  detached() {
+    this.chart = null;
+    this.series = null;
+    this.requestUpdate = null;
+  }
+
+  setPoint(point) {
+    this.point = point;
+    this.updateAllViews();
+    this.requestUpdate?.();
+  }
+
+  updateAllViews() {
+    if (!this.point || !this.chart || !this.series) {
+      this.paneView.update(null);
+      return;
+    }
+
+    const x = this.chart.timeScale().timeToCoordinate(this.point.time);
+    const y = this.series.priceToCoordinate(this.point.value);
+
+    this.paneView.update(x === null || y === null ? null : { x, y });
+  }
+
+  paneViews() {
+    return [this.paneView];
+  }
+}
+
+const CHART_THEMES = {
+  dark: {
+    background: "#020617",
+    text: "#94a3b8",
+    grid: "#1e293b",
+    border: "#334155",
+  },
+  light: {
+    background: "#f8fafc",
+    text: "#475569",
+    grid: "#e2e8f0",
+    border: "#cbd5e1",
+  },
+};
+
+function getChartOptions(theme) {
+  const colors = CHART_THEMES[theme] || CHART_THEMES.dark;
+
+  return {
+    layout: {
+      background: { type: ColorType.Solid, color: colors.background },
+      textColor: colors.text,
+    },
+    grid: {
+      vertLines: { color: colors.grid },
+      horzLines: { color: colors.grid },
+    },
+    rightPriceScale: {
+      borderColor: colors.border,
+    },
+    timeScale: {
+      borderColor: colors.border,
+      timeVisible: true,
+      secondsVisible: false,
+    },
+  };
+}
+
+function TradingChart({
+  data,
+  analysis,
+  positionAverageCost,
+  positionShares,
+  resetKey,
+  theme,
+}) {
   const priceChartRef = useRef(null);
+  const positionLabelRef = useRef(null);
   const volumeChartRef = useRef(null);
   const macdChartRef = useRef(null);
   const chartRefs = useRef(null);
   const dataRef = useRef(data || []);
   const didFitContentRef = useRef(false);
   const lastResetKeyRef = useRef(resetKey);
+  const initialThemeRef = useRef(theme);
 
   const [hoverData, setHoverData] = useState(null);
 
@@ -51,24 +188,7 @@ function TradingChart({ data, analysis, resetKey }) {
       return undefined;
     }
 
-    const baseOptions = {
-      layout: {
-        background: { type: ColorType.Solid, color: "#020617" },
-        textColor: "#94a3b8",
-      },
-      grid: {
-        vertLines: { color: "#1e293b" },
-        horzLines: { color: "#1e293b" },
-      },
-      rightPriceScale: {
-        borderColor: "#334155",
-      },
-      timeScale: {
-        borderColor: "#334155",
-        timeVisible: true,
-        secondsVisible: false,
-      },
-    };
+    const baseOptions = getChartOptions(initialThemeRef.current);
 
     const priceChart = createChart(priceChartRef.current, {
       ...baseOptions,
@@ -100,12 +220,19 @@ function TradingChart({ data, analysis, resetKey }) {
     const sma20Series = priceChart.addSeries(LineSeries, {
       color: "#38bdf8",
       lineWidth: 2,
+      priceLineVisible: false,
     });
 
     const sma50Series = priceChart.addSeries(LineSeries, {
       color: "#fbbf24",
       lineWidth: 2,
+      priceLineVisible: false,
     });
+
+    const sma20Ray = new HorizontalRayPrimitive("rgba(56, 189, 248, 0.42)");
+    const sma50Ray = new HorizontalRayPrimitive("rgba(251, 191, 36, 0.42)");
+    sma20Series.attachPrimitive(sma20Ray);
+    sma50Series.attachPrimitive(sma50Ray);
 
     const resistanceZoneSeries = priceChart.addSeries(LineSeries, {
       color: "rgba(239, 68, 68, 0.65)",
@@ -143,6 +270,20 @@ function TradingChart({ data, analysis, resetKey }) {
       lineWidth: 2,
     });
 
+    const updatePositionLabel = () => {
+      const positionPrice = chartRefs.current?.positionAverageCost;
+
+      if (!positionLabelRef.current || !Number.isFinite(positionPrice)) return;
+
+      const y = candleSeries.priceToCoordinate(positionPrice);
+      positionLabelRef.current.style.display = y === null ? "none" : "flex";
+
+      if (y !== null) {
+        positionLabelRef.current.style.top = `${y}px`;
+        positionLabelRef.current.style.right = `${candleSeries.priceScale().width()}px`;
+      }
+    };
+
     const syncCharts = (sourceChart, targetCharts) => {
       sourceChart.timeScale().subscribeVisibleLogicalRangeChange((range) => {
         if (!range) return;
@@ -155,6 +296,7 @@ function TradingChart({ data, analysis, resetKey }) {
     syncCharts(priceChart, [volumeChart, macdChart]);
     syncCharts(volumeChart, [priceChart, macdChart]);
     syncCharts(macdChart, [priceChart, volumeChart]);
+    priceChart.timeScale().subscribeVisibleLogicalRangeChange(updatePositionLabel);
 
     priceChart.subscribeCrosshairMove((param) => {
       if (!param.time || !param.point) {
@@ -181,8 +323,13 @@ function TradingChart({ data, analysis, resetKey }) {
       volumeChart,
       macdChart,
       candleSeries,
+      positionPriceLine: null,
+      positionAverageCost: null,
+      updatePositionLabel,
       sma20Series,
       sma50Series,
+      sma20Ray,
+      sma50Ray,
       resistanceZoneSeries,
       supportZoneSeries,
       volumeSeries,
@@ -211,6 +358,8 @@ function TradingChart({ data, analysis, resetKey }) {
           width: macdChartRef.current.clientWidth,
           height: macdChartRef.current.clientHeight,
         });
+
+        window.requestAnimationFrame(updatePositionLabel);
       }
     };
 
@@ -218,12 +367,57 @@ function TradingChart({ data, analysis, resetKey }) {
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      priceChart.timeScale().unsubscribeVisibleLogicalRangeChange(updatePositionLabel);
       priceChart.remove();
       volumeChart.remove();
       macdChart.remove();
       chartRefs.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    if (!chartRefs.current) return;
+
+    const options = getChartOptions(theme);
+    chartRefs.current.priceChart.applyOptions(options);
+    chartRefs.current.volumeChart.applyOptions(options);
+    chartRefs.current.macdChart.applyOptions(options);
+    window.requestAnimationFrame(chartRefs.current.updatePositionLabel);
+  }, [theme]);
+
+  useEffect(() => {
+    if (!chartRefs.current) return;
+
+    const { candleSeries } = chartRefs.current;
+
+    if (chartRefs.current.positionPriceLine) {
+      candleSeries.removePriceLine(chartRefs.current.positionPriceLine);
+      chartRefs.current.positionPriceLine = null;
+    }
+
+    const positionIsInvalid =
+      !Number.isFinite(positionAverageCost) ||
+      positionAverageCost <= 0 ||
+      !Number.isFinite(positionShares) ||
+      positionShares <= 0;
+
+    if (positionIsInvalid) {
+      chartRefs.current.positionAverageCost = null;
+      if (positionLabelRef.current) positionLabelRef.current.style.display = "none";
+      return;
+    }
+
+    chartRefs.current.positionAverageCost = positionAverageCost;
+
+    chartRefs.current.positionPriceLine = candleSeries.createPriceLine({
+      price: positionAverageCost,
+      color: "rgba(59, 130, 246, 0.72)",
+      lineWidth: 2,
+      lineStyle: 0,
+      axisLabelVisible: false,
+    });
+    window.requestAnimationFrame(chartRefs.current.updatePositionLabel);
+  }, [positionAverageCost, positionShares]);
 
   useEffect(() => {
     if (!data || data.length === 0 || !chartRefs.current) return;
@@ -235,6 +429,8 @@ function TradingChart({ data, analysis, resetKey }) {
       candleSeries,
       sma20Series,
       sma50Series,
+      sma20Ray,
+      sma50Ray,
       resistanceZoneSeries,
       supportZoneSeries,
       volumeSeries,
@@ -250,9 +446,14 @@ function TradingChart({ data, analysis, resetKey }) {
     const lastTime = data[data.length - 1].time;
     const currentPrice = Number(data[data.length - 1].close);
 
+    const sma20Data = mapLine(data, "sma_20");
+    const sma50Data = mapLine(data, "sma_50");
+
     candleSeries.setData(mapCandles(data));
-    sma20Series.setData(mapLine(data, "sma_20"));
-    sma50Series.setData(mapLine(data, "sma_50"));
+    sma20Series.setData(sma20Data);
+    sma50Series.setData(sma50Data);
+    sma20Ray.setPoint(sma20Data.at(-1) || null);
+    sma50Ray.setPoint(sma50Data.at(-1) || null);
 
     supportZoneSeries.setData([]);
     resistanceZoneSeries.setData([]);
@@ -329,6 +530,7 @@ function TradingChart({ data, analysis, resetKey }) {
 
     macdSeries.setData(mapLine(data, "macd"));
     signalSeries.setData(mapLine(data, "macd_signal"));
+    window.requestAnimationFrame(chartRefs.current.updatePositionLabel);
 
     if (shouldResetRange) {
       priceChart.timeScale().fitContent();
@@ -353,6 +555,10 @@ function TradingChart({ data, analysis, resetKey }) {
       <div className="chart-section">
         <div className="chart-label">Price</div>
         <div ref={priceChartRef} className="price-chart" />
+        <div ref={positionLabelRef} className="position-price-label">
+          POS: {positionShares?.toLocaleString("en-US")}{" @ "}
+          {positionAverageCost?.toFixed(2)}
+        </div>
       </div>
 
       <div className="chart-section">

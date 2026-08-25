@@ -50,6 +50,11 @@ const DEFAULT_WATCHLIST = [
 const ANALYSIS_REFRESH_MS = 15_000;
 const PORTFOLIO_REFRESH_MS = 15_000;
 const WATCHLIST_REFRESH_MS = 45_000;
+const THEME_STORAGE_KEY = "tradepilot-theme";
+
+function getInitialTheme() {
+  return localStorage.getItem(THEME_STORAGE_KEY) === "light" ? "light" : "dark";
+}
 
 function App() {
   const { showToast } = useToast();
@@ -74,6 +79,7 @@ function App() {
   const [valuationLoading, setValuationLoading] = useState(false);
   const [valuationError, setValuationError] = useState("");
   const [currentView, setCurrentView] = useState("dashboard");
+  const [theme, setTheme] = useState(getInitialTheme);
 
   const [watchlist, setWatchlist] = useState(() => {
     const saved = localStorage.getItem("tradepilot-watchlist");
@@ -403,8 +409,8 @@ function App() {
       return;
     }
 
-    if (view === "dashboard") {
-      setCurrentView("dashboard");
+    if (["dashboard", "watchlist", "scanner"].includes(view)) {
+      setCurrentView(view);
     }
   };
 
@@ -437,12 +443,12 @@ function App() {
 
   usePollingData(
     () => {
-      if (currentView !== "dashboard" || !submittedTicker) return;
+      if (!["dashboard", "watchlist", "scanner"].includes(currentView) || !submittedTicker) return;
 
       analyzeTicker(submittedTicker, timeframe, { background: true });
     },
     ANALYSIS_REFRESH_MS,
-    currentView === "dashboard" && Boolean(analysis) && !loading
+    ["dashboard", "watchlist", "scanner"].includes(currentView) && Boolean(analysis) && !loading
   );
 
   usePollingData(
@@ -455,17 +461,22 @@ function App() {
 
   usePollingData(
     () => {
-      if (currentView !== "dashboard") return;
+      if (!["dashboard", "watchlist"].includes(currentView)) return;
 
       refreshWatchlistScores(timeframe, watchlist);
     },
     WATCHLIST_REFRESH_MS,
-    currentView === "dashboard" && watchlist.length > 0
+    ["dashboard", "watchlist"].includes(currentView) && watchlist.length > 0
   );
 
   useEffect(() => {
     localStorage.setItem("tradepilot-watchlist", JSON.stringify(watchlist));
   }, [watchlist]);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  }, [theme]);
 
   useEffect(() => {
     return () => {
@@ -482,6 +493,54 @@ function App() {
     };
   }, []);
 
+  const watchlistPanel = (
+    <Watchlist
+      stocks={watchlist}
+      selectedStock={submittedTicker}
+      watchlistScores={watchlistScores}
+      timeframe={timeframe}
+      addingTicker={addingTicker}
+      watchlistError={watchlistError}
+      positions={paperPortfolio?.positions ?? []}
+      onSelectStock={handleWatchlistSelect}
+      onAddStock={handleAddToWatchlist}
+      onRemoveStock={handleRemoveFromWatchlist}
+    />
+  );
+
+  const scannerPanel = (
+    <ScannerPanel
+      savedState={scannerState}
+      onStateChange={setScannerState}
+      onSelectTicker={handleWatchlistSelect}
+    />
+  );
+
+  const currentPosition = paperPortfolio?.positions?.find((position) => {
+    return position.symbol?.trim().toUpperCase() === submittedTicker;
+  });
+  const positionShares = Number(currentPosition?.shares);
+  const positionAverageCost =
+    positionShares > 0 &&
+    Number.isFinite(Number(currentPosition?.avg_cost)) &&
+    Number(currentPosition.avg_cost) > 0
+      ? Number(currentPosition.avg_cost)
+      : null;
+
+  const chartPanel = analysis ? (
+    <ChartPanel
+      analysis={analysis}
+      positionAverageCost={positionAverageCost}
+      positionShares={positionAverageCost === null ? null : positionShares}
+      theme={theme}
+      timeframe={timeframe}
+      timeframes={TIMEFRAMES}
+      lastUpdatedAt={analysisUpdatedAt}
+      chartResetKey={chartResetKey}
+      onTimeframeChange={handleTimeframeChange}
+    />
+  ) : null;
+
   return (
     <div className="app">
       <div className="workstation-wrapper">
@@ -493,6 +552,10 @@ function App() {
             loading={loading}
             currentView={currentView}
             onNavigate={handleNavigate}
+            theme={theme}
+            onToggleTheme={() => {
+              setTheme((currentTheme) => currentTheme === "dark" ? "light" : "dark");
+            }}
           />
 
           {currentView === "portfolio" && (
@@ -508,43 +571,37 @@ function App() {
             />
           )}
 
+          {currentView === "watchlist" && analysis && (
+            <div className="focused-workspace">
+              <aside className="focused-sidebar">{watchlistPanel}</aside>
+              {chartPanel}
+            </div>
+          )}
+
+          {currentView === "scanner" && analysis && (
+            <div className="focused-workspace">
+              <aside className="focused-sidebar">{scannerPanel}</aside>
+              {chartPanel}
+            </div>
+          )}
+
           {currentView === "dashboard" && analysis && (
             <div className="dashboard">
               <div className="left-column">
-                <Watchlist
-                  stocks={watchlist}
-                  selectedStock={submittedTicker}
-                  watchlistScores={watchlistScores}
-                  timeframe={timeframe}
-                  addingTicker={addingTicker}
-                  watchlistError={watchlistError}
-                  onSelectStock={handleWatchlistSelect}
-                  onAddStock={handleAddToWatchlist}
-                  onRemoveStock={handleRemoveFromWatchlist}
-                />
-                <ScannerPanel
-                  savedState={scannerState}
-                  onStateChange={setScannerState}
-                  onSelectTicker={handleWatchlistSelect}
-                />
+                {watchlistPanel}
+                {scannerPanel}
 
                 <MetricsPanel analysis={analysis} />
               </div>
 
-              <ChartPanel
-                analysis={analysis}
-                timeframe={timeframe}
-                timeframes={TIMEFRAMES}
-                lastUpdatedAt={analysisUpdatedAt}
-                chartResetKey={chartResetKey}
-                onTimeframeChange={handleTimeframeChange}
-              />
+              {chartPanel}
 
               <aside className="right-panel">
                 <PaperPortfolioSummary
                   portfolio={paperPortfolio}
                   loading={paperPortfolioLoading}
                   error={paperPortfolioError}
+                  onViewPortfolio={() => handleNavigate("portfolio")}
                 />
 
                 <div className="right-card-grid">
