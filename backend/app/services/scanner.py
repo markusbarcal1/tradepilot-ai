@@ -1,5 +1,6 @@
 import csv
 import logging
+import math
 import os
 import statistics
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -9,7 +10,9 @@ from urllib.request import urlopen
 
 from app.services.analyzer import analyze_ticker, analyze_tickers
 from app.services.eligibility import ScannerEligibilityConfig
+from app.services.financial_analysis import analyze_financials
 from app.services.market_data import classify_market_data_error
+from app.services.valuation_analysis import analyze_valuation
 
 
 DEFAULT_UNIVERSE = "sp500"
@@ -90,6 +93,10 @@ DEFAULT_SCANNER_MAX_WORKERS = 8
 MIN_SCANNER_MAX_WORKERS = 1
 MAX_SCANNER_MAX_WORKERS = 16
 SCANNER_PROVIDER_FAILURE_CIRCUIT_THRESHOLD = 8
+DEFAULT_SCORING_PRIORITIES = ("technical", "trade_quality")
+VALID_SCORING_PRIORITIES = frozenset({
+    "technical", "trade_quality", "financial", "valuation",
+})
 
 
 def _is_scannable_nasdaq_listing(row):
@@ -174,7 +181,105 @@ def get_safe_max_symbols(max_symbols: int | None, universe_size: int):
     return min(max_symbols, universe_size)
 
 
-def _build_scan_results(analyses, stage_timings=None):
+def normalize_scoring_priorities(scoring_priorities=None):
+    if scoring_priorities is None:
+        return DEFAULT_SCORING_PRIORITIES
+    if isinstance(scoring_priorities, str):
+        scoring_priorities = scoring_priorities.split(",")
+
+    normalized = []
+    for value in scoring_priorities:
+        identifier = str(value).strip().lower()
+        if not identifier:
+            continue
+        if identifier not in VALID_SCORING_PRIORITIES:
+            raise ValueError(f"Unknown scanner score identifier '{identifier}'")
+        if identifier not in normalized:
+            normalized.append(identifier)
+    if not normalized:
+        raise ValueError("At least one scanner scoring priority is required")
+    return tuple(normalized)
+
+
+def _score_value(score_data):
+    value = score_data.get("score") if isinstance(score_data, dict) else score_data
+    try:
+        value = float(value)
+    except (TypeError, ValueError):
+        return None
+    return value if math.isfinite(value) else None
+
+
+def _is_qualifying_analysis(analysis):
+    trade_setup = analysis.get("trade_setup", {})
+    return (
+        trade_setup.get("setup_bias") == "Bullish"
+        and trade_setup.get("setup_type") != "No Clear Setup"
+        and trade_setup.get("quality") != "Unfavorable"
+    )
+
+
+def _enrich_analysis_scores(analysis, scoring_priorities):
+    enriched = dict(analysis)
+    ticker = analysis.get("ticker")
+    if "financial" in scoring_priorities:
+        enriched["financial_score"] = analyze_financials(ticker)
+    if "valuation" in scoring_priorities:
+        enriched["valuation_score"] = analyze_valuation(ticker)
+    return enriched
+
+
+def _enrich_scan_analyses(analyses, scoring_priorities, max_workers):
+    candidates = [analysis for analysis in analyses if _is_qualifying_analysis(analysis)]
+    needs_fundamentals = any(
+        priority in scoring_priorities for priority in ("financial", "valuation")
+    )
+    if not needs_fundamentals or not candidates:
+        return candidates
+
+    worker_count = _resolve_worker_count(max_workers)
+    if worker_count <= 1:
+        return [_enrich_analysis_scores(item, scoring_priorities) for item in candidates]
+
+    with ThreadPoolExecutor(max_workers=worker_count) as executor:
+        return list(executor.map(
+            lambda item: _enrich_analysis_scores(item, scoring_priorities),
+            candidates,
+        ))
+
+
+def _complete_result_scores(result):
+    completed = dict(result)
+    ticker = result.get("ticker")
+    if result.get("financial_status") == "not_requested":
+        financial = analyze_financials(ticker)
+        completed["financial_score"] = _score_value(financial)
+        completed["financial_status"] = financial.get("status", "unavailable")
+    if result.get("valuation_status") == "not_requested":
+        valuation = analyze_valuation(ticker)
+        completed["valuation_score"] = _score_value(valuation)
+        completed["valuation_status"] = valuation.get("status", "unavailable")
+    return completed
+
+
+def _complete_returned_result_scores(results, limit, max_workers):
+    returned_count = min(max(0, limit), len(results))
+    if returned_count == 0:
+        return results
+
+    leading_results = results[:returned_count]
+    worker_count = _resolve_worker_count(max_workers)
+    if worker_count <= 1:
+        completed = [_complete_result_scores(result) for result in leading_results]
+    else:
+        with ThreadPoolExecutor(max_workers=worker_count) as executor:
+            completed = list(executor.map(_complete_result_scores, leading_results))
+    return [*completed, *results[returned_count:]]
+
+
+def _build_scan_results(analyses, stage_timings=None, scoring_priorities=None):
+    use_legacy_sort = scoring_priorities is None
+    scoring_priorities = normalize_scoring_priorities(scoring_priorities)
     results = []
 
     filtering_start = perf_counter()
@@ -192,8 +297,12 @@ def _build_scan_results(analyses, stage_timings=None):
             support_zone = analysis.get("support_zone") or {}
             resistance_zone = analysis.get("resistance_zone") or {}
 
-            trade_quality_score = trade_quality_score_data.get("score", 0)
-            technical_score = technical_score_data.get("score", 0)
+            financial_score_data = analysis.get("financial_score") or {}
+            valuation_score_data = analysis.get("valuation_score") or {}
+            trade_quality_score = _score_value(trade_quality_score_data)
+            technical_score = _score_value(technical_score_data)
+            financial_score = _score_value(financial_score_data)
+            valuation_score = _score_value(valuation_score_data)
 
             setup_type = trade_setup.get("setup_type")
             setup_bias = trade_setup.get("setup_bias")
@@ -209,6 +318,22 @@ def _build_scan_results(analyses, stage_timings=None):
             if setup_quality == "Unfavorable":
                 continue
 
+            component_scores = {
+                "technical": technical_score,
+                "trade_quality": trade_quality_score,
+                "financial": financial_score,
+                "valuation": valuation_score,
+            }
+            available_selected_scores = [
+                component_scores[priority]
+                for priority in scoring_priorities
+                if component_scores[priority] is not None
+            ]
+            scanner_score = (
+                round(sum(available_selected_scores) / len(available_selected_scores), 2)
+                if available_selected_scores else None
+            )
+
             results.append({
                 "ticker": analysis.get("ticker"),
                 "price": analysis.get("price"),
@@ -223,6 +348,13 @@ def _build_scan_results(analyses, stage_timings=None):
                 # Deprecated compatibility aliases for older scanner clients.
                 "trend_score": technical_score,
                 "trend_grade": technical_score_data.get("grade"),
+                "financial_score": financial_score,
+                "financial_status": financial_score_data.get("status", "not_requested"),
+                "valuation_score": valuation_score,
+                "valuation_status": valuation_score_data.get("status", "not_requested"),
+                "scanner_score": scanner_score,
+                "scanner_score_available_components": len(available_selected_scores),
+                "scanner_score_selected_components": len(scoring_priorities),
 
                 "setup_type": setup_type,
                 "setup_bias": setup_bias,
@@ -251,13 +383,22 @@ def _build_scan_results(analyses, stage_timings=None):
         stage_timings["filtering_seconds"] = perf_counter() - filtering_start
 
     sorting_start = perf_counter()
-    results.sort(
-        key=lambda stock: (
-            -(stock["trade_quality_score"] or 0),
-            -(stock["technical_score"] or 0),
-            str(stock.get("ticker") or "")
+    if use_legacy_sort:
+        results.sort(
+            key=lambda stock: (
+                -(stock["trade_quality_score"] or 0),
+                -(stock["technical_score"] or 0),
+                str(stock.get("ticker") or ""),
+            )
         )
-    )
+    else:
+        results.sort(
+            key=lambda stock: (
+                stock["scanner_score"] is None,
+                -(stock["scanner_score"] or 0),
+                str(stock.get("ticker") or ""),
+            )
+        )
     if stage_timings is not None:
         stage_timings["sorting_seconds"] = perf_counter() - sorting_start
 
@@ -276,6 +417,7 @@ def _build_scan_response(
     audit=None,
     stage_timings=None,
     eligibility_summary=None,
+    scoring_priorities=None,
 ):
     errors = errors or []
     eligibility_summary = eligibility_summary or (audit or {}).get("eligibility", {})
@@ -306,6 +448,7 @@ def _build_scan_response(
         "scanned_count": len(symbols_to_scan),
         "max_symbols": safe_max_symbols,
         "mode": "bullish",
+        "scoring_priorities": list(normalize_scoring_priorities(scoring_priorities)),
         "error_count": len(errors),
         "errors": errors,
         "summary": {
@@ -824,7 +967,10 @@ def scan_market(
     audit: bool | None = None,
     max_workers: int | None = None,
     eligibility: dict | None = None,
+    scoring_priorities=None,
 ):
+    requested_scoring_priorities = scoring_priorities
+    scoring_priorities = normalize_scoring_priorities(scoring_priorities)
     scan_start = perf_counter()
     stage_timings = {
         "universe_loading_seconds": 0.0,
@@ -889,7 +1035,16 @@ def scan_market(
     for error in errors:
         print(f"Scanner failed for {error['ticker']}: {error['detail']}")
 
-    results = _build_scan_results(batch.get("results", []), stage_timings=stage_timings)
+    enriched_analyses = _enrich_scan_analyses(
+        batch.get("results", []), scoring_priorities, worker_count
+    )
+    results = _build_scan_results(
+        enriched_analyses,
+        stage_timings=stage_timings,
+        scoring_priorities=requested_scoring_priorities,
+    )
+    if requested_scoring_priorities is not None:
+        results = _complete_returned_result_scores(results, limit, worker_count)
 
     if audit_enabled:
         stage_timings.update(audit_context.get("stage_timings", {}))
@@ -932,6 +1087,7 @@ def scan_market(
         audit_summary,
         stage_timings,
         eligibility_summary,
+        scoring_priorities,
     )
     LOGGER.info(
         "[SCANNER_OUTCOME] universe=%s total=%s eligible=%s eligibility_skips=%s successful=%s temporary_failures=%s invalid=%s unexpected=%s persistent_writes=0",
@@ -956,7 +1112,10 @@ def stream_scan_market(
     audit: bool | None = None,
     max_workers: int | None = None,
     eligibility: dict | None = None,
+    scoring_priorities=None,
 ):
+    requested_scoring_priorities = scoring_priorities
+    scoring_priorities = normalize_scoring_priorities(scoring_priorities)
     analyses = []
     errors = []
     universe_key, symbols = get_scan_universe(universe)
@@ -1152,7 +1311,14 @@ def stream_scan_market(
         eligibility_config,
         eligibility_records,
     )
-    results = _build_scan_results(analyses, stage_timings=audit_context.get("stage_timings") if audit_context is not None else None)
+    analyses = _enrich_scan_analyses(analyses, scoring_priorities, worker_count)
+    results = _build_scan_results(
+        analyses,
+        stage_timings=audit_context.get("stage_timings") if audit_context is not None else None,
+        scoring_priorities=requested_scoring_priorities,
+    )
+    if requested_scoring_priorities is not None:
+        results = _complete_returned_result_scores(results, limit, worker_count)
     audit_summary = None
 
     if audit_enabled:
@@ -1188,6 +1354,7 @@ def stream_scan_market(
         audit_summary,
         audit_context.get("stage_timings") if audit_context is not None else None,
         eligibility_summary,
+        scoring_priorities,
     )
     LOGGER.info(
         "[SCANNER_OUTCOME] universe=%s total=%s eligible=%s eligibility_skips=%s successful=%s temporary_failures=%s invalid=%s unexpected=%s persistent_writes=0",

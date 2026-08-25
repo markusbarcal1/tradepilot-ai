@@ -657,8 +657,45 @@ h1 {
   accent-color: var(--score-strong);
 }
 
+.scanner-priorities-section {
+  margin-top: 10px;
+}
+
+.scanner-priority-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 8px;
+  margin-top: 8px;
+}
+
+.scanner-priority-grid .scanner-check-row {
+  align-items: center;
+}
+
+.scanner-priority-grid input:disabled {
+  cursor: not-allowed;
+}
+
 .scanner-history-field {
   margin-top: 3px;
+}
+
+.scanner-reset-filters {
+  width: 100%;
+  margin-top: 3px;
+  padding: 7px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-control);
+  color: var(--text-secondary-strong);
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.scanner-reset-filters:hover {
+  border-color: var(--score-strong);
+  color: var(--text-heading);
 }
 
 .scanner-scan-button {
@@ -755,11 +792,17 @@ h1 {
 }
 
 .scanner-scores {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 8px;
   font-size: 10px;
   color: var(--text-soft);
   margin-bottom: 3px;
+}
+
+.scanner-scores span:first-child {
+  grid-column: 1 / -1;
+  font-weight: 800;
 }
 
 .scanner-setup {

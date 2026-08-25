@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { isRequestCanceled, streamScanMarket } from "../api/client";
+import { getScoreColorClass } from "../utils/scoreColors";
 
 const SCANNER_TIMEFRAMES = [
   { label: "Daily", period: "1y", interval: "1d" },
@@ -18,7 +19,16 @@ const DEFAULT_UNIVERSE = "sp500";
 const DEFAULT_TIMEFRAME = SCANNER_TIMEFRAMES[0];
 const DEFAULT_SCAN_LIMIT = 10;
 const SCANNER_FILTERS_STORAGE_KEY = "tradepilot-scanner-filters";
+const SCORING_OPTIONS = [
+  { id: "technical", label: "Technical" },
+  { id: "trade_quality", label: "Trade Quality" },
+  { id: "financial", label: "Financial" },
+  { id: "valuation", label: "Valuation" },
+];
+const DEFAULT_SCORING_PRIORITIES = ["technical", "trade_quality"];
 const DEFAULT_ELIGIBILITY = {
+  minimumPrice: 5,
+  minimumVolume: 500000,
   minimumHistoryBars: 100,
   excludeEtfs: true,
   excludeLeveragedInverse: true,
@@ -56,6 +66,12 @@ function getInitialScannerState(savedState) {
   const state = { ...(persistedState || {}), ...(savedState || {}) };
   if (!Object.keys(state).length) return null;
 
+  const scoringPriorities = Array.isArray(state.scoringPriorities)
+    ? state.scoringPriorities.filter((value) =>
+        SCORING_OPTIONS.some((option) => option.id === value)
+      )
+    : DEFAULT_SCORING_PRIORITIES;
+
   return {
     universe: SCANNER_UNIVERSES.some((item) => item.value === state.universe)
       ? state.universe
@@ -64,9 +80,10 @@ function getInitialScannerState(savedState) {
     results: Array.isArray(state.results) ? state.results : [],
     metadata: state.metadata || null,
     hasScanned: Boolean(state.hasScanned),
+    scoringPriorities,
     eligibilityEnabled: state.eligibilityEnabled !== false,
-    minimumPrice: Number.isFinite(state.minimumPrice) ? state.minimumPrice : 5,
-    minimumVolume: Number.isFinite(state.minimumVolume) ? state.minimumVolume : 500000,
+    minimumPrice: Number.isFinite(state.minimumPrice) ? state.minimumPrice : DEFAULT_ELIGIBILITY.minimumPrice,
+    minimumVolume: Number.isFinite(state.minimumVolume) ? state.minimumVolume : DEFAULT_ELIGIBILITY.minimumVolume,
     minimumHistoryBars: Number.isFinite(state.minimumHistoryBars) ? state.minimumHistoryBars : DEFAULT_ELIGIBILITY.minimumHistoryBars,
     excludeEtfs: state.excludeEtfs !== false,
     excludeLeveragedInverse: state.excludeLeveragedInverse !== false,
@@ -98,14 +115,17 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
   const [hasScanned, setHasScanned] = useState(() => {
     return initialState?.hasScanned || false;
   });
+  const [scoringPriorities, setScoringPriorities] = useState(() => {
+    return initialState?.scoringPriorities || DEFAULT_SCORING_PRIORITIES;
+  });
   const [eligibilityEnabled, setEligibilityEnabled] = useState(() => {
     return initialState?.eligibilityEnabled !== false;
   });
   const [minimumPrice, setMinimumPrice] = useState(() => {
-    return initialState?.minimumPrice ?? 5;
+    return initialState?.minimumPrice ?? DEFAULT_ELIGIBILITY.minimumPrice;
   });
   const [minimumVolume, setMinimumVolume] = useState(() => {
-    return initialState?.minimumVolume ?? 500000;
+    return initialState?.minimumVolume ?? DEFAULT_ELIGIBILITY.minimumVolume;
   });
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [minimumHistoryBars, setMinimumHistoryBars] = useState(
@@ -131,6 +151,12 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
   );
 
   const runScanner = async () => {
+    if (!scoringPriorities.length) {
+      setError("Select at least one scoring priority before scanning.");
+      setScanProgress(null);
+      return;
+    }
+
     scannerRequestRef.current.controller?.abort();
 
     const controller = new AbortController();
@@ -146,10 +172,11 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
       const scanOptions = {
         universe: selectedUniverse,
         signal: controller.signal,
+        scores: scoringPriorities,
         eligibility: {
           enabled: eligibilityEnabled,
-          minimum_price: Number(minimumPrice) || 5,
-          minimum_average_volume: Number(minimumVolume) || 500000,
+          minimum_price: Number(minimumPrice) || DEFAULT_ELIGIBILITY.minimumPrice,
+          minimum_average_volume: Number(minimumVolume) || DEFAULT_ELIGIBILITY.minimumVolume,
           minimum_history_bars: Number(minimumHistoryBars) || 100,
           exclude_etfs: excludeEtfs,
           exclude_leveraged_etfs: excludeLeveragedInverse,
@@ -235,6 +262,7 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
     localStorage.setItem(SCANNER_FILTERS_STORAGE_KEY, JSON.stringify({
       universe: selectedUniverse,
       timeframeLabel: selectedTimeframe.label,
+      scoringPriorities,
       eligibilityEnabled,
       minimumPrice: Number(minimumPrice),
       minimumVolume: Number(minimumVolume),
@@ -249,6 +277,7 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
   }, [
     selectedUniverse,
     selectedTimeframe,
+    scoringPriorities,
     eligibilityEnabled,
     minimumPrice,
     minimumVolume,
@@ -268,6 +297,7 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
       results,
       metadata: scanMetadata,
       hasScanned,
+      scoringPriorities,
       eligibilityEnabled,
       minimumPrice,
       minimumVolume,
@@ -285,6 +315,7 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
     results,
     scanMetadata,
     hasScanned,
+    scoringPriorities,
     eligibilityEnabled,
     minimumPrice,
     minimumVolume,
@@ -312,6 +343,28 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
     setSelectedTimeframe(nextTimeframe);
   };
 
+  const handleScoringPriorityChange = (scoreId) => {
+    setScoringPriorities((current) => {
+      if (current.includes(scoreId)) {
+        return current.filter((value) => value !== scoreId);
+      }
+      return [...current, scoreId];
+    });
+    setError("");
+  };
+
+  const resetEligibilityFilters = () => {
+    setMinimumPrice(DEFAULT_ELIGIBILITY.minimumPrice);
+    setMinimumVolume(DEFAULT_ELIGIBILITY.minimumVolume);
+    setMinimumHistoryBars(DEFAULT_ELIGIBILITY.minimumHistoryBars);
+    setExcludeEtfs(DEFAULT_ELIGIBILITY.excludeEtfs);
+    setExcludeLeveragedInverse(DEFAULT_ELIGIBILITY.excludeLeveragedInverse);
+    setExcludeVolatilityProducts(DEFAULT_ELIGIBILITY.excludeVolatilityProducts);
+    setExcludeWarrantsRightsUnits(DEFAULT_ELIGIBILITY.excludeWarrantsRightsUnits);
+    setExcludePreferredShares(DEFAULT_ELIGIBILITY.excludePreferredShares);
+    setExcludeBlankCheckCompanies(DEFAULT_ELIGIBILITY.excludeBlankCheckCompanies);
+  };
+
   const displayUniverseLabel = getUniverseLabel(selectedUniverse);
   const displayTimeframeLabel = selectedTimeframe.label;
   const loadingScanLabel =
@@ -333,8 +386,8 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
   return (
     <div className="scanner-panel">
       <div className="scanner-header">
-        <h3>Bullish Scanner</h3>
-        <span>Find technically strong trade candidates</span>
+        <h3>Opportunity Scanner</h3>
+        <span>Find strong trade opportunities</span>
       </div>
 
       <div className="scanner-primary-controls">
@@ -361,6 +414,23 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
             </option>
           ))}
         </select>
+      </div>
+
+      <div className="scanner-filter-section scanner-priorities-section">
+        <span className="scanner-toggle-title">Scoring Priorities</span>
+        <span className="scanner-toggle-subtitle">Choose scores used to rank eligible results</span>
+        <div className="scanner-priority-grid">
+          {SCORING_OPTIONS.map((option) => (
+            <label className="scanner-check-row" key={option.id}>
+              <input
+                type="checkbox"
+                checked={scoringPriorities.includes(option.id)}
+                onChange={() => handleScoringPriorityChange(option.id)}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
+        </div>
       </div>
 
       <div className="scanner-filter-section">
@@ -418,6 +488,13 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
                 onChange={(event) => setMinimumHistoryBars(event.target.value)}
                 disabled={!eligibilityEnabled} />
             </label>
+            <button
+              type="button"
+              className="scanner-reset-filters"
+              onClick={resetEligibilityFilters}
+            >
+              Reset to Defaults
+            </button>
           </div>
         )}
       </div>
@@ -432,17 +509,17 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
 
       {loading && <div className="scanner-empty">{loadingScanLabel}</div>}
 
-      {!loading && error && <div className="scanner-empty">{error}</div>}
+      {!loading && error && <div className="scanner-empty" role="alert">{error}</div>}
 
       {!loading && !error && !hasScanned && (
         <div className="scanner-empty">
-          Choose your filters and scan for bullish opportunities.
+          Choose your filters and scan for trade opportunities.
         </div>
       )}
 
       {!loading && !error && hasScanned && results.length === 0 && (
         <div className="scanner-empty">
-          No qualifying bullish setups were found.
+          No qualifying opportunities were found.
           <span>Try lowering the eligibility thresholds or changing the timeframe.</span>
         </div>
       )}
@@ -452,7 +529,7 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
           {eligibilitySummary.symbols_checked || scanMetadata?.scannedCount || 0} scanned ·{" "}
           {eligibilitySummary.symbols_eligible || 0} eligible ·{" "}
           {eligibilitySummary.symbols_excluded || 0} excluded
-          <span>{results.length} bullish {results.length === 1 ? "setup" : "setups"} found</span>
+          <span>{results.length} {results.length === 1 ? "opportunity" : "opportunities"} found</span>
         </div>
       )}
 
@@ -468,8 +545,24 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
           </div>
 
           <div className="scanner-scores">
-            <span>Quality: {stock.trade_quality_score ?? stock.entry_score}</span>
-            <span>Technical: {stock.technical_score}</span>
+            <span className={getScoreColorClass(stock.scanner_score)}>
+              Scanner: {stock.scanner_score ?? "N/A"}
+              {stock.scanner_score_available_components < stock.scanner_score_selected_components
+                ? ` · ${stock.scanner_score_available_components}/${stock.scanner_score_selected_components} scores`
+                : ""}
+            </span>
+            <span className={getScoreColorClass(stock.technical_score)}>
+              Technical: {stock.technical_score ?? "N/A"}
+            </span>
+            <span className={getScoreColorClass(stock.trade_quality_score ?? stock.entry_score)}>
+              Quality: {stock.trade_quality_score ?? stock.entry_score ?? "N/A"}
+            </span>
+            <span className={getScoreColorClass(stock.financial_score)}>
+              Financial: {stock.financial_score ?? "N/A"}
+            </span>
+            <span className={getScoreColorClass(stock.valuation_score)}>
+              Valuation: {stock.valuation_score ?? "N/A"}
+            </span>
           </div>
 
           <div className="scanner-setup">

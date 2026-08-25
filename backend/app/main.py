@@ -116,9 +116,10 @@ def scan(
     audit: bool = False,
     max_workers: int | None = None,
     eligibility: str | None = None,
+    scores: str | None = None,
 ):
     try:
-        return scan_market(period, interval, limit, universe, max_symbols, audit=audit, max_workers=max_workers, eligibility=_parse_eligibility_payload(eligibility))
+        return scan_market(period, interval, limit, universe, max_symbols, audit=audit, max_workers=max_workers, eligibility=_parse_eligibility_payload(eligibility), scoring_priorities=scores)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -133,6 +134,7 @@ def scan_stream(
     audit: bool = False,
     max_workers: int | None = None,
     eligibility: str | None = None,
+    scores: str | None = None,
 ):
     def format_stream_message(message):
         return (
@@ -141,7 +143,7 @@ def scan_stream(
         )
 
     try:
-        stream = stream_scan_market(period, interval, limit, universe, max_symbols, audit=audit, max_workers=max_workers, eligibility=_parse_eligibility_payload(eligibility))
+        stream = stream_scan_market(period, interval, limit, universe, max_symbols, audit=audit, max_workers=max_workers, eligibility=_parse_eligibility_payload(eligibility), scoring_priorities=scores)
         first_message = next(stream)
 
         def event_stream():

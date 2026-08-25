@@ -72,6 +72,10 @@ function buildScanParams(period, interval, limit, options) {
     params.set("eligibility", JSON.stringify(options.eligibility));
   }
 
+  if (Array.isArray(options.scores) && options.scores.length) {
+    params.set("scores", options.scores.join(","));
+  }
+
   return params;
 }
 

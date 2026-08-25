@@ -33,7 +33,7 @@ The analysis engine is currently rule-based and deterministic rather than powere
 - Manage a customizable watchlist of symbols
 - Validate ticker symbols before adding them
 - Refresh watchlist scores in the background
-- Scan the market for bullish setups using a scanner for the S&P 500 and Nasdaq universes
+- Scan the market for trade opportunities using the Opportunity Scanner across the S&P 500 and Nasdaq universes
 - Stream scanner progress and results from the backend
 
 ### Paper Trading
