@@ -1,9 +1,14 @@
 import json
+import logging
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+from app.config import settings
+
+logging.basicConfig(level=settings.log_level_value)
+
 from app.services.analyzer import analyze_ticker, analyze_tickers
 from app.services.financial_analysis import analyze_financials
 from app.services.valuation_analysis import analyze_valuation
@@ -21,10 +26,7 @@ app = FastAPI(title="TradePilot AI Backend")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
