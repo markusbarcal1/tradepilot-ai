@@ -1,14 +1,76 @@
 import axios from "axios";
 
-const API_BASE_URL =
+import { supabase } from "../lib/supabase";
+
+
+export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
+let authFailureHandler = null;
+
+export function setApiAuthFailureHandler(handler) {
+  authFailureHandler = handler;
+}
+
+export async function getAccessToken() {
+  if (!supabase) return null;
+  const { data, error } = await supabase.auth.getSession();
+  if (error) throw new Error("Unable to read the current authentication session");
+  return data.session?.access_token ?? null;
+}
+
+api.interceptors.request.use(async (config) => {
+  const accessToken = await getAccessToken();
+  if (!accessToken) {
+    const error = new Error("Authentication is required");
+    error.code = "AUTH_REQUIRED";
+    throw error;
+  }
+  config.headers.Authorization = `Bearer ${accessToken}`;
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error?.response?.status;
+    if ((status === 401 || status === 403) && authFailureHandler) {
+      authFailureHandler(status);
+    }
+    return Promise.reject(error);
+  }
+);
+
 export function isRequestCanceled(error) {
   return axios.isCancel(error) || error?.name === "AbortError";
+}
+
+export function getAuthenticatedUser() {
+  return api.get("/auth/me");
+}
+
+export function getWatchlist() {
+  return api.get("/watchlist");
+}
+
+export function addWatchlistSymbol(symbol) {
+  return api.post("/watchlist", { symbol });
+}
+
+export function removeWatchlistSymbol(symbol) {
+  return api.delete(`/watchlist/${encodeURIComponent(symbol)}`);
+}
+
+export function getScannerPreferences() {
+  return api.get("/preferences/scanner");
+}
+
+export function updateScannerPreferences(preferences) {
+  return api.put("/preferences/scanner", preferences);
 }
 
 export function analyzeTicker(symbol, period, interval, options = {}) {
@@ -106,12 +168,26 @@ export async function streamScanMarket(
   onEvent = () => {}
 ) {
   const params = buildScanParams(period, interval, limit, options);
+  const accessToken = await getAccessToken();
+  if (!accessToken) {
+    const error = new Error("Authentication is required");
+    error.code = "AUTH_REQUIRED";
+    throw error;
+  }
   const response = await fetch(`${API_BASE_URL}/scan/stream?${params}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
     signal: options.signal,
   });
 
   if (!response.ok) {
-    throw new Error(`Scanner stream failed with status ${response.status}`);
+    if ((response.status === 401 || response.status === 403) && authFailureHandler) {
+      authFailureHandler(response.status);
+    }
+    const error = new Error("Scanner stream request failed");
+    error.response = { status: response.status };
+    throw error;
   }
 
   if (!response.body) {

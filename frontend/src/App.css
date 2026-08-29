@@ -944,6 +944,28 @@ h1 {
   color: var(--text-info);
 }
 
+.auth-user-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 2px;
+  border-left: 1px solid var(--border-color);
+}
+
+.auth-user-controls span {
+  max-width: 120px;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.top-nav .auth-user-controls button {
+  color: var(--text-info);
+}
+
 .neutral {
   color: var(--text-primary) !important;
 }

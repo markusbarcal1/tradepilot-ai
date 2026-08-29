@@ -4,7 +4,12 @@ import {
   analyzeFinancials as fetchFinancials,
   analyzeValuation as fetchValuation,
   analyzeTickers as fetchBatchAnalysis,
+  addWatchlistSymbol,
+  getScannerPreferences,
+  getWatchlist,
   isRequestCanceled,
+  removeWatchlistSymbol,
+  updateScannerPreferences,
   validateTicker,
 } from "./api/client";
 import Header from "./components/Header";
@@ -38,15 +43,6 @@ const TIMEFRAMES = [
   { label: "1m", period: "1d", interval: "1m" },
 ];
 
-const DEFAULT_WATCHLIST = [
-  "AAPL",
-  "NVDA",
-  "AMD",
-  "META",
-  "MSFT",
-  "PLTR",
-  "TSLA",
-];
 const ANALYSIS_REFRESH_MS = 15_000;
 const PORTFOLIO_REFRESH_MS = 15_000;
 const WATCHLIST_REFRESH_MS = 45_000;
@@ -56,7 +52,7 @@ function getInitialTheme() {
   return localStorage.getItem(THEME_STORAGE_KEY) === "light" ? "light" : "dark";
 }
 
-function App() {
+function App({ userEmail, onSignOut }) {
   const { showToast } = useToast();
   const analysisRequestRef = useRef({ controller: null, id: 0 });
   const financialRequestRef = useRef({ controller: null, id: 0 });
@@ -64,6 +60,8 @@ function App() {
   const validationRequestRef = useRef({ controller: null, id: 0 });
   const watchlistRequestRef = useRef({ controller: null, id: 0 });
   const didRunInitialLoadRef = useRef(false);
+  const scannerPreferencesRef = useRef("");
+  const scannerPreferencesTimerRef = useRef(null);
 
   const [ticker, setTicker] = useState("AAPL");
   const [submittedTicker, setSubmittedTicker] = useState("AAPL");
@@ -81,10 +79,8 @@ function App() {
   const [currentView, setCurrentView] = useState("dashboard");
   const [theme, setTheme] = useState(getInitialTheme);
 
-  const [watchlist, setWatchlist] = useState(() => {
-    const saved = localStorage.getItem("tradepilot-watchlist");
-    return saved ? JSON.parse(saved) : DEFAULT_WATCHLIST;
-  });
+  const [watchlist, setWatchlist] = useState([]);
+  const [watchlistReady, setWatchlistReady] = useState(false);
 
   const [watchlistScores, setWatchlistScores] = useState({});
   const [watchlistError, setWatchlistError] = useState("");
@@ -96,6 +92,7 @@ function App() {
   const [paperTradesLoading, setPaperTradesLoading] = useState(false);
   const [paperTradesError, setPaperTradesError] = useState("");
   const [scannerState, setScannerState] = useState(null);
+  const [scannerPreferencesReady, setScannerPreferencesReady] = useState(false);
 
   const showWatchlistError = (message) => {
     setWatchlistError(message);
@@ -369,8 +366,9 @@ function App() {
         return;
       }
 
-      const updatedWatchlist = [...watchlist, cleanSymbol];
-
+      const watchlistResponse = await addWatchlistSymbol(cleanSymbol);
+      if (validationRequestRef.current.id !== requestId) return;
+      const updatedWatchlist = watchlistResponse.data.symbols || [];
       setWatchlist(updatedWatchlist);
       refreshWatchlistScores(timeframe, updatedWatchlist);
     } catch (err) {
@@ -390,17 +388,36 @@ function App() {
     }
   };
 
-  const handleRemoveFromWatchlist = (symbol) => {
-    const updatedWatchlist = watchlist.filter((stock) => stock !== symbol);
-
-    setWatchlist(updatedWatchlist);
-
-    setWatchlistScores((prevScores) => {
-      const updatedScores = { ...prevScores };
-      delete updatedScores[symbol];
-      return updatedScores;
-    });
+  const handleRemoveFromWatchlist = async (symbol) => {
+    try {
+      const response = await removeWatchlistSymbol(symbol);
+      setWatchlist(response.data.symbols || []);
+      setWatchlistScores((prevScores) => {
+        const updatedScores = { ...prevScores };
+        delete updatedScores[symbol];
+        return updatedScores;
+      });
+    } catch (error) {
+      console.error("Could not remove watchlist symbol:", error);
+      showWatchlistError("Could not update watchlist.");
+    }
   };
+
+  const persistScannerPreferences = useCallback((preferences) => {
+    const serialized = JSON.stringify(preferences);
+    if (!scannerPreferencesReady || serialized === scannerPreferencesRef.current) {
+      return;
+    }
+    window.clearTimeout(scannerPreferencesTimerRef.current);
+    scannerPreferencesTimerRef.current = window.setTimeout(async () => {
+      try {
+        await updateScannerPreferences(preferences);
+        scannerPreferencesRef.current = serialized;
+      } catch (error) {
+        console.error("Could not save scanner preferences:", error);
+      }
+    }, 500);
+  }, [scannerPreferencesReady]);
 
   const handleNavigate = (view) => {
     if (view === "portfolio") {
@@ -425,7 +442,42 @@ function App() {
   };
 
   useEffect(() => {
-    if (didRunInitialLoadRef.current) return undefined;
+    let active = true;
+
+    Promise.all([getWatchlist(), getScannerPreferences()])
+      .then(([watchlistResponse, preferencesResponse]) => {
+        if (!active) return;
+        const symbols = watchlistResponse.data.symbols || [];
+        const preferences = preferencesResponse.data || {};
+        setWatchlist(symbols);
+        setScannerState(preferences);
+        scannerPreferencesRef.current = JSON.stringify(preferences);
+        localStorage.removeItem("tradepilot-watchlist");
+        localStorage.removeItem("tradepilot-scanner-filters");
+      })
+      .catch((error) => {
+        if (!active) return;
+        console.error("Could not initialize user preferences:", error);
+        setWatchlist([]);
+        setScannerState({});
+      })
+      .finally(() => {
+        if (!active) return;
+        setWatchlistReady(true);
+        setScannerPreferencesReady(true);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (
+      didRunInitialLoadRef.current ||
+      !watchlistReady ||
+      !scannerPreferencesReady
+    ) return undefined;
 
     const initialLoadId = window.setTimeout(() => {
       if (didRunInitialLoadRef.current) return;
@@ -439,7 +491,14 @@ function App() {
     return () => {
       window.clearTimeout(initialLoadId);
     };
-  }, [analyzeTicker, refreshPaperTrading, refreshWatchlistScores, watchlist]);
+  }, [
+    analyzeTicker,
+    refreshPaperTrading,
+    refreshWatchlistScores,
+    scannerPreferencesReady,
+    watchlist,
+    watchlistReady,
+  ]);
 
   usePollingData(
     () => {
@@ -470,10 +529,6 @@ function App() {
   );
 
   useEffect(() => {
-    localStorage.setItem("tradepilot-watchlist", JSON.stringify(watchlist));
-  }, [watchlist]);
-
-  useEffect(() => {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
@@ -490,6 +545,7 @@ function App() {
       valuationRequestRef.current.id += 1;
       validationRequestRef.current.id += 1;
       watchlistRequestRef.current.id += 1;
+      window.clearTimeout(scannerPreferencesTimerRef.current);
     };
   }, []);
 
@@ -508,13 +564,14 @@ function App() {
     />
   );
 
-  const scannerPanel = (
+  const scannerPanel = scannerPreferencesReady ? (
     <ScannerPanel
       savedState={scannerState}
       onStateChange={setScannerState}
+      onPreferencesChange={persistScannerPreferences}
       onSelectTicker={handleWatchlistSelect}
     />
-  );
+  ) : null;
 
   const currentPosition = paperPortfolio?.positions?.find((position) => {
     return position.symbol?.trim().toUpperCase() === submittedTicker;
@@ -552,6 +609,8 @@ function App() {
             loading={loading}
             currentView={currentView}
             onNavigate={handleNavigate}
+            userEmail={userEmail}
+            onSignOut={onSignOut}
             theme={theme}
             onToggleTheme={() => {
               setTheme((currentTheme) => currentTheme === "dark" ? "light" : "dark");

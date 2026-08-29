@@ -7,10 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "test": "node tests/financial-score-panel.mjs",
+    "test": "node tests/financial-score-panel.mjs && node tests/auth-flow.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.4",
     "axios": "^1.16.1",
     "lightweight-charts": "^5.2.0",
     "react": "^19.2.6",

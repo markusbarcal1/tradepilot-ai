@@ -1,0 +1,120 @@
+.auth-shell {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+  background: var(--app-bg, #090b10);
+  color: var(--text-primary, #f4f6fa);
+}
+
+.auth-card {
+  width: min(360px, 100%);
+  padding: 28px;
+  border: 1px solid var(--border-color, #2a2f3a);
+  border-radius: 10px;
+  background: var(--panel-bg, #11141b);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+  text-align: left;
+}
+
+.auth-brand {
+  color: var(--text-primary, #f4f6fa);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.auth-badge {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--accent-color, #3b82f6);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.auth-card h1 {
+  margin: 20px 0 6px;
+  font-size: 24px;
+}
+
+.auth-card p {
+  margin: 0 0 22px;
+  color: var(--text-secondary, #9ca3af);
+  font-size: 13px;
+}
+
+.auth-card form,
+.auth-card label {
+  display: grid;
+  gap: 8px;
+}
+
+.auth-card form {
+  gap: 16px;
+}
+
+.auth-card label span {
+  color: var(--text-secondary, #c3c7d0);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 10px 11px;
+  box-sizing: border-box;
+  border: 1px solid var(--border-color, #343a46);
+  border-radius: 6px;
+  background: var(--input-bg, #0c0f15);
+  color: var(--text-primary, #f4f6fa);
+  font: inherit;
+  font-size: 14px;
+}
+
+.auth-card input:focus {
+  outline: 2px solid color-mix(in srgb, var(--accent-color, #3b82f6) 45%, transparent);
+  border-color: var(--accent-color, #3b82f6);
+}
+
+.auth-card button {
+  padding: 10px 14px;
+  border: 1px solid var(--accent-color, #3b82f6);
+  border-radius: 6px;
+  background: var(--accent-color, #3b82f6);
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.auth-card button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.auth-error {
+  color: #fca5a5;
+  font-size: 12px;
+}
+
+.auth-state-card {
+  text-align: center;
+}
+
+.auth-spinner {
+  width: 20px;
+  height: 20px;
+  margin: 22px auto 0;
+  border: 2px solid var(--border-color, #343a46);
+  border-top-color: var(--accent-color, #3b82f6);
+  border-radius: 50%;
+  animation: auth-spin 0.8s linear infinite;
+}
+
+@keyframes auth-spin {
+  to { transform: rotate(360deg); }
+}
