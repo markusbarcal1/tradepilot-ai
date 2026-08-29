@@ -39,6 +39,35 @@ class SettingsTests(unittest.TestCase):
         self.assertIsNone(configured.supabase_auth_issuer)
         self.assertIsNone(configured.supabase_auth_audience)
         self.assertIsNone(configured.supabase_jwks_url)
+        self.assertFalse(configured.auth_configured)
+
+    def test_test_environment_accepts_injected_auth_configuration(self):
+        configured = self.build_settings(
+            ENVIRONMENT="test",
+            SUPABASE_AUTH_ISSUER="https://project.supabase.co/auth/v1",
+            SUPABASE_AUTH_AUDIENCE="authenticated",
+            SUPABASE_JWKS_URL=(
+                "https://project.supabase.co/auth/v1/.well-known/jwks.json"
+            ),
+        )
+
+        self.assertTrue(configured.auth_configured)
+
+    def test_production_rejects_missing_auth_configuration(self):
+        with self.assertRaises(ValidationError):
+            self.build_settings(ENVIRONMENT="production")
+
+    def test_production_accepts_complete_auth_configuration(self):
+        configured = self.build_settings(
+            ENVIRONMENT="production",
+            SUPABASE_AUTH_ISSUER="https://project.supabase.co/auth/v1",
+            SUPABASE_AUTH_AUDIENCE="authenticated",
+            SUPABASE_JWKS_URL=(
+                "https://project.supabase.co/auth/v1/.well-known/jwks.json"
+            ),
+        )
+
+        self.assertTrue(configured.auth_configured)
 
     def test_environment_overrides_defaults(self):
         configured = self.build_settings(

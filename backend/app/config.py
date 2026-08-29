@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 from typing import Annotated, Literal
 
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
@@ -31,7 +31,6 @@ class Settings(BaseSettings):
     scanner_max_workers: int = Field(default=8, ge=1, le=16)
     log_level: Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"] = "INFO"
 
-    # Reserved for the upcoming authentication phase; intentionally optional.
     supabase_auth_issuer: str | None = None
     supabase_auth_audience: str | None = None
     supabase_jwks_url: str | None = None
@@ -72,6 +71,26 @@ class Settings(BaseSettings):
         if any(origin == "*" for origin in origins):
             raise ValueError("CORS_ORIGINS must contain explicit origins, not '*'")
         return origins
+
+    @model_validator(mode="after")
+    def require_production_auth_configuration(self):
+        if self.environment == "production" and not self.auth_configured:
+            raise ValueError(
+                "Production requires SUPABASE_AUTH_ISSUER, "
+                "SUPABASE_AUTH_AUDIENCE, and SUPABASE_JWKS_URL"
+            )
+        return self
+
+    @property
+    def auth_configured(self) -> bool:
+        return all(
+            value and value.strip()
+            for value in (
+                self.supabase_auth_issuer,
+                self.supabase_auth_audience,
+                self.supabase_jwks_url,
+            )
+        )
 
     @property
     def log_level_value(self) -> int:

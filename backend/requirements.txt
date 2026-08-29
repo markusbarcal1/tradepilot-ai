@@ -1,5 +1,6 @@
 fastapi
 pydantic-settings
+PyJWT[crypto]>=2.10,<3
 SQLAlchemy
 alembic
 uvicorn

@@ -1,10 +1,12 @@
 import json
 import logging
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+
+from app.auth import CurrentUser, get_current_user
 from app.config import settings
 
 logging.basicConfig(level=settings.log_level_value)
@@ -49,6 +51,15 @@ def root():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/auth/me")
+def auth_me(current_user: CurrentUser = Depends(get_current_user)):
+    return {
+        "user_id": str(current_user.user_id),
+        "email": current_user.email,
+    }
+
 
 @app.get("/validate/{ticker}")
 def validate_ticker(ticker: str):
