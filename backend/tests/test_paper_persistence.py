@@ -6,6 +6,7 @@ from unittest.mock import patch
 from sqlalchemy import inspect
 from sqlalchemy.orm import sessionmaker
 
+from app.auth import CurrentUser
 from app.config import REPOSITORY_ROOT
 from app.bootstrap import DEFAULT_DEV_USER_ID
 from app.db import create_database_engine, resolve_database_url, session_scope
@@ -37,6 +38,7 @@ class PaperPersistenceTests(unittest.TestCase):
             side_effect=lambda: session_scope(self.factory),
         )
         self.scope_patch.start()
+        self.current_user = CurrentUser(user_id=DEFAULT_DEV_USER_ID)
 
     def tearDown(self):
         self.scope_patch.stop()
@@ -51,7 +53,7 @@ class PaperPersistenceTests(unittest.TestCase):
                 "user_preferences", "watchlist_items",
             },
         )
-        account = read_account()
+        account = read_account(self.current_user)
         self.assertEqual(account["cash_balance"], 10_000.0)
         self.assertEqual(account["starting_cash"], 10_000.0)
 
@@ -71,27 +73,30 @@ class PaperPersistenceTests(unittest.TestCase):
             self.assertEqual(account.user_id, DEFAULT_DEV_USER_ID)
 
     def test_buy_creates_and_averages_position_and_inserts_trades(self):
-        first = buy(PaperTradeRequest(symbol=" aapl ", shares=10, price=100))
-        second = buy(PaperTradeRequest(symbol="AAPL", shares=10, price=120))
+        first = buy(PaperTradeRequest(symbol=" aapl ", shares=10, price=100), self.current_user)
+        second = buy(PaperTradeRequest(symbol="AAPL", shares=10, price=120), self.current_user)
 
         self.assertEqual(first["message"], "Paper buy executed")
         self.assertEqual(second["position"]["shares"], 20)
         self.assertEqual(second["position"]["avg_cost"], 110)
         self.assertEqual(second["account"]["cash_balance"], 7_800)
-        self.assertEqual(len(read_positions()), 1)
-        self.assertEqual([trade["side"] for trade in read_trades()], ["BUY", "BUY"])
+        self.assertEqual(len(read_positions(self.current_user)), 1)
+        self.assertEqual(
+            [trade["side"] for trade in read_trades(self.current_user)],
+            ["BUY", "BUY"],
+        )
 
     def test_sell_updates_then_closes_position_and_preserves_realized_pnl(self):
-        buy(PaperTradeRequest(symbol="AAPL", shares=10, price=100))
-        partial = sell(PaperTradeRequest(symbol="AAPL", shares=4, price=125))
-        closed = sell(PaperTradeRequest(symbol="AAPL", shares=6, price=90))
+        buy(PaperTradeRequest(symbol="AAPL", shares=10, price=100), self.current_user)
+        partial = sell(PaperTradeRequest(symbol="AAPL", shares=4, price=125), self.current_user)
+        closed = sell(PaperTradeRequest(symbol="AAPL", shares=6, price=90), self.current_user)
 
         self.assertEqual(partial["position"]["shares"], 6)
         self.assertEqual(partial["trade"]["realized_pnl"], 100)
         self.assertIsNone(closed["position"])
         self.assertEqual(closed["trade"]["realized_pnl"], -60)
-        self.assertEqual(read_positions(), [])
-        self.assertEqual(read_account()["cash_balance"], 10_040)
+        self.assertEqual(read_positions(self.current_user), [])
+        self.assertEqual(read_account(self.current_user)["cash_balance"], 10_040)
 
     def test_trade_history_preserves_timestamp_then_id_descending_order(self):
         with session_scope(self.factory) as session:
@@ -108,15 +113,18 @@ class PaperPersistenceTests(unittest.TestCase):
             first.created_at = "2026-01-01 00:00:00"
             second.created_at = "2026-01-01 00:00:00"
 
-        self.assertEqual([trade["symbol"] for trade in read_trades()], ["MSFT", "AAPL"])
+        self.assertEqual(
+            [trade["symbol"] for trade in read_trades(self.current_user)],
+            ["MSFT", "AAPL"],
+        )
 
     def test_portfolio_response_contract_is_preserved(self):
-        buy(PaperTradeRequest(symbol="AAPL", shares=10, price=100))
+        buy(PaperTradeRequest(symbol="AAPL", shares=10, price=100), self.current_user)
         with patch(
             "app.paper_trading.get_position_market_prices",
             return_value=(125.0, 120.0),
         ):
-            portfolio = read_portfolio()
+            portfolio = read_portfolio(self.current_user)
 
         self.assertEqual(portfolio["cash"], 9_000)
         self.assertEqual(portfolio["account_equity"], 10_250)
@@ -131,11 +139,14 @@ class PaperPersistenceTests(unittest.TestCase):
             side_effect=RuntimeError("forced failure"),
         ):
             with self.assertRaises(RuntimeError):
-                buy(PaperTradeRequest(symbol="AAPL", shares=10, price=100))
+                buy(
+                    PaperTradeRequest(symbol="AAPL", shares=10, price=100),
+                    self.current_user,
+                )
 
-        self.assertEqual(read_account()["cash_balance"], 10_000)
-        self.assertEqual(read_positions(), [])
-        self.assertEqual(read_trades(), [])
+        self.assertEqual(read_account(self.current_user)["cash_balance"], 10_000)
+        self.assertEqual(read_positions(self.current_user), [])
+        self.assertEqual(read_trades(self.current_user), [])
 
     def test_model_matches_existing_float_and_text_contract(self):
         columns = PaperAccount.__table__.columns

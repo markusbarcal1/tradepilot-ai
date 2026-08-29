@@ -1,9 +1,10 @@
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy import inspect
 
+from app.auth import CurrentUser, get_current_user
 from app.bootstrap import (
     DEFAULT_DEV_USER_DISPLAY_NAME,
     DEFAULT_DEV_USER_EMAIL,
@@ -96,11 +97,8 @@ def normalize_symbol(symbol: str):
     return normalized
 
 
-def require_bootstrap_account(repository):
-    account = repository.get_account_for_user(DEFAULT_DEV_USER_ID)
-    if account is None:
-        raise HTTPException(status_code=500, detail="Paper account is not initialized")
-    return account
+def get_or_create_paper_account(repository, user_id):
+    return repository.ensure_account_for_user(user_id, STARTING_CASH)
 
 
 def round_money(value):
@@ -158,25 +156,28 @@ def is_opened_today(created_at: str):
 
 
 @router.get("/account")
-def read_account():
+def read_account(current_user: CurrentUser = Depends(get_current_user)):
     with session_scope() as session:
-        return account_to_dict(require_bootstrap_account(PaperTradingRepository(session)))
+        repository = PaperTradingRepository(session)
+        return account_to_dict(
+            get_or_create_paper_account(repository, current_user.user_id)
+        )
 
 
 @router.get("/positions")
-def read_positions():
+def read_positions(current_user: CurrentUser = Depends(get_current_user)):
     with session_scope() as session:
         repository = PaperTradingRepository(session)
-        account = require_bootstrap_account(repository)
+        account = get_or_create_paper_account(repository, current_user.user_id)
         positions = repository.list_positions_for_account(account.id)
         return [position_to_dict(position) for position in positions]
 
 
 @router.get("/trades")
-def read_trades():
+def read_trades(current_user: CurrentUser = Depends(get_current_user)):
     with session_scope() as session:
         repository = PaperTradingRepository(session)
-        account = require_bootstrap_account(repository)
+        account = get_or_create_paper_account(repository, current_user.user_id)
         trades = repository.list_trades_for_account(account.id)
         return [
             {
@@ -194,10 +195,10 @@ def read_trades():
 
 
 @router.get("/portfolio")
-def read_portfolio():
+def read_portfolio(current_user: CurrentUser = Depends(get_current_user)):
     with session_scope() as session:
         repository = PaperTradingRepository(session)
-        account_row = require_bootstrap_account(repository)
+        account_row = get_or_create_paper_account(repository, current_user.user_id)
         account = account_to_dict(account_row)
         position_rows = [
             position_to_dict(item)
@@ -263,14 +264,17 @@ def read_portfolio():
 
 
 @router.post("/buy")
-def buy(request: PaperTradeRequest):
+def buy(
+    request: PaperTradeRequest,
+    current_user: CurrentUser = Depends(get_current_user),
+):
     symbol = normalize_symbol(request.symbol)
     shares = request.shares
     price = request.price
     total_value = shares * price
     with session_scope() as session:
         repository = PaperTradingRepository(session)
-        account = require_bootstrap_account(repository)
+        account = get_or_create_paper_account(repository, current_user.user_id)
         if total_value > account.cash_balance:
             raise HTTPException(
                 status_code=400, detail="Insufficient cash balance for this paper trade"
@@ -306,14 +310,17 @@ def buy(request: PaperTradeRequest):
 
 
 @router.post("/sell")
-def sell(request: PaperTradeRequest):
+def sell(
+    request: PaperTradeRequest,
+    current_user: CurrentUser = Depends(get_current_user),
+):
     symbol = normalize_symbol(request.symbol)
     shares = request.shares
     price = request.price
     total_value = shares * price
     with session_scope() as session:
         repository = PaperTradingRepository(session)
-        account = require_bootstrap_account(repository)
+        account = get_or_create_paper_account(repository, current_user.user_id)
         position = repository.get_position(account.id, symbol)
         if position is None or position.shares < shares:
             raise HTTPException(

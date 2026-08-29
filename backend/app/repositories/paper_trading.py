@@ -20,6 +20,12 @@ class PaperTradingRepository:
         self.session.flush()
         return account
 
+    def ensure_account_for_user(self, user_id: UUID, starting_cash: float):
+        account = self.get_account_for_user(user_id)
+        if account is None:
+            account = self.create_account(user_id, starting_cash)
+        return account
+
     def list_positions_for_account(self, account_id: int):
         return list(self.session.scalars(select(PaperPosition).where(PaperPosition.account_id == account_id).order_by(PaperPosition.symbol)))
 

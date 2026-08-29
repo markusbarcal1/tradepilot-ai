@@ -14,6 +14,9 @@ class WatchlistRepository:
         return list(self.session.scalars(select(WatchlistItem.symbol).where(WatchlistItem.user_id == user_id).order_by(WatchlistItem.symbol)))
 
     def add(self, user_id: UUID, symbol: str):
+        existing = self.session.get(WatchlistItem, (user_id, symbol))
+        if existing is not None:
+            return existing
         item = WatchlistItem(user_id=user_id, symbol=symbol)
         self.session.add(item)
         self.session.flush()
