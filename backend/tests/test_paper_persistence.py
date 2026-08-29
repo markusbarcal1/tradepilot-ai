@@ -1,14 +1,14 @@
-import shutil
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import inspect
 from sqlalchemy.orm import sessionmaker
 
 from app.config import REPOSITORY_ROOT
-from app.db import resolve_database_url, session_scope
+from app.bootstrap import DEFAULT_DEV_USER_ID
+from app.db import create_database_engine, resolve_database_url, session_scope
 from app.models.paper_trading import PaperAccount
 from app.paper_trading import (
     PaperTradeRequest,
@@ -27,10 +27,7 @@ class PaperPersistenceTests(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.TemporaryDirectory()
         self.database_path = Path(self.temp_dir.name) / "paper.db"
-        self.engine = create_engine(
-            f"sqlite:///{self.database_path}",
-            connect_args={"check_same_thread": False},
-        )
+        self.engine = create_database_engine(f"sqlite:///{self.database_path}")
         self.factory = sessionmaker(
             bind=self.engine, autoflush=False, expire_on_commit=False
         )
@@ -49,7 +46,10 @@ class PaperPersistenceTests(unittest.TestCase):
     def test_empty_database_initializes_expected_schema_and_account(self):
         self.assertEqual(
             set(inspect(self.engine).get_table_names()),
-            {"paper_account", "paper_positions", "paper_trades"},
+            {
+                "app_users", "paper_accounts", "paper_positions", "paper_trades",
+                "user_preferences", "watchlist_items",
+            },
         )
         account = read_account()
         self.assertEqual(account["cash_balance"], 10_000.0)
@@ -62,20 +62,13 @@ class PaperPersistenceTests(unittest.TestCase):
             REPOSITORY_ROOT / "backend" / "app" / "paper_trading.db",
         )
 
-    def test_existing_schema_database_is_readable(self):
-        copied_path = Path(self.temp_dir.name) / "existing.db"
-        source_path = Path(__file__).resolve().parents[1] / "app" / "paper_trading.db"
-        shutil.copy2(source_path, copied_path)
-        copied_engine = create_engine(f"sqlite:///{copied_path}")
-        copied_factory = sessionmaker(bind=copied_engine, expire_on_commit=False)
-        try:
-            with session_scope(copied_factory) as session:
-                repository = PaperTradingRepository(session)
-                self.assertIsNotNone(repository.get_default_account())
-                self.assertEqual(len(repository.list_positions()), 4)
-                self.assertEqual(len(repository.list_trades()), 31)
-        finally:
-            copied_engine.dispose()
+    def test_bootstrap_account_is_owned_by_development_user(self):
+        with session_scope(self.factory) as session:
+            account = PaperTradingRepository(session).get_account_for_user(
+                DEFAULT_DEV_USER_ID
+            )
+            self.assertIsNotNone(account)
+            self.assertEqual(account.user_id, DEFAULT_DEV_USER_ID)
 
     def test_buy_creates_and_averages_position_and_inserts_trades(self):
         first = buy(PaperTradeRequest(symbol=" aapl ", shares=10, price=100))
@@ -103,12 +96,13 @@ class PaperPersistenceTests(unittest.TestCase):
     def test_trade_history_preserves_timestamp_then_id_descending_order(self):
         with session_scope(self.factory) as session:
             repository = PaperTradingRepository(session)
+            account = repository.get_account_for_user(DEFAULT_DEV_USER_ID)
             first = repository.create_trade(
-                symbol="AAPL", side="BUY", shares=1, price=10,
+                account_id=account.id, symbol="AAPL", side="BUY", shares=1, price=10,
                 total_value=10, realized_pnl=0,
             )
             second = repository.create_trade(
-                symbol="MSFT", side="BUY", shares=1, price=20,
+                account_id=account.id, symbol="MSFT", side="BUY", shares=1, price=20,
                 total_value=20, realized_pnl=0,
             )
             first.created_at = "2026-01-01 00:00:00"

@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 from pathlib import Path
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.engine import URL, make_url
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
@@ -31,7 +31,14 @@ def resolve_database_url(database_url: str) -> URL:
 def create_database_engine(database_url: str = settings.database_url):
     url = resolve_database_url(database_url)
     connect_args = {"check_same_thread": False} if url.drivername == "sqlite" else {}
-    return create_engine(url, connect_args=connect_args)
+    database_engine = create_engine(url, connect_args=connect_args)
+    if url.drivername == "sqlite":
+        @event.listens_for(database_engine, "connect")
+        def enable_sqlite_foreign_keys(dbapi_connection, _connection_record):
+            cursor = dbapi_connection.cursor()
+            cursor.execute("PRAGMA foreign_keys=ON")
+            cursor.close()
+    return database_engine
 
 
 engine = create_database_engine()

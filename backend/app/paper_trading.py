@@ -2,9 +2,16 @@ from datetime import datetime, timezone
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
+from sqlalchemy import inspect
 
-from app.db import create_schema, session_scope
+from app.bootstrap import (
+    DEFAULT_DEV_USER_DISPLAY_NAME,
+    DEFAULT_DEV_USER_EMAIL,
+    DEFAULT_DEV_USER_ID,
+)
+from app.db import create_schema, engine, session_scope
 from app.repositories.paper_trading import PaperTradingRepository
+from app.repositories.users import UserRepository
 from app.services.market_data import get_price_history
 
 
@@ -59,13 +66,27 @@ def trade_to_dict(trade):
 
 
 def init_paper_trading_db(database_engine=None, session_factory=None):
-    # Compatibility bootstrap for local/empty databases. Alembic owns future
-    # schema evolution; create_all is non-destructive for existing tables.
-    create_schema(database_engine)
+    database_engine = database_engine or engine
+    tables = set(inspect(database_engine).get_table_names())
+    if "paper_account" in tables:
+        raise RuntimeError(
+            "The paper-trading database is at the Phase 1B schema. "
+            "Back it up, stamp 20260828_01, and run Alembic upgrade head."
+        )
+    # Compatibility bootstrap is limited to genuinely empty local/test databases.
+    if not tables:
+        create_schema(database_engine)
     with session_scope(session_factory) as session:
+        users = UserRepository(session)
         repository = PaperTradingRepository(session)
-        if repository.get_default_account() is None:
-            repository.create_account(STARTING_CASH)
+        if users.get(DEFAULT_DEV_USER_ID) is None:
+            users.create(
+                DEFAULT_DEV_USER_ID,
+                email=DEFAULT_DEV_USER_EMAIL,
+                display_name=DEFAULT_DEV_USER_DISPLAY_NAME,
+            )
+        if repository.get_account_for_user(DEFAULT_DEV_USER_ID) is None:
+            repository.create_account(DEFAULT_DEV_USER_ID, STARTING_CASH)
 
 
 def normalize_symbol(symbol: str):
@@ -75,8 +96,8 @@ def normalize_symbol(symbol: str):
     return normalized
 
 
-def require_default_account(repository):
-    account = repository.get_default_account()
+def require_bootstrap_account(repository):
+    account = repository.get_account_for_user(DEFAULT_DEV_USER_ID)
     if account is None:
         raise HTTPException(status_code=500, detail="Paper account is not initialized")
     return account
@@ -139,20 +160,24 @@ def is_opened_today(created_at: str):
 @router.get("/account")
 def read_account():
     with session_scope() as session:
-        return account_to_dict(require_default_account(PaperTradingRepository(session)))
+        return account_to_dict(require_bootstrap_account(PaperTradingRepository(session)))
 
 
 @router.get("/positions")
 def read_positions():
     with session_scope() as session:
-        positions = PaperTradingRepository(session).list_positions()
+        repository = PaperTradingRepository(session)
+        account = require_bootstrap_account(repository)
+        positions = repository.list_positions_for_account(account.id)
         return [position_to_dict(position) for position in positions]
 
 
 @router.get("/trades")
 def read_trades():
     with session_scope() as session:
-        trades = PaperTradingRepository(session).list_trades()
+        repository = PaperTradingRepository(session)
+        account = require_bootstrap_account(repository)
+        trades = repository.list_trades_for_account(account.id)
         return [
             {
                 "id": trade.id,
@@ -172,8 +197,12 @@ def read_trades():
 def read_portfolio():
     with session_scope() as session:
         repository = PaperTradingRepository(session)
-        account = account_to_dict(require_default_account(repository))
-        position_rows = [position_to_dict(item) for item in repository.list_positions()]
+        account_row = require_bootstrap_account(repository)
+        account = account_to_dict(account_row)
+        position_rows = [
+            position_to_dict(item)
+            for item in repository.list_positions_for_account(account_row.id)
+        ]
 
     cash_balance = float(account["cash_balance"])
     starting_balance = float(account["starting_cash"])
@@ -241,15 +270,15 @@ def buy(request: PaperTradeRequest):
     total_value = shares * price
     with session_scope() as session:
         repository = PaperTradingRepository(session)
-        account = require_default_account(repository)
+        account = require_bootstrap_account(repository)
         if total_value > account.cash_balance:
             raise HTTPException(
                 status_code=400, detail="Insufficient cash balance for this paper trade"
             )
 
-        position = repository.get_position(symbol)
+        position = repository.get_position(account.id, symbol)
         if position is None:
-            position = repository.create_position(symbol, shares, price)
+            position = repository.create_position(account.id, symbol, shares, price)
         else:
             current_cost_basis = position.shares * position.avg_cost
             new_shares = position.shares + shares
@@ -260,6 +289,7 @@ def buy(request: PaperTradeRequest):
 
         repository.update_account_balance(account, account.cash_balance - total_value)
         trade = repository.create_trade(
+            account_id=account.id,
             symbol=symbol,
             side="BUY",
             shares=shares,
@@ -283,8 +313,8 @@ def sell(request: PaperTradeRequest):
     total_value = shares * price
     with session_scope() as session:
         repository = PaperTradingRepository(session)
-        account = require_default_account(repository)
-        position = repository.get_position(symbol)
+        account = require_bootstrap_account(repository)
+        position = repository.get_position(account.id, symbol)
         if position is None or position.shares < shares:
             raise HTTPException(
                 status_code=400,
@@ -301,6 +331,7 @@ def sell(request: PaperTradeRequest):
 
         repository.update_account_balance(account, account.cash_balance + total_value)
         trade = repository.create_trade(
+            account_id=account.id,
             symbol=symbol,
             side="SELL",
             shares=shares,
