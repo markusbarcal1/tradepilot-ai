@@ -1,15 +1,14 @@
-from pathlib import Path
 from datetime import datetime, timezone
-import sqlite3
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
+
+from app.db import create_schema, session_scope
+from app.repositories.paper_trading import PaperTradingRepository
 from app.services.market_data import get_price_history
 
 
 STARTING_CASH = 10_000.0
-DB_PATH = Path(__file__).resolve().parent / "paper_trading.db"
-
 router = APIRouter(prefix="/paper", tags=["paper trading"])
 
 
@@ -19,69 +18,54 @@ class PaperTradeRequest(BaseModel):
     price: float = Field(..., gt=0)
 
 
-def get_connection():
-    connection = sqlite3.connect(DB_PATH)
-    connection.row_factory = sqlite3.Row
-    return connection
-
-
-def row_to_dict(row):
-    if row is None:
+def account_to_dict(account):
+    if account is None:
         return None
-    return dict(row)
+    return {
+        "id": account.id,
+        "cash_balance": account.cash_balance,
+        "starting_cash": account.starting_cash,
+        "created_at": account.created_at,
+        "updated_at": account.updated_at,
+    }
 
 
-def init_paper_trading_db():
-    with get_connection() as connection:
-        connection.execute(
-            """
-            CREATE TABLE IF NOT EXISTS paper_account (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                cash_balance REAL NOT NULL,
-                starting_cash REAL NOT NULL,
-                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-            )
-            """
-        )
-        connection.execute(
-            """
-            CREATE TABLE IF NOT EXISTS paper_positions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                symbol TEXT NOT NULL UNIQUE,
-                shares REAL NOT NULL,
-                avg_cost REAL NOT NULL,
-                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-            )
-            """
-        )
-        connection.execute(
-            """
-            CREATE TABLE IF NOT EXISTS paper_trades (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                symbol TEXT NOT NULL,
-                side TEXT NOT NULL,
-                shares REAL NOT NULL,
-                price REAL NOT NULL,
-                total_value REAL NOT NULL,
-                realized_pnl REAL NOT NULL DEFAULT 0,
-                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-            )
-            """
-        )
+def position_to_dict(position):
+    if position is None:
+        return None
+    return {
+        "id": position.id,
+        "symbol": position.symbol,
+        "shares": position.shares,
+        "avg_cost": position.avg_cost,
+        "created_at": position.created_at,
+        "updated_at": position.updated_at,
+    }
 
-        account = connection.execute(
-            "SELECT id FROM paper_account ORDER BY id LIMIT 1"
-        ).fetchone()
-        if account is None:
-            connection.execute(
-                """
-                INSERT INTO paper_account (cash_balance, starting_cash)
-                VALUES (?, ?)
-                """,
-                (STARTING_CASH, STARTING_CASH),
-            )
+
+def trade_to_dict(trade):
+    if trade is None:
+        return None
+    return {
+        "id": trade.id,
+        "symbol": trade.symbol,
+        "side": trade.side,
+        "shares": trade.shares,
+        "price": trade.price,
+        "total_value": trade.total_value,
+        "realized_pnl": trade.realized_pnl,
+        "created_at": trade.created_at,
+    }
+
+
+def init_paper_trading_db(database_engine=None, session_factory=None):
+    # Compatibility bootstrap for local/empty databases. Alembic owns future
+    # schema evolution; create_all is non-destructive for existing tables.
+    create_schema(database_engine)
+    with session_scope(session_factory) as session:
+        repository = PaperTradingRepository(session)
+        if repository.get_default_account() is None:
+            repository.create_account(STARTING_CASH)
 
 
 def normalize_symbol(symbol: str):
@@ -91,27 +75,11 @@ def normalize_symbol(symbol: str):
     return normalized
 
 
-def get_default_account(connection):
-    account = connection.execute(
-        "SELECT * FROM paper_account ORDER BY id LIMIT 1"
-    ).fetchone()
+def require_default_account(repository):
+    account = repository.get_default_account()
     if account is None:
         raise HTTPException(status_code=500, detail="Paper account is not initialized")
     return account
-
-
-def get_position(connection, symbol: str):
-    return connection.execute(
-        "SELECT * FROM paper_positions WHERE symbol = ?",
-        (symbol,),
-    ).fetchone()
-
-
-def get_trade(connection, trade_id: int):
-    return connection.execute(
-        "SELECT * FROM paper_trades WHERE id = ?",
-        (trade_id,),
-    ).fetchone()
 
 
 def round_money(value):
@@ -146,14 +114,12 @@ def get_position_market_prices(symbol: str):
 
     current_price = float(closes.iloc[-1])
     previous_close = float(closes.iloc[-2]) if len(closes) > 1 else None
-
     return current_price, previous_close
 
 
 def parse_sqlite_timestamp(value: str):
     if not value:
         return None
-
     try:
         return datetime.fromisoformat(value)
     except ValueError:
@@ -167,53 +133,47 @@ def is_opened_today(created_at: str):
     opened_at = parse_sqlite_timestamp(created_at)
     if opened_at is None:
         return False
-
     return opened_at.date() == datetime.now(timezone.utc).date()
 
 
 @router.get("/account")
 def read_account():
-    with get_connection() as connection:
-        return row_to_dict(get_default_account(connection))
+    with session_scope() as session:
+        return account_to_dict(require_default_account(PaperTradingRepository(session)))
 
 
 @router.get("/positions")
 def read_positions():
-    with get_connection() as connection:
-        rows = connection.execute(
-            "SELECT * FROM paper_positions ORDER BY symbol"
-        ).fetchall()
-        return [row_to_dict(row) for row in rows]
+    with session_scope() as session:
+        positions = PaperTradingRepository(session).list_positions()
+        return [position_to_dict(position) for position in positions]
 
 
 @router.get("/trades")
 def read_trades():
-    with get_connection() as connection:
-        rows = connection.execute(
-            "SELECT * FROM paper_trades ORDER BY created_at DESC, id DESC"
-        ).fetchall()
+    with session_scope() as session:
+        trades = PaperTradingRepository(session).list_trades()
         return [
             {
-                "id": row["id"],
-                "timestamp": row["created_at"],
-                "created_at": row["created_at"],
-                "symbol": row["symbol"],
-                "side": row["side"],
-                "shares": row["shares"],
-                "price": row["price"],
-                "total_value": row["total_value"],
+                "id": trade.id,
+                "timestamp": trade.created_at,
+                "created_at": trade.created_at,
+                "symbol": trade.symbol,
+                "side": trade.side,
+                "shares": trade.shares,
+                "price": trade.price,
+                "total_value": trade.total_value,
             }
-            for row in rows
+            for trade in trades
         ]
 
 
 @router.get("/portfolio")
 def read_portfolio():
-    with get_connection() as connection:
-        account = get_default_account(connection)
-        rows = connection.execute(
-            "SELECT * FROM paper_positions ORDER BY symbol"
-        ).fetchall()
+    with session_scope() as session:
+        repository = PaperTradingRepository(session)
+        account = account_to_dict(require_default_account(repository))
+        position_rows = [position_to_dict(item) for item in repository.list_positions()]
 
     cash_balance = float(account["cash_balance"])
     starting_balance = float(account["starting_cash"])
@@ -222,23 +182,17 @@ def read_portfolio():
     day_change = 0.0
     day_reference_value = 0.0
 
-    for row in rows:
+    for row in position_rows:
         symbol = row["symbol"]
         shares = float(row["shares"])
         avg_cost = float(row["avg_cost"])
         current_price, previous_close = get_position_market_prices(symbol)
-
         position_market_value = shares * current_price
         position_cost_basis = shares * avg_cost
         unrealized_pnl = position_market_value - position_cost_basis
-        unrealized_pnl_percent = calculate_percent(
-            unrealized_pnl,
-            position_cost_basis,
-        )
+        unrealized_pnl_percent = calculate_percent(unrealized_pnl, position_cost_basis)
         day_reference_price = (
-            avg_cost
-            if is_opened_today(row["created_at"])
-            else previous_close or avg_cost
+            avg_cost if is_opened_today(row["created_at"]) else previous_close or avg_cost
         )
         position_day_change = (current_price - day_reference_price) * shares
         position_day_reference_value = day_reference_price * shares
@@ -246,7 +200,6 @@ def read_portfolio():
         market_value += position_market_value
         day_change += position_day_change
         day_reference_value += position_day_reference_value
-
         positions.append(
             {
                 "symbol": symbol,
@@ -262,7 +215,6 @@ def read_portfolio():
     account_equity = cash_balance + market_value
     total_pl = account_equity - starting_balance
     total_pl_percent = calculate_percent(total_pl, starting_balance)
-
     return {
         "cash": round_money(cash_balance),
         "cash_balance": round_money(cash_balance),
@@ -287,67 +239,40 @@ def buy(request: PaperTradeRequest):
     shares = request.shares
     price = request.price
     total_value = shares * price
-
-    with get_connection() as connection:
-        account = get_default_account(connection)
-        cash_balance = account["cash_balance"]
-
-        if total_value > cash_balance:
+    with session_scope() as session:
+        repository = PaperTradingRepository(session)
+        account = require_default_account(repository)
+        if total_value > account.cash_balance:
             raise HTTPException(
-                status_code=400,
-                detail="Insufficient cash balance for this paper trade",
+                status_code=400, detail="Insufficient cash balance for this paper trade"
             )
 
-        position = get_position(connection, symbol)
+        position = repository.get_position(symbol)
         if position is None:
-            connection.execute(
-                """
-                INSERT INTO paper_positions (symbol, shares, avg_cost)
-                VALUES (?, ?, ?)
-                """,
-                (symbol, shares, price),
-            )
+            position = repository.create_position(symbol, shares, price)
         else:
-            current_shares = position["shares"]
-            current_cost_basis = current_shares * position["avg_cost"]
-            new_shares = current_shares + shares
+            current_cost_basis = position.shares * position.avg_cost
+            new_shares = position.shares + shares
             new_avg_cost = (current_cost_basis + total_value) / new_shares
-            connection.execute(
-                """
-                UPDATE paper_positions
-                SET shares = ?, avg_cost = ?, updated_at = CURRENT_TIMESTAMP
-                WHERE symbol = ?
-                """,
-                (new_shares, new_avg_cost, symbol),
+            position = repository.update_position(
+                position, shares=new_shares, avg_cost=new_avg_cost
             )
 
-        connection.execute(
-            """
-            UPDATE paper_account
-            SET cash_balance = cash_balance - ?, updated_at = CURRENT_TIMESTAMP
-            WHERE id = ?
-            """,
-            (total_value, account["id"]),
+        repository.update_account_balance(account, account.cash_balance - total_value)
+        trade = repository.create_trade(
+            symbol=symbol,
+            side="BUY",
+            shares=shares,
+            price=price,
+            total_value=total_value,
+            realized_pnl=0,
         )
-        cursor = connection.execute(
-            """
-            INSERT INTO paper_trades
-                (symbol, side, shares, price, total_value, realized_pnl)
-            VALUES (?, 'BUY', ?, ?, ?, 0)
-            """,
-            (symbol, shares, price, total_value),
-        )
-
-        updated_account = get_default_account(connection)
-        updated_position = get_position(connection, symbol)
-        trade = get_trade(connection, cursor.lastrowid)
-
-    return {
-        "message": "Paper buy executed",
-        "account": row_to_dict(updated_account),
-        "position": row_to_dict(updated_position),
-        "trade": row_to_dict(trade),
-    }
+        return {
+            "message": "Paper buy executed",
+            "account": account_to_dict(account),
+            "position": position_to_dict(position),
+            "trade": trade_to_dict(trade),
+        }
 
 
 @router.post("/sell")
@@ -356,60 +281,36 @@ def sell(request: PaperTradeRequest):
     shares = request.shares
     price = request.price
     total_value = shares * price
-
-    with get_connection() as connection:
-        account = get_default_account(connection)
-        position = get_position(connection, symbol)
-
-        if position is None or position["shares"] < shares:
+    with session_scope() as session:
+        repository = PaperTradingRepository(session)
+        account = require_default_account(repository)
+        position = repository.get_position(symbol)
+        if position is None or position.shares < shares:
             raise HTTPException(
                 status_code=400,
                 detail="Not enough shares available for this paper trade",
             )
 
-        remaining_shares = position["shares"] - shares
-        realized_pnl = (price - position["avg_cost"]) * shares
-
+        remaining_shares = position.shares - shares
+        realized_pnl = (price - position.avg_cost) * shares
         if remaining_shares <= 1e-9:
-            connection.execute(
-                "DELETE FROM paper_positions WHERE symbol = ?",
-                (symbol,),
-            )
+            repository.delete_position(position)
             updated_position = None
         else:
-            connection.execute(
-                """
-                UPDATE paper_positions
-                SET shares = ?, updated_at = CURRENT_TIMESTAMP
-                WHERE symbol = ?
-                """,
-                (remaining_shares, symbol),
-            )
-            updated_position = get_position(connection, symbol)
+            updated_position = repository.update_position(position, shares=remaining_shares)
 
-        connection.execute(
-            """
-            UPDATE paper_account
-            SET cash_balance = cash_balance + ?, updated_at = CURRENT_TIMESTAMP
-            WHERE id = ?
-            """,
-            (total_value, account["id"]),
+        repository.update_account_balance(account, account.cash_balance + total_value)
+        trade = repository.create_trade(
+            symbol=symbol,
+            side="SELL",
+            shares=shares,
+            price=price,
+            total_value=total_value,
+            realized_pnl=realized_pnl,
         )
-        cursor = connection.execute(
-            """
-            INSERT INTO paper_trades
-                (symbol, side, shares, price, total_value, realized_pnl)
-            VALUES (?, 'SELL', ?, ?, ?, ?)
-            """,
-            (symbol, shares, price, total_value, realized_pnl),
-        )
-
-        updated_account = get_default_account(connection)
-        trade = get_trade(connection, cursor.lastrowid)
-
-    return {
-        "message": "Paper sell executed",
-        "account": row_to_dict(updated_account),
-        "position": row_to_dict(updated_position),
-        "trade": row_to_dict(trade),
-    }
+        return {
+            "message": "Paper sell executed",
+            "account": account_to_dict(account),
+            "position": position_to_dict(updated_position),
+            "trade": trade_to_dict(trade),
+        }
