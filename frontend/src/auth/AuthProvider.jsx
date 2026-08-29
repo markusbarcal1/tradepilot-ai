@@ -6,6 +6,14 @@ import AuthContext from "./AuthContext";
 
 
 const SIGN_IN_ERROR = "Unable to sign in. Check your credentials and try again.";
+const INVITE_ERROR = "Unable to complete the invitation. Request a new invite and try again.";
+
+function hasInviteToken() {
+  if (typeof window === "undefined") return false;
+  const query = new URLSearchParams(window.location.search);
+  const fragment = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  return query.get("type") === "invite" || fragment.get("type") === "invite";
+}
 
 function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
@@ -15,6 +23,7 @@ function AuthProvider({ children }) {
   );
   const verificationIdRef = useRef(0);
   const sessionTokenRef = useRef(null);
+  const invitePendingRef = useRef(hasInviteToken());
 
   const clearSession = useCallback(() => {
     verificationIdRef.current += 1;
@@ -25,6 +34,12 @@ function AuthProvider({ children }) {
   }, []);
 
   const verifySession = useCallback(async (nextSession) => {
+    if (invitePendingRef.current && nextSession?.access_token) {
+      setSession(nextSession);
+      setCurrentUser(null);
+      setStatus("invite-setup");
+      return;
+    }
     if (
       nextSession?.access_token &&
       sessionTokenRef.current === nextSession.access_token
@@ -115,6 +130,19 @@ function AuthProvider({ children }) {
     if (supabase) await supabase.auth.signOut();
   }, [clearSession]);
 
+  const completeInvite = useCallback(async (password) => {
+    if (!supabase || !session?.access_token || !invitePendingRef.current) {
+      return { error: INVITE_ERROR };
+    }
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) return { error: INVITE_ERROR };
+    invitePendingRef.current = false;
+    sessionTokenRef.current = null;
+    window.history.replaceState({}, document.title, window.location.pathname);
+    await verifySession(session);
+    return { error: null };
+  }, [session, verifySession]);
+
   const value = useMemo(() => ({
     session,
     user: session?.user ?? null,
@@ -122,7 +150,8 @@ function AuthProvider({ children }) {
     status,
     signIn,
     signOut,
-  }), [session, currentUser, status, signIn, signOut]);
+    completeInvite,
+  }), [session, currentUser, status, signIn, signOut, completeInvite]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

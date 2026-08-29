@@ -33,6 +33,9 @@ try {
   const { default: Login } = await vite.ssrLoadModule(
     "/src/components/Login.jsx"
   );
+  const { default: InviteSetup } = await vite.ssrLoadModule(
+    "/src/components/InviteSetup.jsx"
+  );
 
   let accessToken = "first-access-token";
   supabase.auth.getSession = async () => ({
@@ -85,6 +88,17 @@ try {
   assert.match(loginMarkup, /Sign In/);
   assert.doesNotMatch(loginMarkup, /Sign Up|Create Account|Register/);
 
+  const inviteMarkup = renderToStaticMarkup(
+    React.createElement(
+      AuthContext.Provider,
+      { value: { completeInvite: async () => ({ error: null }), signOut: async () => {} } },
+      React.createElement(InviteSetup)
+    )
+  );
+  assert.match(inviteMarkup, /Set your password/);
+  assert.match(inviteMarkup, /Complete invitation/);
+  assert.doesNotMatch(inviteMarkup, /Sign Up|Create Account|Register/);
+
   const forbiddenMarkup = renderToStaticMarkup(
     React.createElement(
       AuthContext.Provider,
@@ -112,6 +126,7 @@ try {
   );
   assert.doesNotMatch(scannerSource, /localStorage/);
   assert.doesNotMatch(authSource, /signUp|console\.log\(.*session|access_token.*localStorage/);
+  assert.match(authSource, /updateUser\(\{ password \}\)/);
   assert.match(appSource, /localStorage\.setItem\(THEME_STORAGE_KEY/);
   assert.doesNotMatch(appSource, /localStorage\.setItem\("tradepilot-watchlist"/);
   assert.match(appSource, /analysisRequestRef\.current\.controller\?\.abort/);

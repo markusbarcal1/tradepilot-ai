@@ -3,7 +3,7 @@
 For a new empty database, run `alembic upgrade head` from `backend`. The current
 head creates the multi-user-capable schema and deterministic bootstrap user/account.
 
-The existing `app/paper_trading.db` already has this schema and data. Back it up,
+The existing `app/paper_trading.db` has the legacy schema and data. Back it up,
 verify its schema, then mark it at the baseline without running the baseline DDL:
 
 ```powershell
@@ -34,3 +34,9 @@ future Numeric/Decimal migration should be planned separately.
 
 Create future revisions with `alembic revision --autogenerate -m "description"`
 and review generated operations before applying them with `alembic upgrade head`.
+
+For first-beta-user migration and ownership adoption, use the guarded operator
+command documented in `../../docs/private-beta-setup.md`. Its dry run classifies the
+schema without mutation; its real path backs up the database before stamping or
+changing ownership. Do not run the manual commands above and then also run the
+combined adoption command without re-checking the detected state.

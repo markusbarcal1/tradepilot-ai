@@ -2,6 +2,7 @@ import App from "../App";
 import useAuth from "../auth/useAuth";
 import ToastProvider from "../context/ToastProvider";
 import AuthStateScreen from "./AuthStateScreen";
+import InviteSetup from "./InviteSetup";
 import Login from "./Login";
 
 
@@ -46,6 +47,8 @@ function AuthGate() {
       />
     );
   }
+
+  if (status === "invite-setup") return <InviteSetup />;
 
   if (status !== "authorized" || !currentUser) return <Login />;
 

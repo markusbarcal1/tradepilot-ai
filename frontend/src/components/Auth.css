@@ -96,6 +96,12 @@
   opacity: 0.65;
 }
 
+.auth-card .auth-secondary-button {
+  border-color: var(--border-color, #343a46);
+  background: transparent;
+  color: var(--text-secondary, #c3c7d0);
+}
+
 .auth-error {
   color: #fca5a5;
   font-size: 12px;
