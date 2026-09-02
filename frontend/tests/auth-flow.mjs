@@ -36,6 +36,9 @@ try {
   const { default: InviteSetup } = await vite.ssrLoadModule(
     "/src/components/InviteSetup.jsx"
   );
+  const themePreferences = await vite.ssrLoadModule(
+    "/src/utils/themePreferences.js"
+  );
 
   let accessToken = "first-access-token";
   supabase.auth.getSession = async () => ({
@@ -60,6 +63,32 @@ try {
   await apiModule.getAuthenticatedUser();
   assert.equal(requests[0].headers.Authorization, "Bearer first-access-token");
   assert.equal(requests[1].headers.Authorization, "Bearer refreshed-access-token");
+
+  await apiModule.getThemePreference();
+  await apiModule.updateThemePreference("light");
+  assert.equal(requests[2].url, "/preferences/theme");
+  assert.equal(requests[2].method, "get");
+  assert.equal(requests[3].url, "/preferences/theme");
+  assert.equal(requests[3].method, "put");
+  assert.equal(JSON.parse(requests[3].data).theme, "light");
+
+  assert.equal(themePreferences.normalizeTheme("light"), "light");
+  assert.equal(themePreferences.normalizeTheme("dark"), "dark");
+  assert.equal(themePreferences.normalizeTheme("stale-cache-value"), "dark");
+  let savedTheme = null;
+  assert.equal(await themePreferences.saveThemePreference("light", async (theme) => {
+    savedTheme = theme;
+  }), true);
+  assert.equal(savedTheme, "light");
+  const originalConsoleError = console.error;
+  console.error = () => {};
+  try {
+    assert.equal(await themePreferences.saveThemePreference("dark", async () => {
+      throw new Error("temporary failure");
+    }), false);
+  } finally {
+    console.error = originalConsoleError;
+  }
 
   let streamRequest = null;
   globalThis.fetch = async (url, options) => {
@@ -128,6 +157,9 @@ try {
   assert.doesNotMatch(authSource, /signUp|console\.log\(.*session|access_token.*localStorage/);
   assert.match(authSource, /updateUser\(\{ password \}\)/);
   assert.match(appSource, /localStorage\.setItem\(THEME_STORAGE_KEY/);
+  assert.match(appSource, /getThemePreference\(\)/);
+  assert.match(appSource, /setTheme\(normalizeTheme\(response\.data\?\.theme\)\)/);
+  assert.match(appSource, /saveThemePreference\(nextTheme, updateThemePreference\)/);
   assert.doesNotMatch(appSource, /localStorage\.setItem\("tradepilot-watchlist"/);
   assert.match(appSource, /analysisRequestRef\.current\.controller\?\.abort/);
 

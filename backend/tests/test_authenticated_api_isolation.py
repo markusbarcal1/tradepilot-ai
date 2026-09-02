@@ -187,6 +187,7 @@ class AuthenticatedApiIsolationTests(unittest.TestCase):
             ("POST", "/paper/buy", {"symbol": "AAPL", "shares": 1, "price": 1}),
             ("POST", "/paper/sell", {"symbol": "AAPL", "shares": 1, "price": 1}),
             ("GET", "/watchlist", None), ("GET", "/preferences/scanner", None),
+            ("GET", "/preferences/theme", None),
             ("GET", "/scan", None), ("GET", "/scan/stream", None),
             ("GET", "/analyze/AAPL", None), ("GET", "/financial-analysis/AAPL", None),
             ("GET", "/valuation-analysis/AAPL", None), ("GET", "/validate/AAPL", None),
@@ -273,6 +274,38 @@ class AuthenticatedApiIsolationTests(unittest.TestCase):
         self.assertEqual(
             self.request(
                 "PUT", "/preferences/scanner", user_id=USER_A, json_body=[]
+            )[0],
+            422,
+        )
+
+    def test_theme_preferences_are_validated_isolated_and_preserve_scanner_preferences(self):
+        self.assertEqual(
+            self.request("GET", "/preferences/theme", user_id=USER_C)[2],
+            {"theme": "dark"},
+        )
+        self.assertEqual(
+            self.request(
+                "PUT", "/preferences/theme", user_id=USER_A,
+                json_body={"theme": "light"},
+            )[0:3:2],
+            (200, {"theme": "light"}),
+        )
+        self.assertEqual(
+            self.request("GET", "/preferences/theme", user_id=USER_A)[2],
+            {"theme": "light"},
+        )
+        self.assertEqual(
+            self.request("GET", "/preferences/theme", user_id=USER_B)[2],
+            {"theme": "dark"},
+        )
+        self.assertEqual(
+            self.request("GET", "/preferences/scanner", user_id=USER_A)[2],
+            {"universe": "sp500"},
+        )
+        self.assertEqual(
+            self.request(
+                "PUT", "/preferences/theme", user_id=USER_A,
+                json_body={"theme": "system"},
             )[0],
             422,
         )

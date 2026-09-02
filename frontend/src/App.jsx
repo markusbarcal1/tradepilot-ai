@@ -6,10 +6,12 @@ import {
   analyzeTickers as fetchBatchAnalysis,
   addWatchlistSymbol,
   getScannerPreferences,
+  getThemePreference,
   getWatchlist,
   isRequestCanceled,
   removeWatchlistSymbol,
   updateScannerPreferences,
+  updateThemePreference,
   validateTicker,
 } from "./api/client";
 import Header from "./components/Header";
@@ -27,6 +29,7 @@ import ScannerPanel from "./components/ScannerPanel";
 import { getPaperPortfolio, getPaperTrades } from "./api/paperTrading";
 import usePollingData from "./hooks/usePollingData";
 import useToast from "./hooks/useToast";
+import { normalizeTheme, saveThemePreference } from "./utils/themePreferences";
 import {
   getAnalysisErrorNotification,
   isValidAnalysisResponse,
@@ -62,6 +65,7 @@ function App({ userEmail, onSignOut }) {
   const didRunInitialLoadRef = useRef(false);
   const scannerPreferencesRef = useRef("");
   const scannerPreferencesTimerRef = useRef(null);
+  const themePreferencesReadyRef = useRef(false);
 
   const [ticker, setTicker] = useState("AAPL");
   const [submittedTicker, setSubmittedTicker] = useState("AAPL");
@@ -419,6 +423,14 @@ function App({ userEmail, onSignOut }) {
     }, 500);
   }, [scannerPreferencesReady]);
 
+  const handleToggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    if (themePreferencesReadyRef.current) {
+      void saveThemePreference(nextTheme, updateThemePreference);
+    }
+  };
+
   const handleNavigate = (view) => {
     if (view === "portfolio") {
       refreshPaperTrading();
@@ -469,6 +481,28 @@ function App({ userEmail, onSignOut }) {
 
     return () => {
       active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    getThemePreference()
+      .then((response) => {
+        if (!active) return;
+        setTheme(normalizeTheme(response.data?.theme));
+      })
+      .catch((error) => {
+        if (!active) return;
+        console.error("Could not load theme preference:", error);
+      })
+      .finally(() => {
+        if (active) themePreferencesReadyRef.current = true;
+      });
+
+    return () => {
+      active = false;
+      themePreferencesReadyRef.current = false;
     };
   }, []);
 
@@ -612,9 +646,7 @@ function App({ userEmail, onSignOut }) {
             userEmail={userEmail}
             onSignOut={onSignOut}
             theme={theme}
-            onToggleTheme={() => {
-              setTheme((currentTheme) => currentTheme === "dark" ? "light" : "dark");
-            }}
+            onToggleTheme={handleToggleTheme}
           />
 
           {currentView === "portfolio" && (

@@ -111,6 +111,15 @@ class MultiUserPersistenceTests(unittest.TestCase):
             self.assertEqual(preferences.get(USER_A), {"limit": 20})
             self.assertEqual(preferences.get(USER_B), {})
 
+    def test_theme_upsert_preserves_scanner_preferences(self):
+        with session_scope(self.factory) as session:
+            preferences = PreferencesRepository(session)
+            self.assertIsNone(preferences.get_theme(USER_A))
+            preferences.upsert(USER_A, {"limit": 10})
+            preferences.upsert_theme(USER_A, "light")
+            self.assertEqual(preferences.get_theme(USER_A), "light")
+            self.assertEqual(preferences.get(USER_A), {"limit": 10})
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -23,7 +23,7 @@ from app.repositories.users import UserRepository
 
 
 BASELINE_REVISION = "20260828_01"
-HEAD_REVISION = "20260829_02"
+HEAD_REVISION = "20260902_03"
 LEGACY_TABLES = {"paper_account", "paper_positions", "paper_trades"}
 CURRENT_TABLES = {
     "app_users", "paper_accounts", "paper_positions", "paper_trades",

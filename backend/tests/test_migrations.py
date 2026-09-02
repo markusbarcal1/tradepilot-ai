@@ -94,13 +94,45 @@ class MigrationTests(unittest.TestCase):
                     "SELECT version_num FROM alembic_version"
                 ).fetchone()[0]
 
+                preference_columns = {
+                    row[1]
+                    for row in connection.execute("PRAGMA table_info(user_preferences)")
+                }
+
             self.assertEqual(account[0][:-1], before["account"][0])
             self.assertEqual(account[0][-1], LEGACY_USER_ID)
             self.assertEqual([row[:-1] for row in positions], before["positions"])
             self.assertEqual([row[-1] for row in positions], [7, 7])
             self.assertEqual([row[:-1] for row in trades], before["trades"])
             self.assertEqual([row[-1] for row in trades], [7, 7])
-            self.assertEqual(revision, "20260829_02")
+            self.assertIn("theme", preference_columns)
+            self.assertEqual(revision, "20260902_03")
+
+    def test_theme_upgrade_preserves_existing_scanner_preferences(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database_path = Path(directory) / "preferences.db"
+            config = self.alembic_config(database_path)
+            command.upgrade(config, "20260829_02")
+            with closing(sqlite3.connect(database_path)) as connection:
+                connection.execute(
+                    "INSERT INTO app_users (user_id, email) VALUES (?, ?)",
+                    ("10000000000040008000000000000001", "user@example.test"),
+                )
+                connection.execute(
+                    "INSERT INTO user_preferences (user_id, scanner_preferences) "
+                    "VALUES (?, ?)",
+                    ("10000000000040008000000000000001", '{"universe":"sp500"}'),
+                )
+                connection.commit()
+
+            command.upgrade(config, "head")
+            with closing(sqlite3.connect(database_path)) as connection:
+                scanner_preferences, theme = connection.execute(
+                    "SELECT scanner_preferences, theme FROM user_preferences"
+                ).fetchone()
+
+            self.assertEqual(scanner_preferences, '{"universe":"sp500"}')
+            self.assertIsNone(theme)
 
 
 if __name__ == "__main__":

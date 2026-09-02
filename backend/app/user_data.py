@@ -1,4 +1,5 @@
 import json
+from typing import Literal
 
 from fastapi import APIRouter, Body, Depends, HTTPException
 from pydantic import BaseModel, Field, JsonValue
@@ -16,6 +17,10 @@ router = APIRouter(tags=["user data"])
 
 class WatchlistRequest(BaseModel):
     symbol: str = Field(..., min_length=1, max_length=32)
+
+
+class ThemePreferenceRequest(BaseModel):
+    theme: Literal["light", "dark"]
 
 
 @router.get("/watchlist")
@@ -68,3 +73,24 @@ def update_scanner_preferences(
     with session_scope() as session:
         PreferencesRepository(session).upsert(current_user.user_id, preferences)
         return preferences
+
+
+@router.get("/preferences/theme")
+def read_theme_preference(
+    current_user: CurrentUser = Depends(get_current_user),
+):
+    with session_scope() as session:
+        theme = PreferencesRepository(session).get_theme(current_user.user_id)
+        return {"theme": theme or "dark"}
+
+
+@router.put("/preferences/theme")
+def update_theme_preference(
+    request: ThemePreferenceRequest,
+    current_user: CurrentUser = Depends(get_current_user),
+):
+    with session_scope() as session:
+        PreferencesRepository(session).upsert_theme(
+            current_user.user_id, request.theme
+        )
+        return {"theme": request.theme}

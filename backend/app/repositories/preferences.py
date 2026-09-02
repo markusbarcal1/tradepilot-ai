@@ -25,3 +25,19 @@ class PreferencesRepository:
         self.session.flush()
         self.session.refresh(row)
         return row
+
+    def get_theme(self, user_id: UUID):
+        row = self.session.get(UserPreference, user_id)
+        return row.theme if row is not None else None
+
+    def upsert_theme(self, user_id: UUID, theme: str):
+        row = self.session.get(UserPreference, user_id)
+        if row is None:
+            row = UserPreference(user_id=user_id, theme=theme)
+            self.session.add(row)
+        else:
+            row.theme = theme
+            row.updated_at = func.current_timestamp()
+        self.session.flush()
+        self.session.refresh(row)
+        return row

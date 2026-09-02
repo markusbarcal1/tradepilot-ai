@@ -73,6 +73,14 @@ export function updateScannerPreferences(preferences) {
   return api.put("/preferences/scanner", preferences);
 }
 
+export function getThemePreference() {
+  return api.get("/preferences/theme");
+}
+
+export function updateThemePreference(theme) {
+  return api.put("/preferences/theme", { theme });
+}
+
 export function analyzeTicker(symbol, period, interval, options = {}) {
   return api.get(`/analyze/${symbol}`, {
     params: {
