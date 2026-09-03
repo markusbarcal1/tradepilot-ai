@@ -1,7 +1,7 @@
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import Float, REAL, Table, engine_from_config, event, pool
 
 from app.config import settings
 from app.db import Base, resolve_database_url
@@ -20,13 +20,26 @@ config.set_main_option("sqlalchemy.url", database_url.replace("%", "%%"))
 target_metadata = Base.metadata
 
 
+def compare_sqlite_types(context, _inspected_column, _metadata_column, inspected_type, metadata_type):
+    """Ignore only SQLite's equivalent REAL/Float spelling difference."""
+    if context.dialect.name == "sqlite" and isinstance(inspected_type, REAL) and type(metadata_type) is Float:
+        return False
+    return None
+
+
+def normalize_sqlite_primary_key_nullable(inspector, _table, column_info):
+    """SQLite PRAGMA reports INTEGER PRIMARY KEY columns as nullable despite PK semantics."""
+    if inspector.bind.dialect.name == "sqlite" and column_info.get("primary_key"):
+        column_info["nullable"] = False
+
+
 def run_migrations_offline():
     context.configure(
         url=database_url,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
-        compare_type=True,
+        compare_type=compare_sqlite_types,
     )
     with context.begin_transaction():
         context.run_migrations()
@@ -38,14 +51,18 @@ def run_migrations_online():
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
-    with connectable.connect() as connection:
-        context.configure(
-            connection=connection,
-            target_metadata=target_metadata,
-            compare_type=True,
-        )
-        with context.begin_transaction():
-            context.run_migrations()
+    event.listen(Table, "column_reflect", normalize_sqlite_primary_key_nullable)
+    try:
+        with connectable.connect() as connection:
+            context.configure(
+                connection=connection,
+                target_metadata=target_metadata,
+                compare_type=compare_sqlite_types,
+            )
+            with context.begin_transaction():
+                context.run_migrations()
+    finally:
+        event.remove(Table, "column_reflect", normalize_sqlite_primary_key_nullable)
 
 
 if context.is_offline_mode():

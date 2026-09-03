@@ -2,6 +2,7 @@ import argparse
 import sqlite3
 import tempfile
 import unittest
+from unittest.mock import patch
 from contextlib import closing
 from pathlib import Path
 from uuid import UUID
@@ -77,6 +78,14 @@ class BetaProvisioningTests(unittest.TestCase):
         self.assertEqual(second["result"], "already provisioned")
         with closing(sqlite3.connect(path)) as connection:
             self.assertEqual(connection.execute("SELECT COUNT(*) FROM app_users WHERE email='beta@example.test' AND beta_status='active'").fetchone()[0], 1)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM paper_accounts WHERE user_id=?", (TARGET_ID.hex,)).fetchone()[0], 1)
+            account = connection.execute("SELECT cash_balance, starting_cash FROM paper_accounts WHERE user_id=?", (TARGET_ID.hex,)).fetchone()
+            self.assertEqual(account, (10000.0, 10000.0))
+            account_id = connection.execute("SELECT id FROM paper_accounts WHERE user_id=?", (TARGET_ID.hex,)).fetchone()[0]
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM paper_positions WHERE account_id=?", (account_id,)).fetchone()[0], 0)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM paper_trades WHERE account_id=?", (account_id,)).fetchone()[0], 0)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM watchlist_items WHERE user_id=?", (TARGET_ID.hex,)).fetchone()[0], 0)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM user_preferences WHERE user_id=?", (TARGET_ID.hex,)).fetchone()[0], 0)
 
     def test_invalid_uuid_and_email_collision_are_rejected(self):
         path = self.make_current()
@@ -119,6 +128,44 @@ class BetaProvisioningTests(unittest.TestCase):
             self.assertEqual(connection.execute("PRAGMA foreign_key_check").fetchall(), [])
         rerun = run(self.args(path, adopt_legacy_account=True, confirm=True))
         self.assertIn("already provisioned and owns legacy account", rerun["result"])
+        self.assertEqual(rerun["after"]["positions"], 4)
+        self.assertEqual(rerun["after"]["trades"], 2)
+        self.assertEqual(rerun["after"]["reported_owner"], "target")
+
+        dry_run = run(self.args(path, adopt_legacy_account=True, dry_run=True))
+        self.assertIn("adoption already complete", dry_run["result"])
+        self.assertEqual(dry_run["before"]["positions"], 4)
+        self.assertEqual(dry_run["before"]["trades"], 2)
+        self.assertEqual(dry_run["before"]["target_accounts"][0]["position_symbols"], ["ABCL", "ABTC", "EXE", "OMEX"])
+        self.assertEqual(dry_run["before"]["target_accounts"][0]["trade_id_range"], [21, 22])
+
+    def test_new_users_are_isolated_and_each_get_exactly_one_empty_account(self):
+        path = self.make_current()
+        run(self.args(path))
+        run(self.args(path, user_id=str(OTHER_ID), email="other@example.test", display_name="Other"))
+        with closing(sqlite3.connect(path)) as connection:
+            target_account = connection.execute("SELECT id FROM paper_accounts WHERE user_id=?", (TARGET_ID.hex,)).fetchone()[0]
+            other_account = connection.execute("SELECT id FROM paper_accounts WHERE user_id=?", (OTHER_ID.hex,)).fetchone()[0]
+            self.assertNotEqual(target_account, other_account)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM paper_accounts WHERE user_id IN (?, ?)", (TARGET_ID.hex, OTHER_ID.hex)).fetchone()[0], 2)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM paper_positions WHERE account_id IN (?, ?)", (target_account, other_account)).fetchone()[0], 0)
+            self.assertEqual(connection.execute("SELECT COUNT(*) FROM paper_trades WHERE account_id IN (?, ?)", (target_account, other_account)).fetchone()[0], 0)
+
+    def test_failure_after_migration_reports_committed_state_and_rerun_recovers(self):
+        path = self.make_unstamped_legacy()
+        with patch("app.cli.provision_beta_user.provision_current_database", side_effect=RuntimeError("simulated stop before adoption")):
+            with self.assertRaises(ProvisioningError) as caught:
+                run(self.args(path, adopt_legacy_account=True, confirm=True))
+        report = caught.exception.report
+        self.assertEqual(detect_database_state(path).revision, HEAD_REVISION)
+        self.assertEqual(report["steps"]["backup_creation"], "committed")
+        self.assertIn("committed", report["steps"]["alembic_stamp"])
+        self.assertIn("committed", report["steps"]["alembic_upgrade"])
+        self.assertEqual(report["steps"]["account_ownership_reassignment"], "not started")
+        recovered = run(self.args(path, adopt_legacy_account=True, confirm=True))
+        self.assertIn("adopted legacy account", recovered["result"])
+        self.assertEqual(recovered["after"]["positions"], 4)
+        self.assertEqual(recovered["after"]["trades"], 2)
 
     def test_adoption_rejects_target_with_different_account(self):
         path = self.make_current()

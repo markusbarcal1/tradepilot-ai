@@ -30,7 +30,10 @@ Dashboard labels can evolve. The authoritative Supabase references are:
 
 ## Environment
 
-Create ignored local environment files; never commit real values.
+Create ignored local environment files; never commit real values. The backend
+loads its environment from the repository-root `.env` file
+(`tradepilot-ai/.env`), while the frontend environment remains
+`tradepilot-ai/frontend/.env`.
 
 Frontend:
 
@@ -65,9 +68,12 @@ operator-supplied UUID exists in Supabase.
   --user-id '<SUPABASE-UUID>' --email '<EMAIL>'
 ```
 
-5. The user completes the invitation, signs in, and `/auth/me` authorizes the
-   active `app_users` row. Their first paper request creates a fresh $10,000
-   account.
+5. Provisioning creates one active `app_users` row and exactly one fresh
+   $10,000 paper account with no positions or trades. It does not copy another
+   user's watchlist or preferences. Re-running the command is a safe no-op for
+   both records.
+6. The user completes the invitation, signs in, and `/auth/me` authorizes the
+   active `app_users` row.
 
 The Dashboard's manual **Create new user** option with an operator-chosen
 password is acceptable for the operator's first account. Invitations are
@@ -100,13 +106,36 @@ runtime behavior can create a new empty account for that UUID.
 
 For the verified unstamped legacy schema, the command creates a timestamped
 backup under ignored `backend/backups/`, stamps `20260828_01`, upgrades to head
-`20260829_02`, creates the active user, and changes the existing
+`20260902_03`, creates the active user, and changes the existing
 `paper_accounts.user_id` from the bootstrap UUID to the supplied UUID. It does
 not copy the account, positions, or trades. Provisioning plus reassignment and
 bootstrap-row cleanup are one transaction; Alembic is a preceding, separate
 boundary because SQLite DDL cannot be treated as part of that ownership
-transaction. On any reported equivalence failure, stop and restore the named
-backup rather than continuing.
+transaction.
+
+The report labels its pre-operation snapshot separately from the current
+target/bootstrap ownership inspection. After a completed adoption, a repeat
+dry run says `adoption already complete`, reports one target-owned account and
+zero bootstrap-owned accounts, and counts positions/trades through the target
+account. Repeating `--confirm` reports `nothing to do` and does not reassign or
+duplicate anything.
+
+Each durable boundary is reported independently: backup, stamp, upgrade,
+schema verification, user provisioning, account creation or reassignment,
+bootstrap cleanup, foreign-key validation, portfolio verification, and
+Alembic metadata check. If the command stops after migration but before the
+ownership transaction, leave the database in place, inspect the printed step
+statuses and current ownership, and rerun the same command. The rerun detects
+the current revision and safely continues. Never restore a backup blindly:
+first verify the current Alembic revision, ownership, account ID, positions,
+trades, and foreign-key status, because earlier durable steps may already have
+succeeded.
+
+SQLite schema inspection can spell model `Float` columns as `REAL` and can
+report `INTEGER PRIMARY KEY` columns as nullable even though primary-key
+semantics make them non-null. Alembic comparison normalizes only those two
+SQLite reflection artifacts. Other type, nullability, column, constraint, and
+table differences remain visible to `alembic check`.
 
 The command aborts on mixed schema, identity collision, missing or multiple
 bootstrap accounts, an existing target account, or foreign-key violations. A
@@ -129,7 +158,7 @@ behavior before inviting an outside tester.
 3. Configure ignored frontend/backend environment files.
 4. Stop backend reloaders.
 5. Run adoption dry-run, then guarded adoption.
-6. Confirm revision `20260829_02`, zero FK violations, unchanged account ID,
+6. Confirm revision `20260902_03`, zero FK violations, unchanged account ID,
    balance, starting cash, four positions, and 31 trades.
 7. Start FastAPI and React; sign in and confirm `/auth/me` returns 200.
 8. Confirm the historical dashboard, watchlist, preferences, analysis, and

@@ -18,6 +18,8 @@ from app.bootstrap import DEFAULT_DEV_USER_ID
 from app.config import REPOSITORY_ROOT, settings
 from app.db import create_database_engine, resolve_database_url, session_scope
 from app.models.paper_trading import PaperAccount
+from app.paper_trading import STARTING_CASH
+from app.repositories.paper_trading import PaperTradingRepository
 from app.models.user import AppUser
 from app.repositories.users import UserRepository
 
@@ -33,7 +35,9 @@ EMAIL_PATTERN = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 
 
 class ProvisioningError(RuntimeError):
-    pass
+    def __init__(self, message: str, report: dict | None = None):
+        super().__init__(message)
+        self.report = report
 
 
 @dataclass(frozen=True)
@@ -137,6 +141,31 @@ def _normalize_identity(user_id: str, email: str) -> tuple[UUID, str]:
     return parsed_id, normalized_email
 
 
+def _account_details(session, accounts: list[PaperAccount]) -> list[dict]:
+    details = []
+    for account in accounts:
+        positions = session.execute(
+            text("SELECT id, symbol FROM paper_positions WHERE account_id=:id ORDER BY id"),
+            {"id": account.id},
+        ).all()
+        trade_ids = session.execute(
+            text("SELECT id FROM paper_trades WHERE account_id=:id ORDER BY id"),
+            {"id": account.id},
+        ).scalars().all()
+        details.append({
+            "account_id": account.id,
+            "owner_user_id": str(account.user_id),
+            "cash_balance": account.cash_balance,
+            "starting_cash": account.starting_cash,
+            "position_count": len(positions),
+            "position_ids": [row.id for row in positions],
+            "position_symbols": [row.symbol for row in positions],
+            "trade_count": len(trade_ids),
+            "trade_id_range": [trade_ids[0], trade_ids[-1]] if trade_ids else None,
+        })
+    return details
+
+
 def inspect_current(database_path: Path, target_id: UUID) -> dict:
     engine = create_database_engine(f"sqlite:///{database_path.as_posix()}")
     factory = sessionmaker(bind=engine, expire_on_commit=False)
@@ -146,24 +175,26 @@ def inspect_current(database_path: Path, target_id: UUID) -> dict:
             bootstrap = session.get(AppUser, DEFAULT_DEV_USER_ID)
             bootstrap_accounts = list(session.scalars(select(PaperAccount).where(PaperAccount.user_id == DEFAULT_DEV_USER_ID)))
             target_accounts = list(session.scalars(select(PaperAccount).where(PaperAccount.user_id == target_id)))
-            legacy = bootstrap_accounts[0] if len(bootstrap_accounts) == 1 else None
-            counts = {"positions": 0, "trades": 0}
-            if legacy:
-                counts["positions"] = session.execute(text("SELECT COUNT(*) FROM paper_positions WHERE account_id=:id"), {"id": legacy.id}).scalar_one()
-                counts["trades"] = session.execute(text("SELECT COUNT(*) FROM paper_trades WHERE account_id=:id"), {"id": legacy.id}).scalar_one()
+            bootstrap_details = _account_details(session, bootstrap_accounts)
+            target_details = _account_details(session, target_accounts)
+            reported_accounts = target_details or bootstrap_details
             return {
                 "target_exists": target is not None,
                 "bootstrap_exists": bootstrap is not None,
                 "bootstrap_account_count": len(bootstrap_accounts),
                 "target_account_count": len(target_accounts),
-                "legacy_account_id": legacy.id if legacy else None,
-                **counts,
+                "bootstrap_accounts": bootstrap_details,
+                "target_accounts": target_details,
+                "reported_owner": "target" if target_details else "bootstrap" if bootstrap_details else None,
+                "reported_accounts": reported_accounts,
+                "positions": sum(item["position_count"] for item in reported_accounts),
+                "trades": sum(item["trade_count"] for item in reported_accounts),
             }
     finally:
         engine.dispose()
 
 
-def provision_current_database(database_path: Path, user_id: UUID, email: str, display_name: str | None, adopt_legacy: bool) -> str:
+def provision_current_database(database_path: Path, user_id: UUID, email: str, display_name: str | None, adopt_legacy: bool) -> dict:
     engine = create_database_engine(f"sqlite:///{database_path.as_posix()}")
     factory = sessionmaker(bind=engine, expire_on_commit=False)
     try:
@@ -182,7 +213,21 @@ def provision_current_database(database_path: Path, user_id: UUID, email: str, d
                 target = users.create(user_id, email=email, display_name=display_name, beta_status="active")
 
             if not adopt_legacy:
-                return "already provisioned" if email_owner is not None else "provisioned"
+                accounts = list(session.scalars(select(PaperAccount).where(PaperAccount.user_id == user_id)))
+                if len(accounts) > 1:
+                    raise ProvisioningError("Target UUID owns multiple paper accounts; provisioning did not modify them.")
+                account_created = False
+                if not accounts:
+                    accounts = [PaperTradingRepository(session).create_account(user_id, STARTING_CASH)]
+                    account_created = True
+                return {
+                    "result": "already provisioned" if email_owner is not None and not account_created else "provisioned",
+                    "app_user_created": email_owner is None,
+                    "account_created": account_created,
+                    "account_id": accounts[0].id,
+                    "ownership_reassigned": False,
+                    "bootstrap_removed": False,
+                }
 
             bootstrap_accounts = list(session.scalars(select(PaperAccount).where(PaperAccount.user_id == DEFAULT_DEV_USER_ID)))
             target_accounts = list(session.scalars(select(PaperAccount).where(PaperAccount.user_id == user_id)))
@@ -192,7 +237,14 @@ def provision_current_database(database_path: Path, user_id: UUID, email: str, d
                 {"user_id": DEFAULT_DEV_USER_ID.hex},
             ).scalar_one()
             if not bootstrap_accounts and bootstrap is None and len(target_accounts) == 1:
-                return f"already provisioned and owns legacy account {target_accounts[0].id}"
+                return {
+                    "result": f"already provisioned and owns legacy account {target_accounts[0].id}; nothing to do",
+                    "app_user_created": False,
+                    "account_created": False,
+                    "account_id": target_accounts[0].id,
+                    "ownership_reassigned": False,
+                    "bootstrap_removed": False,
+                }
             if bootstrap_account_count != 1:
                 raise ProvisioningError(f"Legacy adoption requires exactly one bootstrap account; found {bootstrap_account_count}.")
             if target_accounts:
@@ -206,7 +258,14 @@ def provision_current_database(database_path: Path, user_id: UUID, email: str, d
             violations = session.execute(text("PRAGMA foreign_key_check")).all()
             if violations:
                 raise ProvisioningError(f"Foreign-key violations detected: {violations}")
-            return f"provisioned and adopted legacy account {account.id}"
+            return {
+                "result": f"provisioned and adopted legacy account {account.id}",
+                "app_user_created": email_owner is None,
+                "account_created": False,
+                "account_id": account.id,
+                "ownership_reassigned": True,
+                "bootstrap_removed": bootstrap is not None,
+            }
     finally:
         engine.dispose()
 
@@ -229,7 +288,22 @@ def run(args) -> dict:
         "position_ids": [row["id"] for row in before["positions"]],
         "position_symbols": [row["symbol"] for row in before["positions"]],
         "trade_ids": [row["id"] for row in before["trades"]],
+        "snapshot_scope": "pre-operation",
+        "portfolio_before": before,
         "planned": [], "dry_run": args.dry_run,
+        "steps": {
+            "backup_creation": "not started",
+            "alembic_stamp": "not needed" if state.name != "legacy-unstamped" else "not started",
+            "alembic_upgrade": "not needed" if state.name == "current" else "not started",
+            "schema_verification": "not started",
+            "app_user_provisioning": "not started",
+            "account_creation": "not applicable" if args.adopt_legacy_account else "not started",
+            "account_ownership_reassignment": "not started" if args.adopt_legacy_account else "not applicable",
+            "bootstrap_cleanup": "not started" if args.adopt_legacy_account else "not applicable",
+            "foreign_key_validation": "not started",
+            "portfolio_data_verification": "not started",
+            "alembic_metadata_check": "not started",
+        },
     }
     if state.name != "current":
         report["planned"].extend([f"stamp {BASELINE_REVISION}" if state.name == "legacy-unstamped" else "baseline already stamped", f"upgrade {HEAD_REVISION}"])
@@ -239,27 +313,73 @@ def run(args) -> dict:
     else:
         report["planned"].append("provision active app_user without creating or adopting an account")
     if args.dry_run:
+        report["steps"] = {key: "planned" if value == "not started" else value for key, value in report["steps"].items()}
         if state.name == "current":
-            report.update(inspect_current(database_path, user_id))
+            report["before"] = inspect_current(database_path, user_id)
+            if args.adopt_legacy_account and report["before"]["target_account_count"] == 1 and report["before"]["bootstrap_account_count"] == 0:
+                report["result"] = "adoption already complete; target owns one account and nothing will be changed"
         return report
     if args.adopt_legacy_account and not args.confirm:
         raise ProvisioningError("Real legacy adoption requires --confirm (or use --dry-run).")
 
-    backup = create_backup(database_path, Path(args.backup_directory) if args.backup_directory else None)
-    report["backup"] = str(backup)
-    current = migrate_to_head(database_path, state)
-    result = provision_current_database(database_path, user_id, email, args.display_name, args.adopt_legacy_account)
-    after = snapshot_portfolio(database_path, current)
-    if before != after:
-        raise ProvisioningError(f"Portfolio equivalence check failed. Restore from backup: {backup}")
-    config = alembic_config(database_path)
-    command.check(config)
-    with closing(sqlite3.connect(database_path)) as connection:
-        violations = connection.execute("PRAGMA foreign_key_check").fetchall()
-    if violations:
-        raise ProvisioningError(f"Post-operation foreign-key violations: {violations}")
-    report.update({"result": result, "revision": HEAD_REVISION, "portfolio_equivalent": True, "foreign_key_violations": 0, "post_sha256": database_sha256(database_path)})
-    return report
+    try:
+        backup = create_backup(database_path, Path(args.backup_directory) if args.backup_directory else None)
+        report["backup"] = str(backup)
+        report["steps"]["backup_creation"] = "committed"
+
+        config = alembic_config(database_path)
+        if state.name == "legacy-unstamped":
+            command.stamp(config, BASELINE_REVISION)
+            report["steps"]["alembic_stamp"] = f"committed ({BASELINE_REVISION})"
+        if state.name != "current":
+            command.upgrade(config, "head")
+            report["steps"]["alembic_upgrade"] = f"committed ({HEAD_REVISION})"
+        current = detect_database_state(database_path)
+        if current.name != "current":
+            raise ProvisioningError("Database did not reach the expected current schema.")
+        report["steps"]["schema_verification"] = f"passed ({HEAD_REVISION})"
+        report["revision"] = HEAD_REVISION
+
+        operation = provision_current_database(
+            database_path, user_id, email, args.display_name, args.adopt_legacy_account
+        )
+        report["result"] = operation["result"]
+        report["steps"]["app_user_provisioning"] = "committed" if operation["app_user_created"] else "already complete"
+        if args.adopt_legacy_account:
+            report["steps"]["account_ownership_reassignment"] = "committed" if operation["ownership_reassigned"] else "already complete"
+            report["steps"]["bootstrap_cleanup"] = "committed" if operation["bootstrap_removed"] else "already complete"
+        else:
+            report["steps"]["account_creation"] = "committed" if operation["account_created"] else "already complete"
+
+        after = snapshot_portfolio(database_path, current)
+        if args.adopt_legacy_account and before != after:
+            raise ProvisioningError("Portfolio equivalence check failed; inspect current state before considering the named backup.")
+        report["portfolio_equivalent"] = before == after if args.adopt_legacy_account else None
+        report["steps"]["portfolio_data_verification"] = "passed"
+
+        with closing(sqlite3.connect(database_path)) as connection:
+            violations = connection.execute("PRAGMA foreign_key_check").fetchall()
+        if violations:
+            raise ProvisioningError(f"Post-operation foreign-key violations: {violations}")
+        report["foreign_key_violations"] = 0
+        report["steps"]["foreign_key_validation"] = "passed"
+
+        report["after"] = inspect_current(database_path, user_id)
+        command.check(config)
+        report["steps"]["alembic_metadata_check"] = "passed"
+        report["post_sha256"] = database_sha256(database_path)
+        return report
+    except Exception as exc:
+        if isinstance(exc, ProvisioningError) and exc.report is not None:
+            raise
+        report["failure"] = str(exc)
+        try:
+            if detect_database_state(database_path).name == "current":
+                report["current_at_failure"] = inspect_current(database_path, user_id)
+        except Exception:
+            report["current_at_failure"] = "inspection unavailable"
+        report["recovery"] = "Inspect the reported committed steps and current database state, then rerun; do not restore the backup blindly."
+        raise ProvisioningError(str(exc), report=report) from exc
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -280,6 +400,10 @@ def main() -> int:
     try:
         report = run(parser.parse_args())
     except ProvisioningError as exc:
+        if exc.report:
+            print("Provisioning stopped after the following durable-step status:")
+            for key, value in exc.report.items():
+                print(f"{key}: {value}")
         parser.exit(2, f"Provisioning aborted: {exc}\n")
     print("Supabase existence is operator-verified; no Auth Admin secret is used.")
     for key, value in report.items():
