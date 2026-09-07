@@ -167,3 +167,34 @@ behavior before inviting an outside tester.
    sign in again to confirm the same account returns.
 
 The application never migrates or provisions users automatically at startup.
+# Explicit cleanup of an unused bootstrap account
+
+Startup creates the compatibility bootstrap user/account only when the database
+has no tables. Existing databases are left unchanged, including any stale bootstrap
+account. Startup performs no migration or cleanup.
+
+To remove a stale bootstrap account, stop the backend and review this dry run from
+`backend` (the explicit URL selects the repository's local database):
+
+```powershell
+& '.\venv\Scripts\python.exe' -m app.cli.provision_beta_user --database-url 'sqlite:///backend/app/paper_trading.db' --cleanup-bootstrap --dry-run
+```
+
+After reviewing the reported UUID, account ID, and balances, run:
+
+```powershell
+& '.\venv\Scripts\python.exe' -m app.cli.provision_beta_user --database-url 'sqlite:///backend/app/paper_trading.db' --cleanup-bootstrap --confirm
+```
+
+This mode accepts no target identity or adoption options and performs no migration.
+It requires the current schema, exactly one `DEFAULT_DEV_USER_ID` identity and
+account, starting cash and cash balance both exactly $10,000, and no positions,
+trades, watchlist items, or preference row. Unknown tables/schema drift and foreign
+key violations also block cleanup. Confirmation creates a timestamped backup and
+validates/deletes within one transaction protected by a SQLite write lock. Any
+failed eligibility check aborts without deleting data. The dry run makes no changes
+and creates no backup. Keep the backend stopped until the startup fix is deployed.
+
+Normal user provisioning creates an active app user and exactly one fresh $10,000
+paper account, with no positions or trades. Reruns retain the target's existing
+account. This does not adopt or clean up the bootstrap account.
