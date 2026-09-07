@@ -23,6 +23,7 @@ from app.cli.provision_beta_user import (
 from app.db import create_database_engine, session_scope
 from app.repositories.paper_trading import PaperTradingRepository
 from app.repositories.users import UserRepository
+from app.paper_trading import init_paper_trading_db
 
 
 TARGET_ID = UUID("11111111-2222-4333-8444-555555555555")
@@ -86,6 +87,111 @@ class BetaProvisioningTests(unittest.TestCase):
             self.assertEqual(connection.execute("SELECT COUNT(*) FROM paper_trades WHERE account_id=?", (account_id,)).fetchone()[0], 0)
             self.assertEqual(connection.execute("SELECT COUNT(*) FROM watchlist_items WHERE user_id=?", (TARGET_ID.hex,)).fetchone()[0], 0)
             self.assertEqual(connection.execute("SELECT COUNT(*) FROM user_preferences WHERE user_id=?", (TARGET_ID.hex,)).fetchone()[0], 0)
+
+    def cleanup_args(self, path, **overrides):
+        return self.args(path, user_id=None, email=None, display_name=None,
+                         cleanup_bootstrap=True, **overrides)
+
+    def test_cleanup_dry_run_and_confirm_preserve_real_portfolio(self):
+        path = self.make_unstamped_legacy()
+        run(self.args(path, adopt_legacy_account=True, confirm=True))
+        engine = create_database_engine(f"sqlite:///{path.as_posix()}")
+        try:
+            with session_scope(sessionmaker(bind=engine)) as session:
+                UserRepository(session).create(DEFAULT_DEV_USER_ID)
+                PaperTradingRepository(session).create_account(DEFAULT_DEV_USER_ID, 10000)
+        finally:
+            engine.dispose()
+        with closing(sqlite3.connect(path)) as connection:
+            before = {table: connection.execute(f"SELECT * FROM {table}").fetchall()
+                      for table in ("app_users", "paper_accounts", "paper_positions", "paper_trades")}
+        original = path.read_bytes()
+        report = run(self.cleanup_args(path, dry_run=True))
+        self.assertIn("safe cleanup planned", report["result"])
+        self.assertEqual(path.read_bytes(), original)
+        report = run(self.cleanup_args(path, confirm=True))
+        self.assertTrue(Path(report["backup"]).is_file())
+        with closing(sqlite3.connect(path)) as connection:
+            self.assertEqual(connection.execute("SELECT * FROM app_users").fetchall(),
+                             [row for row in before["app_users"] if row[0] != DEFAULT_DEV_USER_ID.hex])
+            self.assertEqual(connection.execute("SELECT * FROM paper_accounts").fetchall(),
+                             [row for row in before["paper_accounts"] if row[0] != report["account_id"]])
+            for table in ("paper_positions", "paper_trades"):
+                self.assertEqual(connection.execute(f"SELECT * FROM {table}").fetchall(), before[table])
+        engine = create_database_engine(f"sqlite:///{path.as_posix()}")
+        try:
+            original = path.read_bytes()
+            init_paper_trading_db(engine, sessionmaker(bind=engine))
+            self.assertEqual(path.read_bytes(), original)
+        finally:
+            engine.dispose()
+
+    def test_cleanup_refuses_owned_data_or_modified_balances(self):
+        mutations = [
+            ("INSERT INTO paper_positions (account_id,symbol,shares,avg_cost) SELECT id,'AAPL',1,10 FROM paper_accounts", "paper_positions"),
+            ("INSERT INTO paper_trades (account_id,symbol,side,shares,price,total_value) SELECT id,'AAPL','BUY',1,10,10 FROM paper_accounts", "paper_trades"),
+            ("UPDATE paper_accounts SET cash_balance=9999", "cash_balance"),
+            ("UPDATE paper_accounts SET starting_cash=9999", "starting_cash"),
+            ("INSERT INTO watchlist_items (user_id,symbol) SELECT user_id,'AAPL' FROM app_users", "watchlist_items"),
+            ("INSERT INTO user_preferences (user_id) SELECT user_id FROM app_users", "user_preferences"),
+            ("DELETE FROM paper_accounts", "exactly one bootstrap account"),
+            ("CREATE TABLE other_owned_data (user_id TEXT)", "exact current schema"),
+        ]
+        for index, (sql, reason) in enumerate(mutations):
+            with self.subTest(reason=reason):
+                path = self.make_current(f"refuse_{index}.db")
+                with closing(sqlite3.connect(path)) as connection:
+                    connection.execute(sql)
+                    connection.commit()
+                before = path.read_bytes()
+                for mode in ({"dry_run": True}, {"confirm": True}):
+                    with self.assertRaisesRegex(ProvisioningError, reason):
+                        run(self.cleanup_args(path, **mode))
+                    self.assertEqual(path.read_bytes(), before)
+
+    def test_cleanup_requires_explicit_mode(self):
+        path = self.make_current()
+        for mode in ({}, {"dry_run": True, "confirm": True}):
+            with self.assertRaisesRegex(ProvisioningError, "exactly one of"):
+                run(self.cleanup_args(path, **mode))
+
+    def test_fresh_user_dry_run_reports_account_creation(self):
+        path = self.make_current()
+        before = path.read_bytes()
+        report = run(self.args(path, dry_run=True))
+        self.assertIn("create fresh $10,000 paper account", report["planned"][0])
+        self.assertEqual(report["steps"]["account_creation"], "planned")
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_startup_empty_and_repeat_and_existing_schema(self):
+        path = self.directory / "empty.db"
+        engine = create_database_engine(f"sqlite:///{path.as_posix()}")
+        try:
+            factory = sessionmaker(bind=engine)
+            init_paper_trading_db(engine, factory)
+            before = path.read_bytes()
+            init_paper_trading_db(engine, factory)
+            self.assertEqual(path.read_bytes(), before)
+            with closing(sqlite3.connect(path)) as connection:
+                self.assertEqual(connection.execute("SELECT user_id FROM app_users").fetchall(), [(DEFAULT_DEV_USER_ID.hex,)])
+                self.assertEqual(connection.execute("SELECT starting_cash,cash_balance FROM paper_accounts").fetchall(), [(10000,10000)])
+                connection.execute("DELETE FROM paper_accounts")
+                connection.execute("DELETE FROM app_users")
+                connection.commit()
+            before = path.read_bytes()
+            init_paper_trading_db(engine, factory)
+            self.assertEqual(path.read_bytes(), before)
+        finally:
+            engine.dispose()
+
+    def test_startup_rejects_phase_1b(self):
+        path = self.make_unstamped_legacy()
+        engine = create_database_engine(f"sqlite:///{path.as_posix()}")
+        try:
+            with self.assertRaisesRegex(RuntimeError, "Phase 1B"):
+                init_paper_trading_db(engine, sessionmaker(bind=engine))
+        finally:
+            engine.dispose()
 
     def test_invalid_uuid_and_email_collision_are_rejected(self):
         path = self.make_current()

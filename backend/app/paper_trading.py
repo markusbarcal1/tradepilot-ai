@@ -75,8 +75,10 @@ def init_paper_trading_db(database_engine=None, session_factory=None):
             "Back it up, stamp 20260828_01, and run Alembic upgrade head."
         )
     # Compatibility bootstrap is limited to genuinely empty local/test databases.
-    if not tables:
-        create_schema(database_engine)
+    database_was_empty = not tables
+    if not database_was_empty:
+        return
+    create_schema(database_engine)
     with session_scope(session_factory) as session:
         users = UserRepository(session)
         repository = PaperTradingRepository(session)

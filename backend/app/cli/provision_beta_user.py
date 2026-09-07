@@ -270,7 +270,70 @@ def provision_current_database(database_path: Path, user_id: UUID, email: str, d
         engine.dispose()
 
 
+def cleanup_bootstrap(args) -> dict:
+    """Explicit cleanup, with validation and deletion under one SQLite write lock."""
+    if args.user_id or args.email or args.display_name or args.adopt_legacy_account:
+        raise ProvisioningError("--cleanup-bootstrap cannot be combined with identity or adoption options.")
+    if args.dry_run == args.confirm:
+        raise ProvisioningError("Cleanup requires exactly one of --dry-run or --confirm.")
+    path = sqlite_path(args.database_url)
+    state = detect_database_state(path)
+    if state.name != "current":
+        raise ProvisioningError("Bootstrap cleanup requires the exact current schema; no migration is performed.")
+    command.check(alembic_config(path))
+    with closing(sqlite3.connect(path)) as connection:
+        connection.execute("PRAGMA foreign_keys=ON")
+        connection.execute("BEGIN" if args.dry_run else "BEGIN IMMEDIATE")
+        try:
+            identity = (DEFAULT_DEV_USER_ID.hex,)
+            owner_filter = "lower(replace(user_id, '-', '')) = ?"
+            users = connection.execute(f"SELECT user_id FROM app_users WHERE {owner_filter}", identity).fetchall()
+            if len(users) != 1:
+                raise ProvisioningError("Cleanup requires exactly one DEFAULT_DEV_USER_ID bootstrap identity.")
+            accounts = connection.execute(
+                f"SELECT id, starting_cash, cash_balance FROM paper_accounts WHERE {owner_filter}", identity
+            ).fetchall()
+            if len(accounts) != 1:
+                raise ProvisioningError(f"Cleanup requires exactly one bootstrap account; found {len(accounts)}.")
+            account_id, starting_cash, cash_balance = accounts[0]
+            if starting_cash != 10000 or cash_balance != 10000:
+                raise ProvisioningError("Bootstrap starting_cash and cash_balance must both equal 10000.")
+            for table in ("paper_positions", "paper_trades"):
+                if connection.execute(f"SELECT COUNT(*) FROM {table} WHERE account_id=?", (account_id,)).fetchone()[0]:
+                    raise ProvisioningError(f"Bootstrap owns data in {table}; cleanup refused.")
+            for table in ("watchlist_items", "user_preferences"):
+                if connection.execute(f"SELECT COUNT(*) FROM {table} WHERE {owner_filter}", identity).fetchone()[0]:
+                    raise ProvisioningError(f"Bootstrap owns data in {table}; cleanup refused.")
+            if connection.execute("PRAGMA foreign_key_check").fetchall():
+                raise ProvisioningError("Foreign-key violations detected; cleanup refused.")
+            report = {
+                "database": str(path), "dry_run": args.dry_run,
+                "bootstrap_user_id": str(DEFAULT_DEV_USER_ID), "account_id": account_id,
+                "starting_cash": starting_cash, "cash_balance": cash_balance,
+                "planned": ["delete unused bootstrap account and DEFAULT_DEV_USER_ID identity only"],
+            }
+            if args.dry_run:
+                report["result"] = "safe cleanup planned; no changes made"
+                connection.rollback()
+                return report
+            report["backup"] = str(create_backup(path, Path(args.backup_directory) if args.backup_directory else None))
+            connection.execute("DELETE FROM paper_accounts WHERE id=?", (account_id,))
+            connection.execute("DELETE FROM app_users WHERE user_id=?", users[0])
+            if connection.execute("PRAGMA foreign_key_check").fetchall():
+                raise ProvisioningError("Foreign-key validation failed; cleanup rolled back.")
+            connection.commit()
+            report["result"] = "unused bootstrap account and identity removed"
+            return report
+        except Exception:
+            connection.rollback()
+            raise
+
+
 def run(args) -> dict:
+    if getattr(args, "cleanup_bootstrap", False):
+        return cleanup_bootstrap(args)
+    if not args.user_id or not args.email:
+        raise ProvisioningError("Provisioning requires --user-id and --email.")
     user_id, email = _normalize_identity(args.user_id, args.email)
     database_path = sqlite_path(args.database_url)
     state = detect_database_state(database_path)
@@ -311,7 +374,7 @@ def run(args) -> dict:
         report["planned"].append("provision active app_user and atomically reassign the bootstrap account")
         report["adoption_possible"] = len(before["accounts"]) == 1
     else:
-        report["planned"].append("provision active app_user without creating or adopting an account")
+        report["planned"].append("provision active app_user and create fresh $10,000 paper account (retain existing target account on rerun; no adoption)")
     if args.dry_run:
         report["steps"] = {key: "planned" if value == "not started" else value for key, value in report["steps"].items()}
         if state.name == "current":
@@ -384,13 +447,14 @@ def run(args) -> dict:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Provision an invite-only TradePilot beta user.")
-    parser.add_argument("--user-id", required=True, help="UUID copied from Supabase Dashboard Authentication > Users")
-    parser.add_argument("--email", required=True)
+    parser.add_argument("--user-id", help="UUID copied from Supabase Dashboard Authentication > Users")
+    parser.add_argument("--email")
     parser.add_argument("--display-name")
     parser.add_argument("--database-url", default=settings.database_url)
     parser.add_argument("--backup-directory")
     parser.add_argument("--adopt-legacy-account", action="store_true")
-    parser.add_argument("--confirm", action="store_true", help="Required for a real legacy ownership transfer")
+    parser.add_argument("--cleanup-bootstrap", action="store_true", help="Remove only the unused compatibility bootstrap identity/account")
+    parser.add_argument("--confirm", action="store_true", help="Required for a real legacy ownership transfer or bootstrap cleanup")
     parser.add_argument("--dry-run", action="store_true")
     return parser
 
