@@ -15,6 +15,14 @@ LEGACY_USER_ID = UUID("00000000-0000-4000-8000-000000000001")
 
 
 def upgrade():
+    connection = op.get_bind()
+    is_postgres = connection.dialect.name == "postgresql"
+    # PostgreSQL must ALTER in place: recreating SERIAL tables drops sequences
+    # and referenced constraints. Preserve the established SQLite batch path.
+    recreate = "auto" if is_postgres else "always"
+    needs_legacy_owner = not is_postgres or connection.scalar(
+        sa.text("SELECT COUNT(*) FROM paper_account")
+    ) > 0
     op.create_table(
         "app_users",
         sa.Column("user_id", sa.Uuid(), nullable=False),
@@ -33,15 +41,16 @@ def upgrade():
         sa.column("display_name", sa.Text()),
         sa.column("beta_status", sa.Text()),
     )
-    op.bulk_insert(users, [{
-        "user_id": LEGACY_USER_ID,
-        "email": "legacy-bootstrap@local.invalid",
-        "display_name": "Legacy Local User",
-        "beta_status": "active",
-    }])
+    if needs_legacy_owner:
+        op.bulk_insert(users, [{
+            "user_id": LEGACY_USER_ID,
+            "email": "legacy-bootstrap@local.invalid",
+            "display_name": "Legacy Local User",
+            "beta_status": "active",
+        }])
 
     op.rename_table("paper_account", "paper_accounts")
-    with op.batch_alter_table("paper_accounts", recreate="always") as batch:
+    with op.batch_alter_table("paper_accounts", recreate=recreate) as batch:
         batch.add_column(sa.Column("user_id", sa.Uuid(), nullable=True))
         batch.create_foreign_key(
             "fk_paper_accounts_user_id_app_users", "app_users", ["user_id"],
@@ -54,7 +63,7 @@ def upgrade():
         ),
         {"user_id": LEGACY_USER_ID},
     )
-    if connection.scalar(sa.text("SELECT COUNT(*) FROM paper_accounts")) == 0:
+    if needs_legacy_owner and connection.scalar(sa.text("SELECT COUNT(*) FROM paper_accounts")) == 0:
         connection.execute(
             sa.text(
                 "INSERT INTO paper_accounts "
@@ -62,33 +71,39 @@ def upgrade():
             ).bindparams(sa.bindparam("user_id", type_=sa.Uuid())),
             {"user_id": LEGACY_USER_ID},
         )
-    with op.batch_alter_table("paper_accounts", recreate="always") as batch:
+    with op.batch_alter_table("paper_accounts", recreate=recreate) as batch:
         batch.alter_column("user_id", existing_type=sa.Uuid(), nullable=False)
         batch.create_unique_constraint("uq_paper_accounts_user_id", ["user_id"])
 
     account_id = connection.scalar(sa.text("SELECT MIN(id) FROM paper_accounts"))
     naming = {"uq": "uq_%(table_name)s_%(column_0_name)s"}
+    symbol_constraint = "uq_paper_positions_symbol"
+    if is_postgres:
+        symbol_constraint = next(
+            item["name"] for item in sa.inspect(connection).get_unique_constraints("paper_positions")
+            if item["column_names"] == ["symbol"]
+        )
     with op.batch_alter_table(
-        "paper_positions", recreate="always", naming_convention=naming
+        "paper_positions", recreate=recreate, naming_convention=naming
     ) as batch:
         batch.add_column(sa.Column("account_id", sa.Integer(), nullable=True))
         batch.create_foreign_key(
             "fk_paper_positions_account_id_paper_accounts", "paper_accounts",
             ["account_id"], ["id"], ondelete="CASCADE",
         )
-        batch.drop_constraint("uq_paper_positions_symbol", type_="unique")
+        batch.drop_constraint(symbol_constraint, type_="unique")
     connection.execute(
         sa.text("UPDATE paper_positions SET account_id = :account_id"),
         {"account_id": account_id},
     )
-    with op.batch_alter_table("paper_positions", recreate="always") as batch:
+    with op.batch_alter_table("paper_positions", recreate=recreate) as batch:
         batch.alter_column("account_id", existing_type=sa.Integer(), nullable=False)
         batch.create_unique_constraint(
             "uq_paper_positions_account_symbol", ["account_id", "symbol"]
         )
         batch.create_index("ix_paper_positions_account_id", ["account_id"])
 
-    with op.batch_alter_table("paper_trades", recreate="always") as batch:
+    with op.batch_alter_table("paper_trades", recreate=recreate) as batch:
         batch.add_column(sa.Column("account_id", sa.Integer(), nullable=True))
         batch.create_foreign_key(
             "fk_paper_trades_account_id_paper_accounts", "paper_accounts",
@@ -98,7 +113,7 @@ def upgrade():
         sa.text("UPDATE paper_trades SET account_id = :account_id"),
         {"account_id": account_id},
     )
-    with op.batch_alter_table("paper_trades", recreate="always") as batch:
+    with op.batch_alter_table("paper_trades", recreate=recreate) as batch:
         batch.alter_column("account_id", existing_type=sa.Integer(), nullable=False)
         batch.create_index(
             "ix_paper_trades_account_created_at", ["account_id", "created_at"]
@@ -124,19 +139,20 @@ def upgrade():
 
 
 def downgrade():
+    recreate = "auto" if op.get_bind().dialect.name == "postgresql" else "always"
     op.drop_table("user_preferences")
     op.drop_table("watchlist_items")
     op.drop_index("ix_paper_trades_account_created_at", table_name="paper_trades")
-    with op.batch_alter_table("paper_trades", recreate="always") as batch:
+    with op.batch_alter_table("paper_trades", recreate=recreate) as batch:
         batch.drop_constraint("fk_paper_trades_account_id_paper_accounts", type_="foreignkey")
         batch.drop_column("account_id")
     op.drop_index("ix_paper_positions_account_id", table_name="paper_positions")
-    with op.batch_alter_table("paper_positions", recreate="always") as batch:
+    with op.batch_alter_table("paper_positions", recreate=recreate) as batch:
         batch.drop_constraint("uq_paper_positions_account_symbol", type_="unique")
         batch.drop_constraint("fk_paper_positions_account_id_paper_accounts", type_="foreignkey")
         batch.drop_column("account_id")
         batch.create_unique_constraint("uq_paper_positions_symbol", ["symbol"])
-    with op.batch_alter_table("paper_accounts", recreate="always") as batch:
+    with op.batch_alter_table("paper_accounts", recreate=recreate) as batch:
         batch.drop_constraint("uq_paper_accounts_user_id", type_="unique")
         batch.drop_constraint("fk_paper_accounts_user_id_app_users", type_="foreignkey")
         batch.drop_column("user_id")

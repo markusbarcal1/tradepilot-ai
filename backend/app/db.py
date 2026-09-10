@@ -30,14 +30,26 @@ def resolve_database_url(database_url: str) -> URL:
 
 def create_database_engine(database_url: str = settings.database_url):
     url = resolve_database_url(database_url)
-    connect_args = {"check_same_thread": False} if url.drivername == "sqlite" else {}
+    connect_args = {"check_same_thread": False} if url.get_backend_name() == "sqlite" else {}
     database_engine = create_engine(url, connect_args=connect_args)
-    if url.drivername == "sqlite":
+    if url.get_backend_name() == "sqlite":
         @event.listens_for(database_engine, "connect")
         def enable_sqlite_foreign_keys(dbapi_connection, _connection_record):
             cursor = dbapi_connection.cursor()
             cursor.execute("PRAGMA foreign_keys=ON")
             cursor.close()
+    elif url.get_backend_name() == "postgresql":
+        @event.listens_for(database_engine, "connect")
+        def use_utc_timestamps(dbapi_connection, _connection_record):
+            # Text timestamps retain their API contract; generated dates must use
+            # the same UTC calendar as SQLite and the portfolio's opened-today logic.
+            previous = dbapi_connection.autocommit
+            try:
+                dbapi_connection.autocommit = True
+                with dbapi_connection.cursor() as cursor:
+                    cursor.execute("SET TIME ZONE 'UTC'")
+            finally:
+                dbapi_connection.autocommit = previous
     return database_engine
 
 

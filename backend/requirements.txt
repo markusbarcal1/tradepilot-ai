@@ -2,6 +2,7 @@ fastapi
 pydantic-settings
 PyJWT[crypto]>=2.10,<3
 SQLAlchemy
+psycopg[binary]>=3.2,<4
 alembic
 uvicorn
 yfinance

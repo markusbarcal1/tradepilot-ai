@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import inspect
 
 from app.auth import CurrentUser, get_current_user
+from app.config import settings
 from app.bootstrap import (
     DEFAULT_DEV_USER_DISPLAY_NAME,
     DEFAULT_DEV_USER_EMAIL,
@@ -78,6 +79,8 @@ def init_paper_trading_db(database_engine=None, session_factory=None):
     database_was_empty = not tables
     if not database_was_empty:
         return
+    if database_engine.dialect.name != "sqlite" or settings.environment == "production":
+        raise RuntimeError("Run Alembic upgrade head before starting an empty production or PostgreSQL database.")
     create_schema(database_engine)
     with session_scope(session_factory) as session:
         users = UserRepository(session)
