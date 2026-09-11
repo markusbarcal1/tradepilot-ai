@@ -31,7 +31,15 @@ def resolve_database_url(database_url: str) -> URL:
 def create_database_engine(database_url: str = settings.database_url):
     url = resolve_database_url(database_url)
     connect_args = {"check_same_thread": False} if url.get_backend_name() == "sqlite" else {}
-    database_engine = create_engine(url, connect_args=connect_args)
+    options = {}
+    if url.get_backend_name() == "postgresql":
+        connect_args = {"connect_timeout": 10}
+        options = dict(pool_pre_ping=True, pool_size=settings.database_pool_size,
+                       max_overflow=settings.database_max_overflow,
+                       pool_timeout=settings.database_pool_timeout,
+                       pool_recycle=settings.database_pool_recycle,
+                       hide_parameters=True)
+    database_engine = create_engine(url, connect_args=connect_args, **options)
     if url.get_backend_name() == "sqlite":
         @event.listens_for(database_engine, "connect")
         def enable_sqlite_foreign_keys(dbapi_connection, _connection_record):

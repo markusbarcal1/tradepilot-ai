@@ -10,6 +10,10 @@ from app.config import DEFAULT_CORS_ORIGINS, Settings
 CONFIG_KEYS = {
     "ENVIRONMENT",
     "DATABASE_URL",
+    "DATABASE_POOL_SIZE",
+    "DATABASE_MAX_OVERFLOW",
+    "DATABASE_POOL_TIMEOUT",
+    "DATABASE_POOL_RECYCLE",
     "CORS_ORIGINS",
     "SCANNER_MAX_WORKERS",
     "LOG_LEVEL",
@@ -20,6 +24,14 @@ CONFIG_KEYS = {
 
 
 class SettingsTests(unittest.TestCase):
+    def test_postgres_pool_limits_are_bounded(self):
+        configured = self.build_settings(DATABASE_POOL_SIZE="3", DATABASE_MAX_OVERFLOW="0")
+        self.assertEqual((configured.database_pool_size, configured.database_max_overflow), (3, 0))
+        for key, value in (("DATABASE_POOL_SIZE", "0"), ("DATABASE_MAX_OVERFLOW", "-1"),
+                           ("DATABASE_POOL_TIMEOUT", "0"), ("DATABASE_POOL_RECYCLE", "0")):
+            with self.subTest(key=key), self.assertRaises(ValidationError):
+                self.build_settings(**{key: value})
+
     def build_settings(self, **environment):
         clean_environment = {
             key: value for key, value in os.environ.items() if key not in CONFIG_KEYS

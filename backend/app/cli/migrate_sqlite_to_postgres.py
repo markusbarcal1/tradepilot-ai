@@ -267,16 +267,21 @@ def synchronize_sequences(connection):
 
 
 def verify_sequences(connection):
+    result = {}
     for name, (sequence, minimum) in sequence_details(connection).items():
         last, called = connection.exec_driver_sql(f"SELECT last_value, is_called FROM {sequence}").one()
         if last + int(called) < minimum:
             raise MigrationBlocked(f"{name}: sequence is behind migrated IDs.")
+        result[name] = {"last_value": last, "is_called": called,
+                        "next_id": last + int(called), "minimum_next_id": minimum}
+    return result
 
 
 def run_migration(source, target, *, mode="dry-run", backup_dir=None):
     if mode not in {"dry-run", "confirm", "verify-only"}:
         raise MigrationBlocked("Unknown migration mode.")
-    report = {"dry_run": mode == "dry-run", "mode": mode, "source_revision": None,
+    report = {"source_type": "sqlite", "target_type": "postgresql",
+              "dry_run": mode == "dry-run", "mode": mode, "source_revision": None,
               "target_revision": None, "target_empty": False, "migration_possible": False,
               "committed": False, "blockers": []}
     for label in ("users", "accounts", "positions", "trades", "watchlist", "preferences"):
@@ -323,13 +328,18 @@ def run_migration(source, target, *, mode="dry-run", backup_dir=None):
                 if not report["blockers"]:
                     report["source"] = summarize(before)
                     report["target"] = summarize(existing)
+                    report["integrity"] = {
+                        "orphan_rows": 0, "account_uniqueness": "passed",
+                        "position_uniqueness": "passed", "foreign_key_violations": 0,
+                        "bootstrap_present": False,
+                    }
                 if mode != "verify-only" and not report["target_empty"]:
                     report["blockers"].append("Target application tables must be empty; merging is forbidden.")
                 if report["blockers"]:
                     return report
                 if mode == "verify-only":
                     verify_data(before, existing)
-                    verify_sequences(dst)
+                    report["sequences"] = verify_sequences(dst)
                     report["verified"] = True
                     return report
                 report["migration_possible"] = True
@@ -343,7 +353,7 @@ def run_migration(source, target, *, mode="dry-run", backup_dir=None):
                     if before[table.name]:
                         dst.execute(table.insert(), before[table.name])
                 report["sequence_next_ids"] = synchronize_sequences(dst)
-                verify_sequences(dst)
+                report["sequences"] = verify_sequences(dst)
                 after = snapshot(dst)
                 verify_data(before, after)
                 report["verified"] = True

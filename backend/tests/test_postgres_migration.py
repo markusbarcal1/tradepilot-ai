@@ -243,7 +243,12 @@ def test_copy_dry_run_verify_backup_sequences_and_nonempty_refusal(pg_url, popul
     assert copied["target"] == copied["source"]
     assert Path(copied["backup"]).is_file()
     assert hashlib.sha256(populated_source.read_bytes()).hexdigest() == original
-    assert migration.run_migration(str(populated_source), pg_url, mode="verify-only")["verified"]
+    verified = migration.run_migration(str(populated_source), pg_url, mode="verify-only")
+    assert verified["verified"]
+    assert (verified["source_type"], verified["target_type"]) == ("sqlite", "postgresql")
+    assert verified["integrity"]["foreign_key_violations"] == 0
+    assert verified["integrity"]["bootstrap_present"] is False
+    assert all(s["next_id"] >= s["minimum_next_id"] for s in verified["sequences"].values())
     repeated = migration.run_migration(str(populated_source), pg_url, mode="confirm", backup_dir=backup_dir)
     assert not repeated["committed"] and not repeated["migration_possible"]
     assert len(list(backup_dir.iterdir())) == 1

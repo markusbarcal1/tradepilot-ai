@@ -425,9 +425,8 @@ preserved. A forward migration cannot repair an earlier migration that fails
 before reaching it, which is why this historical correction is necessary.
 No new head revision or provisioning head constant change is needed.
 
-The existing `provision_beta_user` legacy/adoption tool remains SQLite-only;
-post-cutover onboarding tooling is a separate remaining operator task. This phase
-does not change trading concurrency semantics (for example, simultaneous requests
+Phase 7B adds normal PostgreSQL onboarding to `provision_beta_user`; legacy
+adoption and bootstrap cleanup remain SQLite-only. These phases do not change trading concurrency semantics (for example, simultaneous requests
 against one account), deploy infrastructure, configure a managed provider, or
 certify live Supabase authentication. The CLI holds complete snapshots in memory;
 size the rehearsal for the real data volume before scheduling downtime. The
@@ -458,3 +457,11 @@ restarting against the preserved source. After any PostgreSQL writes, switching
 back would lose those writes: stop writes and reconcile/export them through a
 separately reviewed recovery procedure. This utility provides no reverse migration
 and never deletes target data to force a retry.
+
+
+## Phase 7B managed cutover
+
+Use the [Phase 7B operator runbook](phase7b-cutover.md) for the current managed
+PostgreSQL rehearsal, normal PostgreSQL provisioning, final cutover checkpoints,
+and rollback procedure. See [validation and remaining blockers](phase7b-validation.md).
+The historical Phase 7A results above do not certify a managed deployment.

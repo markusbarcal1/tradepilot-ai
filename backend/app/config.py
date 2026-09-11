@@ -25,6 +25,10 @@ class Settings(BaseSettings):
 
     environment: Literal["development", "test", "production"] = "development"
     database_url: str = "sqlite:///backend/app/paper_trading.db"
+    database_pool_size: int = Field(default=5, ge=1, le=20)
+    database_max_overflow: int = Field(default=2, ge=0, le=20)
+    database_pool_timeout: int = Field(default=30, ge=1, le=120)
+    database_pool_recycle: int = Field(default=1800, ge=60)
     cors_origins: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: list(DEFAULT_CORS_ORIGINS)
     )

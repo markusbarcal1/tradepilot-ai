@@ -194,40 +194,51 @@ def inspect_current(database_path: Path, target_id: UUID) -> dict:
         engine.dispose()
 
 
+def _validate_identity(session, user_id, email, display_name):
+    users = UserRepository(session)
+    target = users.get(user_id)
+    email_owner = session.scalar(select(AppUser).where(AppUser.email == email))
+    if email_owner is not None and email_owner.user_id != user_id:
+        raise ProvisioningError("Email is already assigned to a different UUID; identity was not reassigned.")
+    if target is not None:
+        if target.email != email or (display_name is not None and target.display_name != display_name):
+            raise ProvisioningError("UUID already exists with conflicting identity data.")
+        if target.beta_status != "active":
+            raise ProvisioningError("UUID exists but is not active; status was not silently changed.")
+    return users, target, email_owner
+
+
+def _provision_normal(session, user_id, email, display_name):
+    users, target, email_owner = _validate_identity(session, user_id, email, display_name)
+    if target is None:
+        users.create(user_id, email=email, display_name=display_name, beta_status="active")
+    accounts = list(session.scalars(select(PaperAccount).where(PaperAccount.user_id == user_id)))
+    if len(accounts) > 1:
+        raise ProvisioningError("Target UUID owns multiple paper accounts; provisioning did not modify them.")
+    account_created = False
+    if not accounts:
+        accounts = [PaperTradingRepository(session).create_account(user_id, STARTING_CASH)]
+        account_created = True
+    return {
+        "result": "already provisioned" if email_owner is not None and not account_created else "provisioned",
+        "app_user_created": email_owner is None,
+        "account_created": account_created,
+        "account_id": accounts[0].id,
+        "ownership_reassigned": False,
+        "bootstrap_removed": False,
+    }
+
+
 def provision_current_database(database_path: Path, user_id: UUID, email: str, display_name: str | None, adopt_legacy: bool) -> dict:
     engine = create_database_engine(f"sqlite:///{database_path.as_posix()}")
     factory = sessionmaker(bind=engine, expire_on_commit=False)
     try:
         with session_scope(factory) as session:
-            users = UserRepository(session)
-            target = users.get(user_id)
-            email_owner = session.scalar(select(AppUser).where(AppUser.email == email))
-            if email_owner is not None and email_owner.user_id != user_id:
-                raise ProvisioningError("Email is already assigned to a different UUID; identity was not reassigned.")
-            if target is not None:
-                if target.email != email or (display_name is not None and target.display_name != display_name):
-                    raise ProvisioningError("UUID already exists with conflicting identity data.")
-                if target.beta_status != "active":
-                    raise ProvisioningError("UUID exists but is not active; status was not silently changed.")
-            else:
-                target = users.create(user_id, email=email, display_name=display_name, beta_status="active")
-
             if not adopt_legacy:
-                accounts = list(session.scalars(select(PaperAccount).where(PaperAccount.user_id == user_id)))
-                if len(accounts) > 1:
-                    raise ProvisioningError("Target UUID owns multiple paper accounts; provisioning did not modify them.")
-                account_created = False
-                if not accounts:
-                    accounts = [PaperTradingRepository(session).create_account(user_id, STARTING_CASH)]
-                    account_created = True
-                return {
-                    "result": "already provisioned" if email_owner is not None and not account_created else "provisioned",
-                    "app_user_created": email_owner is None,
-                    "account_created": account_created,
-                    "account_id": accounts[0].id,
-                    "ownership_reassigned": False,
-                    "bootstrap_removed": False,
-                }
+                return _provision_normal(session, user_id, email, display_name)
+            users, target, email_owner = _validate_identity(session, user_id, email, display_name)
+            if target is None:
+                target = users.create(user_id, email=email, display_name=display_name, beta_status="active")
 
             bootstrap_accounts = list(session.scalars(select(PaperAccount).where(PaperAccount.user_id == DEFAULT_DEV_USER_ID)))
             target_accounts = list(session.scalars(select(PaperAccount).where(PaperAccount.user_id == user_id)))
@@ -329,7 +340,64 @@ def cleanup_bootstrap(args) -> dict:
             raise
 
 
+def provision_postgres(args, user_id, email):
+    """Normal onboarding only; schema creation and legacy operations stay external."""
+    from app.cli.migrate_sqlite_to_postgres import identity, revision, schema_blockers
+
+    if args.adopt_legacy_account or getattr(args, "cleanup_bootstrap", False):
+        raise ProvisioningError("Legacy adoption and bootstrap cleanup are SQLite-only.")
+    if user_id == DEFAULT_DEV_USER_ID:
+        raise ProvisioningError("The bootstrap UUID cannot be provisioned on PostgreSQL.")
+    if args.dry_run and args.confirm:
+        raise ProvisioningError("Choose --dry-run or --confirm, not both.")
+    engine = None
+    try:
+        engine = create_database_engine(args.database_url)
+        with engine.begin() as connection:
+            if args.dry_run:
+                connection.exec_driver_sql("SET TRANSACTION READ ONLY")
+            connection.exec_driver_sql("SET LOCAL search_path TO public, pg_catalog")
+            if revision(connection) != HEAD_REVISION:
+                raise ProvisioningError("PostgreSQL must already be at Alembic head; run Alembic separately.")
+            blockers = schema_blockers(connection, "target")
+            if blockers:
+                raise ProvisioningError(" ".join(blockers))
+            factory = sessionmaker(bind=connection, expire_on_commit=False)
+            with session_scope(factory) as session:
+                if session.get(AppUser, DEFAULT_DEV_USER_ID) is not None:
+                    raise ProvisioningError("Unexpected bootstrap identity; PostgreSQL onboarding blocked.")
+                if args.dry_run:
+                    # Validate conflicts without inserts or sequence consumption.
+                    _validate_identity(session, user_id, email, args.display_name)
+                    accounts = list(session.scalars(select(PaperAccount).where(PaperAccount.user_id == user_id)))
+                    operation = {"result": "already provisioned" if accounts else "would provision",
+                                 "accounts": _account_details(session, accounts)}
+                else:
+                    operation = _provision_normal(session, user_id, email, args.display_name)
+            return {"database_type": "postgresql", "target_identity": identity(engine),
+                    "revision": HEAD_REVISION, "dry_run": args.dry_run, **operation}
+    except ProvisioningError:
+        raise
+    except Exception as exc:
+        raise ProvisioningError(
+            f"PostgreSQL provisioning failed ({type(exc).__name__}); inspect target and rerun safely."
+        ) from None
+    finally:
+        if engine is not None:
+            engine.dispose()
+
+
 def run(args) -> dict:
+    try:
+        backend = resolve_database_url(args.database_url).get_backend_name()
+    except Exception:
+        raise ProvisioningError("Invalid database URL; check its format and encoded credentials.") from None
+    if backend == "postgresql":
+        if args.adopt_legacy_account or getattr(args, "cleanup_bootstrap", False):
+            raise ProvisioningError("Legacy adoption and bootstrap cleanup are SQLite-only.")
+        if not args.user_id or not args.email:
+            raise ProvisioningError("Provisioning requires --user-id and --email.")
+        return provision_postgres(args, *_normalize_identity(args.user_id, args.email))
     if getattr(args, "cleanup_bootstrap", False):
         return cleanup_bootstrap(args)
     if not args.user_id or not args.email:
