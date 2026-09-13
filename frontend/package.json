@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "test": "node tests/financial-score-panel.mjs && node tests/auth-flow.mjs",
+    "test": "node tests/financial-score-panel.mjs && node tests/auth-flow.mjs && node tests/deployment-config.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

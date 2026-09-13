@@ -11,3 +11,24 @@ build/
 *.sqlite
 *.sqlite3
 backend/backups/
+
+# SQLite sidecars, exports, and local migration evidence (never delete backups).
+*.db-*
+*.sqlite-*
+*.sqlite3-*
+*.db.*
+*.sqlite.*
+*.sqlite3.*
+*.bak
+*.dump
+*.sql.gz
+backups/
+migration-snapshots/
+cutover-reports/
+*.local.json
+*.local.md
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.vercel/

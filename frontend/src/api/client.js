@@ -4,7 +4,12 @@ import { supabase } from "../lib/supabase";
 
 
 export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
+  import.meta.env.VITE_API_BASE_URL?.trim() ||
+  (import.meta.env.DEV ? "http://127.0.0.1:8000" : "");
+
+if (import.meta.env.PROD && !API_BASE_URL) {
+  throw new Error("VITE_API_BASE_URL is required for production builds");
+}
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

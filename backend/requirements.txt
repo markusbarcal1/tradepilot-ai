@@ -1,10 +1,11 @@
-fastapi
-pydantic-settings
-PyJWT[crypto]>=2.10,<3
-SQLAlchemy
-psycopg[binary]>=3.2,<4
-alembic
-uvicorn
-yfinance
-pandas
-numpy
+# Direct runtime versions from the tested Python 3.12.10 environment.
+fastapi==0.141.1
+pydantic-settings==2.15.0
+PyJWT[crypto]==2.13.0
+SQLAlchemy==2.0.52
+psycopg[binary]==3.3.5
+alembic==1.19.1
+uvicorn==0.52.1
+yfinance==1.5.2
+pandas==3.0.5
+numpy==2.5.2
