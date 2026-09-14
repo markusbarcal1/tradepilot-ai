@@ -102,6 +102,10 @@ export function analyzeFinancials(symbol, options = {}) {
   });
 }
 
+export function analyzeOutlook(symbol, options = {}) {
+  return api.get(`/outlook/${symbol}`, { signal: options.signal });
+}
+
 export function analyzeValuation(symbol, options = {}) {
   return api.get(`/valuation-analysis/${symbol}`, {
     signal: options.signal,

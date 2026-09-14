@@ -11,6 +11,8 @@ from app.config import settings
 
 logging.basicConfig(level=settings.log_level_value)
 
+from app.models.outlook import OutlookResponse
+from app.services.outlook import analyze_outlook
 from app.services.analyzer import analyze_ticker, analyze_tickers
 from app.services.financial_analysis import analyze_financials
 from app.services.valuation_analysis import analyze_valuation
@@ -92,6 +94,11 @@ def analyze(ticker: str, period: str = "max", interval: str = "1d"):
         ) from e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@protected_router.get("/outlook/{ticker}", response_model=OutlookResponse)
+def outlook(ticker: str):
+    return analyze_outlook(ticker)
 
 
 @protected_router.get("/financial-analysis/{ticker}")

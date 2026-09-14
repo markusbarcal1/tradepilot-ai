@@ -2193,3 +2193,16 @@ canvas {
 .scanner-panel::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* Qualitative Outlook shares the score-card surface without a numeric bar. */
+.outlook-header { cursor: pointer; list-style: none; }
+.outlook-header::-webkit-details-marker { display: none; }
+.outlook-header:focus-visible { outline: 2px solid var(--border-strong); outline-offset: 4px; }
+.outlook-label { font-size: 1.35rem; font-weight: 700; margin-bottom: 8px; }
+.outlook-summary, .outlook-category p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; }
+.outlook-categories { margin-top: 16px; }
+.outlook-category { padding: 12px 0; border-top: 1px solid var(--border-strong); }
+.outlook-category h4 { margin: 0; font-size: 0.85rem; }
+.outlook-category ul { padding-left: 20px; font-size: 0.85rem; }
+.outlook-disclosure { transition: transform 150ms ease; }
+.outlook-card[open] .outlook-disclosure { transform: rotate(180deg); }

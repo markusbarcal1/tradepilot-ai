@@ -3,6 +3,7 @@ import {
   analyzeTicker as fetchAnalysis,
   analyzeFinancials as fetchFinancials,
   analyzeValuation as fetchValuation,
+  analyzeOutlook as fetchOutlook,
   analyzeTickers as fetchBatchAnalysis,
   addWatchlistSymbol,
   getScannerPreferences,
@@ -20,6 +21,7 @@ import ChartPanel from "./components/ChartPanel";
 import ScorePanel from "./components/ScorePanel";
 import FinancialScorePanel from "./components/FinancialScorePanel";
 import ValuationScorePanel from "./components/ValuationScorePanel";
+import OutlookPanel from "./components/OutlookPanel";
 import SetupPanel from "./components/SetupPanel";
 import QuickTradePanel from "./components/QuickTradePanel";
 import PaperPortfolioSummary from "./components/PaperPortfolioSummary";
@@ -59,6 +61,7 @@ function App({ userEmail, onSignOut }) {
   const { showToast } = useToast();
   const analysisRequestRef = useRef({ controller: null, id: 0 });
   const financialRequestRef = useRef({ controller: null, id: 0 });
+  const outlookRequestRef = useRef({ controller: null, id: 0 });
   const valuationRequestRef = useRef({ controller: null, id: 0 });
   const validationRequestRef = useRef({ controller: null, id: 0 });
   const watchlistRequestRef = useRef({ controller: null, id: 0 });
@@ -77,6 +80,9 @@ function App({ userEmail, onSignOut }) {
   const [financialAnalysis, setFinancialAnalysis] = useState(null);
   const [financialLoading, setFinancialLoading] = useState(false);
   const [financialError, setFinancialError] = useState("");
+  const [outlookAnalysis, setOutlookAnalysis] = useState(null);
+  const [outlookLoading, setOutlookLoading] = useState(false);
+  const [outlookError, setOutlookError] = useState("");
   const [valuationAnalysis, setValuationAnalysis] = useState(null);
   const [valuationLoading, setValuationLoading] = useState(false);
   const [valuationError, setValuationError] = useState("");
@@ -105,6 +111,36 @@ function App({ userEmail, onSignOut }) {
       setWatchlistError("");
     }, 2500);
   };
+
+  const loadOutlookAnalysis = useCallback(async (symbol, options = {}) => {
+    outlookRequestRef.current.controller?.abort();
+    const controller = new AbortController();
+    const requestId = outlookRequestRef.current.id + 1;
+    outlookRequestRef.current = { controller, id: requestId };
+
+    if (!options.background) {
+      setOutlookAnalysis(null);
+      setOutlookLoading(true);
+      setOutlookError("");
+    }
+
+    try {
+      const response = await fetchOutlook(symbol, { signal: controller.signal });
+      if (outlookRequestRef.current.id !== requestId) return;
+      setOutlookAnalysis(response.data);
+      setOutlookError("");
+    } catch (err) {
+      if (isRequestCanceled(err) || outlookRequestRef.current.id !== requestId) return;
+      console.error("Could not load outlook analysis:", err);
+      if (!options.background) {
+        setOutlookError("Outlook analysis is temporarily unavailable.");
+      }
+    } finally {
+      if (outlookRequestRef.current.id === requestId && !options.background) {
+        setOutlookLoading(false);
+      }
+    }
+  }, []);
 
   const loadFinancialAnalysis = useCallback(async (symbol, options = {}) => {
     financialRequestRef.current.controller?.abort();
@@ -206,6 +242,7 @@ function App({ userEmail, onSignOut }) {
         );
         loadFinancialAnalysis(response.data.ticker);
         loadValuationAnalysis(response.data.ticker);
+        loadOutlookAnalysis(response.data.ticker);
       }
       return true;
     } catch (err) {
@@ -226,7 +263,7 @@ function App({ userEmail, onSignOut }) {
         setLoading(false);
       }
     }
-  }, [submittedTicker, timeframe, loadFinancialAnalysis, loadValuationAnalysis, showToast]);
+  }, [submittedTicker, timeframe, loadFinancialAnalysis, loadValuationAnalysis, loadOutlookAnalysis, showToast]);
 
   const refreshWatchlistScores = useCallback(async (
     selectedTimeframe = timeframe,
@@ -571,11 +608,13 @@ function App({ userEmail, onSignOut }) {
       analysisRequestRef.current.controller?.abort();
       financialRequestRef.current.controller?.abort();
       valuationRequestRef.current.controller?.abort();
+      outlookRequestRef.current.controller?.abort();
       validationRequestRef.current.controller?.abort();
       watchlistRequestRef.current.controller?.abort();
       analysisRequestRef.current.id += 1;
       financialRequestRef.current.id += 1;
       valuationRequestRef.current.id += 1;
+      outlookRequestRef.current.id += 1;
       validationRequestRef.current.id += 1;
       watchlistRequestRef.current.id += 1;
       window.clearTimeout(scannerPreferencesTimerRef.current);
@@ -717,6 +756,13 @@ function App({ userEmail, onSignOut }) {
                       data={valuationAnalysis}
                       loading={valuationLoading}
                       error={valuationError}
+                      embedded
+                    />
+                    <OutlookPanel
+                      key={`outlook-${analysis.ticker}`}
+                      data={outlookAnalysis}
+                      loading={outlookLoading}
+                      error={outlookError}
                       embedded
                     />
                   </div>
