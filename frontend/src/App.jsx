@@ -256,7 +256,6 @@ function App({ userEmail, onSignOut }) {
       (response.data.results || []).forEach((item) => {
         scoreMap[item.ticker] = {
           technical: (item.technical_score ?? item.trend_score)?.score,
-          quality: (item.trade_quality_score ?? item.entry_score)?.score,
         };
       });
 
@@ -701,13 +700,6 @@ function App({ userEmail, onSignOut }) {
                       key={`technical-${analysis.ticker}-${analysis.period}-${analysis.interval}`}
                       title="Technical Score"
                       scoreData={analysis.technical_score ?? analysis.trend_score}
-                      embedded
-                    />
-
-                    <ScorePanel
-                      key={`quality-${analysis.ticker}-${analysis.period}-${analysis.interval}`}
-                      title="Trade Quality Score"
-                      scoreData={analysis.trade_quality_score ?? analysis.entry_score}
                       embedded
                     />
 

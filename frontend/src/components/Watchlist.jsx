@@ -102,10 +102,6 @@ function Watchlist({
                   T:{scores?.technical ?? "--"}
                 </span>
 
-                <span className={getScoreColorClass(scores?.quality)}>
-                  Q:{scores?.quality ?? "--"}
-                </span>
-
                 <button
                   className="watchlist-remove"
                   onClick={(e) => {

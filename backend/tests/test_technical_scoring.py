@@ -147,12 +147,11 @@ class TechnicalScoreContractTests(unittest.TestCase):
         for score, grade in cases:
             self.assertEqual(grade, _technical_grade(score))
 
-    def test_scanner_reads_legacy_fields_and_preserves_sort_order(self):
-        def analysis(ticker, quality_score, technical_score):
+    def test_scanner_defaults_to_technical_and_preserves_alias(self):
+        def analysis(ticker, technical_score):
             return {
                 "ticker": ticker,
                 "price": 100,
-                "trade_quality_score": {"score": quality_score, "grade": "Good Entry"},
                 "technical_score": {
                     **technical_score,
                     "score": technical_score["score"],
@@ -169,14 +168,13 @@ class TechnicalScoreContractTests(unittest.TestCase):
         lower = calculate_technical_score(105, 100, 110, 45, 1, 1, 2)
         higher = calculate_technical_score(110, 105, 100, 60, 2, 2, 1)
         results = _build_scan_results([
-            analysis("LOW", 50, lower),
-            analysis("HIGH", 50, higher),
-            analysis("TOP", 60, lower),
+            analysis("LOW", lower),
+            analysis("HIGH", higher),
+            analysis("TOP", lower),
         ])
-        self.assertEqual(["TOP", "HIGH", "LOW"], [item["ticker"] for item in results])
-        self.assertEqual(higher["score"], results[1]["technical_score"])
+        self.assertEqual(["HIGH", "LOW", "TOP"], [item["ticker"] for item in results])
+        self.assertEqual(higher["score"], results[0]["technical_score"])
         self.assertEqual(results[0]["technical_score"], results[0]["trend_score"])
-        self.assertEqual(results[0]["trade_quality_score"], results[0]["entry_score"])
         self.assertEqual("$95", results[0]["support"])
 
 

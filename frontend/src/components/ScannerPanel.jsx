@@ -20,11 +20,10 @@ const DEFAULT_TIMEFRAME = SCANNER_TIMEFRAMES[0];
 const DEFAULT_SCAN_LIMIT = 10;
 const SCORING_OPTIONS = [
   { id: "technical", label: "Technical" },
-  { id: "trade_quality", label: "Trade Quality" },
   { id: "financial", label: "Financial" },
   { id: "valuation", label: "Valuation" },
 ];
-const DEFAULT_SCORING_PRIORITIES = ["technical", "trade_quality"];
+const DEFAULT_SCORING_PRIORITIES = ["technical"];
 const DEFAULT_ELIGIBILITY = {
   minimumPrice: 5,
   minimumVolume: 500000,
@@ -69,7 +68,8 @@ function getInitialScannerState(savedState) {
     results: Array.isArray(state.results) ? state.results : [],
     metadata: state.metadata || null,
     hasScanned: Boolean(state.hasScanned),
-    scoringPriorities,
+    scoringPriorities: scoringPriorities.length || !state.scoringPriorities?.length
+      ? scoringPriorities : DEFAULT_SCORING_PRIORITIES,
     eligibilityEnabled: state.eligibilityEnabled !== false,
     minimumPrice: Number.isFinite(state.minimumPrice) ? state.minimumPrice : DEFAULT_ELIGIBILITY.minimumPrice,
     minimumVolume: Number.isFinite(state.minimumVolume) ? state.minimumVolume : DEFAULT_ELIGIBILITY.minimumVolume,
@@ -548,9 +548,6 @@ function ScannerPanel({
             </span>
             <span className={getScoreColorClass(stock.technical_score)}>
               Technical: {stock.technical_score ?? "N/A"}
-            </span>
-            <span className={getScoreColorClass(stock.trade_quality_score ?? stock.entry_score)}>
-              Quality: {stock.trade_quality_score ?? stock.entry_score ?? "N/A"}
             </span>
             <span className={getScoreColorClass(stock.financial_score)}>
               Financial: {stock.financial_score ?? "N/A"}

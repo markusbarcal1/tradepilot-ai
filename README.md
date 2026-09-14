@@ -46,7 +46,7 @@ The analysis engine is currently rule-based and deterministic rather than powere
 ### Dashboard Experience
 
 - Interactive charting experience with timeframe switching
-- Summary panels for market metrics, trend score, entry score, thesis, and trade setup
+- Summary panels for market metrics, Technical Score, Financial Score, Valuation Score, thesis, and trade setup
 - Quick trade entry panel for paper trading actions
 - Polling-based refresh for analysis, portfolio, and watchlist data
 

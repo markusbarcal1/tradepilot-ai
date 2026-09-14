@@ -8,7 +8,7 @@ calculation.
 
 Valuation remains a separate future score family. The Financial Score does not
 use P/E, EV/EBITDA valuation, fair value, analyst targets, recommendations,
-scanner ranking, Technical Score, or Trade Quality Score.
+scanner ranking or Technical Score.
 
 ## Profile selection
 

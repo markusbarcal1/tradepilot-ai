@@ -16,7 +16,6 @@ class ScannerAuditTests(unittest.TestCase):
                     {
                         "ticker": "MSFT",
                         "price": 100,
-                        "trade_quality_score": {"score": 80, "grade": "Good Entry"},
                         "technical_score": {"score": 85, "grade": "Bullish"},
                         "trade_setup": {
                             "setup_type": "Momentum Continuation",
@@ -29,7 +28,6 @@ class ScannerAuditTests(unittest.TestCase):
                     {
                         "ticker": "AAPL",
                         "price": 100,
-                        "trade_quality_score": {"score": 75, "grade": "Good Entry"},
                         "technical_score": {"score": 78, "grade": "Bullish"},
                         "trade_setup": {
                             "setup_type": "Momentum Continuation",
@@ -72,7 +70,6 @@ class ScannerAuditTests(unittest.TestCase):
             return {
                 "ticker": symbol,
                 "price": 100,
-                "trade_quality_score": {"score": 80, "grade": "Good Entry"},
                 "technical_score": {"score": 85, "grade": "Bullish"},
                 "trade_setup": {
                     "setup_type": "Momentum Continuation",

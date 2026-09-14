@@ -38,6 +38,32 @@ try {
     getTradeSuccessNotification,
   } = await vite.ssrLoadModule("/src/utils/tradeNotifications.js");
 
+  const { default: Watchlist } = await vite.ssrLoadModule("/src/components/Watchlist.jsx");
+  const { default: ScannerPanel } = await vite.ssrLoadModule("/src/components/ScannerPanel.jsx");
+  const watchlistMarkup = renderToStaticMarkup(React.createElement(Watchlist, {
+    stocks: ["AAPL"], selectedStock: "AAPL", timeframe: { label: "Daily" },
+    watchlistScores: { AAPL: { technical: 80 } },
+  }));
+  assert.match(watchlistMarkup, /AAPL/);
+  assert.match(watchlistMarkup, /T:80/);
+  assert.doesNotMatch(watchlistMarkup, /Q:/);
+  const scannerMarkup = renderToStaticMarkup(React.createElement(ScannerPanel, {
+    savedState: {
+      hasScanned: true, scoringPriorities: ["technical"],
+      results: [{ ticker: "AAPL", price: 100, technical_score: 80,
+        scanner_score: 80, scanner_score_available_components: 1,
+        scanner_score_selected_components: 1, financial_score: null,
+        valuation_score: null, notes: [] }],
+    },
+  }));
+  const restoredScanner = renderToStaticMarkup(React.createElement(ScannerPanel, {
+    savedState: { scoringPriorities: ["trade_quality"] },
+  }));
+  assert.match(restoredScanner, /checked=""[^>]*\/><span>Technical/);
+  assert.match(scannerMarkup, /Technical: 80/);
+  assert.match(scannerMarkup, /Financial: N\/A/);
+  assert.doesNotMatch(scannerMarkup, /Trade Quality|Quality:/);
+
   const render = (props) => renderToStaticMarkup(
     React.createElement(FinancialScorePanel, props)
   );
@@ -379,7 +405,6 @@ try {
     ticker: "AAPL",
     chart_data: [],
     technical_score: { score: 80 },
-    trade_quality_score: { score: 70 },
   }), true);
   assert.equal(isValidAnalysisResponse({ ticker: "FORD" }), false);
   const invalidTicker = getAnalysisErrorNotification(
