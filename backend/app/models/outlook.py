@@ -2,6 +2,9 @@
 from typing import Literal
 from enum import Enum
 
+from app.models.outlook_taxonomy import CATEGORY_TITLES, CategoryKey
+from app.models.outlook_evidence import OutlookEvidence, UnitValue
+
 from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
 
 class OutlookLabel(str, Enum):
@@ -16,12 +19,6 @@ CLASSIFICATIONS = {
     -2: OutlookLabel.VERY_NEGATIVE, -1: OutlookLabel.NEGATIVE,
     0: OutlookLabel.MIXED, 1: OutlookLabel.POSITIVE, 2: OutlookLabel.VERY_POSITIVE,
 }
-CATEGORY_TITLES = {
-    "company": "Company Outlook", "earnings": "Earnings Outlook",
-    "industry": "Industry Outlook", "economic": "Economic Outlook",
-    "market": "Market Outlook", "geopolitical": "Geopolitical Outlook",
-}
-CategoryKey = Literal["company", "earnings", "industry", "economic", "market", "geopolitical"]
 CategoryStatus = Literal["available", "insufficient_data", "unavailable", "error", "not_material"]
 ClassificationValue = Literal[-2, -1, 0, 1, 2]
 
@@ -36,6 +33,7 @@ class OutlookFactor(BaseModel):
     title: str
     impact: OutlookLabel
     description: str
+    evidence_ids: list[str] = Field(default_factory=list)
 
 
 class OutlookCategory(BaseModel):
@@ -44,6 +42,9 @@ class OutlookCategory(BaseModel):
     value: ClassificationValue | None = None
     summary: str = "No evidence is available."
     factors: list[OutlookFactor] = Field(default_factory=list)
+    evidence_count: int | None = Field(default=None, ge=0)
+    confidence: UnitValue | None = None
+    evidence: list[OutlookEvidence] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def validate_evidence(self):
@@ -60,7 +61,7 @@ class OutlookCategory(BaseModel):
 class OutlookMetadata(BaseModel):
     provider: str
     uses_placeholder_data: bool
-    version: str = "1.0"
+    version: str = "1.1"
 
 
 class OutlookResponse(BaseModel):

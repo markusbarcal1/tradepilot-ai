@@ -1,5 +1,7 @@
 # Outlook Phase 1
 
+Phase 2 supersedes the category-provider boundary with evidence-only providers. See [Outlook Evidence Architecture](outlook-evidence-architecture.md) for the current domain, policy, and integration plans.
+
 ## Architecture and API
 
 `GET /outlook/{ticker}` is authenticated through the existing protected router and declares an `OutlookResponse` response model. The separate endpoint follows the Financial/Valuation architecture, so Outlook does not slow chart analysis or enter scanner work. Existing endpoints and their payloads are unchanged.

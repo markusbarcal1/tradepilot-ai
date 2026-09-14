@@ -76,13 +76,13 @@ def test_provider_failure_and_invalid_output_are_safe():
     class Broken:
         name = "fixture"
         uses_placeholder_data = False
-        def get_categories(self, ticker):
+        def get_evidence(self, ticker):
             raise RuntimeError("private provider error")
     result = analyze_outlook("TEST", Broken())
     assert result.status == "error" and result.label is None
     assert "private provider error" not in result.model_dump_json()
     class Invalid(Broken):
-        def get_categories(self, ticker):
+        def get_evidence(self, ticker):
             return {"company": {"status": "available", "value": 10}}
     assert analyze_outlook("TEST", Invalid()).status == "error"
 
