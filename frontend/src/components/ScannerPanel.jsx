@@ -18,7 +18,6 @@ const SCANNER_UNIVERSES = [
 const DEFAULT_UNIVERSE = "sp500";
 const DEFAULT_TIMEFRAME = SCANNER_TIMEFRAMES[0];
 const DEFAULT_SCAN_LIMIT = 10;
-const SCANNER_FILTERS_STORAGE_KEY = "tradepilot-scanner-filters";
 const SCORING_OPTIONS = [
   { id: "technical", label: "Technical" },
   { id: "trade_quality", label: "Trade Quality" },
@@ -53,17 +52,7 @@ function getUniverseLabel(universe) {
 }
 
 function getInitialScannerState(savedState) {
-  const persistedState = (() => {
-    try {
-      return JSON.parse(
-        localStorage.getItem(SCANNER_FILTERS_STORAGE_KEY) || "null"
-      );
-    } catch {
-      return null;
-    }
-  })();
-
-  const state = { ...(persistedState || {}), ...(savedState || {}) };
+  const state = { ...(savedState || {}) };
   if (!Object.keys(state).length) return null;
 
   const scoringPriorities = Array.isArray(state.scoringPriorities)
@@ -94,7 +83,12 @@ function getInitialScannerState(savedState) {
   };
 }
 
-function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
+function ScannerPanel({
+  savedState,
+  onStateChange,
+  onPreferencesChange,
+  onSelectTicker,
+}) {
   const scannerRequestRef = useRef({ controller: null, id: 0 });
   const initialState = getInitialScannerState(savedState);
   const [selectedUniverse, setSelectedUniverse] = useState(() => {
@@ -259,7 +253,7 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(SCANNER_FILTERS_STORAGE_KEY, JSON.stringify({
+    onPreferencesChange({
       universe: selectedUniverse,
       timeframeLabel: selectedTimeframe.label,
       scoringPriorities,
@@ -273,7 +267,7 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
       excludeWarrantsRightsUnits,
       excludePreferredShares,
       excludeBlankCheckCompanies,
-    }));
+    });
   }, [
     selectedUniverse,
     selectedTimeframe,
@@ -288,6 +282,7 @@ function ScannerPanel({ savedState, onStateChange, onSelectTicker }) {
     excludeWarrantsRightsUnits,
     excludePreferredShares,
     excludeBlankCheckCompanies,
+    onPreferencesChange,
   ]);
 
   useEffect(() => {

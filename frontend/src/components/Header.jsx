@@ -7,6 +7,8 @@ function Header({
   loading,
   currentView,
   onNavigate,
+  userEmail,
+  onSignOut,
   theme,
   onToggleTheme,
 }) {
@@ -56,6 +58,10 @@ function Header({
         >
           {theme === "dark" ? "☀" : "☾"}
         </button>
+        <div className="auth-user-controls">
+          {userEmail && <span title={userEmail}>{userEmail}</span>}
+          <button type="button" onClick={onSignOut}>Sign Out</button>
+        </div>
       </nav>
     </header>
   );

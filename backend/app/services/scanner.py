@@ -8,6 +8,7 @@ from io import StringIO
 from time import perf_counter, time
 from urllib.request import urlopen
 
+from app.config import settings
 from app.services.analyzer import analyze_ticker, analyze_tickers
 from app.services.eligibility import ScannerEligibilityConfig
 from app.services.financial_analysis import analyze_financials
@@ -85,11 +86,8 @@ SCAN_UNIVERSES = {
 }
 
 LOGGER = logging.getLogger("scanner.audit")
-if not LOGGER.handlers:
-    logging.basicConfig(level=logging.INFO)
 SCANNER_AUDIT_ENABLED_ENV = "SCANNER_AUDIT"
-SCANNER_MAX_WORKERS_ENV = "SCANNER_MAX_WORKERS"
-DEFAULT_SCANNER_MAX_WORKERS = 8
+DEFAULT_SCANNER_MAX_WORKERS = settings.scanner_max_workers
 MIN_SCANNER_MAX_WORKERS = 1
 MAX_SCANNER_MAX_WORKERS = 16
 SCANNER_PROVIDER_FAILURE_CIRCUIT_THRESHOLD = 8
@@ -494,10 +492,7 @@ def _normalize_reason(reason):
 
 def _resolve_worker_count(max_workers=None):
     if max_workers is None:
-        raw = os.getenv(SCANNER_MAX_WORKERS_ENV, "").strip()
-        if not raw:
-            return DEFAULT_SCANNER_MAX_WORKERS
-        max_workers = raw
+        return DEFAULT_SCANNER_MAX_WORKERS
 
     if isinstance(max_workers, bool):
         return DEFAULT_SCANNER_MAX_WORKERS

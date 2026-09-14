@@ -1,0 +1,17 @@
+# Disposable development/test server only. Do not use production credentials.
+services:
+  postgres-test:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: ${TRADEPILOT_TEST_PG_USER:-tradepilot_test}
+      POSTGRES_PASSWORD: ${TRADEPILOT_TEST_PG_PASSWORD:-local-test-only}
+      POSTGRES_DB: tradepilot_test
+    ports:
+      - "127.0.0.1:${TRADEPILOT_TEST_PG_PORT:-55432}:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d tradepilot_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 30

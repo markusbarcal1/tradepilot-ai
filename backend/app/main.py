@@ -1,15 +1,23 @@
 import json
+import logging
 
-from fastapi import FastAPI, HTTPException
+from fastapi import APIRouter, Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+
+from app.auth import CurrentUser, get_current_user
+from app.config import settings
+
+logging.basicConfig(level=settings.log_level_value)
+
 from app.services.analyzer import analyze_ticker, analyze_tickers
 from app.services.financial_analysis import analyze_financials
 from app.services.valuation_analysis import analyze_valuation
 from app.services.market_data import MarketDataError, get_price_history
 from app.services.scanner import scan_market, stream_scan_market
 from app.paper_trading import init_paper_trading_db, router as paper_trading_router
+from app.user_data import router as user_data_router
 
 
 class BatchAnalyzeRequest(BaseModel):
@@ -18,13 +26,11 @@ class BatchAnalyzeRequest(BaseModel):
     interval: str = "1d"
 
 app = FastAPI(title="TradePilot AI Backend")
+protected_router = APIRouter(dependencies=[Depends(get_current_user)])
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -37,6 +43,7 @@ def startup():
 
 
 app.include_router(paper_trading_router)
+app.include_router(user_data_router)
 
 
 @app.get("/")
@@ -48,7 +55,16 @@ def root():
 def health():
     return {"status": "ok"}
 
-@app.get("/validate/{ticker}")
+
+@app.get("/auth/me")
+def auth_me(current_user: CurrentUser = Depends(get_current_user)):
+    return {
+        "user_id": str(current_user.user_id),
+        "email": current_user.email,
+    }
+
+
+@protected_router.get("/validate/{ticker}")
 def validate_ticker(ticker: str):
     try:
         get_price_history(ticker.strip().upper(), period="5d", interval="1d")
@@ -65,7 +81,7 @@ def validate_ticker(ticker: str):
             },
         ) from exc
 
-@app.get("/analyze/{ticker}")
+@protected_router.get("/analyze/{ticker}")
 def analyze(ticker: str, period: str = "max", interval: str = "1d"):
     try:
         return analyze_ticker(ticker, period, interval)
@@ -78,16 +94,16 @@ def analyze(ticker: str, period: str = "max", interval: str = "1d"):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/financial-analysis/{ticker}")
+@protected_router.get("/financial-analysis/{ticker}")
 def financial_analysis(ticker: str):
     return analyze_financials(ticker)
 
 
-@app.get("/valuation-analysis/{ticker}")
+@protected_router.get("/valuation-analysis/{ticker}")
 def valuation_analysis(ticker: str):
     return analyze_valuation(ticker)
 
-@app.post("/analyze/batch")
+@protected_router.post("/analyze/batch")
 def batch_analyze(request: BatchAnalyzeRequest):
     if not request.symbols:
         raise HTTPException(status_code=400, detail="At least one symbol is required")
@@ -106,7 +122,7 @@ def _parse_eligibility_payload(payload: str | None):
     return parsed if isinstance(parsed, dict) else None
 
 
-@app.get("/scan")
+@protected_router.get("/scan")
 def scan(
     period: str = "1y",
     interval: str = "1d",
@@ -124,7 +140,7 @@ def scan(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.get("/scan/stream")
+@protected_router.get("/scan/stream")
 def scan_stream(
     period: str = "1y",
     interval: str = "1d",
@@ -155,5 +171,6 @@ def scan_stream(
         return StreamingResponse(event_stream(), media_type="text/event-stream")
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
-    
-    
+
+
+app.include_router(protected_router)
