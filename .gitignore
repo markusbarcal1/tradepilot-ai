@@ -2,6 +2,9 @@ node_modules/
 venv/
 __pycache__/
 .env
+.env.*
+!.env.example
+backend/backups/
 dist/
 build/
 .vscode/
