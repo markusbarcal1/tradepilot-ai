@@ -2,7 +2,7 @@
 from datetime import timezone
 from typing import Annotated, Literal
 
-from pydantic import (AwareDatetime, BaseModel, ConfigDict, Field, HttpUrl,
+from pydantic import (JsonValue, AwareDatetime, BaseModel, ConfigDict, Field, HttpUrl,
                       StringConstraints, field_validator, model_validator)
 
 from app.models.outlook_taxonomy import CategoryKey, EVENT_TYPES, EventType, EvidenceImpact, SourceType
@@ -46,6 +46,8 @@ class OutlookEvidence(BaseModel):
     materiality: UnitValue
     materiality_reason: Text
     exposure_links: tuple[ExposureLink, ...] = ()
+    scoring_eligible: bool = True
+    source_details: dict[str, JsonValue] = Field(default_factory=dict)
     raw_provider: Text
     raw_provider_id: Text | None = None
 

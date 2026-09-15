@@ -103,3 +103,9 @@ def test_overall_contract_rejects_inconsistent_states():
         OutlookResponse.model_validate({**payload, "value": -1})
     with pytest.raises(ValidationError):
         OutlookResponse.model_validate({**payload, "categories": {}})
+
+
+@pytest.fixture(autouse=True)
+def offline_default_outlook(monkeypatch):
+    from app.services.outlook_providers import PlaceholderOutlookProvider
+    monkeypatch.setattr("app.services.outlook.configured_providers", lambda: [PlaceholderOutlookProvider()])

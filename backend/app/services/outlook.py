@@ -10,6 +10,7 @@ from app.models.outlook_evidence import OutlookEvidence
 from app.services.outlook_evidence import assess_evidence
 from app.services.outlook_policy import DEFAULT_EVIDENCE_POLICY
 from app.services.outlook_providers import OutlookProvider, PlaceholderOutlookProvider
+from app.services.outlook_structured import configured_providers
 
 logger = logging.getLogger(__name__)
 
@@ -43,43 +44,58 @@ def aggregate_outlook(ticker: str, categories: dict[CategoryKey, OutlookCategory
                            categories=complete, metadata=metadata)
 
 
-def assess_providers(ticker: str, providers: list[OutlookProvider], *, now: datetime, policy=DEFAULT_EVIDENCE_POLICY) -> OutlookResponse:
-    """Fixture/future orchestration: failure of one provider cannot erase another's evidence."""
+def assess_providers(ticker: str, providers: list[OutlookProvider], *, now: datetime | None = None, policy=DEFAULT_EVIDENCE_POLICY) -> OutlookResponse:
+    """Isolate failures and configuration by each provider's declared category coverage."""
     ticker = ticker.strip().upper()
-    evidence = []
-    failed = []
+    evidence, failed, active = [], set(), set()
+    statuses = {}
+    attempted = []
     for provider in providers:
+        coverage = set(getattr(provider, "categories", CATEGORY_TITLES))
+        reason = getattr(provider, "unavailable_reason", None)
+        if reason:
+            statuses[provider.name] = reason
+            continue
+        attempted.append(provider)
+        active.update(coverage)
         try:
             supplied = provider.get_evidence(ticker)
             if not isinstance(supplied, list):
                 raise ValueError("Providers must return an evidence list")
             validated = [OutlookEvidence.model_validate(item) for item in supplied]
-            if any(item.raw_provider != provider.name or item.ticker != ticker for item in validated):
-                raise ValueError("Provider identity or ticker does not match requested evidence")
+            if any(item.raw_provider != provider.name or item.ticker != ticker or item.category not in coverage for item in validated):
+                raise ValueError("Provider identity, category or ticker does not match")
             evidence.extend(validated)
-        except Exception:
-            logger.warning("Outlook evidence provider failed: %s", provider.name, exc_info=True)
-            failed.append(provider.name)
+            statuses[provider.name] = "placeholder" if provider.uses_placeholder_data else "available" if validated else "no_evidence"
+        except Exception as error:
+            # Do not log exception text/tracebacks: HTTP errors may include credential-bearing URLs.
+            logger.warning("outlook_provider_failed provider=%s kind=%s", provider.name, type(error).__name__)
+            failed.update(coverage)
+            statuses[provider.name] = "error"
+    placeholder = not attempted or any(provider.uses_placeholder_data for provider in attempted)
     metadata = OutlookMetadata(provider=",".join(provider.name for provider in providers) or "none",
-                               uses_placeholder_data=any(provider.uses_placeholder_data for provider in providers))
-    # Placeholder/demo sources must never leak fixture factors into the production card.
-    if metadata.uses_placeholder_data:
+                               uses_placeholder_data=placeholder, provider_status=statuses)
+    if placeholder:
         categories = {key: OutlookCategory(status="insufficient_data",
             summary="External Outlook intelligence has not been connected. No assessment is available.",
             evidence_count=0) for key in CATEGORY_TITLES}
     else:
-        categories, _ = assess_evidence(ticker, evidence, now=now, policy=policy)
-        if failed:
-            categories = {key: (OutlookCategory(status="error", evidence_count=0,
-                summary="Outlook evidence is temporarily unavailable.") if not category.evidence else category)
-                for key, category in categories.items()}
-    if failed and len(failed) == len(providers):
+        # Use completion time for live fetches; explicit time retains deterministic fixture/replay behavior.
+        categories, _ = assess_evidence(ticker, evidence, now=now or datetime.now(timezone.utc), policy=policy)
+        for key, category in list(categories.items()):
+            if category.evidence:
+                continue
+            if key in failed:
+                categories[key] = OutlookCategory(status="error", evidence_count=0,
+                    summary="Structured evidence is temporarily unavailable.")
+            elif key not in active:
+                categories[key] = OutlookCategory(status="unavailable", evidence_count=0,
+                    summary="This category's evidence provider is not connected or configured.")
+    if attempted and all(statuses[provider.name] == "error" for provider in attempted):
         return OutlookResponse(ticker=ticker, status="error", categories=categories,
                                summary="Outlook data is temporarily unavailable.", metadata=metadata)
     return aggregate_outlook(ticker, categories, metadata, policy=policy)
 
 
 def analyze_outlook(ticker: str, provider: OutlookProvider | None = None, *, now: datetime | None = None) -> OutlookResponse:
-    # No runtime provider registry or enable flag: HTTP remains wired to the empty placeholder.
-    return assess_providers(ticker, [provider if provider is not None else DEFAULT_PROVIDER],
-                            now=now if now is not None else datetime.now(timezone.utc))
+    return assess_providers(ticker, [provider] if provider is not None else configured_providers(), now=now)

@@ -1,5 +1,7 @@
 # Outlook Phase 2: Evidence Architecture
 
+Phase 3A now connects structured adapters through this evidence foundation. See [Structured Evidence Providers](outlook-phase3a.md) for current runtime configuration, source rules and validation. The placeholder-only runtime notes below describe Phase 2.
+
 ## Scope and runtime behavior
 
 Phase 2 adds an offline, deterministic evidence domain. It does not connect sources or produce live assessments. `GET /outlook/{ticker}` remains authenticated and uses the empty `internal_placeholder` provider. The Outlook card remains unchanged and explicitly says intelligence is not connected. No credentials, network adapters, LLMs, databases, scanner changes, recommendations, or score changes were introduced.

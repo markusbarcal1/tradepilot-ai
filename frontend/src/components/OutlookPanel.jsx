@@ -15,6 +15,13 @@ function classification(item) {
     : STATES[item?.status] || "Unavailable";
 }
 
+function factorSources(category, factor) {
+  const ids = new Set(factor.evidence_ids || []);
+  return [...new Map((category.evidence || [])
+    .filter((item) => ids.has(item.id))
+    .map((item) => [`${item.raw_provider}:${item.id}`, item])).values()];
+}
+
 export function OutlookCategories({ categories }) {
   return (
     <div className="outlook-categories">
@@ -29,6 +36,14 @@ export function OutlookCategories({ categories }) {
                 <li key={`${factor.title}-${index}`}>
                   <strong>{factor.title}</strong>{factor.impact ? ` · ${factor.impact}` : ""}
                   <p>{factor.description}</p>
+                  {factorSources(category, factor).map((item) => (
+                    <small key={`${item.raw_provider}-${item.id}`}>
+                      {typeof item.source_url === "string" && /^https?:\/\//.test(item.source_url)
+                        ? <a href={item.source_url} target="_blank" rel="noopener noreferrer">Source: {item.source}</a>
+                        : <>Source: {item.source}</>}
+                      {" "}
+                    </small>
+                  ))}
                 </li>
               ))}</ul>
             )}
@@ -52,6 +67,9 @@ export default function OutlookPanel({ data, loading = false, error = "", embedd
         <div className="outlook-label">{label}</div>
         {data?.metadata?.uses_placeholder_data && !loading && !error && (
           <span className="partial-data-badge">Preview · Intelligence not connected</span>
+        )}
+        {!data?.metadata?.uses_placeholder_data && !loading && !error && Number.isInteger(data?.available_categories) && (
+          <span className="partial-data-badge">{data.available_categories} of 6 Outlook categories available</span>
         )}
         <p className="outlook-summary">{summary}</p>
       </summary>

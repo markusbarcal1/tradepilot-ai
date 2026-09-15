@@ -235,3 +235,9 @@ def test_custom_support_policy_is_used_by_overall_aggregation():
     policy = EvidencePolicy(minimum_events=4, strong_minimum_events=4)
     result = assess_providers("AAPL", [FixtureProvider()], now=NOW, policy=policy)
     assert result.value is None and result.status == "unavailable"
+
+
+@pytest.fixture(autouse=True)
+def offline_default_outlook(monkeypatch):
+    from app.services.outlook_providers import PlaceholderOutlookProvider
+    monkeypatch.setattr("app.services.outlook.configured_providers", lambda: [PlaceholderOutlookProvider()])

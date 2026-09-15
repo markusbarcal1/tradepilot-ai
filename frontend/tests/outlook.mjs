@@ -10,10 +10,11 @@ try {
   const render = (props) => renderToStaticMarkup(React.createElement(OutlookPanel, props));
   const data = {
     status: "partial", label: "Positive", value: 1, summary: "Fixture context.",
-    metadata: { uses_placeholder_data: false },
+    metadata: { uses_placeholder_data: false }, available_categories: 2,
     categories: {
       company: { status: "available", label: "Positive", value: 1,
-        summary: "Company fixture.", factors: [{ title: "Raised guidance", impact: "Positive", description: "Demo evidence." }] },
+        summary: "Company fixture.", factors: [{ title: "Raised guidance", impact: "Positive", description: "Demo evidence.", evidence_ids: ["example"] }],
+        evidence: [{ id: "example", raw_provider: "sec", source: "SEC", source_url: "https://www.sec.gov/Archives/example" }] },
       earnings: { status: "available", label: "Very Positive", value: 2 },
       geopolitical: { status: "not_material", label: null, value: null },
     },
@@ -25,6 +26,10 @@ try {
   for (const text of ["Positive", "Very Positive", "Not Material", "Raised guidance", "Demo evidence."]) {
     assert.ok(html.includes(text));
   }
+  assert.match(html, /2 of 6 Outlook categories available/);
+  assert.match(html, /Source: SEC/);
+  assert.match(html, /rel="noopener noreferrer"/);
+  assert.doesNotMatch(html, /Intelligence not connected/);
   assert.doesNotMatch(html, /progressbar|\/100/);
   // Native details/summary supplies default collapsed, pointer and keyboard toggling.
   assert.match(html, /^<details[^>]*><summary/);

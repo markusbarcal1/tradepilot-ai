@@ -97,7 +97,9 @@ def weigh_cluster(cluster: tuple[OutlookEvidence, ...], now: datetime,
     age_weight = min(freshness(item, now, policy) for item in cluster)
     reason = None
     signs = {1 if item.impact > 0 else -1 if item.impact < 0 else 0 for item in cluster}
-    if age_weight == 0:
+    if not representative.scoring_eligible:
+        reason = "provenance_only"
+    elif age_weight == 0:
         reason = "expired_or_not_yet_observed"
     elif len(signs) > 1:
         reason = "conflicting_duplicate_interpretations"

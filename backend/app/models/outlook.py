@@ -61,7 +61,8 @@ class OutlookCategory(BaseModel):
 class OutlookMetadata(BaseModel):
     provider: str
     uses_placeholder_data: bool
-    version: str = "1.1"
+    version: str = "1.2"
+    provider_status: dict[str, str] = Field(default_factory=dict)
 
 
 class OutlookResponse(BaseModel):
@@ -79,6 +80,11 @@ class OutlookResponse(BaseModel):
         if (self.status in ("available", "partial")) != (self.value is not None):
             raise ValueError("Only available or partial Outlooks must have an aggregate value")
         return self
+
+    @computed_field
+    @property
+    def available_categories(self) -> int:
+        return sum(category.status == "available" for category in self.categories.values())
 
     @computed_field
     @property

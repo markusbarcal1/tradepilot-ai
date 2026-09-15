@@ -20,6 +20,11 @@ class EvidencePolicy(BaseModel):
         "geopolitical": FreshnessRule(half_life_days=7, max_age_days=30),
     })
     event_freshness: dict[EventType, FreshnessRule] = Field(default_factory=lambda: {
+        EventType.CYBERSECURITY_EVENT: FreshnessRule(half_life_days=30, max_age_days=120),
+        EventType.RESTRUCTURING: FreshnessRule(half_life_days=45, max_age_days=180),
+        EventType.MANAGEMENT_CHANGE: FreshnessRule(half_life_days=14, max_age_days=60),
+        EventType.BROAD_MARKET_TREND: FreshnessRule(half_life_days=5, max_age_days=7),
+        EventType.VOLATILITY: FreshnessRule(half_life_days=5, max_age_days=7),
         EventType.GUIDANCE_RAISE: FreshnessRule(half_life_days=60, max_age_days=180),
         EventType.GUIDANCE_CUT: FreshnessRule(half_life_days=60, max_age_days=180),
         EventType.EARNINGS_UPCOMING: FreshnessRule(half_life_days=3, max_age_days=14),

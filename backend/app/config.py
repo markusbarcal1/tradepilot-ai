@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 from typing import Annotated, Literal
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import SecretStr, Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
@@ -34,6 +34,20 @@ class Settings(BaseSettings):
     )
     scanner_max_workers: int = Field(default=8, ge=1, le=16)
     log_level: Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"] = "INFO"
+
+    outlook_sec_enabled: bool = True
+    outlook_fred_enabled: bool = True
+    outlook_market_enabled: bool = True
+    outlook_sec_user_agent: str = ""
+    fred_api_key: SecretStr = SecretStr("")
+    outlook_sec_cache_ttl: int = Field(default=3600, ge=60)
+    outlook_cik_cache_ttl: int = Field(default=86400, ge=3600)
+    outlook_economic_cache_ttl: int = Field(default=21600, ge=300)
+    outlook_market_cache_ttl: int = Field(default=900, ge=60)
+    outlook_failure_cache_ttl: int = Field(default=60, ge=10)
+    outlook_http_timeout: float = Field(default=5, ge=1, le=15)
+    outlook_http_attempts: int = Field(default=1, ge=1, le=2)
+    outlook_sec_request_interval: float = Field(default=1, ge=1, le=60)
 
     supabase_auth_issuer: str | None = None
     supabase_auth_audience: str | None = None
