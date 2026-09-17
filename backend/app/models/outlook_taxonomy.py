@@ -11,10 +11,11 @@ CATEGORY_TITLES = {
 EVENT_TYPES = {
     "company": ("management_change", "acquisition", "divestiture", "partnership", "product_launch",
                 "contract_award", "legal_action", "regulatory_action", "cybersecurity_event",
-                "restructuring", "buyback", "capital_raise", "operational_update", "corporate_other"),
+                "restructuring", "buyback", "capital_raise", "operational_update", "corporate_other",
+                "material_impairment"),
     "earnings": ("earnings_result", "earnings_upcoming", "guidance_raise", "guidance_cut",
                  "estimate_revision_up", "estimate_revision_down", "revenue_surprise",
-                 "earnings_surprise", "margin_change", "earnings_other"),
+                 "earnings_surprise", "margin_change", "earnings_other", "guidance_withdrawal"),
     "industry": ("industry_demand", "supply_change", "competitor_event", "regulatory_industry_change",
                  "commodity_input_change", "structural_trend", "industry_other"),
     "economic": ("interest_rates", "inflation", "employment", "gdp_growth", "consumer_spending",

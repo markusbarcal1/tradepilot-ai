@@ -1,5 +1,7 @@
 # Outlook Phase 3A — Structured Evidence Providers
 
+Follow-on implementation: [Phase 3B free intelligence foundation](outlook-phase3b.md). The status and validation below describe Phase 3A's original delivery.
+
 ## Status
 
 Real SEC, FRED and existing-market-data adapters are implemented. All three are individually configurable. **LIVE STRUCTURED EVIDENCE** means an enabled adapter returned usable observations; it does not mean all six categories are available. The production route no longer uses the Phase 2 placeholder by default.

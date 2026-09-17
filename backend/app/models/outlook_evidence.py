@@ -20,6 +20,9 @@ class ExposureLink(BaseModel):
 
 class CompanyContext(BaseModel):
     ticker: Text
+    company_name: Text | None = None
+    country: Text | None = None
+    business_description: Text | None = None
     sector: Text | None = None
     industry: Text | None = None
     peer_group: tuple[str, ...] = ()
@@ -48,6 +51,7 @@ class OutlookEvidence(BaseModel):
     exposure_links: tuple[ExposureLink, ...] = ()
     scoring_eligible: bool = True
     source_details: dict[str, JsonValue] = Field(default_factory=dict)
+    source_quality: Literal["primary_authoritative", "secondary_reporting", "unknown"] = "unknown"
     raw_provider: Text
     raw_provider_id: Text | None = None
 

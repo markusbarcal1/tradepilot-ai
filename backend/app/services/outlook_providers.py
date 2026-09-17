@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Protocol
 
 from app.models.outlook_evidence import CompanyContext, OutlookEvidence
+from app.models.outlook_document import SourceDocument
 from app.models.outlook_taxonomy import CategoryKey, SourceType
 
 
@@ -12,6 +13,17 @@ class OutlookProvider(Protocol):
     uses_placeholder_data: bool
 
     def get_evidence(self, ticker: str) -> list[OutlookEvidence]: ...
+
+
+class OutlookInterpreter(Protocol):
+    def interpret(self, ticker: str, documents: list[SourceDocument],
+                  company_context: CompanyContext) -> list[OutlookEvidence]: ...
+
+
+class NewsSourceProvider(Protocol):
+    """Discovery only. No implementation or runtime news dependency in Phase 3B."""
+    def get_ticker_news(self, ticker: str, since: datetime) -> list[SourceDocument]: ...
+    def get_industry_news(self, industry: str, since: datetime) -> list[SourceDocument]: ...
 
 
 class PlaceholderOutlookProvider:

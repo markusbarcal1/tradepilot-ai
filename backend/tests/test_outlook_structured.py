@@ -241,7 +241,8 @@ def test_partial_outlook_counts_and_unsupported_categories(count):
     result = assess_providers("AAPL", providers()[:count], now=NOW)
     assert result.available_categories == count
     assert result.status == "partial" and result.value is not None
-    for category in ("earnings", "industry", "geopolitical"):
+    assert result.categories["earnings"].status == "insufficient_data"
+    for category in ("industry", "geopolitical"):
         assert result.categories[category].status == "unavailable"
     assert not result.metadata.uses_placeholder_data
     assert "test-secret-not-real" not in result.model_dump_json()

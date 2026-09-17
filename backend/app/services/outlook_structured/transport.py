@@ -1,4 +1,4 @@
-"""Bounded JSON requests and process-local single-flight caches. No secret URLs in logs."""
+"""Bounded JSON/text requests and single-flight caches. No secret URLs in logs."""
 from collections import OrderedDict
 from copy import deepcopy
 import json
@@ -69,19 +69,26 @@ class JsonClient:
         self.settings = settings
 
     def get(self, url, *, provider, params=None, user_agent=None):
+        return self._get(url, provider=provider, params=params, user_agent=user_agent)
+
+    def get_text(self, url, *, provider, user_agent=None):
+        return self._get(url, provider=provider, user_agent=user_agent, text=True)
+
+    def _get(self, url, *, provider, params=None, user_agent=None, text=False):
         gate = SEC_GATE if provider == "sec" else FRED_GATE
         interval = self.settings.outlook_sec_request_interval if provider == "sec" else 0.5
         request = Request(url + ("?" + urlencode(params) if params else ""), headers={
-            "User-Agent": user_agent or "TradePilotAI/Outlook", "Accept": "application/json",
+            "User-Agent": user_agent or "TradePilotAI/Outlook", "Accept": "text/html,text/plain" if text else "application/json",
         })
         for attempt in range(self.settings.outlook_http_attempts):
             gate.wait(interval)
             try:
                 with urlopen(request, timeout=self.settings.outlook_http_timeout) as response:
-                    payload = response.read(8 * 1024 * 1024 + 1)
-                    if len(payload) > 8 * 1024 * 1024:
+                    limit = 1024 * 1024 if text else 8 * 1024 * 1024
+                    payload = response.read(limit + 1)
+                    if len(payload) > limit:
                         raise ValueError("payload_too_large")
-                    return json.loads(payload)
+                    return payload.decode("utf-8", errors="replace") if text else json.loads(payload)
             except HTTPError as error:
                 # Do not retry 403/429; cache/backoff gives the provider breathing room.
                 retryable = error.code in (500, 502, 503, 504)

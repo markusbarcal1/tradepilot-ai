@@ -1,7 +1,7 @@
 """Small, provisional structured-input basket and deterministic interpretation policy."""
 from dataclasses import dataclass
 
-# 8-K item numbers, not prose classification. A single accession is one event.
+# Official 8-K item context; accession + canonical event type identifies an event.
 SEC_ITEMS = {
     "1.03": ("restructuring", -2, 1.0, "Bankruptcy or receivership"),
     "1.05": ("cybersecurity_event", -1, 1.0, "Material cybersecurity incident"),
@@ -10,6 +10,9 @@ SEC_ITEMS = {
     "1.01": ("corporate_other", 0, 0.5, "Material definitive agreement"),
     "3.02": ("capital_raise", 0, 0.5, "Unregistered sale of equity securities"),
     "2.05": ("restructuring", 0, 0.5, "Exit or disposal costs"),
+    "2.06": ("material_impairment", -1, 0.9, "Material impairment"),
+    "3.01": ("regulatory_action", 0, 0.5, "Listing-rule notice or transfer of listing"),
+    "1.02": ("corporate_other", 0, 0.5, "Termination of material agreement"),
 }
 SEC_LOOKBACK_DAYS = 180
 SEC_MAX_FILINGS = 200

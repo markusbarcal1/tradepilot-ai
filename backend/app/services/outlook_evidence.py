@@ -31,7 +31,15 @@ def headline_similarity(first: str, second: str) -> float:
 
 def same_event(first: OutlookEvidence, second: OutlookEvidence, policy: EvidencePolicy,
                similarity: Callable[[str, str], float]) -> bool:
-    if (first.ticker, first.category, first.event_type) != (second.ticker, second.category, second.event_type):
+    if (first.ticker, first.category) != (second.ticker, second.category):
+        return False
+    # Metric observations in one results release are not independent corporate events.
+    release = first.source_details.get("earnings_release_id")
+    if (first.category == "earnings" and release and release == second.source_details.get("earnings_release_id")
+            and first.event_type in ("earnings_result", "margin_change")
+            and second.event_type in ("earnings_result", "margin_change")):
+        return True
+    if first.event_type != second.event_type:
         return False
     if first.raw_provider == second.raw_provider and (
         first.id == second.id or (first.raw_provider_id and first.raw_provider_id == second.raw_provider_id)
@@ -92,11 +100,14 @@ class EvidenceContribution:
 
 def weigh_cluster(cluster: tuple[OutlookEvidence, ...], now: datetime,
                  policy=DEFAULT_EVIDENCE_POLICY) -> EvidenceContribution:
-    representative = min(cluster, key=lambda item: (-item.confidence, item.published_at, item.raw_provider, item.id))
+    # Secondary reports cannot override (or suppress by disagreement) explicit primary evidence.
+    primary = tuple(item for item in cluster if item.source_quality == "primary_authoritative")
+    authoritative = primary or cluster
+    representative = min(authoritative, key=lambda item: (-item.confidence, item.published_at, item.raw_provider, item.id))
     # Syndication cannot refresh an event's age or extend its earliest expiration.
-    age_weight = min(freshness(item, now, policy) for item in cluster)
+    age_weight = min(freshness(item, now, policy) for item in authoritative)
     reason = None
-    signs = {1 if item.impact > 0 else -1 if item.impact < 0 else 0 for item in cluster}
+    signs = {1 if item.impact > 0 else -1 if item.impact < 0 else 0 for item in authoritative}
     if not representative.scoring_eligible:
         reason = "provenance_only"
     elif age_weight == 0:

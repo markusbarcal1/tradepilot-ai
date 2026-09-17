@@ -36,6 +36,8 @@ class Settings(BaseSettings):
     log_level: Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"] = "INFO"
 
     outlook_sec_enabled: bool = True
+    outlook_sec_documents_enabled: bool = True
+    outlook_sec_max_document_filings: int = Field(default=2, ge=1, le=3)
     outlook_fred_enabled: bool = True
     outlook_market_enabled: bool = True
     outlook_sec_user_agent: str = ""
