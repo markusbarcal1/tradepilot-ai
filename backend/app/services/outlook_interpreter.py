@@ -7,6 +7,7 @@ from decimal import Decimal
 from app.models.outlook_document import SourceDocument
 from app.models.outlook_evidence import CompanyContext, OutlookEvidence
 from app.services.outlook_earnings import reporting_comparison, gaap_margin_comparisons
+from app.services.outlook_reporting import fact_reporting_identity
 
 LOGGER = logging.getLogger(__name__)
 VERSION = "rules-3b-2"
@@ -63,7 +64,9 @@ class DeterministicOutlookInterpreter:
                 "provider_document_id": document.provider_document_id, "interpreter": VERSION,
                 **({"earnings_release_id": f"{document.provider}:{identity}"}
                    if category == "earnings" and event in ("earnings_result", "margin_change") else {}),
-                "evidence_basis": basis, "numeric": numeric or {}})
+                "evidence_basis": basis, "numeric": numeric or {},
+                **({"reporting_identity": fact_reporting_identity(document, numeric or {}).model_dump(mode="json")}
+                   if category == "earnings" and event in ("earnings_result", "margin_change") else {})})
 
     def _interpret_document(self, document, context):
         from app.services.outlook_structured.policy import SEC_ITEMS

@@ -6,6 +6,7 @@ from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, HttpUrl, JsonV
 
 from app.models.outlook_evidence import Text
 from app.models.outlook_taxonomy import SourceType
+from app.models.outlook_reporting import ReportingIdentity
 
 SourceQuality = Literal["primary_authoritative", "secondary_reporting", "unknown"]
 
@@ -40,6 +41,7 @@ class SourceDocument(BaseModel):
     related_tickers: tuple[str, ...] = ()
     metadata: dict[str, JsonValue] = Field(default_factory=dict)
     tables: tuple[SourceTable, ...] = Field(default=(), max_length=8)
+    reporting_identity: ReportingIdentity | None = None
 
     @field_validator("ticker")
     @classmethod
@@ -55,4 +57,8 @@ class SourceDocument(BaseModel):
     def validate_times(self):
         if self.observed_at < self.published_at:
             raise ValueError("Observed time cannot precede publication")
+        if self.reporting_identity:
+            for period in self.reporting_identity.periods:
+                if period.ticker.upper() != self.ticker or (period.period_end and period.period_end > self.published_at.date()):
+                    raise ValueError("Reporting identity must describe this issuer and an ended period")
         return self

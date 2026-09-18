@@ -1,8 +1,12 @@
 """Operator-only read-only inspection of configured Outlook providers."""
 import argparse
 from collections import Counter
+from datetime import datetime, timezone
+import json
 
 from app.services.outlook import analyze_outlook
+from app.services.outlook_diagnostics import inspect_snapshot, format_availability
+from app.services.outlook_reporting import evidence_reporting_diagnostics, format_reporting
 
 
 def sec_diagnostics(result):
@@ -25,13 +29,42 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("ticker")
     parser.add_argument("--json", action="store_true", help="Include normalized evidence/provenance")
+    parser.add_argument("--offline-case", help="Inspect a frozen case without configured providers or network")
+    parser.add_argument("--replay", help="Replay name for --offline-case; default is the last declared replay")
     args = parser.parse_args()
-    result = analyze_outlook(args.ticker)
+    if args.offline_case:
+        from app.cli.evaluate_outlook import DEFAULT_CORPUS
+        from app.models.outlook_evaluation import EvaluationCorpus
+        from app.services.outlook_evaluation import replay, replay_documents
+        from app.services.outlook_reporting import reporting_diagnostics
+        packages = [p for path in (DEFAULT_CORPUS, DEFAULT_CORPUS.with_name("reporting-v1.json"))
+            for p in EvaluationCorpus.model_validate_json(path.read_text(encoding="utf-8")).packages
+            if p.id == args.offline_case and p.context.ticker.upper() == args.ticker.upper()]
+        if len(packages) != 1:
+            parser.error("No unique offline case for that ticker")
+        package = packages[0]
+        points = [p for p in package.replays if p.name == args.replay] if args.replay else [package.replays[-1]]
+        if not points:
+            parser.error("Unknown replay name")
+        assessed_at = points[0].assessment_at
+        result = replay(package, assessed_at)[2]
+        reporting = reporting_diagnostics(replay_documents(package, assessed_at)[0], now=assessed_at,
+            relationships=package.relationships, gaps=package.reporting_gaps)
+    else:
+        if args.replay:
+            parser.error("--replay requires --offline-case")
+        result = analyze_outlook(args.ticker)
+        assessed_at = datetime.now(timezone.utc)
+        reporting = evidence_reporting_diagnostics(
+            [e for category in result.categories.values() for e in category.evidence], now=assessed_at)
+    result, diagnostics = inspect_snapshot(result, now=assessed_at)
     if args.json:
-        print(result.model_dump_json(indent=2))
+        print(json.dumps({**result.model_dump(mode="json"), "assessment_at": assessed_at.isoformat(),
+                          "availability_diagnostics": diagnostics, "reporting_diagnostics": reporting}, indent=2))
     else:
         print(f"{result.ticker}: {result.label.value if result.label else result.status}")
         print(f"{result.available_categories} of 6 categories available")
+        print(f"Assessed at {assessed_at.isoformat()}; raw support excludes decay; effective support includes decay")
         for provider, state in result.metadata.provider_status.items():
             print(f"Provider {provider}: {state}")
         sec_evidence = [item for category in result.categories.values() for item in category.evidence
@@ -43,9 +76,11 @@ def main():
         print(f"SEC interpreted candidates: {stats['interpreted_candidates']}; supported events: {stats['supported_events']}; provenance-only evidence: {stats['provenance_only_evidence']}")
         retrieval = {item.raw_provider_id: item.source_details.get("document_retrieval", "unknown") for item in sec_evidence}
         print("SEC document retrieval: " + ", ".join(f"{state}={count}" for state, count in sorted(Counter(retrieval.values()).items())))
+        print(format_reporting(reporting))
         for name, category in result.categories.items():
             label = category.label.value if category.label else category.status
-            print(f"{name}: {label}; {category.evidence_count or 0} supported events, {len(category.evidence)} source observations")
+            print(f"{name} label: {label}")
+            print(format_availability(name, diagnostics[name]))
     return 0
 
 

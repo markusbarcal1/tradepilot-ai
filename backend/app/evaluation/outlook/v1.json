@@ -1,0 +1,3744 @@
+{
+  "schema_version": "1.0",
+  "corpus_version": "3c.1",
+  "provenance": "Synthetic and sanitized short reporting structures; no downloaded documents, live prices, or investment labels. Interpretation cases and normalized-evidence scenarios are explicitly separate.",
+  "packages": [
+    {
+      "id": "aapl_style",
+      "description": "Sanitized issuer-led revenue and qualified EPS; one release.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "aapl_style",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [
+        {
+          "document": {
+            "id": "apple_style",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/apple_style.htm",
+            "provider": "sec",
+            "provider_document_id": "apple_style",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-09-01T12:00:00+00:00",
+            "observed_at": "2026-09-01T12:00:00+00:00",
+            "extracted_text": "The Company posted quarterly revenue of $109.4 billion, up 16 percent year over year.\nDiluted earnings per share was $2.02, up 29 percent year over year, and included a favorable impact of $0.11 from tariff refunds.\nThe company expects full-year revenue of $120 billion.\nThe stock price is up 20%.",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "2.02"
+              ],
+              "accession": "apple_style",
+              "document_kind": "earnings_exhibit",
+              "reporting_period": "apple_style"
+            }
+          }
+        }
+      ],
+      "evidence": [],
+      "supported_assertions": [
+        {
+          "source_id": "apple_style",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "sign": 1,
+          "metric": "revenue"
+        },
+        {
+          "source_id": "apple_style",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "sign": 1,
+          "metric": "diluted_eps",
+          "qualifier": "$0.11 from tariff refunds"
+        }
+      ],
+      "unsupported_assertions": [
+        {
+          "source_id": "apple_style",
+          "category": "earnings",
+          "event_type": "guidance_raise"
+        }
+      ],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "real_structure",
+        "qualifier"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.72,
+                0.72
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        },
+        {
+          "name": "phase3b_age_regression",
+          "assessment_at": "2026-10-19T22:01:32.870732+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "support": [
+                0.34153,
+                0.34155
+              ],
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "nvda_style",
+      "description": "Sanitized revenue plus GAAP table; one release.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "nvda_style",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [
+        {
+          "document": {
+            "id": "chip_style",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/chip_style.htm",
+            "provider": "sec",
+            "provider_document_id": "chip_style",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-09-01T12:00:00+00:00",
+            "observed_at": "2026-09-01T12:00:00+00:00",
+            "extracted_text": "",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "2.02"
+              ],
+              "accession": "chip_style",
+              "document_kind": "earnings_exhibit",
+              "reporting_period": "chip_style"
+            }
+          },
+          "html": "<p>Revenue of $96.2 billion, up 106% from a year ago.</p><table><tr><td colspan=\"3\">GAAP</td></tr><tr><td></td><td>Q2 FY27</td><td>Q2 FY26</td></tr><tr><td>Gross margin</td><td>75.0%</td><td>72.4%</td></tr></table><table><tr><td colspan=\"3\">Non-GAAP</td></tr><tr><td></td><td>Q2 FY27</td><td>Q2 FY26</td></tr><tr><td>Operating margin</td><td>80%</td><td>70%</td></tr></table>"
+        },
+        {
+          "document": {
+            "id": "chip_prior",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/chip_style.htm",
+            "provider": "sec",
+            "provider_document_id": "chip_prior",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-05-26T12:00:00+00:00",
+            "observed_at": "2026-05-26T12:00:00+00:00",
+            "extracted_text": "",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "2.02"
+              ],
+              "accession": "chip_prior",
+              "document_kind": "earnings_exhibit",
+              "reporting_period": "chip_prior"
+            }
+          },
+          "html": "<p>Revenue of $81.6 billion, up 85% from a year ago.</p><table><tr><td colspan=\"3\">GAAP</td></tr><tr><td></td><td>Q1 FY27</td><td>Q1 FY26</td></tr><tr><td>Gross margin</td><td>74.9%</td><td>60.5%</td></tr></table>"
+        }
+      ],
+      "evidence": [],
+      "supported_assertions": [
+        {
+          "source_id": "chip_style",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "sign": 1,
+          "metric": "revenue"
+        },
+        {
+          "source_id": "chip_style",
+          "category": "earnings",
+          "event_type": "margin_change",
+          "sign": 1,
+          "metric": "gross_margin",
+          "accounting_basis": "GAAP"
+        }
+      ],
+      "unsupported_assertions": [
+        {
+          "source_id": "chip_style",
+          "category": "earnings",
+          "event_type": "margin_change",
+          "metric": "operating_margin"
+        }
+      ],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "real_structure",
+        "gaap_table"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 2,
+              "status": "available",
+              "support": [
+                0.8791314651540886,
+                0.8791314651540886
+              ]
+            }
+          ],
+          "available_categories": 1,
+          "overall_status": "partial",
+          "overall_label": "Positive"
+        },
+        {
+          "name": "phase3b_age_regression",
+          "assessment_at": "2026-09-22T22:10:46.982686+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 2,
+              "support": [
+                0.63202,
+                0.63204
+              ],
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "multi_anchor",
+      "description": "Eight anchors, one validated exhibit destination.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "multi_anchor",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [
+        {
+          "document": {
+            "id": "anchors",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/anchors.htm",
+            "provider": "sec",
+            "provider_document_id": "anchors",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-09-01T12:00:00+00:00",
+            "observed_at": "2026-09-01T12:00:00+00:00",
+            "extracted_text": "",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "2.02"
+              ],
+              "accession": "anchors",
+              "document_kind": "earnings_exhibit",
+              "reporting_period": "anchors"
+            }
+          },
+          "html": "<table><tr><td>99.1</td><td><a href=\"release.htm\">fragment</a><a href=\"release.htm\">fragment</a><a href=\"release.htm\">fragment</a><a href=\"release.htm\">fragment</a><a href=\"release.htm\">fragment</a><a href=\"release.htm\">fragment</a><a href=\"release.htm\">fragment</a><a href=\"release.htm\">fragment</a></td></tr></table>",
+          "expected_exhibit_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/release.htm"
+        }
+      ],
+      "evidence": [],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "retrieval_structure"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 0,
+              "status": "insufficient_data",
+              "support": [
+                0,
+                0
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "revenue_decline",
+      "description": "Explicit deterioration with unchanged interpretation.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "revenue_decline",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [
+        {
+          "document": {
+            "id": "revenue_decline",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/revenue_decline.htm",
+            "provider": "sec",
+            "provider_document_id": "revenue_decline",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-09-01T12:00:00+00:00",
+            "observed_at": "2026-09-01T12:00:00+00:00",
+            "extracted_text": "Revenue was $10 billion, down 20% from a year ago.",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "2.02"
+              ],
+              "accession": "revenue_decline",
+              "document_kind": "earnings_exhibit",
+              "reporting_period": "revenue_decline"
+            }
+          }
+        }
+      ],
+      "evidence": [],
+      "supported_assertions": [
+        {
+          "source_id": "revenue_decline",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "sign": -1,
+          "metric": "revenue"
+        }
+      ],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "negative_symmetry"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.72,
+                0.72
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "eps_decline",
+      "description": "Explicit deterioration with unchanged interpretation.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "eps_decline",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [
+        {
+          "document": {
+            "id": "eps_decline",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/eps_decline.htm",
+            "provider": "sec",
+            "provider_document_id": "eps_decline",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-09-01T12:00:00+00:00",
+            "observed_at": "2026-09-01T12:00:00+00:00",
+            "extracted_text": "Diluted EPS was $2.00, down 20% year over year.",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "2.02"
+              ],
+              "accession": "eps_decline",
+              "document_kind": "earnings_exhibit",
+              "reporting_period": "eps_decline"
+            }
+          }
+        }
+      ],
+      "evidence": [],
+      "supported_assertions": [
+        {
+          "source_id": "eps_decline",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "sign": -1,
+          "metric": "diluted_eps"
+        }
+      ],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "negative_symmetry"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.72,
+                0.72
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "margin_contraction",
+      "description": "Explicit deterioration with unchanged interpretation.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "margin_contraction",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [
+        {
+          "document": {
+            "id": "margin_contraction",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/margin_contraction.htm",
+            "provider": "sec",
+            "provider_document_id": "margin_contraction",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-09-01T12:00:00+00:00",
+            "observed_at": "2026-09-01T12:00:00+00:00",
+            "extracted_text": "Gross margin decreased from 75% to 73% year over year.",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "2.02"
+              ],
+              "accession": "margin_contraction",
+              "document_kind": "earnings_exhibit",
+              "reporting_period": "margin_contraction"
+            }
+          }
+        }
+      ],
+      "evidence": [],
+      "supported_assertions": [
+        {
+          "source_id": "margin_contraction",
+          "category": "earnings",
+          "event_type": "margin_change",
+          "sign": -1,
+          "metric": "gross_margin"
+        }
+      ],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "negative_symmetry"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.72,
+                0.72
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "mixed_metrics",
+      "description": "Different factual dimensions are not duplicate conflicts.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "mixed_metrics",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [
+        {
+          "document": {
+            "id": "mixed",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/mixed.htm",
+            "provider": "sec",
+            "provider_document_id": "mixed",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-09-01T12:00:00+00:00",
+            "observed_at": "2026-09-01T12:00:00+00:00",
+            "extracted_text": "Revenue was $10 billion, up 20% year over year.\nGross margin decreased from 75% to 73% year over year.",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "2.02"
+              ],
+              "accession": "mixed",
+              "document_kind": "earnings_exhibit",
+              "reporting_period": "mixed"
+            }
+          }
+        }
+      ],
+      "evidence": [],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "mixed_factors"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.72,
+                0.72
+              ],
+              "direction": [
+                0,
+                0
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "guidance_raise",
+      "description": "Explicit guidance change; no new-forecast inference.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "guidance_raise",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [
+        {
+          "document": {
+            "id": "guidance_raise",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/guidance_raise.htm",
+            "provider": "sec",
+            "provider_document_id": "guidance_raise",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-09-01T12:00:00+00:00",
+            "observed_at": "2026-09-01T12:00:00+00:00",
+            "extracted_text": "The company raises its full-year outlook.",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "2.02"
+              ],
+              "accession": "guidance_raise",
+              "document_kind": "earnings_exhibit",
+              "reporting_period": "guidance_raise"
+            }
+          }
+        }
+      ],
+      "evidence": [],
+      "supported_assertions": [
+        {
+          "source_id": "guidance_raise",
+          "category": "earnings",
+          "event_type": "guidance_raise",
+          "sign": 1
+        }
+      ],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "guidance"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.72,
+                0.72
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "guidance_cut",
+      "description": "Explicit guidance change; no new-forecast inference.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "guidance_cut",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [
+        {
+          "document": {
+            "id": "guidance_cut",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/guidance_cut.htm",
+            "provider": "sec",
+            "provider_document_id": "guidance_cut",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-09-01T12:00:00+00:00",
+            "observed_at": "2026-09-01T12:00:00+00:00",
+            "extracted_text": "The company lowers previously issued guidance.",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "2.02"
+              ],
+              "accession": "guidance_cut",
+              "document_kind": "earnings_exhibit",
+              "reporting_period": "guidance_cut"
+            }
+          }
+        }
+      ],
+      "evidence": [],
+      "supported_assertions": [
+        {
+          "source_id": "guidance_cut",
+          "category": "earnings",
+          "event_type": "guidance_cut",
+          "sign": -1
+        }
+      ],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "guidance"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.72,
+                0.72
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "guidance_withdrawal",
+      "description": "Explicit guidance change; no new-forecast inference.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "guidance_withdrawal",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [
+        {
+          "document": {
+            "id": "guidance_withdrawal",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/guidance_withdrawal.htm",
+            "provider": "sec",
+            "provider_document_id": "guidance_withdrawal",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-09-01T12:00:00+00:00",
+            "observed_at": "2026-09-01T12:00:00+00:00",
+            "extracted_text": "The company withdraws its prior guidance.",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "2.02"
+              ],
+              "accession": "guidance_withdrawal",
+              "document_kind": "earnings_exhibit",
+              "reporting_period": "guidance_withdrawal"
+            }
+          }
+        }
+      ],
+      "evidence": [],
+      "supported_assertions": [
+        {
+          "source_id": "guidance_withdrawal",
+          "category": "earnings",
+          "event_type": "guidance_withdrawal",
+          "sign": -1
+        }
+      ],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "guidance"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.72,
+                0.72
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "cybersecurity",
+      "description": "Official adverse item context; one event stays insufficient.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Industrials",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "cybersecurity",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [
+        {
+          "document": {
+            "id": "cybersecurity",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/cybersecurity.htm",
+            "provider": "sec",
+            "provider_document_id": "cybersecurity",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-09-01T12:00:00+00:00",
+            "observed_at": "2026-09-01T12:00:00+00:00",
+            "extracted_text": "",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "1.05"
+              ],
+              "accession": "cybersecurity",
+              "reporting_period": "cybersecurity"
+            }
+          }
+        }
+      ],
+      "evidence": [],
+      "supported_assertions": [
+        {
+          "source_id": "cybersecurity",
+          "category": "company",
+          "event_type": "cybersecurity_event",
+          "sign": -1
+        }
+      ],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "company_adverse"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "company",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.95,
+                0.95
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "impairment",
+      "description": "Official adverse item context; one event stays insufficient.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Industrials",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "impairment",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [
+        {
+          "document": {
+            "id": "impairment",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/impairment.htm",
+            "provider": "sec",
+            "provider_document_id": "impairment",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-09-01T12:00:00+00:00",
+            "observed_at": "2026-09-01T12:00:00+00:00",
+            "extracted_text": "",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "2.06"
+              ],
+              "accession": "impairment",
+              "reporting_period": "impairment"
+            }
+          }
+        }
+      ],
+      "evidence": [],
+      "supported_assertions": [
+        {
+          "source_id": "impairment",
+          "category": "company",
+          "event_type": "material_impairment",
+          "sign": -1
+        }
+      ],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "company_adverse"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "company",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.855,
+                0.855
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "bankruptcy",
+      "description": "Official adverse item context; one event stays insufficient.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Industrials",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "bankruptcy",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [
+        {
+          "document": {
+            "id": "bankruptcy",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/bankruptcy.htm",
+            "provider": "sec",
+            "provider_document_id": "bankruptcy",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-09-01T12:00:00+00:00",
+            "observed_at": "2026-09-01T12:00:00+00:00",
+            "extracted_text": "",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "1.03"
+              ],
+              "accession": "bankruptcy",
+              "reporting_period": "bankruptcy"
+            }
+          }
+        }
+      ],
+      "evidence": [],
+      "supported_assertions": [
+        {
+          "source_id": "bankruptcy",
+          "category": "company",
+          "event_type": "restructuring",
+          "sign": -1
+        }
+      ],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "company_adverse"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "company",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.95,
+                0.95
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "listing",
+      "description": "Explicit listing-rule notice.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "listing",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [
+        {
+          "document": {
+            "id": "listing",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/listing.htm",
+            "provider": "sec",
+            "provider_document_id": "listing",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-09-01T12:00:00+00:00",
+            "observed_at": "2026-09-01T12:00:00+00:00",
+            "extracted_text": "The company received notice from Nasdaq regarding noncompliance.",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "3.01"
+              ],
+              "accession": "listing",
+              "document_kind": "listing_item",
+              "reporting_period": "listing"
+            }
+          }
+        }
+      ],
+      "evidence": [],
+      "supported_assertions": [
+        {
+          "source_id": "listing",
+          "category": "company",
+          "event_type": "regulatory_action",
+          "sign": -1
+        }
+      ],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "company_adverse"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "company",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.765,
+                0.765
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "duplicate_sources",
+      "description": "Same revenue fact, three sources, primary precedence.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "duplicate_sources",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "primary",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "primary",
+          "summary": "Synthetic factual observation primary",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "release",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "release",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "secondary",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "secondary",
+          "summary": "Synthetic factual observation secondary",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": -1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "news",
+          "raw_provider_id": "release",
+          "source_quality": "secondary_reporting",
+          "source_details": {
+            "earnings_release_id": "release",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "third",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "third",
+          "summary": "Synthetic factual observation third",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "another",
+          "raw_provider_id": "release",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "release",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [
+        [
+          "primary",
+          "secondary",
+          "third"
+        ]
+      ],
+      "relationships": [],
+      "semantic_tags": [
+        "duplicate",
+        "primary_precedence"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.72,
+                0.72
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "low_materiality_noise",
+      "description": "Audit .01 opposing factor cannot suppress .8 factor.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "low_materiality_noise",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "a",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "margin_change",
+          "title": "a",
+          "summary": "Synthetic factual observation a",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": -1,
+          "confidence": 0.9,
+          "materiality": 0.01,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "release",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "release",
+            "numeric": {
+              "metric": "gross_margin",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "b",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "b",
+          "summary": "Synthetic factual observation b",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "release",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "release",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "id_invariance",
+        "low_materiality"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.72,
+                0.72
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "contradictory_factor",
+      "description": "Same period/metric disagrees; factor excluded.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "contradictory_factor",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "up",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "up",
+          "summary": "Synthetic factual observation up",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "release",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "release",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "down",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "down",
+          "summary": "Synthetic factual observation down",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": -1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "release",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "release",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [
+        [
+          "up",
+          "down"
+        ]
+      ],
+      "relationships": [],
+      "semantic_tags": [
+        "contradictory_assertions"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 0,
+              "status": "insufficient_data",
+              "support": [
+                0,
+                0
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "conflict_with_other_factor",
+      "description": "Conflicting revenue does not erase unambiguous EPS.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "conflict_with_other_factor",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "up",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "up",
+          "summary": "Synthetic factual observation up",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "release",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "release",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "down",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "down",
+          "summary": "Synthetic factual observation down",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": -1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "release",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "release",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "eps",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "eps",
+          "summary": "Synthetic factual observation eps",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "release",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "release",
+            "numeric": {
+              "metric": "diluted_eps",
+              "comparison": "year_over_year"
+            }
+          }
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "factor_isolation"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.72,
+                0.72
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "aging_boundaries",
+      "description": "One factor replayed through full earnings lifecycle.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "aging_boundaries",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "aging",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "aging",
+          "summary": "Synthetic factual observation aging",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "release",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "release",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "stale",
+        "expiration"
+      ],
+      "replays": [
+        {
+          "name": "0",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.72,
+                0.72
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        },
+        {
+          "name": "30",
+          "assessment_at": "2026-10-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.4535715779621543,
+                0.4535715779621543
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        },
+        {
+          "name": "60",
+          "assessment_at": "2026-10-31T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.2857321893542759,
+                0.2857321893542759
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        },
+        {
+          "name": "90",
+          "assessment_at": "2026-11-30T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.18,
+                0.18
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        },
+        {
+          "name": "119",
+          "assessment_at": "2026-12-29T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.11515303711316391,
+                0.11515303711316391
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        },
+        {
+          "name": "120",
+          "assessment_at": "2026-12-30T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 0,
+              "status": "insufficient_data",
+              "support": [
+                0,
+                0
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        },
+        {
+          "name": "121",
+          "assessment_at": "2026-12-31T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 0,
+              "status": "insufficient_data",
+              "support": [
+                0,
+                0
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "future_observation",
+      "description": "Later discovery excluded from historical replay.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "future_observation",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [
+        {
+          "document": {
+            "id": "future",
+            "ticker": "TEST",
+            "title": "Sanitized issuer disclosure",
+            "source_name": "Frozen primary fixture",
+            "source_type": "regulatory_filing",
+            "source_url": "https://www.sec.gov/Archives/edgar/data/1/000000000126000001/future.htm",
+            "provider": "sec",
+            "provider_document_id": "future",
+            "source_quality": "primary_authoritative",
+            "published_at": "2026-09-01T12:00:00+00:00",
+            "observed_at": "2026-09-02T12:00:00+00:00",
+            "extracted_text": "The Company posted quarterly revenue of $109.4 billion, up 16 percent year over year.",
+            "metadata": {
+              "form": "8-K",
+              "items": [
+                "2.02"
+              ],
+              "accession": "future",
+              "document_kind": "earnings_exhibit",
+              "reporting_period": "future"
+            }
+          }
+        }
+      ],
+      "evidence": [],
+      "supported_assertions": [
+        {
+          "source_id": "future",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "sign": 1,
+          "metric": "revenue"
+        }
+      ],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "no_future_leakage"
+      ],
+      "replays": [
+        {
+          "name": "before",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 0,
+              "status": "insufficient_data",
+              "support": [
+                0,
+                0
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        },
+        {
+          "name": "observed",
+          "assessment_at": "2026-09-02T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "rare_positive",
+      "description": "Perfect extreme event cannot pass two-event gate.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "rare_positive",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "extreme",
+          "ticker": "TEST",
+          "category": "company",
+          "event_type": "contract_award",
+          "title": "extreme",
+          "summary": "Synthetic factual observation extreme",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 2,
+          "confidence": 1,
+          "materiality": 1,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "extreme",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "rare_extreme"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "company",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                1,
+                1
+              ],
+              "direction": [
+                2,
+                2
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "rare_negative",
+      "description": "Perfect extreme event cannot pass two-event gate.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "rare_negative",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "extreme",
+          "ticker": "TEST",
+          "category": "company",
+          "event_type": "restructuring",
+          "title": "extreme",
+          "summary": "Synthetic factual observation extreme",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": -2,
+          "confidence": 1,
+          "materiality": 1,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "extreme",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "rare_extreme"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "company",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                1,
+                1
+              ],
+              "direction": [
+                -2,
+                -2
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "quarterly_cadence",
+      "description": "Two releases 90 days apart; preserve current availability.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "quarterly_cadence",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "old",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "old",
+          "summary": "Synthetic factual observation old",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-06-03T12:00:00+00:00",
+          "observed_at": "2026-06-03T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "Q1",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "Q1",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "new",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "new",
+          "summary": "Synthetic factual observation new",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "Q2",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "Q2",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "cadence",
+        "independent_events"
+      ],
+      "replays": [
+        {
+          "name": "0",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 2,
+              "status": "available"
+            }
+          ],
+          "available_categories": 1,
+          "overall_status": "partial",
+          "overall_label": "Positive"
+        },
+        {
+          "name": "10",
+          "assessment_at": "2026-09-11T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 2,
+              "status": "available"
+            }
+          ],
+          "available_categories": 1,
+          "overall_status": "partial",
+          "overall_label": "Positive"
+        },
+        {
+          "name": "15",
+          "assessment_at": "2026-09-16T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 2,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        },
+        {
+          "name": "30",
+          "assessment_at": "2026-10-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        },
+        {
+          "name": "60",
+          "assessment_at": "2026-10-31T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "directional_dilution",
+      "description": "More eligible positives increase support but dilute direction.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "directional_dilution",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "strong0",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "strong0",
+          "summary": "Synthetic factual observation strong0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "strong0",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "strong0",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "strong1",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "strong1",
+          "summary": "Synthetic factual observation strong1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "strong1",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "strong1",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "strong2",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "strong2",
+          "summary": "Synthetic factual observation strong2",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "strong2",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "strong2",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "weak0",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "weak0",
+          "summary": "Synthetic factual observation weak0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:01+00:00",
+          "impact": 1,
+          "confidence": 0.4,
+          "materiality": 0.1,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "weak0",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "weak0",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "weak1",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "weak1",
+          "summary": "Synthetic factual observation weak1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:01+00:00",
+          "impact": 1,
+          "confidence": 0.4,
+          "materiality": 0.1,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "weak1",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "weak1",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "weak2",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "weak2",
+          "summary": "Synthetic factual observation weak2",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:01+00:00",
+          "impact": 1,
+          "confidence": 0.4,
+          "materiality": 0.1,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "weak2",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "weak2",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "weak3",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "weak3",
+          "summary": "Synthetic factual observation weak3",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:01+00:00",
+          "impact": 1,
+          "confidence": 0.4,
+          "materiality": 0.1,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "weak3",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "weak3",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "known_calibration",
+        "dilution"
+      ],
+      "replays": [
+        {
+          "name": "before",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 3,
+              "status": "available",
+              "support": [
+                2.16,
+                2.16
+              ],
+              "direction": [
+                0.72,
+                0.72
+              ],
+              "label": "Positive"
+            }
+          ],
+          "available_categories": 1,
+          "overall_status": "partial",
+          "overall_label": "Positive"
+        },
+        {
+          "name": "after",
+          "assessment_at": "2026-09-01T12:00:01+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 7,
+              "status": "available",
+              "support": [
+                2.319,
+                2.321
+              ],
+              "direction": [
+                0.331,
+                0.332
+              ],
+              "label": "Mixed"
+            }
+          ],
+          "available_categories": 1,
+          "overall_status": "partial",
+          "overall_label": "Mixed"
+        }
+      ]
+    },
+    {
+      "id": "mixed_neutral",
+      "description": "Distinct meaning of user-facing Mixed.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "mixed_neutral",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "0",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "0",
+          "summary": "Synthetic factual observation 0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 0,
+          "confidence": 0.8,
+          "materiality": 0.7,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "0",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "0",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "1",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "1",
+          "summary": "Synthetic factual observation 1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 0,
+          "confidence": 0.8,
+          "materiality": 0.7,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "1",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "1",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "mixed",
+        "neutral"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 2,
+              "status": "available",
+              "label": "Mixed"
+            }
+          ],
+          "available_categories": 1,
+          "overall_status": "partial",
+          "overall_label": "Mixed"
+        }
+      ]
+    },
+    {
+      "id": "mixed_cancellation",
+      "description": "Distinct meaning of user-facing Mixed.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "mixed_cancellation",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "0",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "0",
+          "summary": "Synthetic factual observation 0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.8,
+          "materiality": 0.7,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "0",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "0",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "1",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "1",
+          "summary": "Synthetic factual observation 1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": -1,
+          "confidence": 0.8,
+          "materiality": 0.7,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "1",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "1",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "mixed",
+        "opposition"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 2,
+              "status": "available",
+              "label": "Mixed"
+            }
+          ],
+          "available_categories": 1,
+          "overall_status": "partial",
+          "overall_label": "Mixed"
+        }
+      ]
+    },
+    {
+      "id": "mixed_attenuated",
+      "description": "Distinct meaning of user-facing Mixed.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "mixed_attenuated",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "0",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "0",
+          "summary": "Synthetic factual observation 0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-07-18T12:00:00+00:00",
+          "observed_at": "2026-07-18T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.8,
+          "materiality": 0.7,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "0",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "0",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "1",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "1",
+          "summary": "Synthetic factual observation 1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-07-18T12:00:00+00:00",
+          "observed_at": "2026-07-18T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.8,
+          "materiality": 0.7,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "1",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "1",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "2",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "2",
+          "summary": "Synthetic factual observation 2",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-07-18T12:00:00+00:00",
+          "observed_at": "2026-07-18T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.8,
+          "materiality": 0.7,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "2",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "2",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "mixed",
+        "attenuation"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 3,
+              "status": "available",
+              "label": "Mixed"
+            }
+          ],
+          "available_categories": 1,
+          "overall_status": "partial",
+          "overall_label": "Mixed"
+        }
+      ]
+    },
+    {
+      "id": "coverage_market",
+      "description": "Available-category coverage remains explicit.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "coverage_market",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "market0",
+          "ticker": "TEST",
+          "category": "market",
+          "event_type": "broad_market_trend",
+          "title": "Alpha distinct measurement",
+          "summary": "Synthetic factual observation market0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "market0",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "market1",
+          "ticker": "TEST",
+          "category": "market",
+          "event_type": "broad_market_trend",
+          "title": "Zebra separate development",
+          "summary": "Synthetic factual observation market1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "market1",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "coverage",
+        "coverage"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "market",
+              "events": 2,
+              "status": "available"
+            }
+          ],
+          "available_categories": 1,
+          "overall_status": "partial",
+          "overall_label": "Positive"
+        }
+      ]
+    },
+    {
+      "id": "coverage_economic_market",
+      "description": "Available-category coverage remains explicit.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "coverage_economic_market",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "economic0",
+          "ticker": "TEST",
+          "category": "economic",
+          "event_type": "interest_rates",
+          "title": "Alpha distinct measurement",
+          "summary": "Synthetic factual observation economic0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": -1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "economic0",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "economic1",
+          "ticker": "TEST",
+          "category": "economic",
+          "event_type": "interest_rates",
+          "title": "Zebra separate development",
+          "summary": "Synthetic factual observation economic1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": -1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "economic1",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "market0",
+          "ticker": "TEST",
+          "category": "market",
+          "event_type": "broad_market_trend",
+          "title": "Alpha distinct measurement",
+          "summary": "Synthetic factual observation market0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "market0",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "market1",
+          "ticker": "TEST",
+          "category": "market",
+          "event_type": "broad_market_trend",
+          "title": "Zebra separate development",
+          "summary": "Synthetic factual observation market1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "market1",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "coverage",
+        "category_cancellation"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "economic",
+              "events": 2,
+              "status": "available"
+            },
+            {
+              "category": "market",
+              "events": 2,
+              "status": "available"
+            }
+          ],
+          "available_categories": 2,
+          "overall_status": "partial",
+          "overall_label": "Mixed"
+        }
+      ]
+    },
+    {
+      "id": "coverage_company",
+      "description": "Available-category coverage remains explicit.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "coverage_company",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "company0",
+          "ticker": "TEST",
+          "category": "company",
+          "event_type": "contract_award",
+          "title": "Alpha distinct measurement",
+          "summary": "Synthetic factual observation company0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "company0",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "company1",
+          "ticker": "TEST",
+          "category": "company",
+          "event_type": "contract_award",
+          "title": "Zebra separate development",
+          "summary": "Synthetic factual observation company1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "company1",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "coverage",
+        "coverage"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "company",
+              "events": 2,
+              "status": "available"
+            }
+          ],
+          "available_categories": 1,
+          "overall_status": "partial",
+          "overall_label": "Positive"
+        }
+      ]
+    },
+    {
+      "id": "coverage_company_earnings_economic_market",
+      "description": "Available-category coverage remains explicit.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "coverage_company_earnings_economic_market",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "company0",
+          "ticker": "TEST",
+          "category": "company",
+          "event_type": "contract_award",
+          "title": "Alpha distinct measurement",
+          "summary": "Synthetic factual observation company0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "company0",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "company1",
+          "ticker": "TEST",
+          "category": "company",
+          "event_type": "contract_award",
+          "title": "Zebra separate development",
+          "summary": "Synthetic factual observation company1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "company1",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "earnings0",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "Alpha distinct measurement",
+          "summary": "Synthetic factual observation earnings0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "earnings0",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "earnings1",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "Zebra separate development",
+          "summary": "Synthetic factual observation earnings1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "earnings1",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "economic0",
+          "ticker": "TEST",
+          "category": "economic",
+          "event_type": "interest_rates",
+          "title": "Alpha distinct measurement",
+          "summary": "Synthetic factual observation economic0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": -1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "economic0",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "economic1",
+          "ticker": "TEST",
+          "category": "economic",
+          "event_type": "interest_rates",
+          "title": "Zebra separate development",
+          "summary": "Synthetic factual observation economic1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": -1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "economic1",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "market0",
+          "ticker": "TEST",
+          "category": "market",
+          "event_type": "broad_market_trend",
+          "title": "Alpha distinct measurement",
+          "summary": "Synthetic factual observation market0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "market0",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "market1",
+          "ticker": "TEST",
+          "category": "market",
+          "event_type": "broad_market_trend",
+          "title": "Zebra separate development",
+          "summary": "Synthetic factual observation market1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "market1",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "coverage",
+        "coverage"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "company",
+              "events": 2,
+              "status": "available"
+            },
+            {
+              "category": "earnings",
+              "events": 2,
+              "status": "available"
+            },
+            {
+              "category": "economic",
+              "events": 2,
+              "status": "available"
+            },
+            {
+              "category": "market",
+              "events": 2,
+              "status": "available"
+            }
+          ],
+          "available_categories": 4,
+          "overall_status": "partial",
+          "overall_label": "Positive"
+        }
+      ]
+    },
+    {
+      "id": "coverage_company_earnings_industry_economic_market_geopolitical",
+      "description": "Available-category coverage remains explicit.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "coverage_company_earnings_industry_economic_market_geopolitical",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "company0",
+          "ticker": "TEST",
+          "category": "company",
+          "event_type": "contract_award",
+          "title": "Alpha distinct measurement",
+          "summary": "Synthetic factual observation company0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "company0",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "company1",
+          "ticker": "TEST",
+          "category": "company",
+          "event_type": "contract_award",
+          "title": "Zebra separate development",
+          "summary": "Synthetic factual observation company1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "company1",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "earnings0",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "Alpha distinct measurement",
+          "summary": "Synthetic factual observation earnings0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "earnings0",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "earnings1",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "Zebra separate development",
+          "summary": "Synthetic factual observation earnings1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "earnings1",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "industry0",
+          "ticker": "TEST",
+          "category": "industry",
+          "event_type": "industry_demand",
+          "title": "Alpha distinct measurement",
+          "summary": "Synthetic factual observation industry0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "industry0",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "industry1",
+          "ticker": "TEST",
+          "category": "industry",
+          "event_type": "industry_demand",
+          "title": "Zebra separate development",
+          "summary": "Synthetic factual observation industry1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "industry1",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "economic0",
+          "ticker": "TEST",
+          "category": "economic",
+          "event_type": "interest_rates",
+          "title": "Alpha distinct measurement",
+          "summary": "Synthetic factual observation economic0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": -1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "economic0",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "economic1",
+          "ticker": "TEST",
+          "category": "economic",
+          "event_type": "interest_rates",
+          "title": "Zebra separate development",
+          "summary": "Synthetic factual observation economic1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": -1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "economic1",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "market0",
+          "ticker": "TEST",
+          "category": "market",
+          "event_type": "broad_market_trend",
+          "title": "Alpha distinct measurement",
+          "summary": "Synthetic factual observation market0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "market0",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "market1",
+          "ticker": "TEST",
+          "category": "market",
+          "event_type": "broad_market_trend",
+          "title": "Zebra separate development",
+          "summary": "Synthetic factual observation market1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "market1",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "geopolitical0",
+          "ticker": "TEST",
+          "category": "geopolitical",
+          "event_type": "tariff",
+          "title": "Alpha distinct measurement",
+          "summary": "Synthetic factual observation geopolitical0",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "geopolitical0",
+          "source_quality": "primary_authoritative",
+          "source_details": {},
+          "exposure_links": [
+            {
+              "kind": "revenue",
+              "description": "Synthetic documented exposure"
+            }
+          ]
+        },
+        {
+          "id": "geopolitical1",
+          "ticker": "TEST",
+          "category": "geopolitical",
+          "event_type": "tariff",
+          "title": "Zebra separate development",
+          "summary": "Synthetic factual observation geopolitical1",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "geopolitical1",
+          "source_quality": "primary_authoritative",
+          "source_details": {},
+          "exposure_links": [
+            {
+              "kind": "revenue",
+              "description": "Synthetic documented exposure"
+            }
+          ]
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "coverage",
+        "coverage"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "company",
+              "events": 2,
+              "status": "available"
+            },
+            {
+              "category": "earnings",
+              "events": 2,
+              "status": "available"
+            },
+            {
+              "category": "industry",
+              "events": 2,
+              "status": "available"
+            },
+            {
+              "category": "economic",
+              "events": 2,
+              "status": "available"
+            },
+            {
+              "category": "market",
+              "events": 2,
+              "status": "available"
+            },
+            {
+              "category": "geopolitical",
+              "events": 2,
+              "status": "available"
+            }
+          ],
+          "available_categories": 6,
+          "overall_status": "available",
+          "overall_label": "Positive"
+        }
+      ]
+    },
+    {
+      "id": "revision_relationships",
+      "description": "Schema retains relationships; no supersession engine.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "revision_relationships",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "original",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "original",
+          "summary": "Synthetic factual observation original",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "period",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "period",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        },
+        {
+          "id": "corrected",
+          "ticker": "TEST",
+          "category": "earnings",
+          "event_type": "earnings_result",
+          "title": "corrected",
+          "summary": "Synthetic factual observation corrected",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "period",
+          "source_quality": "primary_authoritative",
+          "source_details": {
+            "earnings_release_id": "period",
+            "numeric": {
+              "metric": "revenue",
+              "comparison": "year_over_year"
+            }
+          }
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [
+        [
+          "original",
+          "corrected"
+        ]
+      ],
+      "relationships": [
+        {
+          "original": "original",
+          "subsequent": "corrected",
+          "kind": "amendment",
+          "reporting_period": "FY2026",
+          "note": "Relationship retained for future evaluation, not applied to scoring."
+        },
+        {
+          "original": "original",
+          "subsequent": "corrected",
+          "kind": "correction",
+          "reporting_period": "FY2026",
+          "note": "Relationship retained for future evaluation, not applied to scoring."
+        },
+        {
+          "original": "original",
+          "subsequent": "corrected",
+          "kind": "supersession",
+          "reporting_period": "FY2026",
+          "note": "Relationship retained for future evaluation, not applied to scoring."
+        },
+        {
+          "original": "original",
+          "subsequent": "corrected",
+          "kind": "forecast_update",
+          "reporting_period": "FY2026",
+          "note": "Relationship retained for future evaluation, not applied to scoring."
+        }
+      ],
+      "semantic_tags": [
+        "revision_preparation"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data",
+              "support": [
+                0.72,
+                0.72
+              ]
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable"
+        }
+      ]
+    },
+    {
+      "id": "correlated_conditions",
+      "description": "FEDFUNDS/GS10 and combined SPY-QQQ/VIX remain distinct measurements.",
+      "context": {
+        "ticker": "TEST",
+        "company_name": "The Company",
+        "sector": "Technology",
+        "industry": "Synthetic diversified issuer"
+      },
+      "event_identity": "correlated_conditions",
+      "reporting_period": "FY2026 frozen case",
+      "materiality_rationale": "Existing production formulas or explicitly specified synthetic confidence/materiality; no label optimization.",
+      "sources": [],
+      "evidence": [
+        {
+          "id": "fedfunds",
+          "ticker": "TEST",
+          "category": "economic",
+          "event_type": "interest_rates",
+          "title": "Federal funds policy",
+          "summary": "Synthetic factual observation fedfunds",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.6,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "fedfunds",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "gs10",
+          "ticker": "TEST",
+          "category": "economic",
+          "event_type": "interest_rates",
+          "title": "Treasury yield curve",
+          "summary": "Synthetic factual observation gs10",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.6,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "gs10",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "spy_qqq",
+          "ticker": "TEST",
+          "category": "market",
+          "event_type": "broad_market_trend",
+          "title": "spy_qqq",
+          "summary": "Synthetic factual observation spy_qqq",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.95,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "spy_qqq",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        },
+        {
+          "id": "vix",
+          "ticker": "TEST",
+          "category": "market",
+          "event_type": "volatility",
+          "title": "vix",
+          "summary": "Synthetic factual observation vix",
+          "source": "Frozen fixture",
+          "source_type": "company_release",
+          "published_at": "2026-09-01T12:00:00+00:00",
+          "observed_at": "2026-09-01T12:00:00+00:00",
+          "impact": 1,
+          "confidence": 0.95,
+          "materiality": 0.8,
+          "materiality_reason": "Explicit magnitude fixture; not a recommendation.",
+          "raw_provider": "fixture",
+          "raw_provider_id": "vix",
+          "source_quality": "primary_authoritative",
+          "source_details": {}
+        }
+      ],
+      "supported_assertions": [],
+      "unsupported_assertions": [],
+      "expected_duplicate_groups": [],
+      "relationships": [],
+      "semantic_tags": [
+        "correlation",
+        "not_statistical_independence"
+      ],
+      "replays": [
+        {
+          "name": "publication",
+          "assessment_at": "2026-09-01T12:00:00+00:00",
+          "outcomes": [
+            {
+              "category": "economic",
+              "events": 2,
+              "status": "available",
+              "support": [
+                1.08,
+                1.08
+              ]
+            },
+            {
+              "category": "market",
+              "events": 2,
+              "status": "available",
+              "support": [
+                1.52,
+                1.52
+              ]
+            }
+          ],
+          "available_categories": 2,
+          "overall_status": "partial",
+          "overall_label": "Positive"
+        }
+      ]
+    }
+  ]
+}

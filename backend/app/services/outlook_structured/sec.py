@@ -8,6 +8,7 @@ from zoneinfo import ZoneInfo
 from app.models.outlook_evidence import CompanyContext, OutlookEvidence
 from app.models.outlook_document import SourceDocument
 from app.services.outlook_interpreter import DeterministicOutlookInterpreter, sec_observation_document
+from app.services.outlook_reporting import reporting_diagnostics
 from .documents import parse_filing, item_text, earnings_exhibit_url, bounded_text
 from .policy import SEC_ITEMS, SEC_LOOKBACK_DAYS, SEC_MAX_FILINGS
 from .transport import Cache, JsonClient
@@ -97,6 +98,7 @@ class SecEvidenceProvider:
                 item_documents=sum(doc.metadata.get("document_kind") in ("earnings_item", "listing_item") for doc in source_documents),
                 exhibit_documents=sum(doc.metadata.get("document_kind") == "earnings_exhibit" for doc in source_documents),
                 interpreted_candidates=sum(item.raw_provider_id == accession for item in interpreted))
+            details["reporting_documents"] = reporting_diagnostics(source_documents, now=self.clock())["sources"]
         # Request-local diagnostics travel with provenance, avoiding shared mutable counters.
         return [item.model_copy(update={"source_details": {**item.source_details,
             "sec_diagnostics": diagnostics.get(item.raw_provider_id, {}),

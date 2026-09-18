@@ -154,9 +154,9 @@ def test_one_release_multiple_metrics_remain_one_event():
     assert len(cluster_evidence(rows)) == 1
     categories, _ = assess_evidence("TEST", rows, now=NOW)
     assert categories["earnings"].evidence_count == 1 and categories["earnings"].status == "insufficient_data"
-    # Conflicting factors are retained but cannot manufacture a directional vote.
+    # Different financial dimensions now form one supported mixed event.
     mixed = table_evidence(summary_table("60", "70"), "Revenue was $10 billion, up 20% year over year.")
-    assert assess_evidence("TEST", mixed, now=NOW)[0]["earnings"].evidence_count == 0
+    assert assess_evidence("TEST", mixed, now=NOW)[0]["earnings"].evidence_count == 1
 
 
 def test_existing_expiration_preserved():

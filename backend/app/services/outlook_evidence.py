@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from difflib import SequenceMatcher
+from math import fsum
 import re
 from typing import Callable
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
@@ -10,6 +11,8 @@ from app.models.outlook import CLASSIFICATIONS, OutlookCategory, OutlookFactor
 from app.models.outlook_evidence import OutlookEvidence
 from app.models.outlook_taxonomy import CATEGORY_TITLES
 from app.services.outlook_policy import DEFAULT_EVIDENCE_POLICY, EvidencePolicy
+from app.services.outlook_factors import (FactorAssessment, release_identity, assess_factors,
+                                         event_values, semantic_key, factor_identity)
 
 
 def normalize_url(url: str | None) -> str | None:
@@ -96,10 +99,26 @@ class EvidenceContribution:
     weight: float
     contribution: float
     exclusion: str | None
+    factors: tuple[FactorAssessment, ...] = ()
+    event_confidence: float | None = None
+
+    @property
+    def confidence_mass(self):
+        return (self.weight / self.event_confidence if self.event_confidence is not None
+                else self.representative.materiality * self.freshness)
 
 
 def weigh_cluster(cluster: tuple[OutlookEvidence, ...], now: datetime,
                  policy=DEFAULT_EVIDENCE_POLICY) -> EvidenceContribution:
+    if any(release_identity(r) for r in cluster) and any(factor_identity(r) for r in cluster):
+        factors = assess_factors(cluster, now, policy, freshness)
+        weight, contribution, confidence = event_values(factors)
+        supported = [f for f in factors if f.exclusion is None]
+        chosen = min((f.representative for f in supported or factors), key=semantic_key)
+        reasons = {f.exclusion for f in factors}
+        reason = None if supported else next(iter(reasons)) if len(reasons) == 1 else "no_eligible_factors"
+        return EvidenceContribution(cluster, chosen, min(f.freshness for f in supported or factors),
+                                    weight, contribution, reason, factors, confidence)
     # Secondary reports cannot override (or suppress by disagreement) explicit primary evidence.
     primary = tuple(item for item in cluster if item.source_quality == "primary_authoritative")
     authoritative = primary or cluster
@@ -125,6 +144,14 @@ def weigh_cluster(cluster: tuple[OutlookEvidence, ...], now: datetime,
                                 int(representative.impact) * weight, reason)
 
 
+def availability_failures(count: int, weight: float, policy=DEFAULT_EVIDENCE_POLICY) -> tuple[str, ...]:
+    """The existing category support gate, shared with operator diagnostics."""
+    return tuple(reason for failed, reason in (
+        (count < policy.minimum_events, "insufficient_independent_events"),
+        (weight < policy.minimum_weight, "support_below_threshold"),
+    ) if failed)
+
+
 def assess_evidence(ticker: str, evidence: list[OutlookEvidence], *, now: datetime,
                     policy=DEFAULT_EVIDENCE_POLICY, similarity=headline_similarity) -> tuple[dict, list[EvidenceContribution]]:
     if now.tzinfo is None or now.utcoffset() is None:
@@ -143,26 +170,28 @@ def assess_evidence(ticker: str, evidence: list[OutlookEvidence], *, now: dateti
         eligible = [item for item in items if item.exclusion is None]
         provenance = [evidence for item in items for evidence in item.evidence]
         count = len(eligible)
-        weight = sum(item.weight for item in eligible)
-        confidence = (sum(item.representative.confidence * item.representative.materiality * item.freshness
-                          for item in eligible) /
-                      sum(item.representative.materiality * item.freshness for item in eligible)) if eligible else None
+        weight = fsum(item.weight for item in eligible)
+        confidence = (weight / fsum(item.confidence_mass for item in eligible)) if eligible else None
         common = dict(evidence_count=count, confidence=confidence, evidence=provenance)
         if items and all(item.exclusion == "not_material" for item in items):
             categories[key] = OutlookCategory(status="not_material", summary="Reviewed evidence has no material company exposure.", **common)
             continue
-        if count < policy.minimum_events or weight < policy.minimum_weight:
+        if availability_failures(count, weight, policy):
             categories[key] = OutlookCategory(status="insufficient_data",
                 summary=f"Insufficient independent evidence: {count} qualifying events.", **common)
             continue
         # Mean contributions retain attenuation by confidence, materiality and age.
-        value = sum(item.contribution for item in eligible) / count
+        value = fsum(item.contribution for item in eligible) / count
         magnitude = (2 if abs(value) >= policy.strong_threshold and count >= policy.strong_minimum_events
                      else 1 if abs(value) >= policy.positive_threshold else 0)
         classification = magnitude if value >= 0 else -magnitude
-        factors = [OutlookFactor(title=item.representative.title,
-                    impact=CLASSIFICATIONS[int(item.representative.impact)], description=item.representative.summary,
-                    evidence_ids=list(dict.fromkeys(source.id for source in item.evidence))) for item in eligible]
+        factors = []
+        for item in eligible:
+            for fact in item.factors or (item,):
+                if fact.exclusion is None:
+                    factors.append(OutlookFactor(title=fact.representative.title,
+                        impact=CLASSIFICATIONS[int(fact.representative.impact)], description=fact.representative.summary,
+                        evidence_ids=list(dict.fromkeys(source.id for source in fact.evidence))))
         categories[key] = OutlookCategory(status="available", value=classification,
             summary=f"{count} independent events support this assessment; {sum(item.contribution > 0 for item in eligible)} positive and {sum(item.contribution < 0 for item in eligible)} negative contributions.",
             factors=factors, **common)
