@@ -62,6 +62,7 @@ class RateGate:
 
 SEC_GATE = RateGate()
 FRED_GATE = RateGate()
+GEOPOLITICAL_GATE = RateGate()
 
 
 class JsonClient:
@@ -75,7 +76,7 @@ class JsonClient:
         return self._get(url, provider=provider, user_agent=user_agent, text=True)
 
     def _get(self, url, *, provider, params=None, user_agent=None, text=False):
-        gate = SEC_GATE if provider == "sec" else FRED_GATE
+        gate = SEC_GATE if provider == "sec" else GEOPOLITICAL_GATE if provider == "geopolitical" else FRED_GATE
         interval = self.settings.outlook_sec_request_interval if provider == "sec" else 0.5
         request = Request(url + ("?" + urlencode(params) if params else ""), headers={
             "User-Agent": user_agent or "TradePilotAI/Outlook", "Accept": "text/html,text/plain" if text else "application/json",

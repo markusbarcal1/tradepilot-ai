@@ -33,6 +33,7 @@ def main():
     parser.add_argument("--replay", help="Replay name for --offline-case; default is the last declared replay")
     args = parser.parse_args()
     industry_diagnostics = {}
+    geopolitical_diagnostics = {}
     if args.offline_case:
         from app.cli.evaluate_outlook import DEFAULT_CORPUS
         from app.models.outlook_evaluation import EvaluationCorpus
@@ -63,6 +64,12 @@ def main():
                                             if key != "evidence"}
                 except Exception:
                     industry_diagnostics = {"status": "temporarily_unavailable"}
+            if provider.name == "geopolitical":
+                try:
+                    geopolitical_diagnostics = {key: value for key, value in provider.inspect(args.ticker).items()
+                                                if key != "evidence"}
+                except Exception:
+                    geopolitical_diagnostics = {"status": "temporarily_unavailable"}
         assessed_at = datetime.now(timezone.utc)
         reporting = evidence_reporting_diagnostics(
             [e for category in result.categories.values() for e in category.evidence], now=assessed_at)
@@ -70,7 +77,8 @@ def main():
     if args.json:
         print(json.dumps({**result.model_dump(mode="json"), "assessment_at": assessed_at.isoformat(),
                           "availability_diagnostics": diagnostics, "reporting_diagnostics": reporting,
-                          "industry_diagnostics": industry_diagnostics}, indent=2))
+                          "industry_diagnostics": industry_diagnostics,
+                          "geopolitical_diagnostics": geopolitical_diagnostics}, indent=2))
     else:
         print(f"{result.ticker}: {result.label.value if result.label else result.status}")
         print(f"{result.available_categories} of 6 categories available")
@@ -87,6 +95,11 @@ def main():
         retrieval = {item.raw_provider_id: item.source_details.get("document_retrieval", "unknown") for item in sec_evidence}
         print("SEC document retrieval: " + ", ".join(f"{state}={count}" for state, count in sorted(Counter(retrieval.values()).items())))
         print(format_reporting(reporting))
+        if geopolitical_diagnostics:
+            print("Geopolitical diagnostics: " + json.dumps(geopolitical_diagnostics))
+        print(f"Geopolitical supported events: {result.categories['geopolitical'].evidence_count or 0}")
+        for item in result.categories["geopolitical"].evidence:
+            print(f"Geopolitical evidence: {item.summary}")
         industry = result.categories["industry"]
         if industry_diagnostics:
             print("Industry diagnostics: " + json.dumps(industry_diagnostics))

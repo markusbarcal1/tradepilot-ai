@@ -7,10 +7,14 @@ from .fred import FredEvidenceProvider
 from .market import MarketEvidenceProvider
 from .industry import IndustryEvidenceProvider
 from .history import OutlookHistory
+from .geopolitical import GeopoliticalEvidenceProvider
 
 
 @lru_cache(maxsize=1)
 def configured_providers():
     history = OutlookHistory(settings)
+    industry = IndustryEvidenceProvider(settings, history=history)
     return [SecEvidenceProvider(settings), FredEvidenceProvider(settings),
-            MarketEvidenceProvider(settings, history=history), IndustryEvidenceProvider(settings, history=history)]
+            MarketEvidenceProvider(settings, history=history), industry,
+            GeopoliticalEvidenceProvider(settings, metadata=industry.metadata,
+                                         classification_cache=industry.classifications)]

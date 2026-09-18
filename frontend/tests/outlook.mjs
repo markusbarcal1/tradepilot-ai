@@ -40,6 +40,21 @@ try {
   }
   assert.match(industryHtml, /href="https:\/\/finance.yahoo.com\/quote\/XLK\/"/);
   assert.doesNotMatch(industryHtml, /<details[^>]* open|weighted contribution|\/100/);
+  const geopoliticalHtml = render({ data: { ...data, available_categories: 3,
+    categories: { ...data.categories, geopolitical: { status: "available", label: "Negative",
+      summary: "Two supported export-control events.",
+      factors: [{ title: "China: advanced computing export licensing", impact: "Negative",
+        description: "Additional export licensing requirements. NVDA is classified in Semiconductors, matching the controlled product group.", evidence_ids: ["export"] }],
+      evidence: [{ id: "export", raw_provider: "geopolitical", source: "Federal Register / BIS",
+        source_url: "https://www.federalregister.gov/documents/2026/09/17/2026-10001/advanced-computing" }] } } } });
+  for (const text of ["Geopolitical Outlook", "Negative", "export licensing", "classified in Semiconductors", "Source: Federal Register", "3 of 6"]) {
+    assert.ok(geopoliticalHtml.includes(text));
+  }
+  assert.doesNotMatch(geopoliticalHtml, /<details[^>]* open|weighted contribution|\/100/);
+  const unrelatedHtml = render({ data: { ...data, categories: { geopolitical: {
+    status: "insufficient_data", summary: "Insufficient independent evidence: 0 qualifying events.", evidence: [], factors: [] } } } });
+  assert.match(unrelatedHtml, /Insufficient data/);
+  assert.doesNotMatch(unrelatedHtml, /export licensing|sanctions|conflict/);
   assert.match(html, /Source: SEC/);
   assert.match(html, /rel="noopener noreferrer"/);
   assert.doesNotMatch(html, /Intelligence not connected/);

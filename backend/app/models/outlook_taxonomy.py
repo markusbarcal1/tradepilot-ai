@@ -23,7 +23,7 @@ EVENT_TYPES = {
                  "monetary_policy", "fiscal_policy", "economic_other"),
     "market": ("broad_market_trend", "volatility", "market_breadth", "liquidity", "risk_sentiment", "market_other"),
     "geopolitical": ("conflict", "sanctions", "trade_restriction", "tariff", "political_instability",
-                     "supply_chain_disruption", "geopolitical_other"),
+                     "supply_chain_disruption", "geopolitical_other", "export_control"),
 }
 EventType = Enum("EventType", {name.upper(): name for names in EVENT_TYPES.values() for name in names}, type=str)
 

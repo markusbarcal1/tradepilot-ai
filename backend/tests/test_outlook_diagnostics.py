@@ -135,6 +135,7 @@ def test_cli_json_is_additive_and_has_diagnostics(monkeypatch,capsys):
     cats,_=assess_evidence('TEST',[evidence('one')],now=NOW)
     response=aggregate_outlook('TEST',cats,OutlookMetadata(provider='fixture',uses_placeholder_data=False))
     monkeypatch.setattr(inspect_outlook,'analyze_outlook',lambda ticker:response)
+    monkeypatch.setattr('app.services.outlook_structured.configured_providers', lambda: [])
     class Clock:
         @staticmethod
         def now(tz): return NOW
