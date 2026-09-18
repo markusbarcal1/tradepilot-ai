@@ -27,6 +27,19 @@ try {
     assert.ok(html.includes(text));
   }
   assert.match(html, /2 of 6 Outlook categories available/);
+  const industryHtml = render({ data: { ...data, available_categories: 3,
+    categories: { ...data.categories, industry: { status: "available", label: "Positive",
+      summary: "Two sector events support this assessment.",
+      factors: [{ title: "Sector trend and relative strength", impact: "Positive",
+        description: "Technology has outperformed SPY.", evidence_ids: ["sector"] },
+        { title: "Sector peer breadth", impact: "Positive", description: "Broad strength; AAPL excluded.", evidence_ids: ["breadth"] }],
+      evidence: [{ id: "sector", source: "Yahoo Finance sector market data", source_url: "https://finance.yahoo.com/quote/XLK/" },
+        { id: "breadth", source: "Yahoo Finance sector market data", source_url: "https://finance.yahoo.com/quote/XLK/" }] } } } });
+  for (const text of ["3 of 6 Outlook categories available", "Two sector events", "Sector peer breadth", "Technology has outperformed SPY", "Source: Yahoo Finance"]) {
+    assert.ok(industryHtml.includes(text));
+  }
+  assert.match(industryHtml, /href="https:\/\/finance.yahoo.com\/quote\/XLK\/"/);
+  assert.doesNotMatch(industryHtml, /<details[^>]* open|weighted contribution|\/100/);
   assert.match(html, /Source: SEC/);
   assert.match(html, /rel="noopener noreferrer"/);
   assert.doesNotMatch(html, /Intelligence not connected/);

@@ -32,6 +32,7 @@ def main():
     parser.add_argument("--offline-case", help="Inspect a frozen case without configured providers or network")
     parser.add_argument("--replay", help="Replay name for --offline-case; default is the last declared replay")
     args = parser.parse_args()
+    industry_diagnostics = {}
     if args.offline_case:
         from app.cli.evaluate_outlook import DEFAULT_CORPUS
         from app.models.outlook_evaluation import EvaluationCorpus
@@ -54,13 +55,22 @@ def main():
         if args.replay:
             parser.error("--replay requires --offline-case")
         result = analyze_outlook(args.ticker)
+        from app.services.outlook_structured import configured_providers
+        for provider in configured_providers():
+            if provider.name == "industry":
+                try:
+                    industry_diagnostics = {key: value for key, value in provider.inspect(args.ticker).items()
+                                            if key != "evidence"}
+                except Exception:
+                    industry_diagnostics = {"status": "temporarily_unavailable"}
         assessed_at = datetime.now(timezone.utc)
         reporting = evidence_reporting_diagnostics(
             [e for category in result.categories.values() for e in category.evidence], now=assessed_at)
     result, diagnostics = inspect_snapshot(result, now=assessed_at)
     if args.json:
         print(json.dumps({**result.model_dump(mode="json"), "assessment_at": assessed_at.isoformat(),
-                          "availability_diagnostics": diagnostics, "reporting_diagnostics": reporting}, indent=2))
+                          "availability_diagnostics": diagnostics, "reporting_diagnostics": reporting,
+                          "industry_diagnostics": industry_diagnostics}, indent=2))
     else:
         print(f"{result.ticker}: {result.label.value if result.label else result.status}")
         print(f"{result.available_categories} of 6 categories available")
@@ -77,6 +87,17 @@ def main():
         retrieval = {item.raw_provider_id: item.source_details.get("document_retrieval", "unknown") for item in sec_evidence}
         print("SEC document retrieval: " + ", ".join(f"{state}={count}" for state, count in sorted(Counter(retrieval.values()).items())))
         print(format_reporting(reporting))
+        industry = result.categories["industry"]
+        if industry_diagnostics:
+            print("Industry diagnostics: " + json.dumps(industry_diagnostics))
+        print(f"Industry supported events: {industry.evidence_count or 0}")
+        for item in industry.evidence:
+            details = item.source_details
+            print(f"Industry classification: {details.get('sector')} / {details.get('industry')} ({details.get('classification_source')})")
+            print(f"Industry benchmarks: {details.get('benchmark')} versus {details.get('market_benchmark')}")
+            if "peer_sample" in details:
+                print(f"Industry peer coverage: {details.get('peer_coverage')}/{len(details['peer_sample'])}; sample: {', '.join(details['peer_sample'])}")
+            print(f"Industry evidence: {item.summary}")
         for name, category in result.categories.items():
             label = category.label.value if category.label else category.status
             print(f"{name} label: {label}")

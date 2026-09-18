@@ -40,6 +40,9 @@ class Settings(BaseSettings):
     outlook_sec_max_document_filings: int = Field(default=2, ge=1, le=3)
     outlook_fred_enabled: bool = True
     outlook_market_enabled: bool = True
+    outlook_industry_enabled: bool = True
+    outlook_industry_cache_ttl: int = Field(default=1800, ge=60)
+    outlook_classification_cache_ttl: int = Field(default=604800, ge=3600)
     outlook_sec_user_agent: str = ""
     fred_api_key: SecretStr = SecretStr("")
     outlook_sec_cache_ttl: int = Field(default=3600, ge=60)

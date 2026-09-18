@@ -5,8 +5,12 @@ from app.config import settings
 from .sec import SecEvidenceProvider
 from .fred import FredEvidenceProvider
 from .market import MarketEvidenceProvider
+from .industry import IndustryEvidenceProvider
+from .history import OutlookHistory
 
 
 @lru_cache(maxsize=1)
 def configured_providers():
-    return [SecEvidenceProvider(settings), FredEvidenceProvider(settings), MarketEvidenceProvider(settings)]
+    history = OutlookHistory(settings)
+    return [SecEvidenceProvider(settings), FredEvidenceProvider(settings),
+            MarketEvidenceProvider(settings, history=history), IndustryEvidenceProvider(settings, history=history)]
