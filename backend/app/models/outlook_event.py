@@ -64,6 +64,9 @@ class ExpectationSnapshot(EventModel):
     event_id: Text
     basis: Literal["market_implied", "structured_consensus", "options_implied"]
     metric: Literal["change", "actual_value"]
+    measurement_key: Text | None = None
+    reference_period: Text | None = None
+    release_type: Text | None = None
     expected_value: EventValue | None = None
     outcomes: tuple[OutcomeProbability, ...] = Field(default=(), max_length=20)
     observed_at: AwareDatetime
@@ -100,10 +103,30 @@ class EventScope(EventModel):
 
 
 class EventSurprise(EventModel):
-    status: Literal["unavailable", "as_expected", "different_from_expected", "probability_based"] = "unavailable"
+    status: Literal["unavailable", "as_expected", "different_from_expected", "higher_than_expected", "lower_than_expected", "probability_based"] = "unavailable"
     difference: EventValue | None = None
     actual_outcome_probability: UnitValue | None = None
     expectation_snapshot_id: str | None = None
+
+
+class EventMeasurement(EventModel):
+    """One measurement within a release, never an independent support event."""
+    key: Text
+    label: Text
+    actual_value: EventValue | None = None
+    previous_value: EventValue | None = None
+    expectation: ExpectationSnapshot | None = None
+    expectation_status: Literal["unavailable", "available", "stale", "invalid", "error"] = "unavailable"
+    surprise: EventSurprise = Field(default_factory=EventSurprise)
+
+
+class EventRevision(EventModel):
+    reference_period: Text
+    measurement_key: Text
+    previous_value: EventValue
+    actual_value: EventValue
+    provenance: EventSource
+    previous_provenance: EventSource | None = None
 
 
 class ExternalEvent(EventModel):
@@ -120,6 +143,12 @@ class ExternalEvent(EventModel):
     effective_at: AwareDatetime | None = None
     expires_at: AwareDatetime | None = None
     status: Literal["upcoming", "occurred", "effective", "expired"]
+    reference_period: Text | None = None
+    underlying_event_id: Text | None = None
+    release_type: Text | None = None
+    scheduled_timezone: Text | None = None
+    measurements: tuple[EventMeasurement, ...] = Field(default=(), max_length=12)
+    revisions: tuple[EventRevision, ...] = Field(default=(), max_length=12)
     previous_value: EventValue | None = None
     expected_value: EventValue | None = None
     actual_value: EventValue | None = None
@@ -130,6 +159,13 @@ class ExternalEvent(EventModel):
     surprise: EventSurprise = Field(default_factory=EventSurprise)
     provenance: tuple[EventSource, ...] = Field(min_length=1)
     scope: EventScope = Field(default_factory=EventScope)
+
+    @model_validator(mode="after")
+    def unique_measurements(self):
+        keys = [m.key for m in self.measurements]
+        if len(keys) != len(set(keys)):
+            raise ValueError("Duplicate release measurements")
+        return self
 
 
 @dataclass(frozen=True)

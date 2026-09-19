@@ -53,18 +53,21 @@ def assess_providers(ticker: str, providers: list[OutlookProvider], *, now: date
     attempted = []
     intelligence = EventIntelligence()
     event_provenance = []
+    event_snapshots = []
     for provider in providers:
         if getattr(provider, "event_intelligence_provider", False):
             try:
                 snapshot = provider.inspect(ticker)
-                intelligence = EventIntelligence.model_validate(snapshot["intelligence"])
-                event_provenance = [OutlookEvidence.model_validate(item) for item in snapshot["evidence"]]
-                if any(item.scoring_eligible or item.ticker != ticker or item.raw_provider != provider.name for item in event_provenance):
+                current = EventIntelligence.model_validate(snapshot["intelligence"])
+                observations = [OutlookEvidence.model_validate(item) for item in snapshot["evidence"]]
+                if any(item.scoring_eligible or item.ticker != ticker or item.raw_provider != provider.name for item in observations):
                     raise ValueError("Event relevance must not introduce directional evidence")
-                statuses[provider.name] = intelligence.status
+                event_snapshots.append(current)
+                event_provenance.extend(observations)
+                statuses[provider.name] = current.status
             except Exception as error:
                 logger.warning("outlook_event_provider_failed kind=%s", type(error).__name__)
-                intelligence, event_provenance = EventIntelligence(status="temporarily_unavailable"), []
+                event_snapshots.append(EventIntelligence(status="temporarily_unavailable"))
                 statuses[provider.name] = "error"
             continue
         coverage = set(getattr(provider, "categories", CATEGORY_TITLES))
@@ -88,6 +91,8 @@ def assess_providers(ticker: str, providers: list[OutlookProvider], *, now: date
             logger.warning("outlook_provider_failed provider=%s kind=%s", provider.name, type(error).__name__)
             failed.update(coverage)
             statuses[provider.name] = "error"
+    from app.services.outlook_events import merge_intelligence
+    intelligence = merge_intelligence(event_snapshots)
     placeholder = not attempted or any(provider.uses_placeholder_data for provider in attempted)
     metadata = OutlookMetadata(provider=",".join(provider.name for provider in providers) or "none",
                                uses_placeholder_data=placeholder, provider_status=statuses)

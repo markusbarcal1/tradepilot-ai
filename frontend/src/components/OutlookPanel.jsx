@@ -48,7 +48,7 @@ function CategoryDetails({ name, category }) {
   const factors = category?.status === "available" ? category.factors || [] : [];
   const evidence = category?.evidence || [];
   const sources = categorySources(category);
-  const eventProvenance = evidence.filter((item) => item.raw_provider === "fomc" && !item.scoring_eligible);
+  const eventProvenance = evidence.filter((item) => ["fomc", "macro"].includes(item.raw_provider) && !item.scoring_eligible);
   const primarySources = categorySources({ evidence: evidence.filter((item) => !eventProvenance.includes(item)) });
   return <>
     <div className="outlook-detail-heading"><h4>{OUTLOOK_CATEGORIES[name]}</h4><Status label={outlookLabel(category)} /></div>

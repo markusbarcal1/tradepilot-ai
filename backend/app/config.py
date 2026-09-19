@@ -43,6 +43,8 @@ class Settings(BaseSettings):
     outlook_industry_enabled: bool = True
     outlook_fomc_enabled: bool = True
     outlook_fomc_cache_ttl: int = Field(default=1800, ge=60)
+    outlook_macro_enabled: bool = True
+    outlook_macro_cache_ttl: int = Field(default=3600, ge=300, le=21600)
     outlook_geopolitical_enabled: bool = True
     outlook_geopolitical_cache_ttl: int = Field(default=21600, ge=300)
     outlook_industry_cache_ttl: int = Field(default=1800, ge=60)

@@ -10,6 +10,7 @@ from app.models.outlook_event import (EventIntelligence, EventSurprise, EventVal
 from app.models.outlook_evidence import CompanyContext, ExposureLink, OutlookEvidence
 from app.services.market_data import VALID_TICKER_PATTERN
 from app.services.outlook_structured.fomc import ET, FomcSource, MAX_RECENT, MAX_UPCOMING
+from app.services.outlook_structured.macro import MacroSource
 from app.services.outlook_structured.transport import Cache, ProviderUnavailable
 
 
@@ -31,11 +32,15 @@ def lifecycle(event, now):
     return event.model_copy(update={"status": status})
 
 
-def with_expectations(event, snapshots, now, failure=None):
+def with_expectations(event, snapshots, now, failure=None, measurement_key=None):
     """Use only information available before announcement, fresh at that cutoff."""
     cutoff = min(now, event.announced_at) if event.announced_at else now
     history = tuple(sorted(snapshots, key=lambda s: (s.observed_at, s.snapshot_id))[-32:])
     valid = [s for s in history if s.event_id == event.event_id
+             and not (event.measurements and measurement_key is None)
+             and s.measurement_key == measurement_key
+             and (measurement_key is None or (s.reference_period == event.reference_period
+                  and s.release_type == event.release_type and s.metric == "actual_value"))
              and s.observed_at <= cutoff and s.provenance.published_at <= cutoff
              and s.provenance.retrieved_at <= cutoff
              and (event.announced_at is None or max(s.observed_at, s.provenance.published_at, s.provenance.retrieved_at) < event.announced_at)
@@ -43,7 +48,8 @@ def with_expectations(event, snapshots, now, failure=None):
     expectation = valid[-1] if valid else None
     status = "available" if expectation else failure or ("stale" if history else "unavailable")
     surprise = EventSurprise()
-    if expectation and event.announced_at and event.announced_at <= now:
+    corrected = any(r.previous_provenance and r.provenance.published_at is None for r in event.revisions)
+    if expectation and event.announced_at and event.announced_at <= now and not corrected:
         actual = event.change if expectation.metric == "change" else event.actual_value
         expected = expectation.expected_value
         if actual and expected and actual.unit == expected.unit:
@@ -52,12 +58,22 @@ def with_expectations(event, snapshots, now, failure=None):
                 difference = EventValue(amount=round(actual.amount - expected.amount, 8), unit=actual.unit)
             surprise = EventSurprise(status="as_expected" if actual == expected else "different_from_expected",
                 difference=difference, expectation_snapshot_id=expectation.snapshot_id)
+            if measurement_key and difference:
+                surprise = surprise.model_copy(update={"status": "as_expected" if difference.amount == 0 else
+                    "higher_than_expected" if difference.amount > 0 else "lower_than_expected"})
         elif actual:
             matches = [row for row in expectation.outcomes if row.outcome == actual]
             if len(matches) == 1:
                 surprise = EventSurprise(status="probability_based", actual_outcome_probability=matches[0].probability,
                     expectation_snapshot_id=expectation.snapshot_id)
+    measurements = []
+    for row in event.measurements:
+        compared = with_expectations(event.model_copy(update={"measurements": (), "actual_value": row.actual_value}),
+                                     snapshots, now, failure, row.key)
+        measurements.append(row.model_copy(update={"expectation": compared.expectation,
+            "expectation_status": compared.expectation_status, "surprise": compared.surprise}))
     return event.model_copy(update={"expectation": expectation, "expectation_history": history,
+        "measurements": tuple(measurements),
         "expected_value": expectation.expected_value if expectation else None,
         "expectation_status": status, "surprise": surprise})
 
@@ -98,8 +114,8 @@ def fomc_exposure(context, info):
         "broad", "broad", .6, .3)
 
 
-def event_evidence(event, exposure, ticker):
-    """FOMC V1 has no defensible directional mapping; preserve provenance only.
+def event_evidence(event, exposure, ticker, provider="fomc"):
+    """Event V1 has no defensible directional mapping; preserve provenance only.
 
     Zero here is the legacy evidence sentinel, NOT a neutral assessment. The
     mandatory scoring_eligible=False prevents support and FRED double counting.
@@ -108,21 +124,29 @@ def event_evidence(event, exposure, ticker):
         return []
     source = event.provenance[0]
     return [OutlookEvidence(id=f"{event.event_id}:{ticker}", ticker=ticker, category="economic",
-        event_type="monetary_policy", title=event.title, summary=exposure.reason,
+        event_type="monetary_policy" if provider == "fomc" else {"macro_cpi": "inflation", "macro_pce": "inflation",
+            "macro_employment": "employment", "macro_gdp": "gdp_growth"}[event.event_type], title=event.title, summary=exposure.reason,
         source=source.source, source_type=source.source_type, source_url=source.source_url,
         published_at=event.announced_at, observed_at=source.retrieved_at, expires_at=event.expires_at,
         impact=0, confidence=exposure.confidence, materiality=exposure.materiality,
         materiality_reason=exposure.reason, exposure_links=(exposure.link,) if exposure.link else (),
-        scoring_eligible=False, source_quality="primary_authoritative", raw_provider="fomc",
+        scoring_eligible=False, source_quality="primary_authoritative", raw_provider=provider,
         raw_provider_id=event.event_id, source_details={"external_event_id": event.event_id,
-            "direction_status": "uncertain", "dedup_rule": "non_scoring_policy_context",
+            "direction_status": "uncertain", "dedup_rule": "non_scoring_event_context",
+            "underlying_event_id": event.underlying_event_id, "reference_period": event.reference_period,
+            "measurements": [m.model_dump(mode="json") for m in event.measurements],
             "previous_value": event.previous_value.model_dump() if event.previous_value else None,
             "actual_value": event.actual_value.model_dump() if event.actual_value else None,
             "change": event.change.model_dump() if event.change else None})]
 
 
-class FomcEventProvider:
+class EventProvider:
     name = "fomc"
+    source_class = FomcSource
+    max_upcoming, max_recent = MAX_UPCOMING, MAX_RECENT
+    enabled_setting = "outlook_fomc_enabled"
+    cache_setting = "outlook_fomc_cache_ttl"
+    exposure_rule = staticmethod(fomc_exposure)
     event_intelligence_provider = True
     # A relevance-only event must not make a category connected, failed, or available.
     # Orchestration consumes this separate boundary before normal evidence providers.
@@ -132,14 +156,14 @@ class FomcEventProvider:
                  expectations=None, clock=lambda: datetime.now(timezone.utc)):
         from app.services.outlook_structured.industry import classification
         self.settings, self.clock = settings, clock
-        self.source = source or FomcSource(settings, clock=clock)
+        self.source = source or self.source_class(settings, clock=clock)
         self.metadata = metadata or classification
         self.classifications = classification_cache or Cache(settings.outlook_failure_cache_ttl)
         self.expectations = expectations
         self.expectation_cache = Cache(settings.outlook_failure_cache_ttl, capacity=32)
         self.history, self.lock = OrderedDict(), RLock()
         self.classification_loads = 0
-        self.unavailable_reason = None if settings.outlook_fomc_enabled else "disabled"
+        self.unavailable_reason = None if getattr(settings, self.enabled_setting) else "disabled"
 
     def _classification(self, ticker):
         self.classification_loads += 1
@@ -173,9 +197,9 @@ class FomcEventProvider:
 
     def inspect(self, ticker):
         ticker = ticker.strip().upper()
-        diagnostics = {"directional_evidence": False, "dedup": "FOMC provenance never contributes independent support; existing FRED evidence unchanged.",
+        diagnostics = {"directional_evidence": False, "dedup": "Event provenance never contributes independent support; existing FRED evidence unchanged.",
             "probability_provider": "configured" if self.expectations else "not_configured",
-            "cache_ttl_seconds": self.settings.outlook_fomc_cache_ttl,
+            "cache_ttl_seconds": getattr(self.settings, self.cache_setting),
             "classification_cache_ttl_seconds": self.settings.outlook_classification_cache_ttl,
             "failure_backoff_seconds": self.settings.outlook_failure_cache_ttl}
         def result(status, upcoming=(), recent=(), evidence=()):
@@ -197,7 +221,7 @@ class FomcEventProvider:
                 raise ProviderUnavailable("missing_classification")
             context = CompanyContext(ticker=ticker, company_name=info.get("shortName"), country=info.get("country"),
                 sector=info.get("sector"), industry=info.get("industry"), business_description=info.get("longBusinessSummary"))
-            exposure = fomc_exposure(context, info)
+            exposure = self.exposure_rule(context, info)
         except Exception:
             return result("classification_unavailable")
         diagnostics["exposure"] = {"matched": exposure.matched, "relevance": exposure.relevance,
@@ -206,10 +230,62 @@ class FomcEventProvider:
             return result("no_supported_exposure")
         now = self.clock()
         events = [self._expectations(lifecycle(event, now), now) for event in snapshot["events"]]
-        upcoming = sorted((e for e in events if e.status == "upcoming"), key=lambda e: (e.scheduled_date, e.event_id))[:MAX_UPCOMING]
-        recent = sorted((e for e in events if e.status in ("occurred", "effective")), key=lambda e: (e.announced_at, e.event_id), reverse=True)[:MAX_RECENT]
-        evidence = [item for event in recent for item in event_evidence(event, exposure, ticker)]
-        return result("partial" if snapshot["excluded"] else "available",
+        upcoming = sorted((e for e in events if e.status == "upcoming"), key=upcoming_order)[:self.max_upcoming]
+        recent = sorted((e for e in events if e.status in ("occurred", "effective")), key=lambda e: (e.announced_at, e.event_id), reverse=True)
+        # Later GDP estimates supersede earlier estimates of the same underlying period.
+        unique = {}
+        for event in recent:
+            unique.setdefault(event.underlying_event_id or event.event_id, event)
+        recent = list(unique.values())[:self.max_recent]
+        evidence = [item for event in recent for item in event_evidence(event, exposure, ticker, self.name)]
+        return result(("partial" if upcoming or recent else "temporarily_unavailable") if snapshot["excluded"] else "available",
             [RelevantEvent(event=e, exposure=exposure) for e in upcoming],
             [RelevantEvent(event=e, exposure=exposure) for e in recent], evidence)
+
+
+class FomcEventProvider(EventProvider):
+    """Backward-compatible FOMC configuration of the shared event pipeline."""
+
+
+def macro_exposure(context, info):
+    assessment = fomc_exposure(context, info)
+    if not assessment.matched:
+        return assessment
+    reason = ("U.S. inflation, employment and output releases inform financial conditions and demand. "
+              "No stock direction is established.")
+    if assessment.relevance == "company_specific":
+        reason += " " + assessment.reason
+    return ExposureAssessment(True, reason,
+        ExposureLink(kind="industry", description=reason, source_url=assessment.link.source_url),
+        assessment.relevance, assessment.directness, assessment.confidence, assessment.materiality)
+
+
+class MacroEventProvider(EventProvider):
+    source_class = MacroSource
+    name = "macro"
+    max_upcoming, max_recent = 8, 4
+    enabled_setting = "outlook_macro_enabled"
+    cache_setting = "outlook_macro_cache_ttl"
+    exposure_rule = staticmethod(macro_exposure)
+
+
+def upcoming_order(event):
+    # Unknown times remain date-only; this is a stable sort tie-break, not a timestamp.
+    return (event.scheduled_date, event.scheduled_at.timestamp() if event.scheduled_at else float("-inf"), event.event_id)
+
+
+def merge_intelligence(snapshots):
+    """Merge independent providers without a failed provider erasing healthy events."""
+    if not snapshots:
+        return EventIntelligence()
+    sections = {}
+    for section in ("upcoming", "recent"):
+        rows = {row.event.event_id: row for snapshot in snapshots for row in getattr(snapshot, section)}
+        sections[section] = tuple(sorted(rows.values(), key=lambda row:
+            upcoming_order(row.event) if section == "upcoming" else (row.event.announced_at, row.event.event_id),
+            reverse=section == "recent"))
+    statuses = {s.status for s in snapshots}
+    status = snapshots[0].status if len(snapshots) == 1 else ("available" if statuses == {"available"} else
+        "partial" if any(sections.values()) else "temporarily_unavailable" if statuses & {"partial", "temporarily_unavailable"} else snapshots[0].status)
+    return EventIntelligence(status=status, **sections)
 

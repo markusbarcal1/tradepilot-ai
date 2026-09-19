@@ -89,7 +89,7 @@ def inspect_snapshot(result, *, now, policy=DEFAULT_EVIDENCE_POLICY):
     records = [e for category in result.categories.values() for e in category.evidence]
     categories, contributions = assess_evidence(result.ticker, records, now=now, policy=policy)
     if not result.metadata.uses_placeholder_data:
-        complete = {key: categories[key] if any(e.raw_provider != "fomc" for e in category.evidence) else category
+        complete = {key: categories[key] if any(e.raw_provider not in {"fomc", "macro"} for e in category.evidence) else category
                     for key, category in result.categories.items()}
         result = aggregate_outlook(result.ticker, complete, result.metadata, policy=policy).model_copy(
             update={"event_intelligence": result.event_intelligence})
