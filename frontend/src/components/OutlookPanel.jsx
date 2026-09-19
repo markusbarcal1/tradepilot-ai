@@ -1,4 +1,5 @@
 import { useId, useState } from "react";
+import OutlookEvents from "./OutlookEvents";
 import {
   OUTLOOK_CATEGORIES, outlookLabel, outlookTone, initialOutlookCategory, selectOutlookCategory,
   categoryIntroduction, categorySources, industryMeasurements, formatReturn, formatRelative,
@@ -47,6 +48,8 @@ function CategoryDetails({ name, category }) {
   const factors = category?.status === "available" ? category.factors || [] : [];
   const evidence = category?.evidence || [];
   const sources = categorySources(category);
+  const eventProvenance = evidence.filter((item) => item.raw_provider === "fomc" && !item.scoring_eligible);
+  const primarySources = categorySources({ evidence: evidence.filter((item) => !eventProvenance.includes(item)) });
   return <>
     <div className="outlook-detail-heading"><h4>{OUTLOOK_CATEGORIES[name]}</h4><Status label={outlookLabel(category)} /></div>
     <p className="outlook-detail-intro">{categoryIntroduction(name, category)}</p>
@@ -56,10 +59,11 @@ function CategoryDetails({ name, category }) {
         <EvidenceExplanation category={category} factor={factor} />
       </li>)}
     </ul>}
-    {category?.status === "available" && <Sources sources={sources} name={name} />}
+    {category?.status === "available" && <Sources sources={primarySources} name={name} />}
     {(category?.summary || factors.length > 0 || evidence.length > 0) && <details className="outlook-methodology">
       <summary>Full evidence &amp; methodology</summary>
       {category.status !== "available" && <Sources sources={sources} name={name} />}
+      {category.status === "available" && eventProvenance.length > 0 && <Sources sources={categorySources({ evidence: eventProvenance })} name={name} />}
       {category.summary && <p>{category.summary}</p>}
       {category.status !== "available" && evidence.length > 0 && <p>Source observations below do not establish a category assessment.</p>}
       {factors.filter((factor) => !evidence.some((item) => item.summary === factor.description))
@@ -112,6 +116,7 @@ export default function OutlookPanel({ data, loading = false, error = "", embedd
     </header>
     <OutlookCategories key={`${data?.ticker || "outlook"}-${hasCategories ? "ready" : "pending"}`}
       categories={hasCategories ? data.categories : {}} disabled={!hasCategories} loading={loading} />
+    {!loading && !error && <OutlookEvents key={data?.ticker} intelligence={data?.event_intelligence} ticker={data?.ticker} />}
     <p className="outlook-context-note">External context, not a trading recommendation.</p>
   </section>;
 }

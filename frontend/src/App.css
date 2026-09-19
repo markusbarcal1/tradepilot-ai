@@ -2260,3 +2260,17 @@ canvas {
 @container outlook (max-width: 239px) {
   .outlook-category-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Event Intelligence is a compact addition to the existing Outlook surface. */
+.outlook-events { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-color); }
+.outlook-events h4 { margin: 0 0 10px; color: var(--text-heading); font-size: 0.88rem; }
+.outlook-events h5 { margin: 10px 0 6px; color: var(--text-strong); font-size: 0.78rem; }
+.outlook-event { padding: 8px 0; border-bottom: 1px solid var(--border-subtle); font-size: 0.78rem; line-height: 1.5; }
+.outlook-event summary { cursor: pointer; color: var(--text-strong); }
+.outlook-event summary > .outlook-evidence-note { display: block; margin-top: 2px; }
+.outlook-event-detail { color: var(--text-secondary); }
+.outlook-event-detail p { margin: 8px 0; }
+.outlook-event-detail dl { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 4px 8px; }
+.outlook-event-detail dd { margin: 0; color: var(--text-strong); }
+.outlook-event-expectation ul { padding-left: 16px; }
+.outlook-event-expectation a { color: var(--text-link); }

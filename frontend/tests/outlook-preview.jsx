@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import OutlookPanel from "../src/components/OutlookPanel";
 import { outlookFixtures } from "./outlook-fixtures.mjs";
+import { eventFixture } from "./outlook-event-fixtures.mjs";
 import "../src/App.css";
 import "./outlook-preview.css";
 export default function Preview() {
@@ -16,7 +17,7 @@ export default function Preview() {
       <label>Scenario <select value={scenario} onChange={(e) => setScenario(e.target.value)}>
         <option value="technology">Technology · Mixed</option><option value="energy">Energy · Positive</option>
         <option value="negative">Overall Negative</option><option value="empty">No available categories</option>
-        <option value="notMaterial">Not Material</option>
+        <option value="notMaterial">Not Material</option><option value="events">FOMC events · ABTC</option>
       </select></label>
       <label>Card width <select value={width} onChange={(e) => setWidth(e.target.value)}>
         {[220, 280, 340, 520].map((n) => <option key={n} value={n}>{n}px</option>)}
@@ -27,7 +28,7 @@ export default function Preview() {
       <button type="button" onClick={() => { const next = theme === "dark" ? "light" : "dark"; document.documentElement.dataset.theme = next; setTheme(next); }}>Switch to {theme === "dark" ? "light" : "dark"} theme</button>
     </div>
     <div className="panel-box analysis-summary-card outlook-preview-column" style={{ width: `${width}px` }}>
-      <OutlookPanel data={outlookFixtures[scenario]} embedded loading={state === "loading"} error={state === "error" ? "fixture" : ""}/>
+      <OutlookPanel data={scenario === "events" ? { ...outlookFixtures.technology, ticker: "ABTC", event_intelligence: eventFixture } : outlookFixtures[scenario]} embedded loading={state === "loading"} error={state === "error" ? "fixture" : ""}/>
     </div>
   </main>;
 }

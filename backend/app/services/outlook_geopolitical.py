@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 import re
 
 from app.models.outlook_document import SourceDocument
+from app.models.outlook_event import ExposureAssessment
 from app.models.outlook_evidence import CompanyContext, ExposureLink, OutlookEvidence
 
 
@@ -30,13 +31,6 @@ class GeopoliticalEvent:
     change: str
     reason: str | None
     action_ids: tuple[str, ...]
-
-
-@dataclass(frozen=True)
-class ExposureAssessment:
-    matched: bool
-    reason: str
-    link: ExposureLink | None = None
 
 
 def parse_date(value):

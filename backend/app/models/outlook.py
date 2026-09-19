@@ -4,6 +4,7 @@ from enum import Enum
 
 from app.models.outlook_taxonomy import CATEGORY_TITLES, CategoryKey
 from app.models.outlook_evidence import OutlookEvidence, UnitValue
+from app.models.outlook_event import EventIntelligence
 
 from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
 
@@ -72,6 +73,7 @@ class OutlookResponse(BaseModel):
     summary: str
     categories: dict[CategoryKey, OutlookCategory]
     metadata: OutlookMetadata
+    event_intelligence: EventIntelligence = Field(default_factory=EventIntelligence)
 
     @model_validator(mode="after")
     def validate_assessment(self):

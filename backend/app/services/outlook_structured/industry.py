@@ -25,7 +25,7 @@ HOLDINGS_TTL = 86400
 
 def classification(ticker):
     info = yf.Ticker(ticker).get_info()
-    return {key: info.get(key) for key in ("sector", "industry", "quoteType", "exchange", "country")}
+    return {key: info.get(key) for key in ("sector", "industry", "quoteType", "exchange", "country", "shortName", "longBusinessSummary")}
 
 
 def holdings(symbol):

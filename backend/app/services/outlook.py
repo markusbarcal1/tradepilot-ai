@@ -7,6 +7,7 @@ from app.models.outlook import (
 )
 
 from app.models.outlook_evidence import OutlookEvidence
+from app.models.outlook_event import EventIntelligence
 from app.services.outlook_evidence import assess_evidence
 from app.services.outlook_policy import DEFAULT_EVIDENCE_POLICY
 from app.services.outlook_providers import OutlookProvider, PlaceholderOutlookProvider
@@ -50,7 +51,22 @@ def assess_providers(ticker: str, providers: list[OutlookProvider], *, now: date
     evidence, failed, active = [], set(), set()
     statuses = {}
     attempted = []
+    intelligence = EventIntelligence()
+    event_provenance = []
     for provider in providers:
+        if getattr(provider, "event_intelligence_provider", False):
+            try:
+                snapshot = provider.inspect(ticker)
+                intelligence = EventIntelligence.model_validate(snapshot["intelligence"])
+                event_provenance = [OutlookEvidence.model_validate(item) for item in snapshot["evidence"]]
+                if any(item.scoring_eligible or item.ticker != ticker or item.raw_provider != provider.name for item in event_provenance):
+                    raise ValueError("Event relevance must not introduce directional evidence")
+                statuses[provider.name] = intelligence.status
+            except Exception as error:
+                logger.warning("outlook_event_provider_failed kind=%s", type(error).__name__)
+                intelligence, event_provenance = EventIntelligence(status="temporarily_unavailable"), []
+                statuses[provider.name] = "error"
+            continue
         coverage = set(getattr(provider, "categories", CATEGORY_TITLES))
         reason = getattr(provider, "unavailable_reason", None)
         if reason:
@@ -91,10 +107,16 @@ def assess_providers(ticker: str, providers: list[OutlookProvider], *, now: date
             elif key not in active:
                 categories[key] = OutlookCategory(status="unavailable", evidence_count=0,
                     summary="This category's evidence provider is not connected or configured.")
+    # Append non-scoring observations after assessment: event relevance cannot alter
+    # any category's label, availability, support count, confidence, or error state.
+    for key, category in list(categories.items()):
+        extra = [item for item in event_provenance if item.category == key]
+        if extra:
+            categories[key] = category.model_copy(update={"evidence": [*category.evidence, *extra]})
     if attempted and all(statuses[provider.name] == "error" for provider in attempted):
         return OutlookResponse(ticker=ticker, status="error", categories=categories,
-                               summary="Outlook data is temporarily unavailable.", metadata=metadata)
-    return aggregate_outlook(ticker, categories, metadata, policy=policy)
+                               summary="Outlook data is temporarily unavailable.", metadata=metadata, event_intelligence=intelligence)
+    return aggregate_outlook(ticker, categories, metadata, policy=policy).model_copy(update={"event_intelligence": intelligence})
 
 
 def analyze_outlook(ticker: str, provider: OutlookProvider | None = None, *, now: datetime | None = None) -> OutlookResponse:

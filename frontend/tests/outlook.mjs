@@ -5,6 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { Window } from "happy-dom";
 import { createServer } from "vite";
 import { outlookFixtures } from "./outlook-fixtures.mjs";
+import { eventFixture, probabilityFixture } from "./outlook-event-fixtures.mjs";
 import { outlookLabel, outlookTone, initialOutlookCategory, selectOutlookCategory,
   categoryIntroduction, categorySources, sourceLabel, industryMeasurements } from "../src/utils/outlookPresentation.js";
 const window = new Window({ url: "http://localhost" });
@@ -185,6 +186,51 @@ try {
       assert.ok((Math.max(a, b) + .05) / (Math.min(a, b) + .05) >= 4.5, `${theme}: ${token} contrast`);
     }
   }
+  const eventData = { ...outlookFixtures.technology, ticker: "ABTC", event_intelligence: structuredClone(eventFixture) };
+  await mount({ data: eventData });
+  assert.equal(detail(), null);
+  assert.equal(container.querySelectorAll(".outlook-category-button").length, 6);
+  assert.match(container.querySelector(".outlook-events").textContent, /Upcoming.*Recent/s);
+  assert.match(container.querySelector(".outlook-events").textContent, /Oct 28, 2026/);
+  assert.match(container.querySelector(".outlook-events").textContent, /\+25 bp/);
+  assert.equal(container.querySelectorAll(".outlook-event[open]").length, 0);
+  const eventDetails = container.querySelectorAll(".outlook-event")[1];
+  await act(async () => user.click(eventDetails.querySelector("summary")));
+  assert.equal(eventDetails.open, true);
+  assert.match(eventDetails.textContent, /3.50–3.75%/);
+  assert.match(eventDetails.textContent, /3.75–4.00%/);
+  assert.match(eventDetails.textContent, /Why this matters to ABTC/);
+  assert.match(eventDetails.textContent, /Stock direction is uncertain/);
+  assert.equal(container.querySelector(".outlook-event-expectation"), null);
+  assert.equal(eventDetails.querySelector("a").rel, "noopener noreferrer");
+  eventData.event_intelligence.recent[0].event.expectation = probabilityFixture;
+  eventData.event_intelligence.recent[0].event.expectation_status = "available";
+  eventData.event_intelligence.recent[0].event.surprise = { status: "as_expected" };
+  await mount({ data: eventData });
+  assert.match(container.querySelector(".outlook-event-expectation").textContent, /Event outcome probabilities/);
+  assert.match(container.querySelector(".outlook-event-expectation").textContent, /Hold: 30%/);
+  assert.match(container.querySelector(".outlook-event-expectation").textContent, /Before announcement/);
+  assert.match(container.textContent, /As expected/);
+  assert.doesNotMatch(container.textContent, /chance ABTC rises|stock probability/i);
+  eventData.event_intelligence.recent[0].event.expectation = { ...probabilityFixture, expires_at: "2026-09-15T19:00:00Z" };
+  await mount({ data: eventData });
+  assert.equal(container.querySelector(".outlook-event-expectation"), null);
+  await mount({ data: { ...eventData, ticker: "NVDA" } });
+  assert.equal(container.querySelectorAll(".outlook-event[open]").length, 0);
+  await mount({ data: eventData, loading: true });
+  assert.equal(container.querySelector(".outlook-events"), null);
+  await mount({ data: { ...eventData, event_intelligence: { status: "temporarily_unavailable" } } });
+  assert.match(container.textContent, /Event Intelligence is temporarily unavailable/);
+  assert.equal(pageScrollCalls, 0);
+  const withProvenance = structuredClone(outlookFixtures.technology);
+  withProvenance.ticker = "POLICY";
+  withProvenance.categories.economic.evidence.push({ id: "fomc", raw_provider: "fomc", scoring_eligible: false,
+    title: "FOMC Rate Decision", summary: "Relevant context; direction uncertain.", source: "Federal Reserve",
+    source_url: "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm" });
+  await mount({ data: withProvenance }); await choose("Economic");
+  assert.doesNotMatch(primary(), /FOMC Rate Decision/);
+  assert.match(detail().querySelector(".outlook-methodology").textContent, /FOMC Rate Decision/);
+  assert.ok(detail().querySelector('.outlook-methodology a[href*="federalreserve.gov"]'));
   const app = await fs.readFile(new URL("../src/App.jsx", import.meta.url), "utf8");
   assert.ok(app.indexOf("<ValuationScorePanel") < app.indexOf("<OutlookPanel"));
   assert.match(app, /outlookRequestRef.current.controller\?\.abort\(\)/);
