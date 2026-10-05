@@ -1,0 +1,707 @@
+{
+  "validated_at": "2026-09-19T18:13:07.630401+00:00",
+  "mode": "bounded live earnings-event validation; no scoring changes or database writes",
+  "reports": [
+    {
+      "ticker": "AAPL",
+      "status": "available",
+      "upcoming": [
+        {
+          "event": {
+            "event_id": "earnings:AAPL:next",
+            "event_type": "earnings_release",
+            "category": "earnings",
+            "title": "AAPL Earnings",
+            "summary": "Provider-reported upcoming issuer earnings date.",
+            "scheduled_date": "2026-10-29",
+            "scheduled_at": null,
+            "announced_at": null,
+            "effective_date": null,
+            "effective_at": null,
+            "expires_at": null,
+            "status": "upcoming",
+            "reference_period": null,
+            "underlying_event_id": null,
+            "release_type": null,
+            "ticker": "AAPL",
+            "issuer": "Apple Inc.",
+            "reporting_identity": null,
+            "schedule_certainty": "provider_reported",
+            "market_session": "unknown",
+            "schedule_history": [],
+            "guidance_status": null,
+            "scheduled_timezone": null,
+            "measurements": [],
+            "revisions": [],
+            "previous_value": null,
+            "expected_value": null,
+            "actual_value": null,
+            "change": null,
+            "expectation": null,
+            "expectation_status": "unavailable",
+            "expectation_history": [],
+            "surprise": {
+              "status": "unavailable",
+              "difference": null,
+              "percent_difference": null,
+              "actual_outcome_probability": null,
+              "expectation_snapshot_id": null
+            },
+            "provenance": [
+              {
+                "source": "Yahoo Finance \u2014 Earnings Calendar",
+                "source_type": "market_data",
+                "source_url": "https://finance.yahoo.com/calendar/earnings?symbol=AAPL",
+                "published_at": null,
+                "retrieved_at": "2026-09-19T18:12:47.628960Z"
+              }
+            ],
+            "scope": {
+              "countries": [],
+              "regions": [],
+              "industries": [],
+              "commodities": [],
+              "technologies": [],
+              "entities": [
+                "Apple Inc."
+              ]
+            }
+          },
+          "exposure": {
+            "matched": true,
+            "reason": "This is Apple Inc.'s own earnings release, so relevance to AAPL is direct.",
+            "link": null,
+            "relevance": "company_specific",
+            "directness": "business",
+            "confidence": 1.0,
+            "materiality": 1.0,
+            "direction": null
+          },
+          "directional_evidence": false
+        }
+      ],
+      "recent": [
+        {
+          "event": {
+            "event_id": "earnings:AAPL:FY2026:Q3",
+            "event_type": "earnings_release",
+            "category": "earnings",
+            "title": "AAPL Earnings",
+            "summary": "Issuer results for FY2026 Q3.",
+            "scheduled_date": "2026-07-30",
+            "scheduled_at": null,
+            "announced_at": "2026-07-30T20:30:28Z",
+            "effective_date": null,
+            "effective_at": null,
+            "expires_at": "2026-11-27T20:30:28Z",
+            "status": "occurred",
+            "reference_period": "FY2026 Q3",
+            "underlying_event_id": "earnings:AAPL:FY2026:Q3",
+            "release_type": "Earnings release",
+            "ticker": "AAPL",
+            "issuer": "Apple Inc.",
+            "reporting_identity": {
+              "status": "authoritative",
+              "reason": "explicit_reporting_identity",
+              "periods": [
+                {
+                  "ticker": "AAPL",
+                  "fiscal_year": 2026,
+                  "fiscal_period": "Q3",
+                  "period_start": null,
+                  "period_end": "2026-06-27"
+                }
+              ],
+              "provenance": [
+                {
+                  "method": "explicit_primary_text",
+                  "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000018/a8-kex991q3202606272026.htm",
+                  "document_id": "sec:AAPL:0000320193-26-000018:exhibit",
+                  "accession": "0000320193-26-000018",
+                  "basis": "Apple reports third quarter results | CUPERTINO, CALIFORNIA \u2014 Apple\u00ae today announced financial results for its fiscal 2026 third quarter ended June 27, 2026. | This includes press releases and other information about financial performance, reports filed or furnished with the SEC, information on corporate governance, and details related to its annual meeting of shareholders. | These statements involve risks and uncertainties, and actual results may differ materially from any future results expressed or implied by the forward-looking statements. | More information on these risks and other potential factors that could affect the Company\u2019s business, reputation, results of operations, financial condition, and stock price is included in the Company\u2019s filings with the SEC, including in the \u201cRisk Factors\u201d and \u201cManagement\u2019s Discussion and Analysis of Financial Condition and Results of Operations\u201d sections of the Company\u2019s most recently filed periodic reports on Form 10-K and Form 10-Q and subsequent filings."
+                }
+              ],
+              "revision": null
+            },
+            "schedule_certainty": null,
+            "market_session": null,
+            "schedule_history": [],
+            "guidance_status": "unavailable",
+            "scheduled_timezone": null,
+            "measurements": [
+              {
+                "key": "revenue",
+                "label": "Revenue",
+                "actual_value": {
+                  "amount": 109.4,
+                  "lower": null,
+                  "upper": null,
+                  "text": null,
+                  "unit": "USD_billion"
+                },
+                "previous_value": null,
+                "expectation": null,
+                "expectation_status": "unavailable",
+                "surprise": {
+                  "status": "unavailable",
+                  "difference": null,
+                  "percent_difference": null,
+                  "actual_outcome_probability": null,
+                  "expectation_snapshot_id": null
+                }
+              },
+              {
+                "key": "diluted_eps",
+                "label": "Diluted EPS",
+                "actual_value": {
+                  "amount": 2.02,
+                  "lower": null,
+                  "upper": null,
+                  "text": null,
+                  "unit": "USD_per_share"
+                },
+                "previous_value": null,
+                "expectation": null,
+                "expectation_status": "unavailable",
+                "surprise": {
+                  "status": "unavailable",
+                  "difference": null,
+                  "percent_difference": null,
+                  "actual_outcome_probability": null,
+                  "expectation_snapshot_id": null
+                }
+              }
+            ],
+            "revisions": [],
+            "previous_value": null,
+            "expected_value": null,
+            "actual_value": null,
+            "change": null,
+            "expectation": null,
+            "expectation_status": "unavailable",
+            "expectation_history": [],
+            "surprise": {
+              "status": "unavailable",
+              "difference": null,
+              "percent_difference": null,
+              "actual_outcome_probability": null,
+              "expectation_snapshot_id": null
+            },
+            "provenance": [
+              {
+                "source": "Apple Inc. FY2026 Q3 Earnings Release",
+                "source_type": "regulatory_filing",
+                "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000018/a8-kex991q3202606272026.htm",
+                "published_at": "2026-07-30T20:30:28Z",
+                "retrieved_at": "2026-09-19T18:12:45.560921Z"
+              }
+            ],
+            "scope": {
+              "countries": [],
+              "regions": [],
+              "industries": [],
+              "commodities": [],
+              "technologies": [],
+              "entities": [
+                "Apple Inc."
+              ]
+            }
+          },
+          "exposure": {
+            "matched": true,
+            "reason": "This is Apple Inc.'s own earnings release, so relevance to AAPL is direct.",
+            "link": null,
+            "relevance": "company_specific",
+            "directness": "business",
+            "confidence": 1.0,
+            "materiality": 1.0,
+            "direction": null
+          },
+          "directional_evidence": false
+        }
+      ],
+      "diagnostics": {
+        "directional_evidence": false,
+        "dedup": "ExternalEvent reuses SEC interpretation; it creates no additional OutlookEvidence.",
+        "consensus_provider": "not_configured",
+        "calendar_source": "Yahoo Finance via yfinance",
+        "calendar_certainty": "provider_reported_not_issuer_confirmed",
+        "upcoming_horizon_days": 45,
+        "recent_horizon_days": 120,
+        "sec_status": "available",
+        "schedule_status": "available",
+        "source_documents": 21,
+        "reused_outlook_evidence": 4,
+        "duplicate_event_evidence": 0,
+        "exposure": {
+          "relevance": "issuer_event",
+          "reason": "This is Apple Inc.'s own earnings release, so relevance to AAPL is direct."
+        },
+        "calendar_reads": 2,
+        "calendar_loads": 1,
+        "calendar_cache_hits": 1
+      },
+      "earnings_outlook": {
+        "status": "insufficient_data",
+        "label": null,
+        "evidence_count": 0
+      },
+      "network_cache": {
+        "calendar_reads": 2,
+        "calendar_loads": 1,
+        "calendar_cache_hits": 1,
+        "sec_provider_reused": true,
+        "duplicate_event_evidence": 0
+      }
+    },
+    {
+      "ticker": "NVDA",
+      "status": "available",
+      "upcoming": [],
+      "recent": [
+        {
+          "event": {
+            "event_id": "earnings:NVDA:FY2027:Q2",
+            "event_type": "earnings_release",
+            "category": "earnings",
+            "title": "NVDA Earnings",
+            "summary": "Issuer results for FY2027 Q2.",
+            "scheduled_date": "2026-08-26",
+            "scheduled_at": null,
+            "announced_at": "2026-08-26T20:21:19Z",
+            "effective_date": null,
+            "effective_at": null,
+            "expires_at": "2026-12-24T20:21:19Z",
+            "status": "occurred",
+            "reference_period": "FY2027 Q2",
+            "underlying_event_id": "earnings:NVDA:FY2027:Q2",
+            "release_type": "Earnings release",
+            "ticker": "NVDA",
+            "issuer": "NVIDIA Corporation",
+            "reporting_identity": {
+              "status": "authoritative",
+              "reason": "explicit_reporting_identity",
+              "periods": [
+                {
+                  "ticker": "NVDA",
+                  "fiscal_year": 2027,
+                  "fiscal_period": "Q2",
+                  "period_start": null,
+                  "period_end": "2026-07-26"
+                }
+              ],
+              "provenance": [
+                {
+                  "method": "explicit_primary_text",
+                  "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000073/q2fy27pr.htm",
+                  "document_id": "sec:NVDA:0001045810-26-000073:exhibit",
+                  "accession": "0001045810-26-000073",
+                  "basis": "NVIDIA Announces Financial Results for Second Quarter Fiscal 2027 | 26, 2026\u2015NVIDIA (NASDAQ: NVDA) today reported revenue for the second quarter ended July 26, 2026, of $96.2 billion, up 18% from the previous quarter and up 106% from a year ago. | \u2022Announced the NVIDIA Vera Rubin platform is ramping into full production with racks running at partners including CoreWeave, Google Cloud, Microsoft Azure, Oracle Cloud Infrastructure and Nebius. | \u2022Announced that NVIDIA Groq 3 LPX, the interactive AI inference accelerator, is now in full production."
+                }
+              ],
+              "revision": null
+            },
+            "schedule_certainty": null,
+            "market_session": null,
+            "schedule_history": [],
+            "guidance_status": "unavailable",
+            "scheduled_timezone": null,
+            "measurements": [
+              {
+                "key": "gross_margin",
+                "label": "Gross Margin",
+                "actual_value": {
+                  "amount": 75.0,
+                  "lower": null,
+                  "upper": null,
+                  "text": null,
+                  "unit": "percent"
+                },
+                "previous_value": {
+                  "amount": 72.4,
+                  "lower": null,
+                  "upper": null,
+                  "text": null,
+                  "unit": "percent"
+                },
+                "expectation": null,
+                "expectation_status": "unavailable",
+                "surprise": {
+                  "status": "unavailable",
+                  "difference": null,
+                  "percent_difference": null,
+                  "actual_outcome_probability": null,
+                  "expectation_snapshot_id": null
+                }
+              },
+              {
+                "key": "revenue",
+                "label": "Revenue",
+                "actual_value": {
+                  "amount": 96.2,
+                  "lower": null,
+                  "upper": null,
+                  "text": null,
+                  "unit": "USD_billion"
+                },
+                "previous_value": null,
+                "expectation": null,
+                "expectation_status": "unavailable",
+                "surprise": {
+                  "status": "unavailable",
+                  "difference": null,
+                  "percent_difference": null,
+                  "actual_outcome_probability": null,
+                  "expectation_snapshot_id": null
+                }
+              }
+            ],
+            "revisions": [],
+            "previous_value": null,
+            "expected_value": null,
+            "actual_value": null,
+            "change": null,
+            "expectation": null,
+            "expectation_status": "unavailable",
+            "expectation_history": [],
+            "surprise": {
+              "status": "unavailable",
+              "difference": null,
+              "percent_difference": null,
+              "actual_outcome_probability": null,
+              "expectation_snapshot_id": null
+            },
+            "provenance": [
+              {
+                "source": "NVIDIA Corporation FY2027 Q2 Earnings Release",
+                "source_type": "regulatory_filing",
+                "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000073/q2fy27pr.htm",
+                "published_at": "2026-08-26T20:21:19Z",
+                "retrieved_at": "2026-09-19T18:12:50.659232Z"
+              }
+            ],
+            "scope": {
+              "countries": [],
+              "regions": [],
+              "industries": [],
+              "commodities": [],
+              "technologies": [],
+              "entities": [
+                "NVIDIA Corporation"
+              ]
+            }
+          },
+          "exposure": {
+            "matched": true,
+            "reason": "This is NVIDIA Corporation's own earnings release, so relevance to NVDA is direct.",
+            "link": null,
+            "relevance": "company_specific",
+            "directness": "business",
+            "confidence": 1.0,
+            "materiality": 1.0,
+            "direction": null
+          },
+          "directional_evidence": false
+        }
+      ],
+      "diagnostics": {
+        "directional_evidence": false,
+        "dedup": "ExternalEvent reuses SEC interpretation; it creates no additional OutlookEvidence.",
+        "consensus_provider": "not_configured",
+        "calendar_source": "Yahoo Finance via yfinance",
+        "calendar_certainty": "provider_reported_not_issuer_confirmed",
+        "upcoming_horizon_days": 45,
+        "recent_horizon_days": 120,
+        "sec_status": "available",
+        "schedule_status": "no_event_in_horizon",
+        "source_documents": 27,
+        "reused_outlook_evidence": 4,
+        "duplicate_event_evidence": 0,
+        "exposure": {
+          "relevance": "issuer_event",
+          "reason": "This is NVIDIA Corporation's own earnings release, so relevance to NVDA is direct."
+        },
+        "calendar_reads": 4,
+        "calendar_loads": 2,
+        "calendar_cache_hits": 2
+      },
+      "earnings_outlook": {
+        "status": "insufficient_data",
+        "label": null,
+        "evidence_count": 0
+      },
+      "network_cache": {
+        "calendar_reads": 4,
+        "calendar_loads": 2,
+        "calendar_cache_hits": 2,
+        "sec_provider_reused": true,
+        "duplicate_event_evidence": 0
+      }
+    },
+    {
+      "ticker": "MSFT",
+      "status": "available",
+      "upcoming": [
+        {
+          "event": {
+            "event_id": "earnings:MSFT:next",
+            "event_type": "earnings_release",
+            "category": "earnings",
+            "title": "MSFT Earnings",
+            "summary": "Provider-reported upcoming issuer earnings date.",
+            "scheduled_date": "2026-10-28",
+            "scheduled_at": null,
+            "announced_at": null,
+            "effective_date": null,
+            "effective_at": null,
+            "expires_at": null,
+            "status": "upcoming",
+            "reference_period": null,
+            "underlying_event_id": null,
+            "release_type": null,
+            "ticker": "MSFT",
+            "issuer": "Microsoft Corporation",
+            "reporting_identity": null,
+            "schedule_certainty": "provider_reported",
+            "market_session": "unknown",
+            "schedule_history": [],
+            "guidance_status": null,
+            "scheduled_timezone": null,
+            "measurements": [],
+            "revisions": [],
+            "previous_value": null,
+            "expected_value": null,
+            "actual_value": null,
+            "change": null,
+            "expectation": null,
+            "expectation_status": "unavailable",
+            "expectation_history": [],
+            "surprise": {
+              "status": "unavailable",
+              "difference": null,
+              "percent_difference": null,
+              "actual_outcome_probability": null,
+              "expectation_snapshot_id": null
+            },
+            "provenance": [
+              {
+                "source": "Yahoo Finance \u2014 Earnings Calendar",
+                "source_type": "market_data",
+                "source_url": "https://finance.yahoo.com/calendar/earnings?symbol=MSFT",
+                "published_at": null,
+                "retrieved_at": "2026-09-19T18:12:57.864303Z"
+              }
+            ],
+            "scope": {
+              "countries": [],
+              "regions": [],
+              "industries": [],
+              "commodities": [],
+              "technologies": [],
+              "entities": [
+                "Microsoft Corporation"
+              ]
+            }
+          },
+          "exposure": {
+            "matched": true,
+            "reason": "This is Microsoft Corporation's own earnings release, so relevance to MSFT is direct.",
+            "link": null,
+            "relevance": "company_specific",
+            "directness": "business",
+            "confidence": 1.0,
+            "materiality": 1.0,
+            "direction": null
+          },
+          "directional_evidence": false
+        }
+      ],
+      "recent": [],
+      "diagnostics": {
+        "directional_evidence": false,
+        "dedup": "ExternalEvent reuses SEC interpretation; it creates no additional OutlookEvidence.",
+        "consensus_provider": "not_configured",
+        "calendar_source": "Yahoo Finance via yfinance",
+        "calendar_certainty": "provider_reported_not_issuer_confirmed",
+        "upcoming_horizon_days": 45,
+        "recent_horizon_days": 120,
+        "sec_status": "available",
+        "schedule_status": "available",
+        "source_documents": 11,
+        "reused_outlook_evidence": 0,
+        "duplicate_event_evidence": 0,
+        "exposure": {
+          "relevance": "issuer_event",
+          "reason": "This is Microsoft Corporation's own earnings release, so relevance to MSFT is direct."
+        },
+        "calendar_reads": 6,
+        "calendar_loads": 3,
+        "calendar_cache_hits": 3
+      },
+      "earnings_outlook": {
+        "status": "insufficient_data",
+        "label": null,
+        "evidence_count": 0
+      },
+      "network_cache": {
+        "calendar_reads": 6,
+        "calendar_loads": 3,
+        "calendar_cache_hits": 3,
+        "sec_provider_reused": true,
+        "duplicate_event_evidence": 0
+      }
+    },
+    {
+      "ticker": "JPM",
+      "status": "available",
+      "upcoming": [
+        {
+          "event": {
+            "event_id": "earnings:JPM:next",
+            "event_type": "earnings_release",
+            "category": "earnings",
+            "title": "JPM Earnings",
+            "summary": "Provider-reported upcoming issuer earnings date.",
+            "scheduled_date": "2026-10-13",
+            "scheduled_at": null,
+            "announced_at": null,
+            "effective_date": null,
+            "effective_at": null,
+            "expires_at": null,
+            "status": "upcoming",
+            "reference_period": null,
+            "underlying_event_id": null,
+            "release_type": null,
+            "ticker": "JPM",
+            "issuer": "JP Morgan Chase & Co.",
+            "reporting_identity": null,
+            "schedule_certainty": "provider_reported",
+            "market_session": "unknown",
+            "schedule_history": [],
+            "guidance_status": null,
+            "scheduled_timezone": null,
+            "measurements": [],
+            "revisions": [],
+            "previous_value": null,
+            "expected_value": null,
+            "actual_value": null,
+            "change": null,
+            "expectation": null,
+            "expectation_status": "unavailable",
+            "expectation_history": [],
+            "surprise": {
+              "status": "unavailable",
+              "difference": null,
+              "percent_difference": null,
+              "actual_outcome_probability": null,
+              "expectation_snapshot_id": null
+            },
+            "provenance": [
+              {
+                "source": "Yahoo Finance \u2014 Earnings Calendar",
+                "source_type": "market_data",
+                "source_url": "https://finance.yahoo.com/calendar/earnings?symbol=JPM",
+                "published_at": null,
+                "retrieved_at": "2026-09-19T18:13:02.713823Z"
+              }
+            ],
+            "scope": {
+              "countries": [],
+              "regions": [],
+              "industries": [],
+              "commodities": [],
+              "technologies": [],
+              "entities": [
+                "JP Morgan Chase & Co."
+              ]
+            }
+          },
+          "exposure": {
+            "matched": true,
+            "reason": "This is JP Morgan Chase & Co.'s own earnings release, so relevance to JPM is direct.",
+            "link": null,
+            "relevance": "company_specific",
+            "directness": "business",
+            "confidence": 1.0,
+            "materiality": 1.0,
+            "direction": null
+          },
+          "directional_evidence": false
+        }
+      ],
+      "recent": [],
+      "diagnostics": {
+        "directional_evidence": false,
+        "dedup": "ExternalEvent reuses SEC interpretation; it creates no additional OutlookEvidence.",
+        "consensus_provider": "not_configured",
+        "calendar_source": "Yahoo Finance via yfinance",
+        "calendar_certainty": "provider_reported_not_issuer_confirmed",
+        "upcoming_horizon_days": 45,
+        "recent_horizon_days": 120,
+        "sec_status": "available",
+        "schedule_status": "available",
+        "source_documents": 21,
+        "reused_outlook_evidence": 0,
+        "duplicate_event_evidence": 0,
+        "exposure": {
+          "relevance": "issuer_event",
+          "reason": "This is JP Morgan Chase & Co.'s own earnings release, so relevance to JPM is direct."
+        },
+        "calendar_reads": 8,
+        "calendar_loads": 4,
+        "calendar_cache_hits": 4
+      },
+      "earnings_outlook": {
+        "status": "insufficient_data",
+        "label": null,
+        "evidence_count": 0
+      },
+      "network_cache": {
+        "calendar_reads": 8,
+        "calendar_loads": 4,
+        "calendar_cache_hits": 4,
+        "sec_provider_reused": true,
+        "duplicate_event_evidence": 0
+      }
+    },
+    {
+      "ticker": "ABTC",
+      "status": "no_events",
+      "upcoming": [],
+      "recent": [],
+      "diagnostics": {
+        "directional_evidence": false,
+        "dedup": "ExternalEvent reuses SEC interpretation; it creates no additional OutlookEvidence.",
+        "consensus_provider": "not_configured",
+        "calendar_source": "Yahoo Finance via yfinance",
+        "calendar_certainty": "provider_reported_not_issuer_confirmed",
+        "upcoming_horizon_days": 45,
+        "recent_horizon_days": 120,
+        "sec_status": "available",
+        "schedule_status": "no_event_in_horizon",
+        "source_documents": 10,
+        "reused_outlook_evidence": 0,
+        "duplicate_event_evidence": 0,
+        "exposure": {
+          "relevance": "issuer_event",
+          "reason": "This is American Bitcoin Corp.'s own earnings release, so relevance to ABTC is direct."
+        },
+        "calendar_reads": 10,
+        "calendar_loads": 5,
+        "calendar_cache_hits": 5
+      },
+      "earnings_outlook": {
+        "status": "insufficient_data",
+        "label": null,
+        "evidence_count": 0
+      },
+      "network_cache": {
+        "calendar_reads": 10,
+        "calendar_loads": 5,
+        "calendar_cache_hits": 5,
+        "sec_provider_reused": true,
+        "duplicate_event_evidence": 0
+      }
+    }
+  ]
+}

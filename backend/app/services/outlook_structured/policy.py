@@ -3,16 +3,38 @@ from dataclasses import dataclass
 
 # Official 8-K item context; accession + canonical event type identifies an event.
 SEC_ITEMS = {
-    "1.03": ("restructuring", -2, 1.0, "Bankruptcy or receivership"),
+    "1.03": ("bankruptcy", -2, 1.0, "Bankruptcy or receivership"),
     "1.05": ("cybersecurity_event", -1, 1.0, "Material cybersecurity incident"),
     "5.02": ("management_change", 0, 0.5, "Principal officer or director change"),
     "2.01": ("acquisition", 0, 0.5, "Acquisition or disposition of assets"),
-    "1.01": ("corporate_other", 0, 0.5, "Material definitive agreement"),
+    "1.01": ("material_agreement", 0, 0.7, "Material definitive agreement"),
     "3.02": ("capital_raise", 0, 0.5, "Unregistered sale of equity securities"),
     "2.05": ("restructuring", 0, 0.5, "Exit or disposal costs"),
     "2.06": ("material_impairment", -1, 0.9, "Material impairment"),
     "3.01": ("regulatory_action", 0, 0.5, "Listing-rule notice or transfer of listing"),
-    "1.02": ("corporate_other", 0, 0.5, "Termination of material agreement"),
+    # Items 3.03 and 5.03 identify a capital-structure filing worth bounded
+    # retrieval. They do not, by themselves, establish a split or direction.
+    "3.03": ("corporate_other", 0, 0.5, "Material modification to security-holder rights"),
+    "5.03": ("corporate_other", 0, 0.5, "Charter or bylaws amendment"),
+    "1.02": ("material_agreement_termination", 0, 0.7, "Termination of material agreement"),
+    "8.01": ("corporate_other", 0, 0.5, "Other material corporate event"),
+}
+
+SEC_DOCUMENT_ITEMS = frozenset(SEC_ITEMS)
+SEC_COMPANY_ITEM_FAMILIES = {
+    "1.01": "agreement", "1.02": "agreement", "1.03": "bankruptcy",
+    "1.05": "cybersecurity", "2.01": "acquisition_disposition",
+    "2.05": "restructuring", "2.06": "impairment", "3.01": "listing_status",
+    "3.02": "capital_raise", "3.03": "capital_structure", "5.02": "management_change",
+    "5.03": "capital_structure", "8.01": "other_company_event",
+}
+# Metadata-only retrieval priority. This chooses what to inspect; it never
+# creates normalized evidence or supplies directionality.
+SEC_COMPANY_FAMILY_PRIORITY = {
+    "bankruptcy": 100, "cybersecurity": 95, "impairment": 90,
+    "listing_status": 85, "capital_structure": 80, "acquisition_disposition": 75,
+    "capital_raise": 70, "restructuring": 65, "management_change": 60,
+    "agreement": 55, "other_company_event": 10,
 }
 SEC_LOOKBACK_DAYS = 180
 SEC_MAX_FILINGS = 200

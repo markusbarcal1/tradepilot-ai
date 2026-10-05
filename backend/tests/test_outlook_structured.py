@@ -12,7 +12,7 @@ from app.services.outlook import assess_providers, analyze_outlook
 from app.services.outlook_evidence import assess_evidence
 from app.services.outlook_structured.sec import SecEvidenceProvider, ticker_mapping
 from app.services.outlook_structured.fred import FredEvidenceProvider, macro_change, observations
-from app.services.outlook_structured.market import MarketEvidenceProvider
+from app.services.outlook_structured.market import MarketEvidenceProvider, market_historical_projection
 from app.services.outlook_structured.policy import MACRO_SERIES
 from app.services.outlook_structured.transport import Cache, JsonClient, ProviderUnavailable
 
@@ -169,6 +169,34 @@ def test_market_missing_index_and_provider_failure():
         with pytest.raises(ProviderUnavailable):
             provider.get_evidence("AAPL")
     assert len(calls) == 3
+
+
+def test_market_history_rebases_windows_aligns_sessions_and_keeps_vix_as_levels():
+    dates = pd.bdate_range(end="2026-09-14", periods=110)
+    spy = pd.DataFrame({"Close": [100 + i for i in range(110)]}, index=dates)
+    qqq = pd.DataFrame({"Close": [200 + 2 * i for i in range(110)]}, index=dates).drop(dates[-10])
+    vix = pd.DataFrame({"Close": [14 + i / 20 for i in range(110)]}, index=dates)
+    snapshots = {"SPY": (spy, NOW), "QQQ": (qqq, NOW), "^VIX": (vix, NOW)}
+    result = market_historical_projection(snapshots, NOW)
+    assert list(result["equity"]["windows"]) == ["1M", "3M", "6M"]
+    assert result["equity"]["coverage"]["has_gaps"] is True
+    assert result["equity"]["coverage"]["qqq_missing_session_count"] == 1
+    for points in result["equity"]["windows"].values():
+        assert points[0]["spy_cumulative_return"] == points[0]["qqq_cumulative_return"] == 0
+        assert len({point["date"] for point in points}) == len(points)
+    assert result["equity"]["windows"]["1M"][-1]["spy_cumulative_return"] == pytest.approx(
+        100 * (209 / 187 - 1))
+    assert result["vix"]["points"][-1]["level"] == pytest.approx(19.45)
+    assert result["vix_thresholds"] == {"low_below": 15, "elevated_at_or_above": 25}
+
+
+def test_market_history_sparse_equity_and_missing_vix_fail_fields_independently():
+    dates = pd.bdate_range(end="2026-09-14", periods=20)
+    frame = pd.DataFrame({"Close": range(100, 120)}, index=dates)
+    result = market_historical_projection({"SPY": (frame, NOW), "QQQ": (frame, NOW)}, NOW)
+    assert result is None
+    vix_only = market_historical_projection({"^VIX": (frame, NOW)}, NOW)
+    assert vix_only["equity"] is None and len(vix_only["vix"]["points"]) == 20
 
 
 @pytest.mark.parametrize("factory,flag", [(SecEvidenceProvider,"outlook_sec_enabled"),

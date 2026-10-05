@@ -27,13 +27,27 @@ const base = {
       evidence: [{ id: "market", source: "Yahoo Finance", source_url: "https://finance.yahoo.com/quote/SPY/" }] },
     geopolitical: unavailable },
 };
+function decorate(data) {
+  const category_intelligence = Object.fromEntries(Object.entries(data.categories).filter(([, category]) => category.status === "available").map(([key, category]) => {
+    const grouped = { positive: [], negative: [], neutral_mixed: [] };
+    for (const factor of category.factors || []) {
+      const direction = /Positive/.test(factor.impact) ? "positive" : /Negative/.test(factor.impact) ? "negative" : "mixed";
+      grouped[direction === "mixed" ? "neutral_mixed" : direction].push({ label: factor.title, direction, importance: "medium" });
+    }
+    return [key, { category: key, availability: category.status, rating: category.label, summary: `${key[0].toUpperCase() + key.slice(1)} outlook is ${category.label.toLowerCase()}.`,
+      positive_drivers: grouped.positive, negative_drivers: grouped.negative, neutral_mixed_drivers: grouped.neutral_mixed,
+      important_metrics: [], sources: [...new Map((category.evidence || []).map((item) => [item.source_url, { name: item.source, url: item.source_url }])).values()],
+      evidence_sufficiency: category.summary, omitted_driver_count: 0 }];
+  }));
+  return { ...data, category_intelligence };
+}
 export const outlookFixtures = {
-  technology: base,
-  energy: { ...base, ticker: "XOM", label: "Positive", categories: { ...base.categories,
-    industry: industry("Positive", "Energy", "XLE", [.013, .188], [.019, .156], [5/6, 1]) } },
-  negative: { ...base, ticker: "TSLA", label: "Negative" },
-  empty: { ...base, ticker: "TEST", status: "unavailable", label: null, available_categories: 0,
-    categories: Object.fromEntries(Object.keys(base.categories).map((k) => [k, unavailable])) },
-  notMaterial: { ...base, ticker: "REVIEWED", categories: { ...base.categories,
-    geopolitical: { status: "not_material", label: null, summary: "Reviewed evidence has no material company exposure.", factors: [], evidence: [] } } },
+  technology: decorate(base),
+  energy: decorate({ ...base, ticker: "XOM", label: "Positive", categories: { ...base.categories,
+    industry: industry("Positive", "Energy", "XLE", [.013, .188], [.019, .156], [5/6, 1]) } }),
+  negative: decorate({ ...base, ticker: "TSLA", label: "Negative" }),
+  empty: decorate({ ...base, ticker: "TEST", status: "unavailable", label: null, available_categories: 0,
+    categories: Object.fromEntries(Object.keys(base.categories).map((k) => [k, unavailable])) }),
+  notMaterial: decorate({ ...base, ticker: "REVIEWED", categories: { ...base.categories,
+    geopolitical: { status: "not_material", label: null, summary: "Reviewed evidence has no material company exposure.", factors: [], evidence: [] } } }),
 };

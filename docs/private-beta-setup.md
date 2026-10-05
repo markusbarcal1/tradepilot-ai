@@ -106,7 +106,7 @@ runtime behavior can create a new empty account for that UUID.
 
 For the verified unstamped legacy schema, the command creates a timestamped
 backup under ignored `backend/backups/`, stamps `20260828_01`, upgrades to head
-`20260902_03`, creates the active user, and changes the existing
+`20260920_04`, creates the active user, and changes the existing
 `paper_accounts.user_id` from the bootstrap UUID to the supplied UUID. It does
 not copy the account, positions, or trades. Provisioning plus reassignment and
 bootstrap-row cleanup are one transaction; Alembic is a preceding, separate
@@ -158,7 +158,7 @@ behavior before inviting an outside tester.
 3. Configure ignored frontend/backend environment files.
 4. Stop backend reloaders.
 5. Run adoption dry-run, then guarded adoption.
-6. Confirm revision `20260902_03`, zero FK violations, unchanged account ID,
+6. Confirm revision `20260920_04`, zero FK violations, unchanged account ID,
    balance, starting cash, four positions, and 31 trades.
 7. Start FastAPI and React; sign in and confirm `/auth/me` returns 200.
 8. Confirm the historical dashboard, watchlist, preferences, analysis, and
@@ -232,7 +232,7 @@ Application PostgreSQL connections set their session timezone to UTC.
 
 Alembic is the schema authority for PostgreSQL. Startup does not run migrations
 or create PostgreSQL tables; empty production SQLite databases also require
-Alembic. Both backends use head **`20260902_03`**.
+Alembic. Both backends use head **`20260920_04`**.
 For a new, disposable SQLite development database, from `backend`:
 
 ```powershell
@@ -334,8 +334,8 @@ Illustrative report excerpt (fixture counts, not the current real portfolio):
 ```json
 {
   "dry_run": true,
-  "source_revision": "20260902_03",
-  "target_revision": "20260902_03",
+  "source_revision": "20260920_04",
+  "target_revision": "20260920_04",
   "source_users": 2,
   "source_accounts": 2,
   "source_positions": 2,

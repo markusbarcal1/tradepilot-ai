@@ -36,7 +36,7 @@ class MigrationTests(unittest.TestCase):
             self.assertTrue(
                 {
                     "app_users", "paper_accounts", "paper_positions", "paper_trades",
-                    "watchlist_items", "user_preferences", "alembic_version",
+                    "watchlist_items", "user_preferences", "expectation_snapshots", "alembic_version",
                 }
                 <= tables
             )
@@ -119,7 +119,7 @@ class MigrationTests(unittest.TestCase):
             self.assertEqual([row[:-1] for row in trades], before["trades"])
             self.assertEqual([row[-1] for row in trades], [7, 7])
             self.assertIn("theme", preference_columns)
-            self.assertEqual(revision, "20260902_03")
+            self.assertEqual(revision, "20260920_04")
 
     def test_theme_upgrade_preserves_existing_scanner_preferences(self):
         with tempfile.TemporaryDirectory() as directory:

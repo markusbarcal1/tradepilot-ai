@@ -5,7 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { Window } from "happy-dom";
 import { createServer } from "vite";
 import { outlookFixtures } from "./outlook-fixtures.mjs";
-import { eventFixture, probabilityFixture } from "./outlook-event-fixtures.mjs";
+import { eventFixture, probabilityFixture, earningsFixture } from "./outlook-event-fixtures.mjs";
 import { outlookLabel, outlookTone, initialOutlookCategory, selectOutlookCategory,
   categoryIntroduction, categorySources, sourceLabel, industryMeasurements } from "../src/utils/outlookPresentation.js";
 const window = new Window({ url: "http://localhost" });
@@ -41,7 +41,7 @@ try {
   await choose("Industry");
   assert.equal(detail().querySelector("h4").textContent, "Industry");
   assert.equal(container.querySelectorAll('.outlook-category-button[aria-pressed="true"]').length, 1);
-  for (const text of ["67%", "83%", "+1.3%", "+1.9 pp", "-1.8 pp", "Sector sample"]) assert.ok(primary().includes(text));
+  for (const text of ["Why this rating", "Sector peer breadth", "Sector trend and relative strength"]) assert.ok(primary().includes(text));
   assert.doesNotMatch(primary(), /independent events|contributions|qualifying events|industry-wide breadth/);
   assert.equal(container.querySelectorAll('a[href="https://finance.yahoo.com/quote/XLK/"]').length, 1);
   assert.equal(container.querySelector("a").rel, "noopener noreferrer");
@@ -50,7 +50,7 @@ try {
   await act(async () => user.click(methodology.querySelector("summary")));
   assert.equal(methodology.open, true);
   assert.match(methodology.textContent, /independent events/);
-  assert.match(methodology.textContent, /sector sample, not industry-wide breadth/);
+  assert.match(methodology.textContent, /sector sample, not industry-wide breadth/i);
   await choose("Industry");
   assert.equal(detail(), null);
   await choose("Industry");
@@ -61,7 +61,7 @@ try {
   assert.doesNotMatch(detail().textContent, /Sector peer breadth/);
   await choose("Geopolitical");
   assert.match(detail().textContent, /Not enough supported geopolitical evidence/);
-  assert.equal(detail().querySelectorAll(".outlook-evidence-row").length, 0);
+  assert.equal(detail().querySelectorAll(".outlook-driver").length, 0);
   await choose("Geopolitical");
   assert.equal(detail(), null);
   // User-event emulates native keyboard default actions against the mounted DOM.
@@ -91,14 +91,14 @@ try {
   assert.equal(detail(), null);
   await choose("Industry");
   assert.equal(detail().querySelector("h4").textContent, "Industry");
-  assert.match(detail().textContent, /Sector conditions are positive/);
+  assert.match(detail().textContent, /independent events support this assessment/);
   const lone = structuredClone(outlookFixtures.empty);
   lone.ticker = "NVDA";
   lone.categories.geopolitical = { ...lone.categories.geopolitical, evidence: [{ id: "geo", title: "Conditional export licensing", summary: "Approval is not guaranteed.", impact: 1,
     source: "Federal Register / BIS", source_url: "https://www.federalregister.gov/",
     exposure_links: [{ description: "Industry-level match only.", source_url: "https://finance.yahoo.com/quote/NVDA/profile/" }] }] };
   await mount({ data: lone }); await choose("Geopolitical");
-  assert.match(detail().textContent, /Source observations below do not establish a category assessment/);
+  assert.match(detail().textContent, /Insufficient independent evidence/);
   assert.doesNotMatch(primary(), /Conditional export licensing|Approval is not guaranteed|Positive/);
   assert.equal(detail().querySelectorAll("a").length, 2);
   assert.equal(detail().querySelector(":scope > .outlook-sources"), null);
@@ -145,6 +145,7 @@ try {
     const data = structuredClone(outlookFixtures.technology);
     data.ticker = item.expected;
     data.categories.economic.evidence = [item];
+    delete data.category_intelligence.economic;
     await mount({ data }); await choose("Economic");
     assert.equal(detail().querySelector(".outlook-sources a").textContent, item.expected);
     assert.equal(detail().querySelector("a").getAttribute("href"), item.source_url);
@@ -227,6 +228,7 @@ try {
   withProvenance.categories.economic.evidence.push({ id: "fomc", raw_provider: "fomc", scoring_eligible: false,
     title: "FOMC Rate Decision", summary: "Relevant context; direction uncertain.", source: "Federal Reserve",
     source_url: "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm" });
+  delete withProvenance.category_intelligence.economic;
   await mount({ data: withProvenance }); await choose("Economic");
   assert.doesNotMatch(primary(), /FOMC Rate Decision/);
   assert.match(detail().querySelector(".outlook-methodology").textContent, /FOMC Rate Decision/);
@@ -265,10 +267,74 @@ try {
   measurement.expectation.expires_at = "2026-09-10T13:30:00Z";
   await mount({ data: { ...eventData, event_intelligence: macroFixture } });
   assert.doesNotMatch(container.querySelector(".outlook-events").textContent, /Expected:|Surprise:/);
+  const mixedEvents = structuredClone(macroFixture);
+  mixedEvents.upcoming.push(...structuredClone(earningsFixture.upcoming));
+  mixedEvents.recent.push(...structuredClone(earningsFixture.recent));
+  mixedEvents.upcoming.sort((a, b) => new Date(a.event.scheduled_date) - new Date(b.event.scheduled_date));
+  mixedEvents.recent.sort((a, b) => new Date(b.event.announced_at) - new Date(a.event.announced_at));
+  await mount({ data: { ...eventData, ticker: "NVDA", event_intelligence: mixedEvents } });
+  const eventRows = [...container.querySelectorAll(".outlook-event")];
+  const upcomingEarnings = eventRows.find((row) => /NVDA Earnings/.test(row.textContent) && /Scheduled/.test(row.textContent));
+  assert.match(upcomingEarnings.textContent, /After market.*Issuer event/s);
+  assert.doesNotMatch(upcomingEarnings.textContent, /Actual:/);
+  const recentEarnings = eventRows.find((row) => /NVDA Earnings/.test(row.textContent) && /Released/.test(row.textContent));
+  assert.match(recentEarnings.textContent, /FY2026 Q2/);
+  assert.match(recentEarnings.textContent, /Period ended.*Jul 27, 2026/s);
+  assert.match(recentEarnings.textContent, /Revenue.*Actual: \$30.04B/s);
+  assert.match(recentEarnings.textContent, /Diluted EPS.*Actual: \$0.67/s);
+  assert.match(recentEarnings.textContent, /Gross Margin.*Previous estimate: 70.1%/s);
+  assert.match(recentEarnings.textContent, /Guidance.*Raised/s);
+  assert.match(recentEarnings.textContent, /Consensus unavailable/);
+  assert.doesNotMatch(recentEarnings.textContent, /Expected:|Surprise:/);
+  assert.ok(recentEarnings.querySelector('a[href*="sec.gov"]'));
+  const earningsWithConsensus = structuredClone(earningsFixture);
+  const eps = earningsWithConsensus.recent[0].event.measurements[1];
+  eps.expectation_status = "available";
+  eps.expectation = { ...probabilityFixture, event_id: earningsWithConsensus.recent[0].event.event_id,
+    measurement_key: "diluted_eps", reference_period: "FY2026 Q2", release_type: "Earnings release",
+    basis: "structured_consensus", outcomes: [], expected_value: { amount: .60, unit: "USD_per_share" },
+    observed_at: "2026-08-20T18:05:00Z", expires_at: "2026-08-20T20:06:00Z" };
+  eps.surprise = { status: "higher_than_expected", percent_difference: 11.66666667 };
+  await mount({ data: { ...eventData, ticker: "NVDA", event_intelligence: earningsWithConsensus } });
+  assert.match(container.textContent, /Expected: \$0.60/);
+  assert.match(container.textContent, /Surprise: \+11.7%/);
+  assert.doesNotMatch(container.textContent, /probability.*beat/i);
+  const decisionData = structuredClone(outlookFixtures.technology);
+  decisionData.ticker = "NVDA";
+  decisionData.event_intelligence = earningsFixture;
+  decisionData.key_events = [{ event_id: "earnings:NVDA:next", title: "NVDA Earnings", status: "upcoming",
+    event_date: "2026-10-20", importance: "high", timing: "After Market", certainty: "Provider Reported" }];
+  decisionData.categories.earnings = { status: "available", label: "Positive", value: 1,
+    summary: "2 independent events support this assessment.", factors: [], evidence: [] };
+  decisionData.category_intelligence.earnings = { category: "earnings", availability: "available", rating: "Positive",
+    summary: "Earnings outlook is positive.", positive_drivers: [
+      { label: "Diluted EPS beat", direction: "positive", importance: "high", value: "$0.67", change: "+11.7%" },
+      { label: "Gross Margin improved", direction: "positive", importance: "medium", change: "+5.0 pp" },
+      { label: "Guidance raised", direction: "positive", importance: "high" }],
+    negative_drivers: [], neutral_mixed_drivers: [], evidence_sufficiency: "2 qualifying events; current support threshold met.", omitted_driver_count: 0,
+    important_metrics: [
+      { key: "diluted_eps", label: "Diluted EPS", actual: "$0.67", expected: "$0.60", result: "+11.7%", indicator: "Beat", comparison_status: "available" },
+      { key: "revenue", label: "Revenue", actual: "$30.04B", expected: null, result: null, indicator: null, comparison_status: "unavailable" }],
+    latest_material_event: { event_id: "earnings:NVDA:FY2026:Q2", title: "NVDA Earnings", status: "occurred", event_date: "2026-08-20", importance: "high" },
+    next_material_event: decisionData.key_events[0], sources: [{ name: "NVIDIA FY2026 Q2 Earnings Release", url: "https://www.sec.gov/Archives/nvda-exhibit.htm" }],
+    beat_probability: null, implied_move: null };
+  await mount({ data: decisionData });
+  assert.match(button("Earnings").textContent, /Diluted EPS beat.*\+11.7%.*Guidance raised/s);
+  assert.match(container.querySelector(".outlook-key-events").textContent, /Oct 20.*NVDA Earnings.*HIGH IMPACT/s);
+  assert.equal(container.querySelector(".outlook-all-events").open, false);
+  await choose("Earnings");
+  assert.match(detail().textContent, /Important metrics.*Diluted EPS.*Beat.*Expected.*\$0.60.*Actual.*\$0.67/s);
+  assert.match(detail().textContent, /Revenue.*Reported.*\$30.04B.*Comparison unavailable/s);
+  assert.match(detail().textContent, /Why this rating.*Guidance raised/s);
+  assert.equal(detail().querySelector(".outlook-methodology").open, false);
+  assert.equal(detail().querySelector(".outlook-methodology summary").textContent, "Sources & methodology");
+  assert.ok(detail().querySelector('a[href*="sec.gov"]'));
+  assert.doesNotMatch(detail().textContent, /beat probability|implied move/i);
   const app = await fs.readFile(new URL("../src/App.jsx", import.meta.url), "utf8");
-  assert.ok(app.indexOf("<ValuationScorePanel") < app.indexOf("<OutlookPanel"));
-  assert.match(app, /outlookRequestRef.current.controller\?\.abort\(\)/);
-  assert.match(app, /outlookRequestRef.current.id !== requestId/);
+  assert.doesNotMatch(app, /<OutlookPanel|fetchOutlook|loadOutlookAnalysis/);
+  assert.match(app, /<ScorePanel/);
+  assert.match(app, /<FinancialScorePanel/);
+  assert.match(app, /<ValuationScorePanel/);
   console.log("Outlook summary, selection, keyboard, evidence, provenance, availability and theme tests passed.");
 } finally {
   await act(async () => root.unmount()); await vite.close(); window.happyDOM.abort();

@@ -10,10 +10,65 @@ from app.models.outlook_document import SourceDocument
 from app.services.outlook_interpreter import DeterministicOutlookInterpreter, sec_observation_document
 from app.services.outlook_reporting import reporting_diagnostics
 from .documents import parse_filing, item_text, earnings_exhibit_url, bounded_text
-from .policy import SEC_ITEMS, SEC_LOOKBACK_DAYS, SEC_MAX_FILINGS
+from .policy import (SEC_COMPANY_FAMILY_PRIORITY, SEC_COMPANY_ITEM_FAMILIES,
+    SEC_DOCUMENT_ITEMS, SEC_ITEMS, SEC_LOOKBACK_DAYS, SEC_MAX_FILINGS)
 from .transport import Cache, JsonClient
 
 LOGGER = logging.getLogger(__name__)
+
+
+def _is_eight_k(form):
+    return form in ("8-K", "8-K/A")
+
+
+def company_candidate_families(observation):
+    """Return controlled candidate families available from SEC item metadata."""
+    return tuple(dict.fromkeys(SEC_COMPANY_ITEM_FAMILIES[item]
+        for item in observation.source_details.get("items", ())
+        if item in SEC_COMPANY_ITEM_FAMILIES))
+
+
+def _company_rank(observation):
+    families = company_candidate_families(observation)
+    priority = max((SEC_COMPANY_FAMILY_PRIORITY[family] for family in families), default=0)
+    amendment = observation.source_details.get("form") == "8-K/A"
+    return (-priority, -observation.published_at.timestamp(), amendment, observation.raw_provider_id)
+
+
+def select_document_candidates(observations, limit):
+    """Bounded, deterministic selection with Company/Earnings fairness."""
+    candidates = [item for item in observations if _is_eight_k(item.source_details["form"])
+        and set(item.source_details["items"]) & (SEC_DOCUMENT_ITEMS | {"2.02"})]
+    company = sorted((item for item in candidates if company_candidate_families(item)), key=_company_rank)
+    earnings = sorted((item for item in candidates if "2.02" in item.source_details["items"]),
+        key=lambda item: (-item.published_at.timestamp(), item.raw_provider_id))
+    selected, reasons = [], {}
+
+    def add(item, reason):
+        if item not in selected and len(selected) < limit:
+            selected.append(item)
+            reasons[item.raw_provider_id] = reason
+
+    if company:
+        add(company[0], "company_priority")
+    if earnings:
+        add(earnings[0], "earnings_priority")
+
+    represented = {family for item in selected for family in company_candidate_families(item)}
+    while len(selected) < limit:
+        diverse = [item for item in company if item not in selected
+                   and set(company_candidate_families(item)) - represented]
+        if diverse:
+            item = diverse[0]
+            add(item, "company_family_diversity")
+            represented.update(company_candidate_families(item))
+            continue
+        remaining = sorted((item for item in candidates if item not in selected),
+            key=lambda item: -item.published_at.timestamp())
+        if not remaining:
+            break
+        add(remaining[0], "recency_fill")
+    return selected, reasons
 
 
 def sec_symbol(symbol):
@@ -48,14 +103,21 @@ class SecEvidenceProvider:
         documents = [sec_observation_document(item) for item in observations]
         retrieval = {item.raw_provider_id: "metadata_only" if self.settings.outlook_sec_documents_enabled else "disabled"
                      for item in observations}
-        diagnostics = {item.raw_provider_id: {"selected": False, "primary_status": "not_attempted",
-                       "exhibit_status": "not_attempted", "exhibit_url": None} for item in observations}
+        diagnostics = {item.raw_provider_id: {"selected": False, "selection_reason": "not_candidate",
+                       "company_candidate_families": list(company_candidate_families(item)),
+                       "primary_status": "not_attempted", "exhibit_status": "not_attempted",
+                       "exhibit_url": None} for item in observations}
         if self.settings.outlook_sec_documents_enabled:
-            candidates = sorted((item for item in observations if item.source_details["form"] == "8-K"
-                and set(item.source_details["items"]) & {"2.02", "3.01"}),
-                key=lambda item: ("2.02" not in item.source_details["items"], -item.published_at.timestamp()))
-            for observation in candidates[:self.settings.outlook_sec_max_document_filings]:
-                diagnostics[observation.raw_provider_id].update(selected=True, primary_status="failed")
+            selected, reasons = select_document_candidates(
+                observations, self.settings.outlook_sec_max_document_filings)
+            candidate_ids = {item.raw_provider_id for item in observations
+                if _is_eight_k(item.source_details["form"]) and
+                set(item.source_details["items"]) & (SEC_DOCUMENT_ITEMS | {"2.02"})}
+            for accession in candidate_ids:
+                diagnostics[accession]["selection_reason"] = "budget_not_selected"
+            for observation in selected:
+                diagnostics[observation.raw_provider_id].update(selected=True,
+                    selection_reason=reasons[observation.raw_provider_id], primary_status="failed")
                 try:
                     fetched = self.document_cache.get(str(observation.source_url),
                         lambda observation=observation: self._filing_documents(observation),
@@ -95,7 +157,7 @@ class SecEvidenceProvider:
         for accession, details in diagnostics.items():
             source_documents = [doc for doc in documents if doc.metadata.get("accession") == accession]
             details.update(metadata_documents=sum(not doc.metadata.get("document_kind") for doc in source_documents),
-                item_documents=sum(doc.metadata.get("document_kind") in ("earnings_item", "listing_item") for doc in source_documents),
+                item_documents=sum(doc.metadata.get("document_kind") in ("earnings_item", "listing_item", "company_item") for doc in source_documents),
                 exhibit_documents=sum(doc.metadata.get("document_kind") == "earnings_exhibit" for doc in source_documents),
                 interpreted_candidates=sum(item.raw_provider_id == accession for item in interpreted))
             details["reporting_documents"] = reporting_diagnostics(source_documents, now=self.clock())["sources"]
@@ -103,6 +165,10 @@ class SecEvidenceProvider:
         return [item.model_copy(update={"source_details": {**item.source_details,
             "sec_diagnostics": diagnostics.get(item.raw_provider_id, {}),
             "document_retrieval": retrieval.get(item.raw_provider_id, "unknown"),
+            "company_interpretation": ("supported" if item.category == "company" and item.scoring_eligible
+                else "provenance_only" if item.category == "company" else "not_company"),
+            "interpretation_reason": ("deterministic_rule_matched" if item.category == "company" and item.scoring_eligible
+                else "no_conservative_company_rule_matched" if item.category == "company" else "owned_by_earnings"),
             "source_document_ids": [doc.id for doc in documents
                 if doc.metadata.get("accession") == item.raw_provider_id]}}) for item in result]
 
@@ -117,11 +183,12 @@ class SecEvidenceProvider:
         html = self.client.get_text(url, provider="sec", user_agent=self.settings.outlook_sec_user_agent)
         fetched["primary_status"] = "retrieved"
         parsed = parse_filing(html)
-        for item, kind in (("2.02", "earnings_item"), ("3.01", "listing_item")):
+        for item in sorted(set(original.metadata["items"]) & (SEC_DOCUMENT_ITEMS | {"2.02"})):
             if item not in original.metadata["items"]:
                 continue
             text = item_text(parsed.text, item)
             if text:
+                kind = "earnings_item" if item == "2.02" else "listing_item" if item == "3.01" else "company_item"
                 result.append(SourceDocument.model_validate({**original.model_dump(), "id": original.id + ":item:" + item,
                     "observed_at": self.clock(), "extracted_text": text,
                     "metadata": {**original.metadata, "document_kind": kind}}))
@@ -170,7 +237,7 @@ class SecEvidenceProvider:
         recent = payload.get("filings", {}).get("recent", {})
         results = []
         for index, form in enumerate(recent.get("form", [])):
-            if form not in ("8-K", "10-Q", "10-K"):
+            if form not in ("8-K", "8-K/A", "10-Q", "10-K"):
                 continue
             def field(name):
                 values = recent.get(name, [])
@@ -190,7 +257,7 @@ class SecEvidenceProvider:
             if published > fetched or published < self.clock() - timedelta(days=SEC_LOOKBACK_DAYS):
                 continue
             items = re.findall(r"\d\.\d{2}", str(field("items")))
-            mappings = [SEC_ITEMS[item] for item in items if item in SEC_ITEMS] if form == "8-K" else []
+            mappings = [SEC_ITEMS[item] for item in items if item in SEC_ITEMS] if _is_eight_k(form) else []
             event, _, materiality, title = min(mappings, key=lambda item: item[1]) if mappings else (
                 "corporate_other", 0, 0.5, f"{form} filing")
             # Metadata-only direction is unknown for acquisitions, appointments, funding and routine filings.

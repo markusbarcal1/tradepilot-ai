@@ -1,0 +1,603 @@
+{
+  "budget": {
+    "attempts": 10,
+    "class_attempts": {
+      "current_submissions": 2,
+      "earnings_exhibit": 4,
+      "filing_index": 0,
+      "selected_primary_document": 4
+    },
+    "class_limits": {
+      "current_submissions": 2,
+      "earnings_exhibit": 4,
+      "filing_index": 0,
+      "selected_primary_document": 4
+    },
+    "maximum": 10,
+    "per_issuer": {
+      "AAPL": 5,
+      "NVDA": 5
+    },
+    "per_issuer_maximum": 5,
+    "per_target_document_limits": {
+      "earnings_exhibit": 1,
+      "selected_primary_document": 1
+    }
+  },
+  "diagnostic": "direct-q4-release-structure-diagnostic-1",
+  "discovery_policy": "bounded-filing-window-item-202-1",
+  "generated_at": "2026-10-01T05:29:20.573970+00:00",
+  "manifest": [
+    {
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2024,
+      "ticker": "AAPL"
+    },
+    {
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2025,
+      "ticker": "AAPL"
+    },
+    {
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2025,
+      "ticker": "NVDA"
+    },
+    {
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2026,
+      "ticker": "NVDA"
+    }
+  ],
+  "mode": "live",
+  "parser": "direct-q4-1",
+  "relationship_policy": "sec-primary-explicit-exhibit99-relationship-1",
+  "runner": "direct-q4-release-structure-certification-1",
+  "schema_version": "1",
+  "targets": [
+    {
+      "actual_parser_candidate_count": 0,
+      "discovery": {
+        "binding_state": "bound",
+        "boundary_state": "resolved",
+        "candidate_cardinality": 1
+      },
+      "exhibit": {
+        "attempted": true,
+        "content_classification": "html_like",
+        "received_bytes": 198505,
+        "required": true,
+        "status": 200,
+        "transport": "success"
+      },
+      "final": {
+        "reason": "structure_diagnostic_completed",
+        "requests_consumed": 2,
+        "state": "observed"
+      },
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2024,
+      "primary": {
+        "attempted": true,
+        "content_classification": "html_like",
+        "received_bytes": 40566,
+        "required": true,
+        "status": 200,
+        "transport": "success"
+      },
+      "relationship": {
+        "ambiguity_state": false,
+        "distinct_safe_destination_count": 1,
+        "observation_count": 1,
+        "reason": "explicit_exhibit_relationship_resolved",
+        "state": "resolved"
+      },
+      "structure": {
+        "candidate_stages": {
+          "candidate_assembly_attempts": 0,
+          "exact_diluted_eps_label_hits": 0,
+          "exact_revenue_label_hits": 0,
+          "metric_rows_with_later_numeric_shape": 0,
+          "metric_rows_with_supported_row_unit": 0,
+          "predicted_direct_q4_candidates": 0,
+          "tables_passing_current_period_gate": 0,
+          "tables_structurally_retained": 4
+        },
+        "column_categories": {
+          "ambiguous_column_associations": 0,
+          "annual_header_rows": 0,
+          "colspan_header_tables": 0,
+          "current_prior_header_rows": 0,
+          "multiple_value_like_columns": 0,
+          "multirow_header_tables": 2,
+          "one_value_like_column": 0,
+          "quarter_header_rows": 0,
+          "rowspan_involvement": 0
+        },
+        "content_classification": "html_like",
+        "count_cap": 255,
+        "counts": {
+          "cells_encountered": 255,
+          "colspan_cells": 255,
+          "complete_observer_tables": 4,
+          "completed_cells": 255,
+          "completed_rows": 143,
+          "direct_examined_tables": 4,
+          "direct_retained_tables": 4,
+          "empty_cells": 255,
+          "inline_fragmented_cells": 255,
+          "malformed_table_encounters": 0,
+          "nested_table_encounters": 0,
+          "nonempty_cells": 255,
+          "nonunit_rowspan_cells": 0,
+          "phase3b_retained_tables": 0,
+          "rows_encountered": 143,
+          "rows_with_zero_cells": 0,
+          "rowspan_cells": 0,
+          "table_starts": 4,
+          "tables_beyond_direct_cap": 0,
+          "tables_with_zero_rows": 0,
+          "td_cells": 255,
+          "th_cells": 0
+        },
+        "counts_saturated": true,
+        "diagnostic": "direct-q4-release-structure-diagnostic-1",
+        "fiscal_target_reconciliation_performed": false,
+        "metric_categories": {
+          "adjusted_non_gaap_diluted_eps": 0,
+          "basic_eps": 0,
+          "consolidated_revenue": 0,
+          "diluted_eps_without_gaap": 2,
+          "exact_gaap_diluted_eps": 0,
+          "exact_revenue": 0,
+          "normalized_gaap_diluted_eps": 0,
+          "normalized_revenue": 0,
+          "other_diluted_eps": 0,
+          "other_revenue": 0,
+          "record_revenue": 0,
+          "revenue_inline_boundary_disrupted": 0,
+          "revenue_with_leading_structure": 1,
+          "total_revenue": 0
+        },
+        "parser_completed": true,
+        "parser_error_category": "none",
+        "period_categories": {
+          "annual_fiscal_year_language_hits": 0,
+          "date_range_pattern_hits": 0,
+          "exact_period_pattern_hits": 0,
+          "fourth_quarter_language_hits": 0,
+          "period_like_outside_table": true,
+          "quarter_language_hits": 0,
+          "tables_with_period_and_metric": 0
+        },
+        "phase3b_comparison": {
+          "phase3b_colspan_visible": false,
+          "phase3b_preserves_more_tables": false,
+          "phase3b_rejects_structure_direct_retains": true
+        },
+        "schema_version": "1",
+        "unit_categories": {
+          "metric_rows_without_supported_unit": 0,
+          "supported_unit_elsewhere_in_table": 0,
+          "supported_unit_in_metric_row": 0,
+          "unit_in_heading_like_row": 0
+        },
+        "zero_candidate_reasons": [
+          "no_in_table_period_pattern",
+          "period_only_outside_table",
+          "no_exact_metric_label",
+          "normalized_metric_label_only"
+        ]
+      },
+      "ticker": "AAPL"
+    },
+    {
+      "actual_parser_candidate_count": 0,
+      "discovery": {
+        "binding_state": "bound",
+        "boundary_state": "resolved",
+        "candidate_cardinality": 1
+      },
+      "exhibit": {
+        "attempted": true,
+        "content_classification": "html_like",
+        "received_bytes": 198336,
+        "required": true,
+        "status": 200,
+        "transport": "success"
+      },
+      "final": {
+        "reason": "structure_diagnostic_completed",
+        "requests_consumed": 2,
+        "state": "observed"
+      },
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2025,
+      "primary": {
+        "attempted": true,
+        "content_classification": "html_like",
+        "received_bytes": 39168,
+        "required": true,
+        "status": 200,
+        "transport": "success"
+      },
+      "relationship": {
+        "ambiguity_state": false,
+        "distinct_safe_destination_count": 1,
+        "observation_count": 1,
+        "reason": "explicit_exhibit_relationship_resolved",
+        "state": "resolved"
+      },
+      "structure": {
+        "candidate_stages": {
+          "candidate_assembly_attempts": 0,
+          "exact_diluted_eps_label_hits": 0,
+          "exact_revenue_label_hits": 0,
+          "metric_rows_with_later_numeric_shape": 0,
+          "metric_rows_with_supported_row_unit": 0,
+          "predicted_direct_q4_candidates": 0,
+          "tables_passing_current_period_gate": 0,
+          "tables_structurally_retained": 4
+        },
+        "column_categories": {
+          "ambiguous_column_associations": 0,
+          "annual_header_rows": 0,
+          "colspan_header_tables": 0,
+          "current_prior_header_rows": 0,
+          "multiple_value_like_columns": 0,
+          "multirow_header_tables": 2,
+          "one_value_like_column": 0,
+          "quarter_header_rows": 0,
+          "rowspan_involvement": 0
+        },
+        "content_classification": "html_like",
+        "count_cap": 255,
+        "counts": {
+          "cells_encountered": 255,
+          "colspan_cells": 255,
+          "complete_observer_tables": 4,
+          "completed_cells": 255,
+          "completed_rows": 142,
+          "direct_examined_tables": 4,
+          "direct_retained_tables": 4,
+          "empty_cells": 255,
+          "inline_fragmented_cells": 255,
+          "malformed_table_encounters": 0,
+          "nested_table_encounters": 0,
+          "nonempty_cells": 255,
+          "nonunit_rowspan_cells": 0,
+          "phase3b_retained_tables": 0,
+          "rows_encountered": 142,
+          "rows_with_zero_cells": 0,
+          "rowspan_cells": 0,
+          "table_starts": 4,
+          "tables_beyond_direct_cap": 0,
+          "tables_with_zero_rows": 0,
+          "td_cells": 255,
+          "th_cells": 0
+        },
+        "counts_saturated": true,
+        "diagnostic": "direct-q4-release-structure-diagnostic-1",
+        "fiscal_target_reconciliation_performed": false,
+        "metric_categories": {
+          "adjusted_non_gaap_diluted_eps": 0,
+          "basic_eps": 0,
+          "consolidated_revenue": 0,
+          "diluted_eps_without_gaap": 2,
+          "exact_gaap_diluted_eps": 0,
+          "exact_revenue": 0,
+          "normalized_gaap_diluted_eps": 0,
+          "normalized_revenue": 0,
+          "other_diluted_eps": 0,
+          "other_revenue": 0,
+          "record_revenue": 0,
+          "revenue_inline_boundary_disrupted": 0,
+          "revenue_with_leading_structure": 1,
+          "total_revenue": 0
+        },
+        "parser_completed": true,
+        "parser_error_category": "none",
+        "period_categories": {
+          "annual_fiscal_year_language_hits": 0,
+          "date_range_pattern_hits": 0,
+          "exact_period_pattern_hits": 0,
+          "fourth_quarter_language_hits": 0,
+          "period_like_outside_table": true,
+          "quarter_language_hits": 0,
+          "tables_with_period_and_metric": 0
+        },
+        "phase3b_comparison": {
+          "phase3b_colspan_visible": false,
+          "phase3b_preserves_more_tables": false,
+          "phase3b_rejects_structure_direct_retains": true
+        },
+        "schema_version": "1",
+        "unit_categories": {
+          "metric_rows_without_supported_unit": 0,
+          "supported_unit_elsewhere_in_table": 0,
+          "supported_unit_in_metric_row": 0,
+          "unit_in_heading_like_row": 0
+        },
+        "zero_candidate_reasons": [
+          "no_in_table_period_pattern",
+          "period_only_outside_table",
+          "no_exact_metric_label",
+          "normalized_metric_label_only"
+        ]
+      },
+      "ticker": "AAPL"
+    },
+    {
+      "actual_parser_candidate_count": 0,
+      "discovery": {
+        "binding_state": "bound",
+        "boundary_state": "resolved",
+        "candidate_cardinality": 1
+      },
+      "exhibit": {
+        "attempted": true,
+        "content_classification": "html_like",
+        "received_bytes": 371081,
+        "required": true,
+        "status": 200,
+        "transport": "success"
+      },
+      "final": {
+        "reason": "structure_diagnostic_completed",
+        "requests_consumed": 2,
+        "state": "observed"
+      },
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2025,
+      "primary": {
+        "attempted": true,
+        "content_classification": "html_like",
+        "received_bytes": 24736,
+        "required": true,
+        "status": 200,
+        "transport": "success"
+      },
+      "relationship": {
+        "ambiguity_state": false,
+        "distinct_safe_destination_count": 1,
+        "observation_count": 1,
+        "reason": "explicit_exhibit_relationship_resolved",
+        "state": "resolved"
+      },
+      "structure": {
+        "candidate_stages": {
+          "candidate_assembly_attempts": 0,
+          "exact_diluted_eps_label_hits": 0,
+          "exact_revenue_label_hits": 0,
+          "metric_rows_with_later_numeric_shape": 0,
+          "metric_rows_with_supported_row_unit": 0,
+          "predicted_direct_q4_candidates": 0,
+          "tables_passing_current_period_gate": 0,
+          "tables_structurally_retained": 13
+        },
+        "column_categories": {
+          "ambiguous_column_associations": 0,
+          "annual_header_rows": 5,
+          "colspan_header_tables": 0,
+          "current_prior_header_rows": 0,
+          "multiple_value_like_columns": 0,
+          "multirow_header_tables": 1,
+          "one_value_like_column": 0,
+          "quarter_header_rows": 3,
+          "rowspan_involvement": 0
+        },
+        "content_classification": "html_like",
+        "count_cap": 255,
+        "counts": {
+          "cells_encountered": 255,
+          "colspan_cells": 255,
+          "complete_observer_tables": 13,
+          "completed_cells": 255,
+          "completed_rows": 255,
+          "direct_examined_tables": 8,
+          "direct_retained_tables": 13,
+          "empty_cells": 255,
+          "inline_fragmented_cells": 255,
+          "malformed_table_encounters": 0,
+          "nested_table_encounters": 0,
+          "nonempty_cells": 255,
+          "nonunit_rowspan_cells": 0,
+          "phase3b_retained_tables": 8,
+          "rows_encountered": 255,
+          "rows_with_zero_cells": 0,
+          "rowspan_cells": 0,
+          "table_starts": 13,
+          "tables_beyond_direct_cap": 5,
+          "tables_with_zero_rows": 0,
+          "td_cells": 255,
+          "th_cells": 0
+        },
+        "counts_saturated": true,
+        "diagnostic": "direct-q4-release-structure-diagnostic-1",
+        "fiscal_target_reconciliation_performed": false,
+        "metric_categories": {
+          "adjusted_non_gaap_diluted_eps": 0,
+          "basic_eps": 0,
+          "consolidated_revenue": 0,
+          "diluted_eps_without_gaap": 4,
+          "exact_gaap_diluted_eps": 0,
+          "exact_revenue": 5,
+          "normalized_gaap_diluted_eps": 0,
+          "normalized_revenue": 0,
+          "other_diluted_eps": 0,
+          "other_revenue": 0,
+          "record_revenue": 0,
+          "revenue_inline_boundary_disrupted": 0,
+          "revenue_with_leading_structure": 5,
+          "total_revenue": 0
+        },
+        "parser_completed": true,
+        "parser_error_category": "none",
+        "period_categories": {
+          "annual_fiscal_year_language_hits": 5,
+          "date_range_pattern_hits": 0,
+          "exact_period_pattern_hits": 0,
+          "fourth_quarter_language_hits": 0,
+          "period_like_outside_table": true,
+          "quarter_language_hits": 3,
+          "tables_with_period_and_metric": 0
+        },
+        "phase3b_comparison": {
+          "phase3b_colspan_visible": true,
+          "phase3b_preserves_more_tables": false,
+          "phase3b_rejects_structure_direct_retains": true
+        },
+        "schema_version": "1",
+        "unit_categories": {
+          "metric_rows_without_supported_unit": 0,
+          "supported_unit_elsewhere_in_table": 0,
+          "supported_unit_in_metric_row": 0,
+          "unit_in_heading_like_row": 0
+        },
+        "zero_candidate_reasons": [
+          "no_in_table_period_pattern",
+          "period_only_outside_table",
+          "no_exact_metric_label",
+          "normalized_metric_label_only"
+        ]
+      },
+      "ticker": "NVDA"
+    },
+    {
+      "actual_parser_candidate_count": 0,
+      "discovery": {
+        "binding_state": "bound",
+        "boundary_state": "resolved",
+        "candidate_cardinality": 1
+      },
+      "exhibit": {
+        "attempted": true,
+        "content_classification": "html_like",
+        "received_bytes": 394076,
+        "required": true,
+        "status": 200,
+        "transport": "success"
+      },
+      "final": {
+        "reason": "structure_diagnostic_completed",
+        "requests_consumed": 2,
+        "state": "observed"
+      },
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2026,
+      "primary": {
+        "attempted": true,
+        "content_classification": "html_like",
+        "received_bytes": 25492,
+        "required": true,
+        "status": 200,
+        "transport": "success"
+      },
+      "relationship": {
+        "ambiguity_state": false,
+        "distinct_safe_destination_count": 1,
+        "observation_count": 1,
+        "reason": "explicit_exhibit_relationship_resolved",
+        "state": "resolved"
+      },
+      "structure": {
+        "candidate_stages": {
+          "candidate_assembly_attempts": 0,
+          "exact_diluted_eps_label_hits": 0,
+          "exact_revenue_label_hits": 0,
+          "metric_rows_with_later_numeric_shape": 0,
+          "metric_rows_with_supported_row_unit": 0,
+          "predicted_direct_q4_candidates": 0,
+          "tables_passing_current_period_gate": 0,
+          "tables_structurally_retained": 13
+        },
+        "column_categories": {
+          "ambiguous_column_associations": 0,
+          "annual_header_rows": 5,
+          "colspan_header_tables": 5,
+          "current_prior_header_rows": 0,
+          "multiple_value_like_columns": 0,
+          "multirow_header_tables": 1,
+          "one_value_like_column": 0,
+          "quarter_header_rows": 5,
+          "rowspan_involvement": 1
+        },
+        "content_classification": "html_like",
+        "count_cap": 255,
+        "counts": {
+          "cells_encountered": 255,
+          "colspan_cells": 255,
+          "complete_observer_tables": 13,
+          "completed_cells": 255,
+          "completed_rows": 255,
+          "direct_examined_tables": 8,
+          "direct_retained_tables": 13,
+          "empty_cells": 255,
+          "inline_fragmented_cells": 255,
+          "malformed_table_encounters": 0,
+          "nested_table_encounters": 0,
+          "nonempty_cells": 255,
+          "nonunit_rowspan_cells": 1,
+          "phase3b_retained_tables": 5,
+          "rows_encountered": 255,
+          "rows_with_zero_cells": 0,
+          "rowspan_cells": 1,
+          "table_starts": 13,
+          "tables_beyond_direct_cap": 5,
+          "tables_with_zero_rows": 0,
+          "td_cells": 255,
+          "th_cells": 0
+        },
+        "counts_saturated": true,
+        "diagnostic": "direct-q4-release-structure-diagnostic-1",
+        "fiscal_target_reconciliation_performed": false,
+        "metric_categories": {
+          "adjusted_non_gaap_diluted_eps": 0,
+          "basic_eps": 0,
+          "consolidated_revenue": 0,
+          "diluted_eps_without_gaap": 4,
+          "exact_gaap_diluted_eps": 0,
+          "exact_revenue": 5,
+          "normalized_gaap_diluted_eps": 0,
+          "normalized_revenue": 0,
+          "other_diluted_eps": 0,
+          "other_revenue": 0,
+          "record_revenue": 0,
+          "revenue_inline_boundary_disrupted": 0,
+          "revenue_with_leading_structure": 5,
+          "total_revenue": 0
+        },
+        "parser_completed": true,
+        "parser_error_category": "none",
+        "period_categories": {
+          "annual_fiscal_year_language_hits": 5,
+          "date_range_pattern_hits": 0,
+          "exact_period_pattern_hits": 0,
+          "fourth_quarter_language_hits": 1,
+          "period_like_outside_table": true,
+          "quarter_language_hits": 4,
+          "tables_with_period_and_metric": 0
+        },
+        "phase3b_comparison": {
+          "phase3b_colspan_visible": true,
+          "phase3b_preserves_more_tables": false,
+          "phase3b_rejects_structure_direct_retains": true
+        },
+        "schema_version": "1",
+        "unit_categories": {
+          "metric_rows_without_supported_unit": 0,
+          "supported_unit_elsewhere_in_table": 0,
+          "supported_unit_in_metric_row": 0,
+          "unit_in_heading_like_row": 0
+        },
+        "zero_candidate_reasons": [
+          "no_in_table_period_pattern",
+          "period_only_outside_table",
+          "no_exact_metric_label",
+          "normalized_metric_label_only"
+        ]
+      },
+      "ticker": "NVDA"
+    }
+  ]
+}

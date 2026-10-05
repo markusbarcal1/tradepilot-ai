@@ -13,11 +13,14 @@ from .geopolitical import GeopoliticalEvidenceProvider
 @lru_cache(maxsize=1)
 def configured_providers():
     from app.services.outlook_events import FomcEventProvider, MacroEventProvider
+    from .earnings import EarningsEventProvider
     history = OutlookHistory(settings)
     industry = IndustryEvidenceProvider(settings, history=history)
-    return [SecEvidenceProvider(settings), FredEvidenceProvider(settings),
+    sec = SecEvidenceProvider(settings)
+    return [sec, FredEvidenceProvider(settings),
             MarketEvidenceProvider(settings, history=history), industry,
             GeopoliticalEvidenceProvider(settings, metadata=industry.metadata,
                                          classification_cache=industry.classifications),
             FomcEventProvider(settings, metadata=industry.metadata, classification_cache=industry.classifications),
-            MacroEventProvider(settings, metadata=industry.metadata, classification_cache=industry.classifications)]
+            MacroEventProvider(settings, metadata=industry.metadata, classification_cache=industry.classifications),
+            EarningsEventProvider(settings, sec, industry.metadata, industry.classifications)]

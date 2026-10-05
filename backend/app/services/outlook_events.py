@@ -14,7 +14,8 @@ from app.services.outlook_structured.macro import MacroSource
 from app.services.outlook_structured.transport import Cache, ProviderUnavailable
 
 
-class ExpectationProvider(Protocol):
+class EventOutcomeExpectationProvider(Protocol):
+    """Legacy generic macro/FOMC outcome snapshots keyed by event ID."""
     def snapshots(self, event_id: str) -> list[ExpectationSnapshot]: ...
 
 
@@ -35,12 +36,14 @@ def lifecycle(event, now):
 def with_expectations(event, snapshots, now, failure=None, measurement_key=None):
     """Use only information available before announcement, fresh at that cutoff."""
     cutoff = min(now, event.announced_at) if event.announced_at else now
-    history = tuple(sorted(snapshots, key=lambda s: (s.observed_at, s.snapshot_id))[-32:])
+    history = tuple(sorted(snapshots, key=lambda s: (
+        s.observed_at or datetime.min.replace(tzinfo=timezone.utc), s.snapshot_id))[-32:])
     valid = [s for s in history if s.event_id == event.event_id
              and not (event.measurements and measurement_key is None)
              and s.measurement_key == measurement_key
              and (measurement_key is None or (s.reference_period == event.reference_period
                   and s.release_type == event.release_type and s.metric == "actual_value"))
+             and s.observed_at is not None and s.provenance.published_at is not None
              and s.observed_at <= cutoff and s.provenance.published_at <= cutoff
              and s.provenance.retrieved_at <= cutoff
              and (event.announced_at is None or max(s.observed_at, s.provenance.published_at, s.provenance.retrieved_at) < event.announced_at)
@@ -56,8 +59,11 @@ def with_expectations(event, snapshots, now, failure=None, measurement_key=None)
             difference = None
             if actual.amount is not None and expected.amount is not None:
                 difference = EventValue(amount=round(actual.amount - expected.amount, 8), unit=actual.unit)
+                percent = (round((actual.amount - expected.amount) / abs(expected.amount) * 100, 8)
+                           if abs(expected.amount) >= 0.000001 else None)
             surprise = EventSurprise(status="as_expected" if actual == expected else "different_from_expected",
-                difference=difference, expectation_snapshot_id=expectation.snapshot_id)
+                difference=difference, percent_difference=percent if difference else None,
+                expectation_snapshot_id=expectation.snapshot_id)
             if measurement_key and difference:
                 surprise = surprise.model_copy(update={"status": "as_expected" if difference.amount == 0 else
                     "higher_than_expected" if difference.amount > 0 else "lower_than_expected"})
@@ -188,7 +194,8 @@ class EventProvider:
                     failure = "invalid"
                 except Exception:
                     failure = "error"
-            kept = sorted(history.values(), key=lambda s: (s.observed_at, s.snapshot_id))[-32:]
+            kept = sorted(history.values(), key=lambda s: (
+                s.observed_at or datetime.min.replace(tzinfo=timezone.utc), s.snapshot_id))[-32:]
             self.history[event.event_id] = {s.snapshot_id: s for s in kept}
             self.history.move_to_end(event.event_id)
             while len(self.history) > 32:

@@ -1,0 +1,1432 @@
+{
+  "validated_at": "2026-09-19T19:02:09.844895+00:00",
+  "mode": "bounded live Phase 5 validation; read-only; no scoring or configuration changes",
+  "reports": [
+    {
+      "ticker": "AAPL",
+      "status": "partial",
+      "overall_label": "Mixed",
+      "available_categories": 3,
+      "category_intelligence": {
+        "company": {
+          "availability": "insufficient_data",
+          "rating": null,
+          "drivers": [],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "Insufficient independent evidence: 0 qualifying events."
+        },
+        "earnings": {
+          "availability": "insufficient_data",
+          "rating": null,
+          "drivers": [],
+          "important_metrics": [
+            {
+              "key": "revenue",
+              "label": "Revenue",
+              "actual": "$109.4B",
+              "expected": null,
+              "previous": null,
+              "result": null,
+              "indicator": null,
+              "comparison_status": "unavailable",
+              "sources": [
+                {
+                  "evidence_id": null,
+                  "name": "Apple Inc. FY2026 Q3 Earnings Release",
+                  "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000018/a8-kex991q3202606272026.htm",
+                  "published_at": "2026-07-30T20:30:28+00:00"
+                }
+              ]
+            },
+            {
+              "key": "diluted_eps",
+              "label": "Diluted EPS",
+              "actual": "$2.02",
+              "expected": null,
+              "previous": null,
+              "result": null,
+              "indicator": null,
+              "comparison_status": "unavailable",
+              "sources": [
+                {
+                  "evidence_id": null,
+                  "name": "Apple Inc. FY2026 Q3 Earnings Release",
+                  "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000018/a8-kex991q3202606272026.htm",
+                  "published_at": "2026-07-30T20:30:28+00:00"
+                }
+              ]
+            }
+          ],
+          "latest_material_event": {
+            "event_id": "earnings:AAPL:FY2026:Q3",
+            "title": "AAPL Earnings",
+            "status": "occurred",
+            "event_date": "2026-07-30",
+            "importance": "high",
+            "timing": null,
+            "certainty": null
+          },
+          "next_material_event": {
+            "event_id": "earnings:AAPL:next",
+            "title": "AAPL Earnings",
+            "status": "upcoming",
+            "event_date": "2026-10-29",
+            "importance": "high",
+            "timing": "Unknown",
+            "certainty": "Provider Reported"
+          },
+          "evidence_sufficiency": "Insufficient independent evidence: 1 qualifying events."
+        },
+        "industry": {
+          "availability": "available",
+          "rating": "Mixed",
+          "drivers": [
+            {
+              "label": "Sector peer breadth",
+              "direction": "positive",
+              "importance": "high",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "industry:AAPL:XLK:industry_peer_breadth:2026-09-18",
+                  "name": "Yahoo Finance sector market data",
+                  "url": "https://finance.yahoo.com/quote/XLK/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Sector trend and relative strength",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "industry:AAPL:XLK:sector_performance:2026-09-18",
+                  "name": "Yahoo Finance sector market data",
+                  "url": "https://finance.yahoo.com/quote/XLK/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            }
+          ],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "2 qualifying events; current support threshold met."
+        },
+        "economic": {
+          "availability": "available",
+          "rating": "Mixed",
+          "drivers": [
+            {
+              "label": "Unemployment Rate trend",
+              "direction": "positive",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:AAPL:UNRATE:2026-08-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/UNRATE",
+                  "published_at": "2026-09-04T13:27:31+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Real GDP growth (annualized) trend",
+              "direction": "negative",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:AAPL:A191RL1Q225SBEA:2026-04-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/A191RL1Q225SBEA",
+                  "published_at": "2026-07-30T15:09:19+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "10-Year Treasury Yield trend",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:AAPL:GS10:2026-08-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/GS10",
+                  "published_at": "2026-09-01T20:16:37+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Federal Funds Effective Rate trend",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:AAPL:FEDFUNDS:2026-08-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/FEDFUNDS",
+                  "published_at": "2026-09-01T20:16:43+00:00"
+                }
+              ],
+              "related_event_id": null
+            }
+          ],
+          "important_metrics": [],
+          "latest_material_event": {
+            "event_id": "fomc:2026-09-16",
+            "title": "FOMC Rate Decision",
+            "status": "effective",
+            "event_date": "2026-09-16",
+            "importance": "high",
+            "timing": null,
+            "certainty": null
+          },
+          "next_material_event": {
+            "event_id": "gdp:2026-09-30",
+            "title": "GDP",
+            "status": "upcoming",
+            "event_date": "2026-09-30",
+            "importance": "medium",
+            "timing": null,
+            "certainty": null
+          },
+          "evidence_sufficiency": "4 qualifying events; current support threshold met."
+        },
+        "market": {
+          "availability": "available",
+          "rating": "Mixed",
+          "drivers": [
+            {
+              "label": "Market volatility regime",
+              "direction": "positive",
+              "importance": "high",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "market:AAPL:volatility:2026-09-18",
+                  "name": "Market Data (existing Yahoo history service)",
+                  "url": "https://finance.yahoo.com/quote/%5EVIX/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Broad equity-market trend",
+              "direction": "mixed",
+              "importance": "high",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "market:AAPL:broad_trend:2026-09-18",
+                  "name": "Market Data (existing Yahoo history service)",
+                  "url": "https://finance.yahoo.com/quote/SPY/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            }
+          ],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "2 qualifying events; current support threshold met."
+        },
+        "geopolitical": {
+          "availability": "insufficient_data",
+          "rating": null,
+          "drivers": [],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "Insufficient independent evidence: 0 qualifying events."
+        }
+      },
+      "key_events": [
+        {
+          "event_id": "gdp:2026-09-30",
+          "title": "GDP",
+          "status": "upcoming",
+          "event_date": "2026-09-30",
+          "importance": "medium",
+          "timing": null,
+          "certainty": null
+        },
+        {
+          "event_id": "pce:2026-09-30",
+          "title": "PCE Inflation",
+          "status": "upcoming",
+          "event_date": "2026-09-30",
+          "importance": "high",
+          "timing": null,
+          "certainty": null
+        },
+        {
+          "event_id": "employment:2026-10-02",
+          "title": "Employment Situation",
+          "status": "upcoming",
+          "event_date": "2026-10-02",
+          "importance": "high",
+          "timing": null,
+          "certainty": null
+        },
+        {
+          "event_id": "cpi:2026-10-14",
+          "title": "CPI Inflation",
+          "status": "upcoming",
+          "event_date": "2026-10-14",
+          "importance": "high",
+          "timing": null,
+          "certainty": null
+        }
+      ],
+      "earnings_expectations_available": false,
+      "upcoming_earnings_directional_driver": false,
+      "provider_status": {
+        "sec": "available",
+        "fred": "available",
+        "market": "available",
+        "industry": "available",
+        "geopolitical": "no_evidence",
+        "fomc": "available",
+        "macro": "available",
+        "earnings_events": "available"
+      }
+    },
+    {
+      "ticker": "MSFT",
+      "status": "partial",
+      "overall_label": "Mixed",
+      "available_categories": 3,
+      "category_intelligence": {
+        "company": {
+          "availability": "insufficient_data",
+          "rating": null,
+          "drivers": [],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "Insufficient independent evidence: 0 qualifying events."
+        },
+        "earnings": {
+          "availability": "insufficient_data",
+          "rating": null,
+          "drivers": [],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": {
+            "event_id": "earnings:MSFT:next",
+            "title": "MSFT Earnings",
+            "status": "upcoming",
+            "event_date": "2026-10-28",
+            "importance": "high",
+            "timing": "Unknown",
+            "certainty": "Provider Reported"
+          },
+          "evidence_sufficiency": "Insufficient independent evidence: 0 qualifying events."
+        },
+        "industry": {
+          "availability": "available",
+          "rating": "Mixed",
+          "drivers": [
+            {
+              "label": "Sector peer breadth",
+              "direction": "positive",
+              "importance": "high",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "industry:MSFT:XLK:industry_peer_breadth:2026-09-18",
+                  "name": "Yahoo Finance sector market data",
+                  "url": "https://finance.yahoo.com/quote/XLK/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Sector trend and relative strength",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "industry:MSFT:XLK:sector_performance:2026-09-18",
+                  "name": "Yahoo Finance sector market data",
+                  "url": "https://finance.yahoo.com/quote/XLK/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            }
+          ],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "2 qualifying events; current support threshold met."
+        },
+        "economic": {
+          "availability": "available",
+          "rating": "Mixed",
+          "drivers": [
+            {
+              "label": "Unemployment Rate trend",
+              "direction": "positive",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:MSFT:UNRATE:2026-08-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/UNRATE",
+                  "published_at": "2026-09-04T13:27:31+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Real GDP growth (annualized) trend",
+              "direction": "negative",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:MSFT:A191RL1Q225SBEA:2026-04-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/A191RL1Q225SBEA",
+                  "published_at": "2026-07-30T15:09:19+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "10-Year Treasury Yield trend",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:MSFT:GS10:2026-08-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/GS10",
+                  "published_at": "2026-09-01T20:16:37+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Federal Funds Effective Rate trend",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:MSFT:FEDFUNDS:2026-08-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/FEDFUNDS",
+                  "published_at": "2026-09-01T20:16:43+00:00"
+                }
+              ],
+              "related_event_id": null
+            }
+          ],
+          "important_metrics": [],
+          "latest_material_event": {
+            "event_id": "fomc:2026-09-16",
+            "title": "FOMC Rate Decision",
+            "status": "effective",
+            "event_date": "2026-09-16",
+            "importance": "high",
+            "timing": null,
+            "certainty": null
+          },
+          "next_material_event": {
+            "event_id": "gdp:2026-09-30",
+            "title": "GDP",
+            "status": "upcoming",
+            "event_date": "2026-09-30",
+            "importance": "medium",
+            "timing": null,
+            "certainty": null
+          },
+          "evidence_sufficiency": "4 qualifying events; current support threshold met."
+        },
+        "market": {
+          "availability": "available",
+          "rating": "Mixed",
+          "drivers": [
+            {
+              "label": "Market volatility regime",
+              "direction": "positive",
+              "importance": "high",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "market:MSFT:volatility:2026-09-18",
+                  "name": "Market Data (existing Yahoo history service)",
+                  "url": "https://finance.yahoo.com/quote/%5EVIX/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Broad equity-market trend",
+              "direction": "mixed",
+              "importance": "high",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "market:MSFT:broad_trend:2026-09-18",
+                  "name": "Market Data (existing Yahoo history service)",
+                  "url": "https://finance.yahoo.com/quote/SPY/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            }
+          ],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "2 qualifying events; current support threshold met."
+        },
+        "geopolitical": {
+          "availability": "insufficient_data",
+          "rating": null,
+          "drivers": [],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "Insufficient independent evidence: 0 qualifying events."
+        }
+      },
+      "key_events": [
+        {
+          "event_id": "gdp:2026-09-30",
+          "title": "GDP",
+          "status": "upcoming",
+          "event_date": "2026-09-30",
+          "importance": "medium",
+          "timing": null,
+          "certainty": null
+        },
+        {
+          "event_id": "pce:2026-09-30",
+          "title": "PCE Inflation",
+          "status": "upcoming",
+          "event_date": "2026-09-30",
+          "importance": "high",
+          "timing": null,
+          "certainty": null
+        },
+        {
+          "event_id": "employment:2026-10-02",
+          "title": "Employment Situation",
+          "status": "upcoming",
+          "event_date": "2026-10-02",
+          "importance": "high",
+          "timing": null,
+          "certainty": null
+        },
+        {
+          "event_id": "cpi:2026-10-14",
+          "title": "CPI Inflation",
+          "status": "upcoming",
+          "event_date": "2026-10-14",
+          "importance": "high",
+          "timing": null,
+          "certainty": null
+        }
+      ],
+      "earnings_expectations_available": false,
+      "upcoming_earnings_directional_driver": false,
+      "provider_status": {
+        "sec": "available",
+        "fred": "available",
+        "market": "available",
+        "industry": "available",
+        "geopolitical": "no_evidence",
+        "fomc": "available",
+        "macro": "available",
+        "earnings_events": "available"
+      }
+    },
+    {
+      "ticker": "NVDA",
+      "status": "partial",
+      "overall_label": "Mixed",
+      "available_categories": 3,
+      "category_intelligence": {
+        "company": {
+          "availability": "insufficient_data",
+          "rating": null,
+          "drivers": [],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "Insufficient independent evidence: 0 qualifying events."
+        },
+        "earnings": {
+          "availability": "insufficient_data",
+          "rating": null,
+          "drivers": [
+            {
+              "label": "Gross Margin improved",
+              "direction": "positive",
+              "importance": "medium",
+              "value": "75%",
+              "change": "+2.6 pp",
+              "sources": [
+                {
+                  "evidence_id": null,
+                  "name": "NVIDIA Corporation FY2027 Q2 Earnings Release",
+                  "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000073/q2fy27pr.htm",
+                  "published_at": "2026-08-26T20:21:19+00:00"
+                }
+              ],
+              "related_event_id": "earnings:NVDA:FY2027:Q2"
+            }
+          ],
+          "important_metrics": [
+            {
+              "key": "revenue",
+              "label": "Revenue",
+              "actual": "$96.2B",
+              "expected": null,
+              "previous": null,
+              "result": null,
+              "indicator": null,
+              "comparison_status": "unavailable",
+              "sources": [
+                {
+                  "evidence_id": null,
+                  "name": "NVIDIA Corporation FY2027 Q2 Earnings Release",
+                  "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000073/q2fy27pr.htm",
+                  "published_at": "2026-08-26T20:21:19+00:00"
+                }
+              ]
+            },
+            {
+              "key": "gross_margin",
+              "label": "Gross Margin",
+              "actual": "75%",
+              "expected": null,
+              "previous": "72.4%",
+              "result": "+2.6 pp",
+              "indicator": "Improved",
+              "comparison_status": "unavailable",
+              "sources": [
+                {
+                  "evidence_id": null,
+                  "name": "NVIDIA Corporation FY2027 Q2 Earnings Release",
+                  "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000073/q2fy27pr.htm",
+                  "published_at": "2026-08-26T20:21:19+00:00"
+                }
+              ]
+            }
+          ],
+          "latest_material_event": {
+            "event_id": "earnings:NVDA:FY2027:Q2",
+            "title": "NVDA Earnings",
+            "status": "occurred",
+            "event_date": "2026-08-26",
+            "importance": "high",
+            "timing": null,
+            "certainty": null
+          },
+          "next_material_event": null,
+          "evidence_sufficiency": "Insufficient independent evidence: 1 qualifying events."
+        },
+        "industry": {
+          "availability": "available",
+          "rating": "Mixed",
+          "drivers": [
+            {
+              "label": "Sector peer breadth",
+              "direction": "positive",
+              "importance": "high",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "industry:NVDA:XLK:industry_peer_breadth:2026-09-18",
+                  "name": "Yahoo Finance sector market data",
+                  "url": "https://finance.yahoo.com/quote/XLK/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Sector trend and relative strength",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "industry:NVDA:XLK:sector_performance:2026-09-18",
+                  "name": "Yahoo Finance sector market data",
+                  "url": "https://finance.yahoo.com/quote/XLK/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            }
+          ],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "2 qualifying events; current support threshold met."
+        },
+        "economic": {
+          "availability": "available",
+          "rating": "Mixed",
+          "drivers": [
+            {
+              "label": "Unemployment Rate trend",
+              "direction": "positive",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:NVDA:UNRATE:2026-08-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/UNRATE",
+                  "published_at": "2026-09-04T13:27:31+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Real GDP growth (annualized) trend",
+              "direction": "negative",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:NVDA:A191RL1Q225SBEA:2026-04-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/A191RL1Q225SBEA",
+                  "published_at": "2026-07-30T15:09:19+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "10-Year Treasury Yield trend",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:NVDA:GS10:2026-08-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/GS10",
+                  "published_at": "2026-09-01T20:16:37+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Federal Funds Effective Rate trend",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:NVDA:FEDFUNDS:2026-08-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/FEDFUNDS",
+                  "published_at": "2026-09-01T20:16:43+00:00"
+                }
+              ],
+              "related_event_id": null
+            }
+          ],
+          "important_metrics": [],
+          "latest_material_event": {
+            "event_id": "fomc:2026-09-16",
+            "title": "FOMC Rate Decision",
+            "status": "effective",
+            "event_date": "2026-09-16",
+            "importance": "high",
+            "timing": null,
+            "certainty": null
+          },
+          "next_material_event": {
+            "event_id": "gdp:2026-09-30",
+            "title": "GDP",
+            "status": "upcoming",
+            "event_date": "2026-09-30",
+            "importance": "medium",
+            "timing": null,
+            "certainty": null
+          },
+          "evidence_sufficiency": "4 qualifying events; current support threshold met."
+        },
+        "market": {
+          "availability": "available",
+          "rating": "Mixed",
+          "drivers": [
+            {
+              "label": "Market volatility regime",
+              "direction": "positive",
+              "importance": "high",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "market:NVDA:volatility:2026-09-18",
+                  "name": "Market Data (existing Yahoo history service)",
+                  "url": "https://finance.yahoo.com/quote/%5EVIX/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Broad equity-market trend",
+              "direction": "mixed",
+              "importance": "high",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "market:NVDA:broad_trend:2026-09-18",
+                  "name": "Market Data (existing Yahoo history service)",
+                  "url": "https://finance.yahoo.com/quote/SPY/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            }
+          ],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "2 qualifying events; current support threshold met."
+        },
+        "geopolitical": {
+          "availability": "insufficient_data",
+          "rating": null,
+          "drivers": [],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "Insufficient independent evidence: 1 qualifying events."
+        }
+      },
+      "key_events": [
+        {
+          "event_id": "gdp:2026-09-30",
+          "title": "GDP",
+          "status": "upcoming",
+          "event_date": "2026-09-30",
+          "importance": "medium",
+          "timing": null,
+          "certainty": null
+        },
+        {
+          "event_id": "pce:2026-09-30",
+          "title": "PCE Inflation",
+          "status": "upcoming",
+          "event_date": "2026-09-30",
+          "importance": "high",
+          "timing": null,
+          "certainty": null
+        },
+        {
+          "event_id": "employment:2026-10-02",
+          "title": "Employment Situation",
+          "status": "upcoming",
+          "event_date": "2026-10-02",
+          "importance": "high",
+          "timing": null,
+          "certainty": null
+        },
+        {
+          "event_id": "cpi:2026-10-14",
+          "title": "CPI Inflation",
+          "status": "upcoming",
+          "event_date": "2026-10-14",
+          "importance": "high",
+          "timing": null,
+          "certainty": null
+        }
+      ],
+      "earnings_expectations_available": false,
+      "upcoming_earnings_directional_driver": false,
+      "provider_status": {
+        "sec": "available",
+        "fred": "available",
+        "market": "available",
+        "industry": "available",
+        "geopolitical": "available",
+        "fomc": "available",
+        "macro": "available",
+        "earnings_events": "available"
+      }
+    },
+    {
+      "ticker": "JPM",
+      "status": "partial",
+      "overall_label": "Mixed",
+      "available_categories": 3,
+      "category_intelligence": {
+        "company": {
+          "availability": "insufficient_data",
+          "rating": null,
+          "drivers": [],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "Insufficient independent evidence: 0 qualifying events."
+        },
+        "earnings": {
+          "availability": "insufficient_data",
+          "rating": null,
+          "drivers": [],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": {
+            "event_id": "earnings:JPM:next",
+            "title": "JPM Earnings",
+            "status": "upcoming",
+            "event_date": "2026-10-13",
+            "importance": "high",
+            "timing": "Unknown",
+            "certainty": "Provider Reported"
+          },
+          "evidence_sufficiency": "Insufficient independent evidence: 0 qualifying events."
+        },
+        "industry": {
+          "availability": "available",
+          "rating": "Mixed",
+          "drivers": [
+            {
+              "label": "Sector peer breadth",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "industry:JPM:XLF:industry_peer_breadth:2026-09-18",
+                  "name": "Yahoo Finance sector market data",
+                  "url": "https://finance.yahoo.com/quote/XLF/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Sector trend and relative strength",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "industry:JPM:XLF:sector_performance:2026-09-18",
+                  "name": "Yahoo Finance sector market data",
+                  "url": "https://finance.yahoo.com/quote/XLF/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            }
+          ],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "2 qualifying events; current support threshold met."
+        },
+        "economic": {
+          "availability": "available",
+          "rating": "Mixed",
+          "drivers": [
+            {
+              "label": "Unemployment Rate trend",
+              "direction": "positive",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:JPM:UNRATE:2026-08-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/UNRATE",
+                  "published_at": "2026-09-04T13:27:31+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Real GDP growth (annualized) trend",
+              "direction": "negative",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:JPM:A191RL1Q225SBEA:2026-04-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/A191RL1Q225SBEA",
+                  "published_at": "2026-07-30T15:09:19+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "10-Year Treasury Yield trend",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:JPM:GS10:2026-08-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/GS10",
+                  "published_at": "2026-09-01T20:16:37+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Federal Funds Effective Rate trend",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:JPM:FEDFUNDS:2026-08-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/FEDFUNDS",
+                  "published_at": "2026-09-01T20:16:43+00:00"
+                }
+              ],
+              "related_event_id": null
+            }
+          ],
+          "important_metrics": [],
+          "latest_material_event": {
+            "event_id": "fomc:2026-09-16",
+            "title": "FOMC Rate Decision",
+            "status": "effective",
+            "event_date": "2026-09-16",
+            "importance": "high",
+            "timing": null,
+            "certainty": null
+          },
+          "next_material_event": {
+            "event_id": "gdp:2026-09-30",
+            "title": "GDP",
+            "status": "upcoming",
+            "event_date": "2026-09-30",
+            "importance": "medium",
+            "timing": null,
+            "certainty": null
+          },
+          "evidence_sufficiency": "4 qualifying events; current support threshold met."
+        },
+        "market": {
+          "availability": "available",
+          "rating": "Mixed",
+          "drivers": [
+            {
+              "label": "Market volatility regime",
+              "direction": "positive",
+              "importance": "high",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "market:JPM:volatility:2026-09-18",
+                  "name": "Market Data (existing Yahoo history service)",
+                  "url": "https://finance.yahoo.com/quote/%5EVIX/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Broad equity-market trend",
+              "direction": "mixed",
+              "importance": "high",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "market:JPM:broad_trend:2026-09-18",
+                  "name": "Market Data (existing Yahoo history service)",
+                  "url": "https://finance.yahoo.com/quote/SPY/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            }
+          ],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "2 qualifying events; current support threshold met."
+        },
+        "geopolitical": {
+          "availability": "insufficient_data",
+          "rating": null,
+          "drivers": [],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "Insufficient independent evidence: 0 qualifying events."
+        }
+      },
+      "key_events": [
+        {
+          "event_id": "gdp:2026-09-30",
+          "title": "GDP",
+          "status": "upcoming",
+          "event_date": "2026-09-30",
+          "importance": "medium",
+          "timing": null,
+          "certainty": null
+        },
+        {
+          "event_id": "pce:2026-09-30",
+          "title": "PCE Inflation",
+          "status": "upcoming",
+          "event_date": "2026-09-30",
+          "importance": "high",
+          "timing": null,
+          "certainty": null
+        },
+        {
+          "event_id": "employment:2026-10-02",
+          "title": "Employment Situation",
+          "status": "upcoming",
+          "event_date": "2026-10-02",
+          "importance": "high",
+          "timing": null,
+          "certainty": null
+        },
+        {
+          "event_id": "earnings:JPM:next",
+          "title": "JPM Earnings",
+          "status": "upcoming",
+          "event_date": "2026-10-13",
+          "importance": "high",
+          "timing": "Unknown",
+          "certainty": "Provider Reported"
+        }
+      ],
+      "earnings_expectations_available": false,
+      "upcoming_earnings_directional_driver": false,
+      "provider_status": {
+        "sec": "available",
+        "fred": "available",
+        "market": "available",
+        "industry": "available",
+        "geopolitical": "no_evidence",
+        "fomc": "available",
+        "macro": "available",
+        "earnings_events": "available"
+      }
+    },
+    {
+      "ticker": "ABTC",
+      "status": "partial",
+      "overall_label": "Mixed",
+      "available_categories": 3,
+      "category_intelligence": {
+        "company": {
+          "availability": "insufficient_data",
+          "rating": null,
+          "drivers": [],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "Insufficient independent evidence: 0 qualifying events."
+        },
+        "earnings": {
+          "availability": "insufficient_data",
+          "rating": null,
+          "drivers": [],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "Insufficient independent evidence: 0 qualifying events."
+        },
+        "industry": {
+          "availability": "available",
+          "rating": "Mixed",
+          "drivers": [
+            {
+              "label": "Sector peer breadth",
+              "direction": "negative",
+              "importance": "high",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "industry:ABTC:XLF:industry_peer_breadth:2026-09-18",
+                  "name": "Yahoo Finance sector market data",
+                  "url": "https://finance.yahoo.com/quote/XLF/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Sector trend and relative strength",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "industry:ABTC:XLF:sector_performance:2026-09-18",
+                  "name": "Yahoo Finance sector market data",
+                  "url": "https://finance.yahoo.com/quote/XLF/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            }
+          ],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "2 qualifying events; current support threshold met."
+        },
+        "economic": {
+          "availability": "available",
+          "rating": "Mixed",
+          "drivers": [
+            {
+              "label": "Unemployment Rate trend",
+              "direction": "positive",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:ABTC:UNRATE:2026-08-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/UNRATE",
+                  "published_at": "2026-09-04T13:27:31+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Real GDP growth (annualized) trend",
+              "direction": "negative",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:ABTC:A191RL1Q225SBEA:2026-04-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/A191RL1Q225SBEA",
+                  "published_at": "2026-07-30T15:09:19+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "10-Year Treasury Yield trend",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:ABTC:GS10:2026-08-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/GS10",
+                  "published_at": "2026-09-01T20:16:37+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Federal Funds Effective Rate trend",
+              "direction": "mixed",
+              "importance": "medium",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "fred:ABTC:FEDFUNDS:2026-08-01",
+                  "name": "Federal Reserve Bank of St. Louis (FRED)",
+                  "url": "https://fred.stlouisfed.org/series/FEDFUNDS",
+                  "published_at": "2026-09-01T20:16:43+00:00"
+                }
+              ],
+              "related_event_id": null
+            }
+          ],
+          "important_metrics": [],
+          "latest_material_event": {
+            "event_id": "fomc:2026-09-16",
+            "title": "FOMC Rate Decision",
+            "status": "effective",
+            "event_date": "2026-09-16",
+            "importance": "high",
+            "timing": null,
+            "certainty": null
+          },
+          "next_material_event": {
+            "event_id": "gdp:2026-09-30",
+            "title": "GDP",
+            "status": "upcoming",
+            "event_date": "2026-09-30",
+            "importance": "medium",
+            "timing": null,
+            "certainty": null
+          },
+          "evidence_sufficiency": "4 qualifying events; current support threshold met."
+        },
+        "market": {
+          "availability": "available",
+          "rating": "Mixed",
+          "drivers": [
+            {
+              "label": "Market volatility regime",
+              "direction": "positive",
+              "importance": "high",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "market:ABTC:volatility:2026-09-18",
+                  "name": "Market Data (existing Yahoo history service)",
+                  "url": "https://finance.yahoo.com/quote/%5EVIX/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            },
+            {
+              "label": "Broad equity-market trend",
+              "direction": "mixed",
+              "importance": "high",
+              "value": null,
+              "change": null,
+              "sources": [
+                {
+                  "evidence_id": "market:ABTC:broad_trend:2026-09-18",
+                  "name": "Market Data (existing Yahoo history service)",
+                  "url": "https://finance.yahoo.com/quote/SPY/",
+                  "published_at": "2026-09-18T20:00:00+00:00"
+                }
+              ],
+              "related_event_id": null
+            }
+          ],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "2 qualifying events; current support threshold met."
+        },
+        "geopolitical": {
+          "availability": "insufficient_data",
+          "rating": null,
+          "drivers": [],
+          "important_metrics": [],
+          "latest_material_event": null,
+          "next_material_event": null,
+          "evidence_sufficiency": "Insufficient independent evidence: 0 qualifying events."
+        }
+      },
+      "key_events": [
+        {
+          "event_id": "gdp:2026-09-30",
+          "title": "GDP",
+          "status": "upcoming",
+          "event_date": "2026-09-30",
+          "importance": "medium",
+          "timing": null,
+          "certainty": null
+        },
+        {
+          "event_id": "pce:2026-09-30",
+          "title": "PCE Inflation",
+          "status": "upcoming",
+          "event_date": "2026-09-30",
+          "importance": "high",
+          "timing": null,
+          "certainty": null
+        },
+        {
+          "event_id": "employment:2026-10-02",
+          "title": "Employment Situation",
+          "status": "upcoming",
+          "event_date": "2026-10-02",
+          "importance": "high",
+          "timing": null,
+          "certainty": null
+        },
+        {
+          "event_id": "cpi:2026-10-14",
+          "title": "CPI Inflation",
+          "status": "upcoming",
+          "event_date": "2026-10-14",
+          "importance": "high",
+          "timing": null,
+          "certainty": null
+        }
+      ],
+      "earnings_expectations_available": false,
+      "upcoming_earnings_directional_driver": false,
+      "provider_status": {
+        "sec": "available",
+        "fred": "available",
+        "market": "available",
+        "industry": "available",
+        "geopolitical": "no_evidence",
+        "fomc": "available",
+        "macro": "available",
+        "earnings_events": "no_events"
+      }
+    }
+  ]
+}

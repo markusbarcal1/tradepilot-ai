@@ -29,7 +29,9 @@ def main():
                     event = item["event"]
                     print(f"  {section}: {event['event_id']} / {event['status']}")
                     for field in ("scheduled_date", "scheduled_at", "announced_at", "effective_date", "effective_at",
-                                  "reference_period", "release_type", "underlying_event_id", "measurements", "revisions",
+                                  "ticker", "issuer", "reference_period", "reporting_identity", "release_type",
+                                  "schedule_certainty", "market_session", "schedule_history", "guidance_status",
+                                  "underlying_event_id", "measurements", "revisions",
                                   "previous_value", "expected_value", "actual_value", "change", "expectation_status", "surprise"):
                         print(f"    {field}: {event[field]}")
                     print(f"    exposure: {item['exposure']}")

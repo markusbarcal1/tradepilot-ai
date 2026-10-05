@@ -95,6 +95,8 @@ def test_http_contract_and_authentication():
     assert status == 200 and payload["status"] == "placeholder"
     assert payload["value"] is None and payload["label"] is None
     assert set(payload["categories"]) == set(CATEGORY_TITLES)
+    assert set(payload["category_intelligence"]) == set(CATEGORY_TITLES)
+    assert payload["category_intelligence"]["earnings"]["beat_probability"] is None
 
 
 def test_overall_contract_rejects_inconsistent_states():

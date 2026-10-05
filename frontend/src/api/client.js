@@ -106,6 +106,12 @@ export function analyzeOutlook(symbol, options = {}) {
   return api.get(`/outlook/${symbol}`, { signal: options.signal });
 }
 
+export function generateAIAnalysis(symbol, options = {}) {
+  return api.post(`/outlook/${encodeURIComponent(symbol)}/analysis`, null, {
+    signal: options.signal,
+  });
+}
+
 export function analyzeValuation(symbol, options = {}) {
   return api.get(`/valuation-analysis/${symbol}`, {
     signal: options.signal,

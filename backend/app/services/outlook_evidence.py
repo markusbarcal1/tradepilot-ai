@@ -44,6 +44,10 @@ def same_event(first: OutlookEvidence, second: OutlookEvidence, policy: Evidence
         return True
     if first.event_type != second.event_type:
         return False
+    first_corporate = first.source_details.get("corporate_event_key")
+    second_corporate = second.source_details.get("corporate_event_key")
+    if first_corporate and first_corporate == second_corporate:
+        return True
     if first.raw_provider == second.raw_provider and (
         first.id == second.id or (first.raw_provider_id and first.raw_provider_id == second.raw_provider_id)
     ):

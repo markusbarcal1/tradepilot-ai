@@ -1,0 +1,55 @@
+{
+  "ticker": "NVDA",
+  "retrieved_at": "2026-09-27T18:00:00Z",
+  "companyfacts": {
+    "cik": 1045810,
+    "entityName": "Synthetic Offline Issuer",
+    "facts": {
+      "us-gaap": {
+        "RevenueFromContractWithCustomerExcludingAssessedTax": {
+          "units": {
+            "USD": [
+              {
+                "start": "2026-04-28",
+                "end": "2026-07-27",
+                "val": 30040000000,
+                "accn": "0001045810-26-000100",
+                "fy": 2026,
+                "fp": "Q2",
+                "form": "10-Q",
+                "filed": "2026-08-20"
+              }
+            ]
+          }
+        },
+        "EarningsPerShareDiluted": {
+          "units": {
+            "USD/shares": [
+              {
+                "start": "2026-04-28",
+                "end": "2026-07-27",
+                "val": 0.67,
+                "accn": "0001045810-26-000100",
+                "fy": 2026,
+                "fp": "Q2",
+                "form": "10-Q",
+                "filed": "2026-08-20"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "submissions": {
+    "filings": {
+      "recent": {
+        "accessionNumber": ["0001045810-26-000100"],
+        "form": ["10-Q"],
+        "filingDate": ["2026-08-20"],
+        "acceptanceDateTime": ["2026-08-20T20:05:00Z"],
+        "primaryDocument": ["synthetic-report.htm"]
+      }
+    }
+  }
+}

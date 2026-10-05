@@ -19,6 +19,9 @@ function valueLabel(value) {
   if (value.unit === "basis_points") return value.amount === 0 ? "Unchanged (0 bp)" : `${value.amount > 0 ? "+" : ""}${value.amount} bp`;
   if (value.unit === "percent" || value.unit === "percent_saar") return `${value.amount}%${value.unit === "percent_saar" ? " annualized" : ""}`;
   if (value.unit === "jobs") return `${value.amount > 0 ? "+" : ""}${value.amount.toLocaleString("en-US")} jobs`;
+  if (value.unit === "USD_per_share") return `$${value.amount.toFixed(2)}`;
+  if (value.unit === "USD_billion") return `$${value.amount.toLocaleString("en-US")}B`;
+  if (value.unit === "USD_million") return `$${value.amount.toLocaleString("en-US")}M`;
   return `${value.amount} ${value.unit}`;
 }
 
@@ -33,6 +36,19 @@ function freshExpectation(row, event, now) {
 function surpriseLabel(status) {
   return ({ as_expected: "As expected", different_from_expected: "Different from expected",
     higher_than_expected: "Higher than expected", lower_than_expected: "Lower than expected" })[status] || "Unavailable";
+}
+
+function sessionLabel(value) {
+  return ({ before_market: "Before market", after_market: "After market", during_market: "During market", unknown: "Time unknown" })[value];
+}
+
+function relevanceLabel(item) {
+  if (item.event.event_type === "earnings_release") return "Issuer event";
+  if (item.exposure.relevance !== "company_specific") return "Broad macro context";
+  if (/bitcoin/i.test(item.exposure.reason)) return "Enhanced relevance · Bitcoin exposure";
+  if (/bank|funding costs|asset yields/i.test(item.exposure.reason)) return "Enhanced relevance · Banking exposure";
+  if (/REIT|property/i.test(item.exposure.reason)) return "Enhanced relevance · REIT exposure";
+  return "Enhanced relevance";
 }
 
 function periodLabel(period) {
@@ -56,7 +72,10 @@ function EventDetails({ item, ticker, now }) {
       {event.scheduled_date && <><dt>Scheduled</dt><dd>{dateLabel(event.scheduled_date)}</dd></>}
       {event.scheduled_at && <><dt>Release time</dt><dd>{new Date(event.scheduled_at).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York", timeZoneName: "short" })}</dd></>}
       {event.reference_period && <><dt>Reference period</dt><dd>{periodLabel(event.reference_period)}</dd></>}
+      {event.reporting_identity?.periods?.[0]?.period_end && <><dt>Period ended</dt><dd>{dateLabel(event.reporting_identity.periods[0].period_end)}</dd></>}
       {event.release_type && <><dt>Release type</dt><dd>{event.release_type}</dd></>}
+      {event.market_session && <><dt>Timing</dt><dd>{sessionLabel(event.market_session)}</dd></>}
+      {event.schedule_certainty && <><dt>Schedule</dt><dd>{event.schedule_certainty === "confirmed" ? "Confirmed" : event.schedule_certainty === "estimated" ? "Estimated" : event.schedule_certainty === "provider_reported" ? "Provider reported" : "Certainty unknown"}</dd></>}
       {event.announced_at && <><dt>Announced</dt><dd>{new Date(event.announced_at).toLocaleString("en-US", { timeZone: "America/New_York", timeZoneName: "short" })}</dd></>}
       {event.previous_value && <><dt>Previous target</dt><dd>{valueLabel(event.previous_value)}</dd></>}
       {event.actual_value && <><dt>New target</dt><dd>{valueLabel(event.actual_value)}</dd></>}
@@ -74,7 +93,7 @@ function EventDetails({ item, ticker, now }) {
               <div>Observed {new Date(expected.observed_at).toLocaleString("en-US", { timeZone: "America/New_York", timeZoneName: "short" })}{event.announced_at ? " · Before announcement" : ""}</div>
               <SourceLink source={expected.provenance} />
             </>}
-            {event.announced_at && expected && <div>Surprise: {surpriseLabel(row.surprise?.status)}</div>}
+            {event.announced_at && expected && <div>Surprise: {Number.isFinite(row.surprise?.percent_difference) ? `${row.surprise.percent_difference > 0 ? "+" : ""}${row.surprise.percent_difference.toFixed(1)}%` : surpriseLabel(row.surprise?.status)}</div>}
           </dd>
         </Fragment>;
       })}
@@ -105,6 +124,7 @@ function EventDetails({ item, ticker, now }) {
         {periodLabel(revision.reference_period)} · {event.measurements?.find((row) => row.key === revision.measurement_key)?.label || revision.measurement_key}: {valueLabel(revision.previous_value)} → {valueLabel(revision.actual_value)}. <SourceLink source={revision.provenance} />
       </li>)}</ul>
     </>}
+    {event.guidance_status && event.guidance_status !== "unavailable" && <><h5>Guidance</h5><p>{event.guidance_status[0].toUpperCase() + event.guidance_status.slice(1)}</p></>}
     <h5>Why this matters to {ticker}</h5>
     <p>{item.exposure.reason}</p>
     <p className="outlook-evidence-note">Stock direction is uncertain.</p>
@@ -139,9 +159,10 @@ export default function OutlookEvents({ intelligence, ticker }) {
       {intelligence[key].slice(0, 10).map((item) => <details className="outlook-event" key={item.event.event_id}>
         <summary>
           <span>{dateLabel(item.event.scheduled_date || item.event.announced_at)} · <strong>{item.event.title}</strong></span>
-          <span className="outlook-evidence-note">{item.event.status === "upcoming" ? "Scheduled" : item.event.change ? valueLabel(item.event.change) : "Released"}
+          <span className="outlook-evidence-note">{item.event.status === "upcoming" ? item.event.schedule_certainty === "estimated" ? "Estimated" : "Scheduled" : item.event.change ? valueLabel(item.event.change) : "Released"}
             {item.event.status === "upcoming" && item.event.scheduled_at ? ` · ${new Date(item.event.scheduled_at).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York", timeZoneName: "short" })}` : ""}
-            {item.event.status === "effective" ? " · Effective" : ""} · {item.exposure.relevance === "company_specific" ? "Company relevance" : "Broad context"}</span>
+            {item.event.status === "upcoming" && item.event.market_session ? ` · ${sessionLabel(item.event.market_session)}` : ""}
+            {item.event.status === "effective" ? " · Effective" : ""} · {relevanceLabel(item)}</span>
         </summary>
         <EventDetails item={item} ticker={ticker} now={now} />
       </details>)}

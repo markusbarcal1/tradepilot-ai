@@ -1,0 +1,238 @@
+{
+  "budget": {
+    "attempts": 6,
+    "maximum": 16,
+    "per_class": {
+      "AAPL": {
+        "current_submissions": 1,
+        "earnings_exhibit": 0,
+        "eight_k_index": 0,
+        "historical_submissions": 0,
+        "ten_k_document": 2
+      },
+      "NVDA": {
+        "current_submissions": 1,
+        "earnings_exhibit": 0,
+        "eight_k_index": 0,
+        "historical_submissions": 0,
+        "ten_k_document": 2
+      }
+    },
+    "per_issuer": {
+      "AAPL": 3,
+      "NVDA": 3
+    }
+  },
+  "candidate_count": 0,
+  "coverage_change": {
+    "accepted_direct_q4": 0,
+    "targets": [
+      {
+        "accepted_metrics_after": [],
+        "certification_status": "request_failed",
+        "fiscal_quarter": "Q4",
+        "fiscal_year": 2024,
+        "historical_before": "missing",
+        "ticker": "AAPL"
+      },
+      {
+        "accepted_metrics_after": [],
+        "certification_status": "request_failed",
+        "fiscal_quarter": "Q4",
+        "fiscal_year": 2025,
+        "historical_before": "missing",
+        "ticker": "AAPL"
+      },
+      {
+        "accepted_metrics_after": [],
+        "certification_status": "request_failed",
+        "fiscal_quarter": "Q4",
+        "fiscal_year": 2025,
+        "historical_before": "missing",
+        "ticker": "NVDA"
+      },
+      {
+        "accepted_metrics_after": [],
+        "certification_status": "request_failed",
+        "fiscal_quarter": "Q4",
+        "fiscal_year": 2026,
+        "historical_before": "missing",
+        "ticker": "NVDA"
+      }
+    ]
+  },
+  "manifest": [
+    {
+      "cik": "0000320193",
+      "fiscal_year": 2024,
+      "issuer": "Apple Inc.",
+      "period_end": "2024-09-28",
+      "ten_k_accession": "0000320193-24-000123",
+      "ticker": "AAPL"
+    },
+    {
+      "cik": "0000320193",
+      "fiscal_year": 2025,
+      "issuer": "Apple Inc.",
+      "period_end": "2025-09-27",
+      "ten_k_accession": "0000320193-25-000079",
+      "ticker": "AAPL"
+    },
+    {
+      "cik": "0001045810",
+      "fiscal_year": 2025,
+      "issuer": "NVIDIA Corporation",
+      "period_end": "2025-01-26",
+      "ten_k_accession": "0001045810-25-000023",
+      "ticker": "NVDA"
+    },
+    {
+      "cik": "0001045810",
+      "fiscal_year": 2026,
+      "issuer": "NVIDIA Corporation",
+      "period_end": "2026-01-25",
+      "ten_k_accession": "0001045810-26-000021",
+      "ticker": "NVDA"
+    }
+  ],
+  "mode": "live",
+  "observations": [],
+  "outcomes": [
+    {
+      "accepted_metrics": [],
+      "approved_10k_accession": "0000320193-24-000123",
+      "cik": "0000320193",
+      "documents": [],
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2024,
+      "period_end": "2024-09-28",
+      "reason": "earnings_8k_unresolved",
+      "status": "request_failed",
+      "ticker": "AAPL"
+    },
+    {
+      "accepted_metrics": [],
+      "approved_10k_accession": "0000320193-25-000079",
+      "cik": "0000320193",
+      "documents": [],
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2025,
+      "period_end": "2025-09-27",
+      "reason": "earnings_8k_unresolved",
+      "status": "request_failed",
+      "ticker": "AAPL"
+    },
+    {
+      "accepted_metrics": [],
+      "approved_10k_accession": "0001045810-25-000023",
+      "cik": "0001045810",
+      "documents": [],
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2025,
+      "period_end": "2025-01-26",
+      "reason": "earnings_8k_unresolved",
+      "status": "request_failed",
+      "ticker": "NVDA"
+    },
+    {
+      "accepted_metrics": [],
+      "approved_10k_accession": "0001045810-26-000021",
+      "cik": "0001045810",
+      "documents": [],
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2026,
+      "period_end": "2026-01-25",
+      "reason": "earnings_8k_unresolved",
+      "status": "request_failed",
+      "ticker": "NVDA"
+    }
+  ],
+  "parser_version": "direct-q4-1",
+  "rejection_count": 0,
+  "requests": [
+    {
+      "aggregate_remaining": 15,
+      "cache": "miss",
+      "class_remaining": 0,
+      "http_result": 200,
+      "issuer_remaining": 7,
+      "ordinal_attempt": 1,
+      "received_bytes": 163991,
+      "request_class": "current_submissions",
+      "requested_url": "https://data.sec.gov/submissions/CIK0000320193.json",
+      "ticker": "AAPL",
+      "validated_final_host": "data.sec.gov"
+    },
+    {
+      "aggregate_remaining": 14,
+      "cache": "miss",
+      "class_remaining": 1,
+      "error": "request_failed",
+      "http_result": "request_failed",
+      "issuer_remaining": 6,
+      "ordinal_attempt": 2,
+      "received_bytes": 0,
+      "request_class": "ten_k_document",
+      "requested_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019324000123/aapl-20240928.htm",
+      "ticker": "AAPL",
+      "validated_final_host": null
+    },
+    {
+      "aggregate_remaining": 13,
+      "cache": "miss",
+      "class_remaining": 0,
+      "error": "request_failed",
+      "http_result": "request_failed",
+      "issuer_remaining": 5,
+      "ordinal_attempt": 3,
+      "received_bytes": 0,
+      "request_class": "ten_k_document",
+      "requested_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm",
+      "ticker": "AAPL",
+      "validated_final_host": null
+    },
+    {
+      "aggregate_remaining": 12,
+      "cache": "miss",
+      "class_remaining": 0,
+      "http_result": 200,
+      "issuer_remaining": 7,
+      "ordinal_attempt": 4,
+      "received_bytes": 159785,
+      "request_class": "current_submissions",
+      "requested_url": "https://data.sec.gov/submissions/CIK0001045810.json",
+      "ticker": "NVDA",
+      "validated_final_host": "data.sec.gov"
+    },
+    {
+      "aggregate_remaining": 11,
+      "cache": "miss",
+      "class_remaining": 1,
+      "error": "request_failed",
+      "http_result": "request_failed",
+      "issuer_remaining": 6,
+      "ordinal_attempt": 5,
+      "received_bytes": 0,
+      "request_class": "ten_k_document",
+      "requested_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000023/nvda-20250126.htm",
+      "ticker": "NVDA",
+      "validated_final_host": null
+    },
+    {
+      "aggregate_remaining": 10,
+      "cache": "miss",
+      "class_remaining": 0,
+      "error": "request_failed",
+      "http_result": "request_failed",
+      "issuer_remaining": 5,
+      "ordinal_attempt": 6,
+      "received_bytes": 0,
+      "request_class": "ten_k_document",
+      "requested_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000021/nvda-20260125.htm",
+      "ticker": "NVDA",
+      "validated_final_host": null
+    }
+  ],
+  "runner": "direct-q4-certification-1",
+  "schema_version": "1"
+}

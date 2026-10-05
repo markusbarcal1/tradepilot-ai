@@ -94,6 +94,19 @@ def main():
         print(f"SEC interpreted candidates: {stats['interpreted_candidates']}; supported events: {stats['supported_events']}; provenance-only evidence: {stats['provenance_only_evidence']}")
         retrieval = {item.raw_provider_id: item.source_details.get("document_retrieval", "unknown") for item in sec_evidence}
         print("SEC document retrieval: " + ", ".join(f"{state}={count}" for state, count in sorted(Counter(retrieval.values()).items())))
+        for item in sec_evidence:
+            details = item.source_details
+            selection = details.get("sec_diagnostics", {})
+            print("SEC candidate: " + json.dumps({
+                "accession": item.raw_provider_id, "form": details.get("form"),
+                "items": details.get("items", []), "retrieval": details.get("document_retrieval"),
+                "selected": selection.get("selected"),
+                "selection_reason": selection.get("selection_reason"),
+                "company_candidate_families": selection.get("company_candidate_families", []),
+                "company_interpretation": details.get("company_interpretation"),
+                "interpretation_reason": details.get("interpretation_reason"),
+                "normalized_event_type": item.event_type if item.scoring_eligible else None,
+            }, sort_keys=True))
         print(format_reporting(reporting))
         if geopolitical_diagnostics:
             print("Geopolitical diagnostics: " + json.dumps(geopolitical_diagnostics))
@@ -106,15 +119,41 @@ def main():
         print(f"Industry supported events: {industry.evidence_count or 0}")
         for item in industry.evidence:
             details = item.source_details
-            print(f"Industry classification: {details.get('sector')} / {details.get('industry')} ({details.get('classification_source')})")
-            print(f"Industry benchmarks: {details.get('benchmark')} versus {details.get('market_benchmark')}")
+            print(f"Industry classification: {details.get('raw_sector')} / {details.get('raw_industry')} -> "
+                  f"{details.get('normalized_industry') or 'unmapped'} ({details.get('classification_quality')}; "
+                  f"taxonomy {details.get('taxonomy_version')})")
+            print(f"Industry benchmark: {details.get('benchmark_symbol')} ({details.get('benchmark_type')}); "
+                  f"fallback={details.get('fallback_reason') or 'none'}")
+            if "relative_performance_state" in details:
+                print("Industry relative performance: " + json.dumps({key: details.get(key) for key in (
+                    "company_return_21", "company_return_63", "benchmark_return_21", "benchmark_return_63",
+                    "relative_return_21", "relative_return_63", "relative_performance_state")}))
             if "peer_sample" in details:
-                print(f"Industry peer coverage: {details.get('peer_coverage')}/{len(details['peer_sample'])}; sample: {', '.join(details['peer_sample'])}")
+                print(f"Industry peer coverage: {details.get('valid_peer_count')}/{details.get('configured_peer_count')}; "
+                      f"breadth={details.get('breadth_state')}; sample: {', '.join(details['peer_sample'])}")
             print(f"Industry evidence: {item.summary}")
         for name, category in result.categories.items():
             label = category.label.value if category.label else category.status
             print(f"{name} label: {label}")
             print(format_availability(name, diagnostics[name]))
+            intelligence = result.category_intelligence[name]
+            selected = (*intelligence.positive_drivers, *intelligence.negative_drivers,
+                        *intelligence.neutral_mixed_drivers)
+            print("  Decision drivers: " + (", ".join(
+                f"{row.direction}:{row.label}" for row in selected) or "none"))
+            print(f"  Omitted lower-priority drivers: {intelligence.omitted_driver_count}")
+            print("  Important metrics: " + (", ".join(
+                f"{row.label}={row.actual or 'unavailable'}"
+                + (f" expected={row.expected}" if row.expected else "")
+                + (f" result={row.indicator} {row.result or ''}" if row.indicator else " comparison=unavailable")
+                for row in intelligence.important_metrics) or "none"))
+            print(f"  Latest material event: {intelligence.latest_material_event or 'none'}")
+            print(f"  Next material event: {intelligence.next_material_event or 'none'}")
+            print(f"  Evidence sufficiency: {intelligence.evidence_sufficiency}")
+            print(f"  Sources retained: {len(intelligence.sources)}")
+            if name == "earnings":
+                print(f"  Beat probability: {intelligence.beat_probability if intelligence.beat_probability is not None else 'unavailable'}")
+                print(f"  Implied move: {intelligence.implied_move if intelligence.implied_move is not None else 'unavailable'}")
     return 0
 
 

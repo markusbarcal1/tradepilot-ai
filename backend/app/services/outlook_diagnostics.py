@@ -91,8 +91,11 @@ def inspect_snapshot(result, *, now, policy=DEFAULT_EVIDENCE_POLICY):
     if not result.metadata.uses_placeholder_data:
         complete = {key: categories[key] if any(e.raw_provider not in {"fomc", "macro"} for e in category.evidence) else category
                     for key, category in result.categories.items()}
+        from app.services.outlook_intelligence import build_category_intelligence, build_key_events
         result = aggregate_outlook(result.ticker, complete, result.metadata, policy=policy).model_copy(
-            update={"event_intelligence": result.event_intelligence})
+            update={"event_intelligence": result.event_intelligence,
+                    "category_intelligence": build_category_intelligence(complete, result.event_intelligence),
+                    "key_events": build_key_events(result.event_intelligence)})
     diagnostics = availability_diagnostics(result.categories, contributions, now=now, policy=policy)
     if result.metadata.uses_placeholder_data:
         for row in diagnostics.values():

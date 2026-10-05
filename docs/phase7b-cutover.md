@@ -132,7 +132,7 @@ finally:
 if ($LASTEXITCODE -ne 0) { throw 'Dry-run blocked' }
 ```
 
-**STOP for operator review.** Require both revisions `20260902_03`, expected target
+**STOP for operator review.** Require both revisions `20260920_04`, expected target
 identity, `target_empty: true`, `migration_possible: true`, no blockers, and review
 all source users/accounts. Expect two users and two accounts only if still current.
 Verify original portfolio ownership, second user's $10,000 starting/current cash

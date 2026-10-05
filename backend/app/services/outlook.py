@@ -41,8 +41,18 @@ def aggregate_outlook(ticker: str, categories: dict[CategoryKey, OutlookCategory
         status = "error" if any(category.status == "error" for category in relevant) else "unavailable"
         value = None
         summary = "Insufficient evidence for an overall Outlook assessment."
+    from app.services.outlook_intelligence import build_category_intelligence
+    events = EventIntelligence()
     return OutlookResponse(ticker=ticker, status=status, value=value, summary=summary,
-                           categories=complete, metadata=metadata)
+                           categories=complete, metadata=metadata, event_intelligence=events,
+                           category_intelligence=build_category_intelligence(complete, events))
+
+
+def _attach_events(result: OutlookResponse, intelligence: EventIntelligence) -> OutlookResponse:
+    from app.services.outlook_intelligence import build_category_intelligence, build_key_events
+    return result.model_copy(update={"event_intelligence": intelligence,
+        "category_intelligence": build_category_intelligence(result.categories, intelligence),
+        "key_events": build_key_events(intelligence)})
 
 
 def assess_providers(ticker: str, providers: list[OutlookProvider], *, now: datetime | None = None, policy=DEFAULT_EVIDENCE_POLICY) -> OutlookResponse:
@@ -119,9 +129,10 @@ def assess_providers(ticker: str, providers: list[OutlookProvider], *, now: date
         if extra:
             categories[key] = category.model_copy(update={"evidence": [*category.evidence, *extra]})
     if attempted and all(statuses[provider.name] == "error" for provider in attempted):
-        return OutlookResponse(ticker=ticker, status="error", categories=categories,
-                               summary="Outlook data is temporarily unavailable.", metadata=metadata, event_intelligence=intelligence)
-    return aggregate_outlook(ticker, categories, metadata, policy=policy).model_copy(update={"event_intelligence": intelligence})
+        result = OutlookResponse(ticker=ticker, status="error", categories=categories,
+                                 summary="Outlook data is temporarily unavailable.", metadata=metadata)
+        return _attach_events(result, intelligence)
+    return _attach_events(aggregate_outlook(ticker, categories, metadata, policy=policy), intelligence)
 
 
 def analyze_outlook(ticker: str, provider: OutlookProvider | None = None, *, now: datetime | None = None) -> OutlookResponse:

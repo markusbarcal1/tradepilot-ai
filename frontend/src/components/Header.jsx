@@ -33,8 +33,8 @@ function Header({
       />
 
       <nav className="top-nav" aria-label="Primary navigation">
-        {["Dashboard", "Watchlist", "Scanner", "Portfolio"].map((item) => {
-          const view = item.toLowerCase();
+        {[["Dashboard", "dashboard"], ["Watchlist", "watchlist"], ["Scanner", "scanner"],
+          ["Portfolio", "portfolio"], ["AI Analysis", "ai-analysis"]].map(([item, view]) => {
           const isActive = currentView === view;
 
           return (

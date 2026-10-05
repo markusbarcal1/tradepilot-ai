@@ -130,7 +130,7 @@ def test_evidence_validation(field, value):
 
 
 @pytest.mark.parametrize("item,event,impact", [("1.05", "cybersecurity_event", -1),
-    ("2.06", "material_impairment", -1), ("1.03", "restructuring", -2)])
+    ("2.06", "material_impairment", -1), ("1.03", "bankruptcy", -2)])
 def test_sec_item_direction_and_provenance(item, event, impact):
     provider = SecEvidenceProvider(settings(), SecClient([item]*5), lambda: NOW)
     rows = provider.get_evidence("AAPL")
@@ -170,14 +170,14 @@ def test_sec_documents_earnings_activation_cache_and_budget():
     provider = SecEvidenceProvider(settings(), client, lambda: NOW)
     first = provider.get_evidence("AAPL")
     assert provider.get_evidence("aapl") == first
-    assert len(client.text_calls) == 4  # two filings, one primary + one exhibit each
+    assert len(client.text_calls) == 3  # one Company item plus one earnings primary/exhibit
     earnings = [row for row in first if row.category == "earnings"]
-    assert len(earnings) == 4
+    assert len(earnings) == 2
     assert all(row.source_details["provider_document_id"] == "release.htm" for row in earnings)
     assert all(str(row.source_url).endswith("release.htm") for row in earnings)
     result = assess_providers("AAPL", [provider], now=NOW)
     assert result.categories["earnings"].status == "available"
-    assert result.categories["earnings"].evidence_count == 2  # same-day repeated representations
+    assert result.categories["earnings"].evidence_count == 2  # two independently supported metrics in one release
     assert result.categories["industry"].status == result.categories["geopolitical"].status == "unavailable"
 
 

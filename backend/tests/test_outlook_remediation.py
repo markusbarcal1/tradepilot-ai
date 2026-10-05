@@ -176,10 +176,10 @@ def test_provider_to_diagnostics_with_multianchor_release_and_cache():
     first = assess_providers("AAPL", [provider], now=NOW)
     assert assess_providers("AAPL", [provider], now=NOW) == first
     stats = sec_diagnostics(first)
-    assert len(client.text_calls) == 4
-    assert stats["metadata_documents"] == 5 and stats["item_documents"] == stats["exhibit_documents"] == 2
-    assert stats["selected_filings"] == stats["exhibits_attempted"] == stats["exhibits_retrieved"] == 2
-    assert stats["exhibits_failed"] == 0 and stats["interpreted_candidates"] == 4
+    assert len(client.text_calls) == 3
+    assert stats["metadata_documents"] == 5 and stats["item_documents"] == stats["exhibit_documents"] == 1
+    assert stats["selected_filings"] == 2 and stats["exhibits_attempted"] == stats["exhibits_retrieved"] == 1
+    assert stats["exhibits_failed"] == 0 and stats["interpreted_candidates"] == 2
     assert stats["provenance_only_evidence"] == 5
 
 
@@ -191,5 +191,5 @@ def test_diagnostics_distinguish_failed_exhibit_from_successful_item():
             return super().get_text(url, **kwargs)
     result = assess_providers("AAPL", [SecEvidenceProvider(settings(), Client(), lambda: NOW)], now=NOW)
     stats = sec_diagnostics(result)
-    assert stats["item_documents"] == 2 and stats["exhibit_documents"] == 0
-    assert stats["exhibits_attempted"] == stats["exhibits_failed"] == 2 and stats["exhibits_retrieved"] == 0
+    assert stats["item_documents"] == 1 and stats["exhibit_documents"] == 0
+    assert stats["exhibits_attempted"] == stats["exhibits_failed"] == 1 and stats["exhibits_retrieved"] == 0

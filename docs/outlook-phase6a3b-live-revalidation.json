@@ -1,0 +1,935 @@
+{
+  "audit": {
+    "phase": "6A.3A",
+    "started_at": "2026-09-25T02:38:32.490094+00:00",
+    "tickers": [
+      "MSFT",
+      "XOM",
+      "PLTR",
+      "NVDA"
+    ],
+    "model": "gpt-5.4-mini",
+    "prompt_version": "outlook-analyst-2.5",
+    "schema_version": "2.2",
+    "cache_ttl_seconds": 3600,
+    "completed_at": "2026-09-25T02:39:30.034465+00:00"
+  },
+  "results": [
+    {
+      "ticker": "MSFT",
+      "attempts": 2,
+      "retries": 1,
+      "provider_status": {
+        "sec": "available",
+        "fred": "available",
+        "market": "available",
+        "industry": "available",
+        "geopolitical": "no_evidence",
+        "fomc": "available",
+        "macro": "partial",
+        "earnings_events": "available"
+      },
+      "context_fingerprint": "4de135cb6b5c04eaf5b5d9b07440d72ca6df9335544966bcdfc3e591c83038f0",
+      "context_fact_count": 13,
+      "fact_counts": {
+        "company": {
+          "total": 0,
+          "directional": 0,
+          "informational": 0
+        },
+        "earnings": {
+          "total": 1,
+          "directional": 0,
+          "informational": 1
+        },
+        "industry": {
+          "total": 2,
+          "directional": 2,
+          "informational": 0
+        },
+        "economic": {
+          "total": 8,
+          "directional": 0,
+          "informational": 8
+        },
+        "market": {
+          "total": 2,
+          "directional": 2,
+          "informational": 0
+        },
+        "geopolitical": {
+          "total": 0,
+          "directional": 0,
+          "informational": 0
+        }
+      },
+      "upcoming_event_count": 1,
+      "upcoming_events": [
+        {
+          "event_id": "earnings:MSFT:next",
+          "fact_id": "event:earnings:MSFT:next",
+          "title": "MSFT Earnings",
+          "event_type": "earnings_release",
+          "date": "2026-10-28"
+        }
+      ],
+      "industry": {
+        "raw_sector": "Technology",
+        "raw_industry": "Software - Infrastructure",
+        "normalized_industry": "software_infrastructure",
+        "classification_quality": "exact_industry",
+        "taxonomy_version": "1",
+        "benchmark_symbol": "IGV",
+        "benchmark_type": "industry_etf",
+        "relative_return_21": -0.03938760524379337,
+        "relative_return_63": 0.14974534341903323,
+        "breadth_state": null,
+        "valid_peer_count": null,
+        "fallback_reason": null,
+        "industry_health_state": "positive",
+        "relative_performance_state": "mixed"
+      },
+      "earnings": {
+        "released_evidence": false,
+        "upcoming_event": true,
+        "expectation_available": false,
+        "expectation_origins": [],
+        "actual_vs_expectation": false,
+        "directionality": [
+          "informational"
+        ],
+        "evidence_types": []
+      },
+      "company": {
+        "supported_events": [],
+        "directional": 0,
+        "informational": 0,
+        "excluded_context_count": 7
+      },
+      "economic_fact_types": [
+        "fomc_rate_decision",
+        "macro_cpi",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement"
+      ],
+      "geopolitical_facts": [],
+      "generation_status": "available",
+      "diagnostics": {
+        "provider": "openai",
+        "model": "gpt-5.4-mini",
+        "prompt_version": "outlook-analyst-2.5",
+        "schema_version": "2.2",
+        "context_fingerprint": "4de135cb6b5c04eaf5b5d9b07440d72ca6df9335544966bcdfc3e591c83038f0",
+        "context_fact_count": 13,
+        "cache_status": "miss",
+        "latency_ms": 4860,
+        "validation_status": "valid",
+        "failure_reason": null,
+        "usage": {
+          "input_tokens": 6472,
+          "output_tokens": 618,
+          "estimated_cost_usd": null
+        }
+      },
+      "provider_errors": [
+        {
+          "message": "Mixed overall rating lacks substantive mixed or conflicting category context",
+          "status_code": null,
+          "error_code": null,
+          "error_type": null,
+          "parameter": null,
+          "request_id": null,
+          "grounding": {
+            "overall": {
+              "rating": "mixed",
+              "summary": "Microsoft has a positive industry backdrop and supportive broad market trend, but company-specific earnings evidence is only an upcoming catalyst rather than directional performance evidence. Macro releases and volatility data are informational or not directionally clear from the supplied context."
+            },
+            "category_ratings": {
+              "company": "insufficient_data",
+              "earnings": "insufficient_data",
+              "industry": "mostly_positive",
+              "economic": "insufficient_data",
+              "market": "mostly_positive",
+              "geopolitical": "insufficient_data"
+            },
+            "validation_rule": "mixed overall ratings require a substantive mixed category or conflicting substantive positive and negative categories"
+          }
+        }
+      ],
+      "overall": {
+        "rating": "mixed",
+        "summary": "The outlook is shaped by a positive software-infrastructure industry backdrop and supportive broad market conditions, but company-specific evidence is limited to an upcoming earnings date and the supplied industry-relative performance is mixed. Macro releases are informational here because no verified expectation comparisons are provided."
+      },
+      "categories": {
+        "company": {
+          "deterministic_status": "insufficient_data",
+          "ai_rating": "insufficient_data",
+          "summary": "No company-specific non-earnings developments were supplied for this issuer.",
+          "supporting_fact_count": 0,
+          "key_point_count": 0,
+          "limitation_count": 0,
+          "supporting_fact_ids": [],
+          "available_fact_ids": []
+        },
+        "earnings": {
+          "deterministic_status": "insufficient_data",
+          "ai_rating": "insufficient_data",
+          "summary": "Only the next earnings date is supplied, which is informational and does not by itself establish direction.",
+          "supporting_fact_count": 0,
+          "key_point_count": 0,
+          "limitation_count": 0,
+          "supporting_fact_ids": [],
+          "available_fact_ids": [
+            "event:earnings:MSFT:next"
+          ]
+        },
+        "industry": {
+          "deterministic_status": "available",
+          "ai_rating": "mixed",
+          "summary": "The software-infrastructure group is showing positive health, but MSFT's relative performance versus the industry benchmark is mixed across the supplied windows.",
+          "supporting_fact_count": 2,
+          "key_point_count": 2,
+          "limitation_count": 0,
+          "supporting_fact_ids": [
+            "industry:MSFT:IGV:sector_performance:2026-09-24:1",
+            "industry:MSFT:IGV:industry_other:2026-09-24:1"
+          ],
+          "available_fact_ids": [
+            "industry:MSFT:IGV:sector_performance:2026-09-24:1",
+            "industry:MSFT:IGV:industry_other:2026-09-24:1"
+          ]
+        },
+        "economic": {
+          "deterministic_status": "available",
+          "ai_rating": "insufficient_data",
+          "summary": "Macro events are supplied, but the verified data do not include directionally comparable expectations, so they cannot support a directional macro view.",
+          "supporting_fact_count": 0,
+          "key_point_count": 0,
+          "limitation_count": 0,
+          "supporting_fact_ids": [],
+          "available_fact_ids": [
+            "event:fomc:2026-09-16",
+            "event:cpi:2026-09-11",
+            "event:cpi:2026-09-11:metric:core_mom",
+            "event:cpi:2026-09-11:metric:core_yoy",
+            "event:cpi:2026-09-11:metric:headline_mom",
+            "event:cpi:2026-09-11:metric:headline_yoy",
+            "event:employment:2026-09-04:metric:payrolls",
+            "event:employment:2026-09-04:metric:unemployment"
+          ]
+        },
+        "market": {
+          "deterministic_status": "available",
+          "ai_rating": "mostly_positive",
+          "summary": "Broad equity benchmarks are in an upward trend and volatility is in a normal regime, which is generally supportive for risk assets.",
+          "supporting_fact_count": 2,
+          "key_point_count": 2,
+          "limitation_count": 0,
+          "supporting_fact_ids": [
+            "market:MSFT:broad_trend:2026-09-24",
+            "market:MSFT:volatility:2026-09-24"
+          ],
+          "available_fact_ids": [
+            "market:MSFT:broad_trend:2026-09-24",
+            "market:MSFT:volatility:2026-09-24"
+          ]
+        },
+        "geopolitical": {
+          "deterministic_status": "insufficient_data",
+          "ai_rating": "insufficient_data",
+          "summary": "No geopolitical developments with verified issuer relevance were supplied.",
+          "supporting_fact_count": 0,
+          "key_point_count": 0,
+          "limitation_count": 0,
+          "supporting_fact_ids": [],
+          "available_fact_ids": []
+        }
+      },
+      "what_to_watch": [
+        {
+          "event_id": "earnings:MSFT:next",
+          "reason": "The upcoming earnings release could clarify business momentum and reset expectations.",
+          "resolved_title": "MSFT Earnings",
+          "resolved_date": "2026-10-28"
+        }
+      ],
+      "grounding": "pass"
+    },
+    {
+      "ticker": "XOM",
+      "attempts": 1,
+      "retries": 0,
+      "provider_status": {
+        "sec": "available",
+        "fred": "available",
+        "market": "available",
+        "industry": "available",
+        "geopolitical": "no_evidence",
+        "fomc": "available",
+        "macro": "partial",
+        "earnings_events": "available"
+      },
+      "context_fingerprint": "848b373187d64e8452909978ebc14f918dbcfb19db029c67d6b0a9f66e2b2d20",
+      "context_fact_count": 12,
+      "fact_counts": {
+        "company": {
+          "total": 0,
+          "directional": 0,
+          "informational": 0
+        },
+        "earnings": {
+          "total": 1,
+          "directional": 0,
+          "informational": 1
+        },
+        "industry": {
+          "total": 1,
+          "directional": 1,
+          "informational": 0
+        },
+        "economic": {
+          "total": 8,
+          "directional": 0,
+          "informational": 8
+        },
+        "market": {
+          "total": 2,
+          "directional": 2,
+          "informational": 0
+        },
+        "geopolitical": {
+          "total": 0,
+          "directional": 0,
+          "informational": 0
+        }
+      },
+      "upcoming_event_count": 1,
+      "upcoming_events": [
+        {
+          "event_id": "earnings:XOM:next",
+          "fact_id": "event:earnings:XOM:next",
+          "title": "XOM Earnings",
+          "event_type": "earnings_release",
+          "date": "2026-10-30"
+        }
+      ],
+      "industry": {
+        "raw_sector": "Energy",
+        "raw_industry": "Oil & Gas Integrated",
+        "normalized_industry": "integrated_oil_gas",
+        "classification_quality": "exact_industry",
+        "taxonomy_version": "1",
+        "benchmark_symbol": "XLE",
+        "benchmark_type": "industry_etf",
+        "relative_return_21": null,
+        "relative_return_63": null,
+        "breadth_state": null,
+        "valid_peer_count": null,
+        "fallback_reason": null,
+        "industry_health_state": "positive",
+        "relative_performance_state": null
+      },
+      "earnings": {
+        "released_evidence": false,
+        "upcoming_event": true,
+        "expectation_available": false,
+        "expectation_origins": [],
+        "actual_vs_expectation": false,
+        "directionality": [
+          "informational"
+        ],
+        "evidence_types": []
+      },
+      "company": {
+        "supported_events": [],
+        "directional": 0,
+        "informational": 0,
+        "excluded_context_count": 4
+      },
+      "economic_fact_types": [
+        "fomc_rate_decision",
+        "macro_cpi",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement"
+      ],
+      "geopolitical_facts": [],
+      "generation_status": "available",
+      "diagnostics": {
+        "provider": "openai",
+        "model": "gpt-5.4-mini",
+        "prompt_version": "outlook-analyst-2.5",
+        "schema_version": "2.2",
+        "context_fingerprint": "848b373187d64e8452909978ebc14f918dbcfb19db029c67d6b0a9f66e2b2d20",
+        "context_fact_count": 12,
+        "cache_status": "miss",
+        "latency_ms": 4204,
+        "validation_status": "valid",
+        "failure_reason": null,
+        "usage": {
+          "input_tokens": 5972,
+          "output_tokens": 542,
+          "estimated_cost_usd": null
+        }
+      },
+      "provider_errors": [],
+      "overall": {
+        "rating": "mostly_positive",
+        "summary": "The outlook is supported by positive industry and broad market conditions, while the company-specific picture is limited to an upcoming earnings date. Macro readings are available but not directional enough here to change the overall view."
+      },
+      "categories": {
+        "company": {
+          "deterministic_status": "insufficient_data",
+          "ai_rating": "insufficient_data",
+          "summary": "Only an upcoming earnings date is supplied for the company category, which is material context but not directional evidence.",
+          "supporting_fact_count": 0,
+          "key_point_count": 0,
+          "limitation_count": 0,
+          "supporting_fact_ids": [],
+          "available_fact_ids": []
+        },
+        "earnings": {
+          "deterministic_status": "insufficient_data",
+          "ai_rating": "insufficient_data",
+          "summary": "The supplied earnings information is limited to the upcoming report date, without verified operating results or expectation comparisons.",
+          "supporting_fact_count": 0,
+          "key_point_count": 0,
+          "limitation_count": 0,
+          "supporting_fact_ids": [],
+          "available_fact_ids": [
+            "event:earnings:XOM:next"
+          ]
+        },
+        "industry": {
+          "deterministic_status": "insufficient_data",
+          "ai_rating": "mostly_positive",
+          "summary": "Integrated oil and gas conditions are positive, with the sector benchmark showing strength and trading above its recent average.",
+          "supporting_fact_count": 1,
+          "key_point_count": 1,
+          "limitation_count": 0,
+          "supporting_fact_ids": [
+            "industry:XOM:XLE:sector_performance:2026-09-24:1"
+          ],
+          "available_fact_ids": [
+            "industry:XOM:XLE:sector_performance:2026-09-24:1"
+          ]
+        },
+        "economic": {
+          "deterministic_status": "available",
+          "ai_rating": "insufficient_data",
+          "summary": "Recent macro releases are included, but the supplied measurements do not provide verified expectation comparisons, so they cannot support a directional conclusion.",
+          "supporting_fact_count": 0,
+          "key_point_count": 0,
+          "limitation_count": 0,
+          "supporting_fact_ids": [],
+          "available_fact_ids": [
+            "event:fomc:2026-09-16",
+            "event:cpi:2026-09-11",
+            "event:cpi:2026-09-11:metric:core_mom",
+            "event:cpi:2026-09-11:metric:core_yoy",
+            "event:cpi:2026-09-11:metric:headline_mom",
+            "event:cpi:2026-09-11:metric:headline_yoy",
+            "event:employment:2026-09-04:metric:payrolls",
+            "event:employment:2026-09-04:metric:unemployment"
+          ]
+        },
+        "market": {
+          "deterministic_status": "available",
+          "ai_rating": "mostly_positive",
+          "summary": "Broad equity benchmarks are in an upward trend, while volatility sits in a normal regime rather than a stressed one.",
+          "supporting_fact_count": 2,
+          "key_point_count": 2,
+          "limitation_count": 0,
+          "supporting_fact_ids": [
+            "market:XOM:broad_trend:2026-09-24",
+            "market:XOM:volatility:2026-09-24"
+          ],
+          "available_fact_ids": [
+            "market:XOM:broad_trend:2026-09-24",
+            "market:XOM:volatility:2026-09-24"
+          ]
+        },
+        "geopolitical": {
+          "deterministic_status": "insufficient_data",
+          "ai_rating": "insufficient_data",
+          "summary": "No geopolitical facts were supplied for this issuer.",
+          "supporting_fact_count": 0,
+          "key_point_count": 0,
+          "limitation_count": 0,
+          "supporting_fact_ids": [],
+          "available_fact_ids": []
+        }
+      },
+      "what_to_watch": [
+        {
+          "event_id": "earnings:XOM:next",
+          "reason": "The upcoming earnings release is the next company-specific catalyst and could clarify operating momentum and forward expectations.",
+          "resolved_title": "XOM Earnings",
+          "resolved_date": "2026-10-30"
+        }
+      ],
+      "grounding": "pass"
+    },
+    {
+      "ticker": "PLTR",
+      "attempts": 1,
+      "retries": 0,
+      "provider_status": {
+        "sec": "available",
+        "fred": "available",
+        "market": "available",
+        "industry": "available",
+        "geopolitical": "no_evidence",
+        "fomc": "available",
+        "macro": "partial",
+        "earnings_events": "available"
+      },
+      "context_fingerprint": "3ac2cbe033a5e3763f7dc0e270a0e88615318e1fd1e6e895971f7d45abd63094",
+      "context_fact_count": 13,
+      "fact_counts": {
+        "company": {
+          "total": 0,
+          "directional": 0,
+          "informational": 0
+        },
+        "earnings": {
+          "total": 1,
+          "directional": 0,
+          "informational": 1
+        },
+        "industry": {
+          "total": 2,
+          "directional": 2,
+          "informational": 0
+        },
+        "economic": {
+          "total": 8,
+          "directional": 0,
+          "informational": 8
+        },
+        "market": {
+          "total": 2,
+          "directional": 2,
+          "informational": 0
+        },
+        "geopolitical": {
+          "total": 0,
+          "directional": 0,
+          "informational": 0
+        }
+      },
+      "upcoming_event_count": 1,
+      "upcoming_events": [
+        {
+          "event_id": "earnings:PLTR:next",
+          "fact_id": "event:earnings:PLTR:next",
+          "title": "PLTR Earnings",
+          "event_type": "earnings_release",
+          "date": "2026-11-02"
+        }
+      ],
+      "industry": {
+        "raw_sector": "Technology",
+        "raw_industry": "Software - Infrastructure",
+        "normalized_industry": "software_infrastructure",
+        "classification_quality": "exact_industry",
+        "taxonomy_version": "1",
+        "benchmark_symbol": "IGV",
+        "benchmark_type": "industry_etf",
+        "relative_return_21": 0.06293979780539893,
+        "relative_return_63": 0.5312185680157833,
+        "breadth_state": null,
+        "valid_peer_count": null,
+        "fallback_reason": null,
+        "industry_health_state": "positive",
+        "relative_performance_state": "outperforming"
+      },
+      "earnings": {
+        "released_evidence": false,
+        "upcoming_event": true,
+        "expectation_available": false,
+        "expectation_origins": [],
+        "actual_vs_expectation": false,
+        "directionality": [
+          "informational"
+        ],
+        "evidence_types": []
+      },
+      "company": {
+        "supported_events": [],
+        "directional": 0,
+        "informational": 0,
+        "excluded_context_count": 5
+      },
+      "economic_fact_types": [
+        "fomc_rate_decision",
+        "macro_cpi",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement"
+      ],
+      "geopolitical_facts": [],
+      "generation_status": "available",
+      "diagnostics": {
+        "provider": "openai",
+        "model": "gpt-5.4-mini",
+        "prompt_version": "outlook-analyst-2.5",
+        "schema_version": "2.2",
+        "context_fingerprint": "3ac2cbe033a5e3763f7dc0e270a0e88615318e1fd1e6e895971f7d45abd63094",
+        "context_fact_count": 13,
+        "cache_status": "miss",
+        "latency_ms": 4437,
+        "validation_status": "valid",
+        "failure_reason": null,
+        "usage": {
+          "input_tokens": 6439,
+          "output_tokens": 610,
+          "estimated_cost_usd": null
+        }
+      },
+      "provider_errors": [],
+      "overall": {
+        "rating": "mostly_positive",
+        "summary": "The outlook is supported by strong relative performance versus the software infrastructure peer group and a positive broader market backdrop. Macro and policy data are present but mostly informational here, and the next earnings date is an important catalyst to watch."
+      },
+      "categories": {
+        "company": {
+          "deterministic_status": "insufficient_data",
+          "ai_rating": "insufficient_data",
+          "summary": "No company-specific corporate action facts were supplied for this category.",
+          "supporting_fact_count": 0,
+          "key_point_count": 0,
+          "limitation_count": 0,
+          "supporting_fact_ids": [],
+          "available_fact_ids": []
+        },
+        "earnings": {
+          "deterministic_status": "insufficient_data",
+          "ai_rating": "insufficient_data",
+          "summary": "Only the upcoming earnings date was supplied; there is no verified earnings performance or guidance evidence to judge direction.",
+          "supporting_fact_count": 0,
+          "key_point_count": 0,
+          "limitation_count": 0,
+          "supporting_fact_ids": [],
+          "available_fact_ids": [
+            "event:earnings:PLTR:next"
+          ]
+        },
+        "industry": {
+          "deterministic_status": "available",
+          "ai_rating": "mostly_positive",
+          "summary": "Software infrastructure conditions look favorable, with the issuer outperforming its peer benchmark and the peer group itself described as healthy.",
+          "supporting_fact_count": 2,
+          "key_point_count": 2,
+          "limitation_count": 0,
+          "supporting_fact_ids": [
+            "industry:PLTR:IGV:industry_other:2026-09-24:1",
+            "industry:PLTR:IGV:sector_performance:2026-09-24:1"
+          ],
+          "available_fact_ids": [
+            "industry:PLTR:IGV:industry_other:2026-09-24:1",
+            "industry:PLTR:IGV:sector_performance:2026-09-24:1"
+          ]
+        },
+        "economic": {
+          "deterministic_status": "available",
+          "ai_rating": "insufficient_data",
+          "summary": "The supplied macro facts are mostly calendar items and released readings without verified expectation comparisons, so direction cannot be established from the evidence provided.",
+          "supporting_fact_count": 0,
+          "key_point_count": 0,
+          "limitation_count": 0,
+          "supporting_fact_ids": [],
+          "available_fact_ids": [
+            "event:fomc:2026-09-16",
+            "event:cpi:2026-09-11",
+            "event:cpi:2026-09-11:metric:core_mom",
+            "event:cpi:2026-09-11:metric:core_yoy",
+            "event:cpi:2026-09-11:metric:headline_mom",
+            "event:cpi:2026-09-11:metric:headline_yoy",
+            "event:employment:2026-09-04:metric:payrolls",
+            "event:employment:2026-09-04:metric:unemployment"
+          ]
+        },
+        "market": {
+          "deterministic_status": "available",
+          "ai_rating": "mostly_positive",
+          "summary": "Broad equity benchmarks are in constructive trend positions, while volatility is normal and not itself a strong directional signal.",
+          "supporting_fact_count": 2,
+          "key_point_count": 2,
+          "limitation_count": 0,
+          "supporting_fact_ids": [
+            "market:PLTR:broad_trend:2026-09-24",
+            "market:PLTR:volatility:2026-09-24"
+          ],
+          "available_fact_ids": [
+            "market:PLTR:broad_trend:2026-09-24",
+            "market:PLTR:volatility:2026-09-24"
+          ]
+        },
+        "geopolitical": {
+          "deterministic_status": "insufficient_data",
+          "ai_rating": "insufficient_data",
+          "summary": "No geopolitically relevant issuer-exposure facts were supplied.",
+          "supporting_fact_count": 0,
+          "key_point_count": 0,
+          "limitation_count": 0,
+          "supporting_fact_ids": [],
+          "available_fact_ids": []
+        }
+      },
+      "what_to_watch": [
+        {
+          "event_id": "earnings:PLTR:next",
+          "reason": "The upcoming earnings release is the main issuer-specific catalyst and could update the market on operating momentum and outlook.",
+          "resolved_title": "PLTR Earnings",
+          "resolved_date": "2026-11-02"
+        }
+      ],
+      "grounding": "pass"
+    },
+    {
+      "ticker": "NVDA",
+      "attempts": 1,
+      "retries": 0,
+      "provider_status": {
+        "sec": "available",
+        "fred": "available",
+        "market": "available",
+        "industry": "available",
+        "geopolitical": "available",
+        "fomc": "available",
+        "macro": "partial",
+        "earnings_events": "available"
+      },
+      "context_fingerprint": "0cd1aa7411c4bf524b1e55cc4df6f2075cd0bc4fef316f2c7df1b2eb3bbff051",
+      "context_fact_count": 18,
+      "fact_counts": {
+        "company": {
+          "total": 0,
+          "directional": 0,
+          "informational": 0
+        },
+        "earnings": {
+          "total": 5,
+          "directional": 2,
+          "informational": 3
+        },
+        "industry": {
+          "total": 2,
+          "directional": 2,
+          "informational": 0
+        },
+        "economic": {
+          "total": 8,
+          "directional": 0,
+          "informational": 8
+        },
+        "market": {
+          "total": 2,
+          "directional": 2,
+          "informational": 0
+        },
+        "geopolitical": {
+          "total": 1,
+          "directional": 1,
+          "informational": 0
+        }
+      },
+      "upcoming_event_count": 0,
+      "upcoming_events": [],
+      "industry": {
+        "raw_sector": "Technology",
+        "raw_industry": "Semiconductors",
+        "normalized_industry": "semiconductors",
+        "classification_quality": "exact_industry",
+        "taxonomy_version": "1",
+        "benchmark_symbol": "SOXX",
+        "benchmark_type": "industry_etf",
+        "relative_return_21": -0.0465966705147427,
+        "relative_return_63": 0.24260785682109554,
+        "breadth_state": "mixed",
+        "valid_peer_count": 8,
+        "fallback_reason": null,
+        "industry_health_state": "mixed",
+        "relative_performance_state": "mixed"
+      },
+      "earnings": {
+        "released_evidence": true,
+        "upcoming_event": false,
+        "expectation_available": false,
+        "expectation_origins": [],
+        "actual_vs_expectation": false,
+        "directionality": [
+          "informational",
+          "positive"
+        ],
+        "evidence_types": [
+          "earnings_result",
+          "margin_change"
+        ]
+      },
+      "company": {
+        "supported_events": [],
+        "directional": 0,
+        "informational": 0,
+        "excluded_context_count": 11
+      },
+      "economic_fact_types": [
+        "fomc_rate_decision",
+        "macro_cpi",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement",
+        "event_measurement"
+      ],
+      "geopolitical_facts": [
+        {
+          "fact_id": "geopolitical:NVDA:2026-00789",
+          "directionality": "positive",
+          "statement": "A shift from presumption of denial to case-by-case review creates a conditional export licensing opportunity; approval is not guaranteed. Destinations: China, Macau. NVDA is classified in Semiconductors; this matches the controlled advanced computing industry relationship. This establishes industry-level exposure, not a verified product qualification, customer relationship, or revenue percentage."
+        }
+      ],
+      "generation_status": "available",
+      "diagnostics": {
+        "provider": "openai",
+        "model": "gpt-5.4-mini",
+        "prompt_version": "outlook-analyst-2.5",
+        "schema_version": "2.2",
+        "context_fingerprint": "0cd1aa7411c4bf524b1e55cc4df6f2075cd0bc4fef316f2c7df1b2eb3bbff051",
+        "context_fact_count": 18,
+        "cache_status": "miss",
+        "latency_ms": 6516,
+        "validation_status": "valid",
+        "failure_reason": null,
+        "usage": {
+          "input_tokens": 8167,
+          "output_tokens": 1038,
+          "estimated_cost_usd": null
+        }
+      },
+      "provider_errors": [],
+      "overall": {
+        "rating": "very_positive",
+        "summary": "Strong earnings results and margin expansion, alongside supportive market and geopolitical conditions, outweigh mixed industry context."
+      },
+      "categories": {
+        "company": {
+          "deterministic_status": "insufficient_data",
+          "ai_rating": "insufficient_data",
+          "summary": "No company-specific corporate action evidence was supplied.",
+          "supporting_fact_count": 0,
+          "key_point_count": 0,
+          "limitation_count": 0,
+          "supporting_fact_ids": [],
+          "available_fact_ids": []
+        },
+        "earnings": {
+          "deterministic_status": "insufficient_data",
+          "ai_rating": "very_positive",
+          "summary": "The supplied earnings evidence shows very strong revenue growth and improved gross margin, indicating exceptional operating performance.",
+          "supporting_fact_count": 2,
+          "key_point_count": 2,
+          "limitation_count": 0,
+          "supporting_fact_ids": [
+            "sec:1ecbe55cc96844e23196",
+            "sec:7fea7be400dc3decc1b7"
+          ],
+          "available_fact_ids": [
+            "event:earnings:NVDA:FY2027:Q2",
+            "event:earnings:NVDA:FY2027:Q2:metric:gross_margin",
+            "event:earnings:NVDA:FY2027:Q2:metric:revenue",
+            "sec:1ecbe55cc96844e23196",
+            "sec:7fea7be400dc3decc1b7"
+          ]
+        },
+        "industry": {
+          "deterministic_status": "available",
+          "ai_rating": "mixed",
+          "summary": "Semiconductor industry evidence is mixed, with relative performance and broader peer-health signals split between short and medium windows.",
+          "supporting_fact_count": 2,
+          "key_point_count": 2,
+          "limitation_count": 0,
+          "supporting_fact_ids": [
+            "industry:NVDA:SOXX:industry_other:2026-09-24:1",
+            "industry:NVDA:SOXX:sector_performance:2026-09-24:1"
+          ],
+          "available_fact_ids": [
+            "industry:NVDA:SOXX:industry_other:2026-09-24:1",
+            "industry:NVDA:SOXX:sector_performance:2026-09-24:1"
+          ]
+        },
+        "economic": {
+          "deterministic_status": "available",
+          "ai_rating": "mixed",
+          "summary": "The macro backdrop is not cleanly directional from the supplied evidence, with recent inflation and labor data, plus policy context, offering no verified single direction.",
+          "supporting_fact_count": 7,
+          "key_point_count": 2,
+          "limitation_count": 0,
+          "supporting_fact_ids": [
+            "event:cpi:2026-09-11",
+            "event:cpi:2026-09-11:metric:core_mom",
+            "event:cpi:2026-09-11:metric:core_yoy",
+            "event:cpi:2026-09-11:metric:headline_mom",
+            "event:employment:2026-09-04:metric:payrolls",
+            "event:employment:2026-09-04:metric:unemployment",
+            "event:fomc:2026-09-16"
+          ],
+          "available_fact_ids": [
+            "event:fomc:2026-09-16",
+            "event:cpi:2026-09-11",
+            "event:cpi:2026-09-11:metric:core_mom",
+            "event:cpi:2026-09-11:metric:core_yoy",
+            "event:cpi:2026-09-11:metric:headline_mom",
+            "event:cpi:2026-09-11:metric:headline_yoy",
+            "event:employment:2026-09-04:metric:payrolls",
+            "event:employment:2026-09-04:metric:unemployment"
+          ]
+        },
+        "market": {
+          "deterministic_status": "available",
+          "ai_rating": "mostly_positive",
+          "summary": "Broad market conditions look supportive, with benchmark trends positive and volatility remaining in a normal regime.",
+          "supporting_fact_count": 2,
+          "key_point_count": 2,
+          "limitation_count": 0,
+          "supporting_fact_ids": [
+            "market:NVDA:broad_trend:2026-09-24",
+            "market:NVDA:volatility:2026-09-24"
+          ],
+          "available_fact_ids": [
+            "market:NVDA:broad_trend:2026-09-24",
+            "market:NVDA:volatility:2026-09-24"
+          ]
+        },
+        "geopolitical": {
+          "deterministic_status": "insufficient_data",
+          "ai_rating": "mostly_positive",
+          "summary": "Export-control policy evidence points to conditional licensing relief for advanced computing shipments tied to the company\u2019s industry exposure, while approvals remain uncertain.",
+          "supporting_fact_count": 1,
+          "key_point_count": 2,
+          "limitation_count": 0,
+          "supporting_fact_ids": [
+            "geopolitical:NVDA:2026-00789"
+          ],
+          "available_fact_ids": [
+            "geopolitical:NVDA:2026-00789"
+          ]
+        }
+      },
+      "what_to_watch": [],
+      "grounding": "pass"
+    }
+  ]
+}

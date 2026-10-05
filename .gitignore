@@ -32,3 +32,8 @@ cutover-reports/
 .coverage
 htmlcov/
 .vercel/
+.tmp/
+
+
+# Generated Outlook diagnostic output
+backend/curx-outlook.json

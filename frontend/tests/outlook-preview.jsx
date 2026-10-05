@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import OutlookPanel from "../src/components/OutlookPanel";
 import { outlookFixtures } from "./outlook-fixtures.mjs";
-import { eventFixture } from "./outlook-event-fixtures.mjs";
+import { earningsFixture, eventFixture } from "./outlook-event-fixtures.mjs";
 import macroFixture from "./outlook-macro-fixture.json";
 import "../src/App.css";
 import "./outlook-preview.css";
@@ -20,6 +20,7 @@ export default function Preview() {
         <option value="negative">Overall Negative</option><option value="empty">No available categories</option>
         <option value="notMaterial">Not Material</option><option value="events">FOMC events · ABTC</option>
         <option value="macro">FOMC + macro events · ABTC</option>
+        <option value="earnings">Earnings events · NVDA</option>
       </select></label>
       <label>Card width <select value={width} onChange={(e) => setWidth(e.target.value)}>
         {[220, 280, 340, 520].map((n) => <option key={n} value={n}>{n}px</option>)}
@@ -30,7 +31,8 @@ export default function Preview() {
       <button type="button" onClick={() => { const next = theme === "dark" ? "light" : "dark"; document.documentElement.dataset.theme = next; setTheme(next); }}>Switch to {theme === "dark" ? "light" : "dark"} theme</button>
     </div>
     <div className="panel-box analysis-summary-card outlook-preview-column" style={{ width: `${width}px` }}>
-      <OutlookPanel data={["events", "macro"].includes(scenario) ? { ...outlookFixtures.technology, ticker: "ABTC", event_intelligence: scenario === "events" ? eventFixture : macroFixture } : outlookFixtures[scenario]} embedded loading={state === "loading"} error={state === "error" ? "fixture" : ""}/>
+      <OutlookPanel data={["events", "macro", "earnings"].includes(scenario) ? { ...outlookFixtures.technology,
+        ticker: scenario === "earnings" ? "NVDA" : "ABTC", event_intelligence: scenario === "events" ? eventFixture : scenario === "earnings" ? earningsFixture : macroFixture } : outlookFixtures[scenario]} embedded loading={state === "loading"} error={state === "error" ? "fixture" : ""}/>
     </div>
   </main>;
 }
