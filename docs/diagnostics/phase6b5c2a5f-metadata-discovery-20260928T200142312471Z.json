@@ -1,0 +1,131 @@
+{
+  "budget": {
+    "attempts": 2,
+    "enabled_request_classes": [
+      "current_submissions"
+    ],
+    "maximum": 2,
+    "per_issuer": {
+      "AAPL": 1,
+      "NVDA": 1
+    },
+    "per_issuer_maximum": 1
+  },
+  "mode": "live",
+  "requests": [
+    {
+      "aggregate_remaining": 1,
+      "cache": "miss",
+      "http_status": 200,
+      "issuer_remaining": 0,
+      "ordinal_attempt": 1,
+      "received_bytes": 163991,
+      "request_class": "current_submissions",
+      "ticker": "AAPL",
+      "transport_outcome": "success"
+    },
+    {
+      "aggregate_remaining": 0,
+      "cache": "miss",
+      "http_status": 200,
+      "issuer_remaining": 0,
+      "ordinal_attempt": 2,
+      "received_bytes": 159785,
+      "request_class": "current_submissions",
+      "ticker": "NVDA",
+      "transport_outcome": "success"
+    }
+  ],
+  "runner": "direct-q4-metadata-discovery-1",
+  "schema_version": "2",
+  "targets": [
+    {
+      "cik": "0000320193",
+      "discovery_diagnostics": {
+        "ambiguous_qualifying_candidates": 0,
+        "count_limit": 4096,
+        "count_semantics": "sequential_first_failure",
+        "counts_capped": false,
+        "eight_k_rows_examined": 105,
+        "metadata_rows_examined": 1000,
+        "qualifying_candidates": 0,
+        "rows_rejected_by_exact_report_date": 105,
+        "rows_rejected_by_form": 895,
+        "rows_rejected_by_item_202": 0,
+        "rows_rejected_by_primary_document": 0
+      },
+      "discovery_state": "source_unavailable",
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2024,
+      "period_end": "2024-09-28",
+      "reason": "earnings_8k_unresolved",
+      "ticker": "AAPL"
+    },
+    {
+      "cik": "0000320193",
+      "discovery_diagnostics": {
+        "ambiguous_qualifying_candidates": 0,
+        "count_limit": 4096,
+        "count_semantics": "sequential_first_failure",
+        "counts_capped": false,
+        "eight_k_rows_examined": 105,
+        "metadata_rows_examined": 1000,
+        "qualifying_candidates": 0,
+        "rows_rejected_by_exact_report_date": 105,
+        "rows_rejected_by_form": 895,
+        "rows_rejected_by_item_202": 0,
+        "rows_rejected_by_primary_document": 0
+      },
+      "discovery_state": "source_unavailable",
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2025,
+      "period_end": "2025-09-27",
+      "reason": "earnings_8k_unresolved",
+      "ticker": "AAPL"
+    },
+    {
+      "cik": "0001045810",
+      "discovery_diagnostics": {
+        "ambiguous_qualifying_candidates": 0,
+        "count_limit": 4096,
+        "count_semantics": "sequential_first_failure",
+        "counts_capped": false,
+        "eight_k_rows_examined": 61,
+        "metadata_rows_examined": 1000,
+        "qualifying_candidates": 0,
+        "rows_rejected_by_exact_report_date": 61,
+        "rows_rejected_by_form": 939,
+        "rows_rejected_by_item_202": 0,
+        "rows_rejected_by_primary_document": 0
+      },
+      "discovery_state": "source_unavailable",
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2025,
+      "period_end": "2025-01-26",
+      "reason": "earnings_8k_unresolved",
+      "ticker": "NVDA"
+    },
+    {
+      "cik": "0001045810",
+      "discovery_diagnostics": {
+        "ambiguous_qualifying_candidates": 0,
+        "count_limit": 4096,
+        "count_semantics": "sequential_first_failure",
+        "counts_capped": false,
+        "eight_k_rows_examined": 61,
+        "metadata_rows_examined": 1000,
+        "qualifying_candidates": 0,
+        "rows_rejected_by_exact_report_date": 61,
+        "rows_rejected_by_form": 939,
+        "rows_rejected_by_item_202": 0,
+        "rows_rejected_by_primary_document": 0
+      },
+      "discovery_state": "source_unavailable",
+      "fiscal_quarter": "Q4",
+      "fiscal_year": 2026,
+      "period_end": "2026-01-25",
+      "reason": "earnings_8k_unresolved",
+      "ticker": "NVDA"
+    }
+  ]
+}

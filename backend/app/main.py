@@ -11,6 +11,15 @@ from app.config import settings
 
 logging.basicConfig(level=settings.log_level_value)
 
+from app.models.outlook import OutlookResponse
+from app.models.outlook_research import AIResearchReportResult
+from app.services.outlook import analyze_outlook
+from app.services.outlook_ai import (OpenAIOutlookIntelligenceProvider,
+    build_context_packet, generate_intelligence)
+from app.services.outlook_research import build_research_presentation
+from app.services.revenue_history_runtime import get_revenue_history_snapshot_service
+from app.services.revenue_history_observability import observe_revenue_snapshot
+from app.services.outlook_structured.revenue_history_snapshot import projection_from_revenue_snapshot
 from app.services.analyzer import analyze_ticker, analyze_tickers
 from app.services.financial_analysis import analyze_financials
 from app.services.valuation_analysis import analyze_valuation
@@ -92,6 +101,35 @@ def analyze(ticker: str, period: str = "max", interval: str = "1d"):
         ) from e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@protected_router.get("/outlook/{ticker}", response_model=OutlookResponse)
+def outlook(ticker: str):
+    return analyze_outlook(ticker)
+
+
+@protected_router.post("/outlook/{ticker}/analysis", response_model=AIResearchReportResult)
+def outlook_analysis(ticker: str):
+    """Explicit user-triggered AI analysis; the generator owns cache reuse."""
+    if not settings.outlook_llm_enabled or settings.outlook_llm_provider != "openai":
+        raise HTTPException(status_code=503, detail="AI analysis is unavailable")
+    key = settings.openai_api_key.get_secret_value()
+    if not key:
+        raise HTTPException(status_code=503, detail="AI analysis is unavailable")
+    deterministic = analyze_outlook(ticker)
+    packet = build_context_packet(deterministic)
+    provider = OpenAIOutlookIntelligenceProvider(api_key=key,
+        model=settings.outlook_llm_model, timeout=settings.outlook_llm_timeout)
+    generated = generate_intelligence(packet, provider)
+    if generated.status != "available" or generated.response is None:
+        return AIResearchReportResult(status="unavailable")
+    revenue_snapshot = observe_revenue_snapshot(
+        get_revenue_history_snapshot_service(), ticker, settings)
+    revenue_projection = projection_from_revenue_snapshot(revenue_snapshot)
+    return AIResearchReportResult(status="available", analysis=generated.response,
+        research=build_research_presentation(deterministic, packet, generated.response,
+                                             as_of=packet.generated_at,
+                                             revenue_projection=revenue_projection))
 
 
 @protected_router.get("/financial-analysis/{ticker}")

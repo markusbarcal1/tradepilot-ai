@@ -1,0 +1,845 @@
+{
+  "schema_version": "1.0",
+  "corpus_version": "reporting-identity-1.0",
+  "provenance": "Primary issuer releases reviewed 2026-09-17. Factual paraphrases with source URLs; not complete raw releases. Frozen date-only clocks use end-of-day UTC and simulated observation. No network in replay.",
+  "packages": [
+    {
+      "id": "aapl_primary_reporting_sequence",
+      "description": "Three source-grounded FY2025 quarters; Technology. Publication/observation intraday clocks are explicit replay conventions.",
+      "context": {
+        "ticker": "AAPL",
+        "company_name": "AAPL",
+        "sector": "Technology"
+      },
+      "event_identity": "One original issuer release per quarter",
+      "reporting_period": "Source-grounded FY2025 Q1-Q3",
+      "materiality_rationale": "No calibration changes. Only AAPL/NVDA include normalized actual consolidated revenue facts; other notices test identity, not unsupported financial interpretation.",
+      "sources": [
+        {
+          "document": {
+            "id": "aapl-reported-1",
+            "ticker": "AAPL",
+            "title": "AAPL reporting identity source",
+            "extracted_text": "Apple today announced financial results for its fiscal 2025 first quarter ended December 28, 2024.\nTotal revenue was $124.3 billion, up 4% year over year.",
+            "published_at": "2025-01-30T23:59:59+00:00",
+            "observed_at": "2025-01-30T23:59:59+00:00",
+            "source_name": "AAPL issuer release",
+            "source_type": "company_release",
+            "source_url": "https://www.apple.com/newsroom/2025/01/apple-reports-first-quarter-results/",
+            "provider": "frozen_primary",
+            "provider_document_id": "apple-reports-first-quarter-results",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        },
+        {
+          "document": {
+            "id": "aapl-reported-2",
+            "ticker": "AAPL",
+            "title": "AAPL reporting identity source",
+            "extracted_text": "Apple today announced financial results for its fiscal 2025 second quarter ended March 29, 2025.\nTotal revenue was $95.4 billion, up 5% year over year.",
+            "published_at": "2025-05-01T23:59:59+00:00",
+            "observed_at": "2025-05-01T23:59:59+00:00",
+            "source_name": "AAPL issuer release",
+            "source_type": "company_release",
+            "source_url": "https://www.apple.com/newsroom/2025/05/apple-reports-second-quarter-results/",
+            "provider": "frozen_primary",
+            "provider_document_id": "apple-reports-second-quarter-results",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        },
+        {
+          "document": {
+            "id": "aapl-reported-3",
+            "ticker": "AAPL",
+            "title": "AAPL reporting identity source",
+            "extracted_text": "Apple today announced financial results for its fiscal 2025 third quarter ended June 28, 2025.\nTotal revenue was $94.0 billion, up 10% year over year.",
+            "published_at": "2025-07-31T23:59:59+00:00",
+            "observed_at": "2025-07-31T23:59:59+00:00",
+            "source_name": "AAPL issuer release",
+            "source_type": "company_release",
+            "source_url": "https://www.apple.com/newsroom/2025/07/apple-reports-third-quarter-results/",
+            "provider": "frozen_primary",
+            "provider_document_id": "apple-reports-third-quarter-results",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        }
+      ],
+      "semantic_tags": [
+        "reporting_identity",
+        "primary_source_facts",
+        "consecutive_quarters",
+        "technology"
+      ],
+      "replays": [
+        {
+          "name": "after_report_1",
+          "assessment_at": "2025-01-30T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable",
+          "expected_reporting_periods": [
+            "AAPL:FY2025:Q1"
+          ],
+          "expected_missing_periods": []
+        },
+        {
+          "name": "after_report_2",
+          "assessment_at": "2025-05-01T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 2,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable",
+          "expected_reporting_periods": [
+            "AAPL:FY2025:Q1",
+            "AAPL:FY2025:Q2"
+          ],
+          "expected_missing_periods": []
+        },
+        {
+          "name": "after_report_3",
+          "assessment_at": "2025-07-31T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 2,
+              "status": "available",
+              "label": "Positive"
+            }
+          ],
+          "available_categories": 1,
+          "overall_status": "partial",
+          "expected_reporting_periods": [
+            "AAPL:FY2025:Q1",
+            "AAPL:FY2025:Q2",
+            "AAPL:FY2025:Q3"
+          ],
+          "expected_missing_periods": [],
+          "overall_label": "Positive"
+        }
+      ]
+    },
+    {
+      "id": "nvda_primary_reporting_sequence",
+      "description": "Four real-source FY2025 quarterly identities, plus separate FY identity in the Q4/annual report. Q4 financial metrics intentionally omitted: scope must not be guessed.",
+      "context": {
+        "ticker": "NVDA",
+        "company_name": "NVDA",
+        "sector": "Semiconductors"
+      },
+      "event_identity": "One original issuer release per quarter",
+      "reporting_period": "Source-grounded FY2025 Q1-Q4 and FY",
+      "materiality_rationale": "No calibration changes. Only AAPL/NVDA include normalized actual consolidated revenue facts; other notices test identity, not unsupported financial interpretation.",
+      "sources": [
+        {
+          "document": {
+            "id": "nvda-reported-1",
+            "ticker": "NVDA",
+            "title": "NVIDIA Announces Financial Results for First Quarter Fiscal 2025",
+            "extracted_text": "reported revenue for the first quarter ended April 28, 2024.\nTotal revenue was $26.0 billion, up 262% year over year.",
+            "published_at": "2024-05-22T23:59:59+00:00",
+            "observed_at": "2024-05-22T23:59:59+00:00",
+            "source_name": "NVDA issuer release",
+            "source_type": "company_release",
+            "source_url": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-first-quarter-fiscal-2025",
+            "provider": "frozen_primary",
+            "provider_document_id": "nvidia-announces-financial-results-for-first-quarter-fiscal-2025",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        },
+        {
+          "document": {
+            "id": "nvda-reported-2",
+            "ticker": "NVDA",
+            "title": "NVIDIA Announces Financial Results for Second Quarter Fiscal 2025",
+            "extracted_text": "reported revenue for the second quarter ended July 28, 2024.\nTotal revenue was $30.0 billion, up 122% year over year.",
+            "published_at": "2024-08-28T23:59:59+00:00",
+            "observed_at": "2024-08-28T23:59:59+00:00",
+            "source_name": "NVDA issuer release",
+            "source_type": "company_release",
+            "source_url": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-second-quarter-fiscal-2025",
+            "provider": "frozen_primary",
+            "provider_document_id": "nvidia-announces-financial-results-for-second-quarter-fiscal-2025",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        },
+        {
+          "document": {
+            "id": "nvda-reported-3",
+            "ticker": "NVDA",
+            "title": "NVIDIA Announces Financial Results for Third Quarter Fiscal 2025",
+            "extracted_text": "reported revenue for the third quarter ended October 27, 2024.\nTotal revenue was $35.1 billion, up 94% year over year.",
+            "published_at": "2024-11-20T23:59:59+00:00",
+            "observed_at": "2024-11-20T23:59:59+00:00",
+            "source_name": "NVDA issuer release",
+            "source_type": "company_release",
+            "source_url": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-third-quarter-fiscal-2025",
+            "provider": "frozen_primary",
+            "provider_document_id": "nvidia-announces-financial-results-for-third-quarter-fiscal-2025",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        },
+        {
+          "document": {
+            "id": "nvda-reported-4",
+            "ticker": "NVDA",
+            "title": "NVIDIA Announces Financial Results for Fourth Quarter and Fiscal 2025",
+            "extracted_text": "reported revenue for the fourth quarter ended January 26, 2025.",
+            "published_at": "2025-02-26T23:59:59+00:00",
+            "observed_at": "2025-02-26T23:59:59+00:00",
+            "source_name": "NVDA issuer release",
+            "source_type": "company_release",
+            "source_url": "https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-fourth-quarter-and-fiscal-2025",
+            "provider": "frozen_primary",
+            "provider_document_id": "nvidia-fy2025-q4-annual",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        }
+      ],
+      "semantic_tags": [
+        "reporting_identity",
+        "primary_source_facts",
+        "consecutive_quarters",
+        "semiconductors"
+      ],
+      "replays": [
+        {
+          "name": "after_report_1",
+          "assessment_at": "2024-05-22T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable",
+          "expected_reporting_periods": [
+            "NVDA:FY2025:Q1"
+          ],
+          "expected_missing_periods": []
+        },
+        {
+          "name": "after_report_2",
+          "assessment_at": "2024-08-28T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 2,
+              "status": "available",
+              "label": "Positive"
+            }
+          ],
+          "available_categories": 1,
+          "overall_status": "partial",
+          "expected_reporting_periods": [
+            "NVDA:FY2025:Q1",
+            "NVDA:FY2025:Q2"
+          ],
+          "expected_missing_periods": [],
+          "overall_label": "Positive"
+        },
+        {
+          "name": "after_report_3",
+          "assessment_at": "2024-11-20T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 2,
+              "status": "available",
+              "label": "Positive"
+            }
+          ],
+          "available_categories": 1,
+          "overall_status": "partial",
+          "expected_reporting_periods": [
+            "NVDA:FY2025:Q1",
+            "NVDA:FY2025:Q2",
+            "NVDA:FY2025:Q3"
+          ],
+          "expected_missing_periods": [],
+          "overall_label": "Positive"
+        },
+        {
+          "name": "q4_and_annual",
+          "assessment_at": "2025-02-26T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 1,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable",
+          "expected_reporting_periods": [
+            "NVDA:FY2025:Q1",
+            "NVDA:FY2025:Q2",
+            "NVDA:FY2025:Q3",
+            "NVDA:FY2025:Q4",
+            "NVDA:FY2025:FY"
+          ],
+          "expected_missing_periods": []
+        }
+      ]
+    },
+    {
+      "id": "tsla_primary_reporting_sequence",
+      "description": "Three source-grounded FY2025 quarters; Automotive. Publication/observation intraday clocks are explicit replay conventions.",
+      "context": {
+        "ticker": "TSLA",
+        "company_name": "TSLA",
+        "sector": "Automotive"
+      },
+      "event_identity": "One original issuer release per quarter",
+      "reporting_period": "Source-grounded FY2025 Q1-Q3",
+      "materiality_rationale": "No calibration changes. Only AAPL/NVDA include normalized actual consolidated revenue facts; other notices test identity, not unsupported financial interpretation.",
+      "sources": [
+        {
+          "document": {
+            "id": "tsla-reported-1",
+            "ticker": "TSLA",
+            "title": "Tesla Releases First Quarter 2025 Financial Results",
+            "extracted_text": "",
+            "published_at": "2025-04-22T23:59:59+00:00",
+            "observed_at": "2025-04-22T23:59:59+00:00",
+            "source_name": "TSLA issuer release",
+            "source_type": "company_release",
+            "source_url": "https://ir.tesla.com/press-release/tesla-releases-first-quarter-2025-financial-results",
+            "provider": "frozen_primary",
+            "provider_document_id": "tesla-releases-first-quarter-2025-financial-results",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        },
+        {
+          "document": {
+            "id": "tsla-reported-2",
+            "ticker": "TSLA",
+            "title": "Tesla Releases Second Quarter 2025 Financial Results",
+            "extracted_text": "",
+            "published_at": "2025-07-23T23:59:59+00:00",
+            "observed_at": "2025-07-23T23:59:59+00:00",
+            "source_name": "TSLA issuer release",
+            "source_type": "company_release",
+            "source_url": "https://ir.tesla.com/press-release/tesla-releases-second-quarter-2025-financial-results",
+            "provider": "frozen_primary",
+            "provider_document_id": "tesla-releases-second-quarter-2025-financial-results",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        },
+        {
+          "document": {
+            "id": "tsla-reported-3",
+            "ticker": "TSLA",
+            "title": "Tesla Releases Third Quarter 2025 Financial Results",
+            "extracted_text": "",
+            "published_at": "2025-10-22T23:59:59+00:00",
+            "observed_at": "2025-10-22T23:59:59+00:00",
+            "source_name": "TSLA issuer release",
+            "source_type": "company_release",
+            "source_url": "https://ir.tesla.com/press-release/tesla-releases-third-quarter-2025-financial-results",
+            "provider": "frozen_primary",
+            "provider_document_id": "tesla-releases-third-quarter-2025-financial-results",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        }
+      ],
+      "semantic_tags": [
+        "reporting_identity",
+        "primary_source_facts",
+        "consecutive_quarters",
+        "automotive"
+      ],
+      "replays": [
+        {
+          "name": "after_report_1",
+          "assessment_at": "2025-04-22T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 0,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable",
+          "expected_reporting_periods": [
+            "TSLA:FY2025:Q1"
+          ],
+          "expected_missing_periods": []
+        },
+        {
+          "name": "after_report_2",
+          "assessment_at": "2025-07-23T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 0,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable",
+          "expected_reporting_periods": [
+            "TSLA:FY2025:Q1",
+            "TSLA:FY2025:Q2"
+          ],
+          "expected_missing_periods": []
+        },
+        {
+          "name": "after_report_3",
+          "assessment_at": "2025-10-22T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 0,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable",
+          "expected_reporting_periods": [
+            "TSLA:FY2025:Q1",
+            "TSLA:FY2025:Q2",
+            "TSLA:FY2025:Q3"
+          ],
+          "expected_missing_periods": []
+        }
+      ]
+    },
+    {
+      "id": "jpm_primary_reporting_sequence",
+      "description": "Three source-grounded FY2025 quarters; Banking. Publication/observation intraday clocks are explicit replay conventions.",
+      "context": {
+        "ticker": "JPM",
+        "company_name": "JPM",
+        "sector": "Banking"
+      },
+      "event_identity": "One original issuer release per quarter",
+      "reporting_period": "Source-grounded FY2025 Q1-Q3",
+      "materiality_rationale": "No calibration changes. Only AAPL/NVDA include normalized actual consolidated revenue facts; other notices test identity, not unsupported financial interpretation.",
+      "sources": [
+        {
+          "document": {
+            "id": "jpm-reported-1",
+            "ticker": "JPM",
+            "title": "JPMorganChase Reports First-Quarter 2025 Financial Results",
+            "extracted_text": "",
+            "published_at": "2025-04-11T23:59:59+00:00",
+            "observed_at": "2025-04-11T23:59:59+00:00",
+            "source_name": "JPM issuer release",
+            "source_type": "company_release",
+            "source_url": "https://jpmorganchaseco.gcs-web.com/news-releases/news-release-details/jpmorganchase-reports-first-quarter-2025-financial-results",
+            "provider": "frozen_primary",
+            "provider_document_id": "jpmorganchase-reports-first-quarter-2025-financial-results",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        },
+        {
+          "document": {
+            "id": "jpm-reported-2",
+            "ticker": "JPM",
+            "title": "JPMorganChase Reports Second-Quarter 2025 Financial Results",
+            "extracted_text": "",
+            "published_at": "2025-07-15T23:59:59+00:00",
+            "observed_at": "2025-07-15T23:59:59+00:00",
+            "source_name": "JPM issuer release",
+            "source_type": "company_release",
+            "source_url": "https://jpmorganchaseco.gcs-web.com/news-releases/news-release-details/jpmorganchase-reports-second-quarter-2025-financial-results",
+            "provider": "frozen_primary",
+            "provider_document_id": "jpmorganchase-reports-second-quarter-2025-financial-results",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        },
+        {
+          "document": {
+            "id": "jpm-reported-3",
+            "ticker": "JPM",
+            "title": "JPMorganChase Reports Third-Quarter 2025 Financial Results",
+            "extracted_text": "",
+            "published_at": "2025-10-14T23:59:59+00:00",
+            "observed_at": "2025-10-14T23:59:59+00:00",
+            "source_name": "JPM issuer release",
+            "source_type": "company_release",
+            "source_url": "https://jpmorganchaseco.gcs-web.com/news-releases/news-release-details/jpmorganchase-reports-third-quarter-2025-financial-results",
+            "provider": "frozen_primary",
+            "provider_document_id": "jpmorganchase-reports-third-quarter-2025-financial-results",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        }
+      ],
+      "semantic_tags": [
+        "reporting_identity",
+        "primary_source_facts",
+        "consecutive_quarters",
+        "banking"
+      ],
+      "replays": [
+        {
+          "name": "after_report_1",
+          "assessment_at": "2025-04-11T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 0,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable",
+          "expected_reporting_periods": [
+            "JPM:FY2025:Q1"
+          ],
+          "expected_missing_periods": []
+        },
+        {
+          "name": "after_report_2",
+          "assessment_at": "2025-07-15T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 0,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable",
+          "expected_reporting_periods": [
+            "JPM:FY2025:Q1",
+            "JPM:FY2025:Q2"
+          ],
+          "expected_missing_periods": []
+        },
+        {
+          "name": "after_report_3",
+          "assessment_at": "2025-10-14T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 0,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable",
+          "expected_reporting_periods": [
+            "JPM:FY2025:Q1",
+            "JPM:FY2025:Q2",
+            "JPM:FY2025:Q3"
+          ],
+          "expected_missing_periods": []
+        }
+      ]
+    },
+    {
+      "id": "xom_primary_reporting_sequence",
+      "description": "Three source-grounded FY2025 quarters; Energy. Publication/observation intraday clocks are explicit replay conventions.",
+      "context": {
+        "ticker": "XOM",
+        "company_name": "XOM",
+        "sector": "Energy"
+      },
+      "event_identity": "One original issuer release per quarter",
+      "reporting_period": "Source-grounded FY2025 Q1-Q3",
+      "materiality_rationale": "No calibration changes. Only AAPL/NVDA include normalized actual consolidated revenue facts; other notices test identity, not unsupported financial interpretation.",
+      "sources": [
+        {
+          "document": {
+            "id": "xom-reported-1",
+            "ticker": "XOM",
+            "title": "ExxonMobil announces first-quarter 2025 results",
+            "extracted_text": "",
+            "published_at": "2025-05-02T23:59:59+00:00",
+            "observed_at": "2025-05-02T23:59:59+00:00",
+            "source_name": "XOM issuer release",
+            "source_type": "company_release",
+            "source_url": "https://corporate.exxonmobil.com/news/news-releases/2025/0502_exxonmobil-announces-first-quarter-2025-results",
+            "provider": "frozen_primary",
+            "provider_document_id": "0502_exxonmobil-announces-first-quarter-2025-results",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        },
+        {
+          "document": {
+            "id": "xom-reported-2",
+            "ticker": "XOM",
+            "title": "ExxonMobil announces second-quarter 2025 results",
+            "extracted_text": "",
+            "published_at": "2025-08-01T23:59:59+00:00",
+            "observed_at": "2025-08-01T23:59:59+00:00",
+            "source_name": "XOM issuer release",
+            "source_type": "company_release",
+            "source_url": "https://corporate.exxonmobil.com/news/news-releases/2025/0801_exxonmobil-announces-second-quarter-2025-results",
+            "provider": "frozen_primary",
+            "provider_document_id": "0801_exxonmobil-announces-second-quarter-2025-results",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        },
+        {
+          "document": {
+            "id": "xom-reported-3",
+            "ticker": "XOM",
+            "title": "ExxonMobil announces third-quarter 2025 results",
+            "extracted_text": "",
+            "published_at": "2025-10-31T23:59:59+00:00",
+            "observed_at": "2025-10-31T23:59:59+00:00",
+            "source_name": "XOM issuer release",
+            "source_type": "company_release",
+            "source_url": "https://corporate.exxonmobil.com/news/news-releases/2025/1031-exxonmobil-announces-third-quarter-2025-results",
+            "provider": "frozen_primary",
+            "provider_document_id": "1031-exxonmobil-announces-third-quarter-2025-results",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends."
+            }
+          }
+        }
+      ],
+      "semantic_tags": [
+        "reporting_identity",
+        "primary_source_facts",
+        "consecutive_quarters",
+        "energy"
+      ],
+      "replays": [
+        {
+          "name": "after_report_1",
+          "assessment_at": "2025-05-02T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 0,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable",
+          "expected_reporting_periods": [
+            "XOM:FY2025:Q1"
+          ],
+          "expected_missing_periods": []
+        },
+        {
+          "name": "after_report_2",
+          "assessment_at": "2025-08-01T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 0,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable",
+          "expected_reporting_periods": [
+            "XOM:FY2025:Q1",
+            "XOM:FY2025:Q2"
+          ],
+          "expected_missing_periods": []
+        },
+        {
+          "name": "after_report_3",
+          "assessment_at": "2025-10-31T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 0,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable",
+          "expected_reporting_periods": [
+            "XOM:FY2025:Q1",
+            "XOM:FY2025:Q2",
+            "XOM:FY2025:Q3"
+          ],
+          "expected_missing_periods": []
+        }
+      ]
+    },
+    {
+      "id": "aapl_53_week_reporting",
+      "description": "Source-grounded 53-week-year Q1 end; calendar-length note published later, not used in replay extraction.",
+      "context": {
+        "ticker": "AAPL",
+        "company_name": "AAPL",
+        "sector": "Technology"
+      },
+      "event_identity": "One original issuer release per quarter",
+      "reporting_period": "FY2023 Q1",
+      "materiality_rationale": "No calibration changes. Only AAPL/NVDA include normalized actual consolidated revenue facts; other notices test identity, not unsupported financial interpretation.",
+      "sources": [
+        {
+          "document": {
+            "id": "aapl-53-week-q1",
+            "ticker": "AAPL",
+            "title": "Apple fiscal reporting identity",
+            "extracted_text": "Apple today announced financial results for its fiscal 2023 first quarter ended December 31, 2022.",
+            "published_at": "2023-02-02T23:59:59+00:00",
+            "observed_at": "2023-02-02T23:59:59+00:00",
+            "source_name": "AAPL issuer release",
+            "source_type": "company_release",
+            "source_url": "https://www.apple.com/newsroom/2023/02/apple-reports-first-quarter-results/",
+            "provider": "frozen_primary",
+            "provider_document_id": "apple-fy2023-q1",
+            "source_quality": "primary_authoritative",
+            "metadata": {
+              "document_kind": "earnings_release",
+              "fixture_source_kind": "primary_source_factual_paraphrase",
+              "retrieved_on": "2026-09-17",
+              "clock_precision": "Publication date only; end-of-day UTC boundary is a conservative replay convention, not the actual release time. Observed time is simulated.",
+              "transformation": "Short primary heading/reporting-clause excerpt; AAPL/NVDA revenue sentence is a normalized factual paraphrase, not verbatim parser coverage. No inferred period ends.",
+              "calendar_fact": "FY2023 contained 53 weeks; the extra week was in Q1. This fact does not supply a projected calendar.",
+              "calendar_fact_source": "https://www.sec.gov/Archives/edgar/data/320193/000032019323000106/aapl-20230930.htm",
+              "calendar_fact_known_at": "2023-11-03T23:59:59+00:00"
+            }
+          }
+        }
+      ],
+      "semantic_tags": [
+        "reporting_identity",
+        "primary_source_facts",
+        "53_week_year"
+      ],
+      "replays": [
+        {
+          "name": "q1_report",
+          "assessment_at": "2023-02-02T23:59:59+00:00",
+          "outcomes": [
+            {
+              "category": "earnings",
+              "events": 0,
+              "status": "insufficient_data"
+            }
+          ],
+          "available_categories": 0,
+          "overall_status": "unavailable",
+          "expected_reporting_periods": [
+            "AAPL:FY2023:Q1"
+          ]
+        }
+      ]
+    }
+  ]
+}

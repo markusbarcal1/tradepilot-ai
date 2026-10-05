@@ -1,0 +1,1087 @@
+[
+  {
+    "ticker": "AAPL",
+    "assessed_at": "2026-09-18T16:21:08.748677+00:00",
+    "provider_status": {
+      "sec": "available",
+      "fred": "available",
+      "market": "available",
+      "industry": "available"
+    },
+    "classification": {
+      "sector": "Technology",
+      "industry": "Consumer Electronics",
+      "quoteType": "EQUITY",
+      "exchange": "NMS",
+      "country": "United States"
+    },
+    "benchmark": "XLK",
+    "peer_sample": [
+      "NVDA",
+      "MSFT",
+      "AVGO",
+      "MU",
+      "AMD",
+      "INTC"
+    ],
+    "peer_coverage": 6,
+    "industry_provider_state": "available",
+    "industry": {
+      "status": "available",
+      "value": 0,
+      "summary": "2 independent events support this assessment; 1 positive and 0 negative contributions.",
+      "factors": [
+        {
+          "title": "Sector peer breadth",
+          "impact": "Positive",
+          "description": "The Technology sector peer sample shows broad strength: 67% have positive 21-session returns and 83% are above their 50-session average. Coverage 6/6; AAPL excluded. This is a sector sample, not industry-wide breadth.",
+          "evidence_ids": [
+            "industry:AAPL:XLK:industry_peer_breadth:2026-09-17"
+          ]
+        },
+        {
+          "title": "Sector trend and relative strength",
+          "impact": "Mixed",
+          "description": "Technology sector trend is mixed, tracking or mixed against the broader market. XLK returned 1.3% / 1.3% over 21 / 63 sessions; relative to SPY: +1.9 / -1.8 percentage points.",
+          "evidence_ids": [
+            "industry:AAPL:XLK:sector_performance:2026-09-17"
+          ]
+        }
+      ],
+      "evidence_count": 2,
+      "confidence": 0.8692307692307694,
+      "evidence": [
+        {
+          "schema_version": "1.0",
+          "id": "industry:AAPL:XLK:industry_peer_breadth:2026-09-17",
+          "ticker": "AAPL",
+          "category": "industry",
+          "event_type": "industry_peer_breadth",
+          "title": "Sector peer breadth",
+          "summary": "The Technology sector peer sample shows broad strength: 67% have positive 21-session returns and 83% are above their 50-session average. Coverage 6/6; AAPL excluded. This is a sector sample, not industry-wide breadth.",
+          "source": "Yahoo Finance sector market data",
+          "source_type": "market_data",
+          "source_url": "https://finance.yahoo.com/quote/XLK/",
+          "published_at": "2026-09-17T20:00:00Z",
+          "observed_at": "2026-09-18T16:21:07.448409Z",
+          "expires_at": "2026-09-24T20:00:00Z",
+          "impact": 1,
+          "confidence": 0.85,
+          "materiality": 0.8,
+          "materiality_reason": "Sustained sector condition.",
+          "exposure_links": [],
+          "scoring_eligible": true,
+          "source_details": {
+            "classification_source": "Yahoo Finance structured quote metadata",
+            "sector": "Technology",
+            "industry": "Consumer Electronics",
+            "quoteType": "EQUITY",
+            "exchange": "NMS",
+            "country": "United States",
+            "benchmark": "XLK",
+            "market_benchmark": "SPY",
+            "windows_sessions": [
+              21,
+              63
+            ],
+            "peer_scope": "sector ETF top-holdings sample, excluding target",
+            "observation_time": "2026-09-18T16:21:07.448409+00:00",
+            "peer_sample": [
+              "NVDA",
+              "MSFT",
+              "AVGO",
+              "MU",
+              "AMD",
+              "INTC"
+            ],
+            "peer_coverage": 6,
+            "peers": [
+              {
+                "symbol": "NVDA",
+                "return_21": -0.0007034515983380674,
+                "return_63": 0.07298041173696901,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "MSFT",
+                "return_21": 0.03541517932698257,
+                "return_63": 0.31610945167889115,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "AVGO",
+                "return_21": -0.0860526637027138,
+                "return_63": -0.11466109567430982,
+                "above_sma50": false,
+                "below_sma50": true
+              },
+              {
+                "symbol": "MU",
+                "return_21": 0.03905352040158272,
+                "return_63": -0.06282616017933407,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "AMD",
+                "return_21": 0.12531226980615262,
+                "return_63": 0.06363184442227632,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "INTC",
+                "return_21": 0.1252456335151111,
+                "return_63": -0.10156891475924978,
+                "above_sma50": true,
+                "below_sma50": false
+              }
+            ],
+            "positive_return_breadth": 0.6666666666666666,
+            "above_sma50_breadth": 0.8333333333333334,
+            "window_start": "2026-06-17",
+            "window_end": "2026-09-17"
+          },
+          "source_quality": "unknown",
+          "raw_provider": "industry",
+          "raw_provider_id": "XLK:industry_peer_breadth:2026-09-17"
+        },
+        {
+          "schema_version": "1.0",
+          "id": "industry:AAPL:XLK:sector_performance:2026-09-17",
+          "ticker": "AAPL",
+          "category": "industry",
+          "event_type": "sector_performance",
+          "title": "Sector trend and relative strength",
+          "summary": "Technology sector trend is mixed, tracking or mixed against the broader market. XLK returned 1.3% / 1.3% over 21 / 63 sessions; relative to SPY: +1.9 / -1.8 percentage points.",
+          "source": "Yahoo Finance sector market data",
+          "source_type": "market_data",
+          "source_url": "https://finance.yahoo.com/quote/XLK/",
+          "published_at": "2026-09-17T20:00:00Z",
+          "observed_at": "2026-09-18T16:21:07.448409Z",
+          "expires_at": "2026-09-24T20:00:00Z",
+          "impact": 0,
+          "confidence": 0.9,
+          "materiality": 0.5,
+          "materiality_reason": "Mixed or limited directional sector condition.",
+          "exposure_links": [],
+          "scoring_eligible": true,
+          "source_details": {
+            "classification_source": "Yahoo Finance structured quote metadata",
+            "sector": "Technology",
+            "industry": "Consumer Electronics",
+            "quoteType": "EQUITY",
+            "exchange": "NMS",
+            "country": "United States",
+            "benchmark": "XLK",
+            "market_benchmark": "SPY",
+            "windows_sessions": [
+              21,
+              63
+            ],
+            "peer_scope": "sector ETF top-holdings sample, excluding target",
+            "observation_time": "2026-09-18T16:21:07.448409+00:00",
+            "return_21": 0.01314514872099748,
+            "return_63": 0.013370484851818576,
+            "above_sma50": true,
+            "below_sma50": false,
+            "relative_21": 0.019464826281684444,
+            "relative_63": -0.018486295078370407,
+            "trend_direction": 0,
+            "relative_direction": 0,
+            "window_start": "2026-06-17",
+            "window_end": "2026-09-17"
+          },
+          "source_quality": "unknown",
+          "raw_provider": "industry",
+          "raw_provider_id": "XLK:sector_performance:2026-09-17"
+        }
+      ],
+      "label": "Mixed"
+    },
+    "available_categories_before": 2,
+    "available_categories_after": 3,
+    "calls_including_market": {
+      "history": 10,
+      "classification": 1,
+      "holdings": 1
+    },
+    "cached_industry_calls": {
+      "history": 0,
+      "classification": 0,
+      "holdings": 0
+    },
+    "outlook_seconds": 16.14526209999167,
+    "cached_industry_seconds": 0.00038490000588353723
+  },
+  {
+    "ticker": "NVDA",
+    "assessed_at": "2026-09-18T16:21:13.687492+00:00",
+    "provider_status": {
+      "sec": "available",
+      "fred": "available",
+      "market": "available",
+      "industry": "available"
+    },
+    "classification": {
+      "sector": "Technology",
+      "industry": "Semiconductors",
+      "quoteType": "EQUITY",
+      "exchange": "NMS",
+      "country": "United States"
+    },
+    "benchmark": "XLK",
+    "peer_sample": [
+      "AAPL",
+      "MSFT",
+      "AVGO",
+      "MU",
+      "AMD",
+      "INTC"
+    ],
+    "peer_coverage": 6,
+    "industry_provider_state": "available",
+    "industry": {
+      "status": "available",
+      "value": 0,
+      "summary": "2 independent events support this assessment; 1 positive and 0 negative contributions.",
+      "factors": [
+        {
+          "title": "Sector peer breadth",
+          "impact": "Positive",
+          "description": "The Technology sector peer sample shows broad strength: 83% have positive 21-session returns and 83% are above their 50-session average. Coverage 6/6; NVDA excluded. This is a sector sample, not industry-wide breadth.",
+          "evidence_ids": [
+            "industry:NVDA:XLK:industry_peer_breadth:2026-09-17"
+          ]
+        },
+        {
+          "title": "Sector trend and relative strength",
+          "impact": "Mixed",
+          "description": "Technology sector trend is mixed, tracking or mixed against the broader market. XLK returned 1.3% / 1.3% over 21 / 63 sessions; relative to SPY: +1.9 / -1.8 percentage points.",
+          "evidence_ids": [
+            "industry:NVDA:XLK:sector_performance:2026-09-17"
+          ]
+        }
+      ],
+      "evidence_count": 2,
+      "confidence": 0.8692307692307693,
+      "evidence": [
+        {
+          "schema_version": "1.0",
+          "id": "industry:NVDA:XLK:industry_peer_breadth:2026-09-17",
+          "ticker": "NVDA",
+          "category": "industry",
+          "event_type": "industry_peer_breadth",
+          "title": "Sector peer breadth",
+          "summary": "The Technology sector peer sample shows broad strength: 83% have positive 21-session returns and 83% are above their 50-session average. Coverage 6/6; NVDA excluded. This is a sector sample, not industry-wide breadth.",
+          "source": "Yahoo Finance sector market data",
+          "source_type": "market_data",
+          "source_url": "https://finance.yahoo.com/quote/XLK/",
+          "published_at": "2026-09-17T20:00:00Z",
+          "observed_at": "2026-09-18T16:21:13.323637Z",
+          "expires_at": "2026-09-24T20:00:00Z",
+          "impact": 1,
+          "confidence": 0.85,
+          "materiality": 0.8,
+          "materiality_reason": "Sustained sector condition.",
+          "exposure_links": [],
+          "scoring_eligible": true,
+          "source_details": {
+            "classification_source": "Yahoo Finance structured quote metadata",
+            "sector": "Technology",
+            "industry": "Semiconductors",
+            "quoteType": "EQUITY",
+            "exchange": "NMS",
+            "country": "United States",
+            "benchmark": "XLK",
+            "market_benchmark": "SPY",
+            "windows_sessions": [
+              21,
+              63
+            ],
+            "peer_scope": "sector ETF top-holdings sample, excluding target",
+            "observation_time": "2026-09-18T16:21:13.323637+00:00",
+            "peer_sample": [
+              "AAPL",
+              "MSFT",
+              "AVGO",
+              "MU",
+              "AMD",
+              "INTC"
+            ],
+            "peer_coverage": 6,
+            "peers": [
+              {
+                "symbol": "AAPL",
+                "return_21": 0.08699158573974786,
+                "return_63": 0.139687943432226,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "MSFT",
+                "return_21": 0.03541517932698257,
+                "return_63": 0.31610945167889115,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "AVGO",
+                "return_21": -0.0860526637027138,
+                "return_63": -0.11466109567430982,
+                "above_sma50": false,
+                "below_sma50": true
+              },
+              {
+                "symbol": "MU",
+                "return_21": 0.03905352040158272,
+                "return_63": -0.06282616017933407,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "AMD",
+                "return_21": 0.12531226980615262,
+                "return_63": 0.06363184442227632,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "INTC",
+                "return_21": 0.1252456335151111,
+                "return_63": -0.10156891475924978,
+                "above_sma50": true,
+                "below_sma50": false
+              }
+            ],
+            "positive_return_breadth": 0.8333333333333334,
+            "above_sma50_breadth": 0.8333333333333334,
+            "window_start": "2026-06-17",
+            "window_end": "2026-09-17"
+          },
+          "source_quality": "unknown",
+          "raw_provider": "industry",
+          "raw_provider_id": "XLK:industry_peer_breadth:2026-09-17"
+        },
+        {
+          "schema_version": "1.0",
+          "id": "industry:NVDA:XLK:sector_performance:2026-09-17",
+          "ticker": "NVDA",
+          "category": "industry",
+          "event_type": "sector_performance",
+          "title": "Sector trend and relative strength",
+          "summary": "Technology sector trend is mixed, tracking or mixed against the broader market. XLK returned 1.3% / 1.3% over 21 / 63 sessions; relative to SPY: +1.9 / -1.8 percentage points.",
+          "source": "Yahoo Finance sector market data",
+          "source_type": "market_data",
+          "source_url": "https://finance.yahoo.com/quote/XLK/",
+          "published_at": "2026-09-17T20:00:00Z",
+          "observed_at": "2026-09-18T16:21:13.323637Z",
+          "expires_at": "2026-09-24T20:00:00Z",
+          "impact": 0,
+          "confidence": 0.9,
+          "materiality": 0.5,
+          "materiality_reason": "Mixed or limited directional sector condition.",
+          "exposure_links": [],
+          "scoring_eligible": true,
+          "source_details": {
+            "classification_source": "Yahoo Finance structured quote metadata",
+            "sector": "Technology",
+            "industry": "Semiconductors",
+            "quoteType": "EQUITY",
+            "exchange": "NMS",
+            "country": "United States",
+            "benchmark": "XLK",
+            "market_benchmark": "SPY",
+            "windows_sessions": [
+              21,
+              63
+            ],
+            "peer_scope": "sector ETF top-holdings sample, excluding target",
+            "observation_time": "2026-09-18T16:21:13.323637+00:00",
+            "return_21": 0.01314514872099748,
+            "return_63": 0.013370484851818576,
+            "above_sma50": true,
+            "below_sma50": false,
+            "relative_21": 0.019464826281684444,
+            "relative_63": -0.018486295078370407,
+            "trend_direction": 0,
+            "relative_direction": 0,
+            "window_start": "2026-06-17",
+            "window_end": "2026-09-17"
+          },
+          "source_quality": "unknown",
+          "raw_provider": "industry",
+          "raw_provider_id": "XLK:sector_performance:2026-09-17"
+        }
+      ],
+      "label": "Mixed"
+    },
+    "available_categories_before": 2,
+    "available_categories_after": 3,
+    "calls_including_market": {
+      "history": 1,
+      "classification": 1,
+      "holdings": 0
+    },
+    "cached_industry_calls": {
+      "history": 0,
+      "classification": 0,
+      "holdings": 0
+    },
+    "outlook_seconds": 4.935899500007508,
+    "cached_industry_seconds": 0.0006108999950811267
+  },
+  {
+    "ticker": "TSLA",
+    "assessed_at": "2026-09-18T16:21:19.453657+00:00",
+    "provider_status": {
+      "sec": "available",
+      "fred": "available",
+      "market": "available",
+      "industry": "available"
+    },
+    "classification": {
+      "sector": "Consumer Cyclical",
+      "industry": "Auto Manufacturers",
+      "quoteType": "EQUITY",
+      "exchange": "NMS",
+      "country": "United States"
+    },
+    "benchmark": "XLY",
+    "peer_sample": [
+      "AMZN",
+      "HD",
+      "MCD",
+      "BKNG",
+      "TJX",
+      "SBUX"
+    ],
+    "peer_coverage": 6,
+    "industry_provider_state": "available",
+    "industry": {
+      "status": "available",
+      "value": -1,
+      "summary": "2 independent events support this assessment; 0 positive and 2 negative contributions.",
+      "factors": [
+        {
+          "title": "Sector peer breadth",
+          "impact": "Negative",
+          "description": "The Consumer Cyclical sector peer sample shows broad weakness: 0% have positive 21-session returns and 0% are above their 50-session average. Coverage 6/6; TSLA excluded. This is a sector sample, not industry-wide breadth.",
+          "evidence_ids": [
+            "industry:TSLA:XLY:industry_peer_breadth:2026-09-17"
+          ]
+        },
+        {
+          "title": "Sector trend and relative strength",
+          "impact": "Negative",
+          "description": "Consumer Cyclical sector trend is weakening, underperforming the broader market. XLY returned -4.3% / -3.4% over 21 / 63 sessions; relative to SPY: -3.6 / -6.5 percentage points.",
+          "evidence_ids": [
+            "industry:TSLA:XLY:sector_performance:2026-09-17"
+          ]
+        }
+      ],
+      "evidence_count": 2,
+      "confidence": 0.875,
+      "evidence": [
+        {
+          "schema_version": "1.0",
+          "id": "industry:TSLA:XLY:industry_peer_breadth:2026-09-17",
+          "ticker": "TSLA",
+          "category": "industry",
+          "event_type": "industry_peer_breadth",
+          "title": "Sector peer breadth",
+          "summary": "The Consumer Cyclical sector peer sample shows broad weakness: 0% have positive 21-session returns and 0% are above their 50-session average. Coverage 6/6; TSLA excluded. This is a sector sample, not industry-wide breadth.",
+          "source": "Yahoo Finance sector market data",
+          "source_type": "market_data",
+          "source_url": "https://finance.yahoo.com/quote/XLY/",
+          "published_at": "2026-09-17T20:00:00Z",
+          "observed_at": "2026-09-18T16:21:17.996960Z",
+          "expires_at": "2026-09-24T20:00:00Z",
+          "impact": -1,
+          "confidence": 0.85,
+          "materiality": 0.8,
+          "materiality_reason": "Sustained sector condition.",
+          "exposure_links": [],
+          "scoring_eligible": true,
+          "source_details": {
+            "classification_source": "Yahoo Finance structured quote metadata",
+            "sector": "Consumer Cyclical",
+            "industry": "Auto Manufacturers",
+            "quoteType": "EQUITY",
+            "exchange": "NMS",
+            "country": "United States",
+            "benchmark": "XLY",
+            "market_benchmark": "SPY",
+            "windows_sessions": [
+              21,
+              63
+            ],
+            "peer_scope": "sector ETF top-holdings sample, excluding target",
+            "observation_time": "2026-09-18T16:21:17.996960+00:00",
+            "peer_sample": [
+              "AMZN",
+              "HD",
+              "MCD",
+              "BKNG",
+              "TJX",
+              "SBUX"
+            ],
+            "peer_coverage": 6,
+            "peers": [
+              {
+                "symbol": "AMZN",
+                "return_21": -0.03183661351703393,
+                "return_63": 0.057642115542763106,
+                "above_sma50": false,
+                "below_sma50": true
+              },
+              {
+                "symbol": "HD",
+                "return_21": -0.09704204956598095,
+                "return_63": -0.06944157471134349,
+                "above_sma50": false,
+                "below_sma50": true
+              },
+              {
+                "symbol": "MCD",
+                "return_21": -0.06271332207203839,
+                "return_63": -0.11829276189832649,
+                "above_sma50": false,
+                "below_sma50": true
+              },
+              {
+                "symbol": "BKNG",
+                "return_21": -0.179198943282445,
+                "return_63": -0.004067964578425287,
+                "above_sma50": false,
+                "below_sma50": true
+              },
+              {
+                "symbol": "TJX",
+                "return_21": -0.16108718640079323,
+                "return_63": -0.22653207358817717,
+                "above_sma50": false,
+                "below_sma50": true
+              },
+              {
+                "symbol": "SBUX",
+                "return_21": -0.08810493141281683,
+                "return_63": -0.025993632963580704,
+                "above_sma50": false,
+                "below_sma50": true
+              }
+            ],
+            "positive_return_breadth": 0.0,
+            "above_sma50_breadth": 0.0,
+            "window_start": "2026-06-17",
+            "window_end": "2026-09-17"
+          },
+          "source_quality": "unknown",
+          "raw_provider": "industry",
+          "raw_provider_id": "XLY:industry_peer_breadth:2026-09-17"
+        },
+        {
+          "schema_version": "1.0",
+          "id": "industry:TSLA:XLY:sector_performance:2026-09-17",
+          "ticker": "TSLA",
+          "category": "industry",
+          "event_type": "sector_performance",
+          "title": "Sector trend and relative strength",
+          "summary": "Consumer Cyclical sector trend is weakening, underperforming the broader market. XLY returned -4.3% / -3.4% over 21 / 63 sessions; relative to SPY: -3.6 / -6.5 percentage points.",
+          "source": "Yahoo Finance sector market data",
+          "source_type": "market_data",
+          "source_url": "https://finance.yahoo.com/quote/XLY/",
+          "published_at": "2026-09-17T20:00:00Z",
+          "observed_at": "2026-09-18T16:21:17.996960Z",
+          "expires_at": "2026-09-24T20:00:00Z",
+          "impact": -1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Sustained sector condition.",
+          "exposure_links": [],
+          "scoring_eligible": true,
+          "source_details": {
+            "classification_source": "Yahoo Finance structured quote metadata",
+            "sector": "Consumer Cyclical",
+            "industry": "Auto Manufacturers",
+            "quoteType": "EQUITY",
+            "exchange": "NMS",
+            "country": "United States",
+            "benchmark": "XLY",
+            "market_benchmark": "SPY",
+            "windows_sessions": [
+              21,
+              63
+            ],
+            "peer_scope": "sector ETF top-holdings sample, excluding target",
+            "observation_time": "2026-09-18T16:21:17.996960+00:00",
+            "return_21": -0.04271228252521153,
+            "return_63": -0.0335789723195935,
+            "above_sma50": false,
+            "below_sma50": true,
+            "relative_21": -0.036392604964524566,
+            "relative_63": -0.06543575224978249,
+            "trend_direction": -1,
+            "relative_direction": -1,
+            "window_start": "2026-06-17",
+            "window_end": "2026-09-17"
+          },
+          "source_quality": "unknown",
+          "raw_provider": "industry",
+          "raw_provider_id": "XLY:sector_performance:2026-09-17"
+        }
+      ],
+      "label": "Negative"
+    },
+    "available_categories_before": 2,
+    "available_categories_after": 3,
+    "calls_including_market": {
+      "history": 7,
+      "classification": 1,
+      "holdings": 1
+    },
+    "cached_industry_calls": {
+      "history": 0,
+      "classification": 0,
+      "holdings": 0
+    },
+    "outlook_seconds": 5.763959999996587,
+    "cached_industry_seconds": 0.0003434999962337315
+  },
+  {
+    "ticker": "JPM",
+    "assessed_at": "2026-09-18T16:21:24.909632+00:00",
+    "provider_status": {
+      "sec": "available",
+      "fred": "available",
+      "market": "available",
+      "industry": "available"
+    },
+    "classification": {
+      "sector": "Financial Services",
+      "industry": "Banks - Diversified",
+      "quoteType": "EQUITY",
+      "exchange": "NYQ",
+      "country": "United States"
+    },
+    "benchmark": "XLF",
+    "peer_sample": [
+      "BRK-B",
+      "V",
+      "MA",
+      "BAC",
+      "GS",
+      "WFC"
+    ],
+    "peer_coverage": 6,
+    "industry_provider_state": "available",
+    "industry": {
+      "status": "available",
+      "value": 0,
+      "summary": "2 independent events support this assessment; 0 positive and 0 negative contributions.",
+      "factors": [
+        {
+          "title": "Sector peer breadth",
+          "impact": "Mixed",
+          "description": "The Financial Services sector peer sample shows mixed performance: 33% have positive 21-session returns and 50% are above their 50-session average. Coverage 6/6; JPM excluded. This is a sector sample, not industry-wide breadth.",
+          "evidence_ids": [
+            "industry:JPM:XLF:industry_peer_breadth:2026-09-17"
+          ]
+        },
+        {
+          "title": "Sector trend and relative strength",
+          "impact": "Mixed",
+          "description": "Financial Services sector trend is mixed, tracking or mixed against the broader market. XLF returned -3.4% / 3.7% over 21 / 63 sessions; relative to SPY: -2.8 / +0.6 percentage points.",
+          "evidence_ids": [
+            "industry:JPM:XLF:sector_performance:2026-09-17"
+          ]
+        }
+      ],
+      "evidence_count": 2,
+      "confidence": 0.8750000000000001,
+      "evidence": [
+        {
+          "schema_version": "1.0",
+          "id": "industry:JPM:XLF:industry_peer_breadth:2026-09-17",
+          "ticker": "JPM",
+          "category": "industry",
+          "event_type": "industry_peer_breadth",
+          "title": "Sector peer breadth",
+          "summary": "The Financial Services sector peer sample shows mixed performance: 33% have positive 21-session returns and 50% are above their 50-session average. Coverage 6/6; JPM excluded. This is a sector sample, not industry-wide breadth.",
+          "source": "Yahoo Finance sector market data",
+          "source_type": "market_data",
+          "source_url": "https://finance.yahoo.com/quote/XLF/",
+          "published_at": "2026-09-17T20:00:00Z",
+          "observed_at": "2026-09-18T16:21:23.705146Z",
+          "expires_at": "2026-09-24T20:00:00Z",
+          "impact": 0,
+          "confidence": 0.85,
+          "materiality": 0.5,
+          "materiality_reason": "Mixed or limited directional sector condition.",
+          "exposure_links": [],
+          "scoring_eligible": true,
+          "source_details": {
+            "classification_source": "Yahoo Finance structured quote metadata",
+            "sector": "Financial Services",
+            "industry": "Banks - Diversified",
+            "quoteType": "EQUITY",
+            "exchange": "NYQ",
+            "country": "United States",
+            "benchmark": "XLF",
+            "market_benchmark": "SPY",
+            "windows_sessions": [
+              21,
+              63
+            ],
+            "peer_scope": "sector ETF top-holdings sample, excluding target",
+            "observation_time": "2026-09-18T16:21:23.705146+00:00",
+            "peer_sample": [
+              "BRK-B",
+              "V",
+              "MA",
+              "BAC",
+              "GS",
+              "WFC"
+            ],
+            "peer_coverage": 6,
+            "peers": [
+              {
+                "symbol": "BRK-B",
+                "return_21": 0.012406594675454352,
+                "return_63": 0.03647617137327175,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "V",
+                "return_21": 0.015593665547786628,
+                "return_63": 0.12179068720202402,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "MA",
+                "return_21": -0.014939696551196424,
+                "return_63": 0.1494723127504416,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "BAC",
+                "return_21": -0.08957129997301816,
+                "return_63": 0.03443907449489192,
+                "above_sma50": false,
+                "below_sma50": true
+              },
+              {
+                "symbol": "GS",
+                "return_21": -0.08105953462796689,
+                "return_63": -0.13011090847587092,
+                "above_sma50": false,
+                "below_sma50": true
+              },
+              {
+                "symbol": "WFC",
+                "return_21": -0.005835264614720392,
+                "return_63": 0.04270201262795226,
+                "above_sma50": false,
+                "below_sma50": true
+              }
+            ],
+            "positive_return_breadth": 0.3333333333333333,
+            "above_sma50_breadth": 0.5,
+            "window_start": "2026-06-17",
+            "window_end": "2026-09-17"
+          },
+          "source_quality": "unknown",
+          "raw_provider": "industry",
+          "raw_provider_id": "XLF:industry_peer_breadth:2026-09-17"
+        },
+        {
+          "schema_version": "1.0",
+          "id": "industry:JPM:XLF:sector_performance:2026-09-17",
+          "ticker": "JPM",
+          "category": "industry",
+          "event_type": "sector_performance",
+          "title": "Sector trend and relative strength",
+          "summary": "Financial Services sector trend is mixed, tracking or mixed against the broader market. XLF returned -3.4% / 3.7% over 21 / 63 sessions; relative to SPY: -2.8 / +0.6 percentage points.",
+          "source": "Yahoo Finance sector market data",
+          "source_type": "market_data",
+          "source_url": "https://finance.yahoo.com/quote/XLF/",
+          "published_at": "2026-09-17T20:00:00Z",
+          "observed_at": "2026-09-18T16:21:23.705146Z",
+          "expires_at": "2026-09-24T20:00:00Z",
+          "impact": 0,
+          "confidence": 0.9,
+          "materiality": 0.5,
+          "materiality_reason": "Mixed or limited directional sector condition.",
+          "exposure_links": [],
+          "scoring_eligible": true,
+          "source_details": {
+            "classification_source": "Yahoo Finance structured quote metadata",
+            "sector": "Financial Services",
+            "industry": "Banks - Diversified",
+            "quoteType": "EQUITY",
+            "exchange": "NYQ",
+            "country": "United States",
+            "benchmark": "XLF",
+            "market_benchmark": "SPY",
+            "windows_sessions": [
+              21,
+              63
+            ],
+            "peer_scope": "sector ETF top-holdings sample, excluding target",
+            "observation_time": "2026-09-18T16:21:23.705146+00:00",
+            "return_21": -0.03388656776109922,
+            "return_63": 0.0374791519455151,
+            "above_sma50": false,
+            "below_sma50": true,
+            "relative_21": -0.027566890200412253,
+            "relative_63": 0.005622372015326116,
+            "trend_direction": 0,
+            "relative_direction": 0,
+            "window_start": "2026-06-17",
+            "window_end": "2026-09-17"
+          },
+          "source_quality": "unknown",
+          "raw_provider": "industry",
+          "raw_provider_id": "XLF:sector_performance:2026-09-17"
+        }
+      ],
+      "label": "Mixed"
+    },
+    "available_categories_before": 2,
+    "available_categories_after": 3,
+    "calls_including_market": {
+      "history": 7,
+      "classification": 1,
+      "holdings": 1
+    },
+    "cached_industry_calls": {
+      "history": 0,
+      "classification": 0,
+      "holdings": 0
+    },
+    "outlook_seconds": 5.45321399999375,
+    "cached_industry_seconds": 0.000534699996933341
+  },
+  {
+    "ticker": "XOM",
+    "assessed_at": "2026-09-18T16:21:28.542249+00:00",
+    "provider_status": {
+      "sec": "available",
+      "fred": "available",
+      "market": "available",
+      "industry": "available"
+    },
+    "classification": {
+      "sector": "Energy",
+      "industry": "Oil & Gas Integrated",
+      "quoteType": "EQUITY",
+      "exchange": "NYQ",
+      "country": "United States"
+    },
+    "benchmark": "XLE",
+    "peer_sample": [
+      "CVX",
+      "COP",
+      "MPC",
+      "PSX",
+      "VLO",
+      "SLB"
+    ],
+    "peer_coverage": 6,
+    "industry_provider_state": "available",
+    "industry": {
+      "status": "available",
+      "value": 1,
+      "summary": "2 independent events support this assessment; 2 positive and 0 negative contributions.",
+      "factors": [
+        {
+          "title": "Sector peer breadth",
+          "impact": "Positive",
+          "description": "The Energy sector peer sample shows broad strength: 83% have positive 21-session returns and 100% are above their 50-session average. Coverage 6/6; XOM excluded. This is a sector sample, not industry-wide breadth.",
+          "evidence_ids": [
+            "industry:XOM:XLE:industry_peer_breadth:2026-09-17"
+          ]
+        },
+        {
+          "title": "Sector trend and relative strength",
+          "impact": "Positive",
+          "description": "Energy sector trend is strengthening, outperforming the broader market. XLE returned 1.3% / 18.8% over 21 / 63 sessions; relative to SPY: +1.9 / +15.6 percentage points.",
+          "evidence_ids": [
+            "industry:XOM:XLE:sector_performance:2026-09-17"
+          ]
+        }
+      ],
+      "evidence_count": 2,
+      "confidence": 0.8750000000000001,
+      "evidence": [
+        {
+          "schema_version": "1.0",
+          "id": "industry:XOM:XLE:industry_peer_breadth:2026-09-17",
+          "ticker": "XOM",
+          "category": "industry",
+          "event_type": "industry_peer_breadth",
+          "title": "Sector peer breadth",
+          "summary": "The Energy sector peer sample shows broad strength: 83% have positive 21-session returns and 100% are above their 50-session average. Coverage 6/6; XOM excluded. This is a sector sample, not industry-wide breadth.",
+          "source": "Yahoo Finance sector market data",
+          "source_type": "market_data",
+          "source_url": "https://finance.yahoo.com/quote/XLE/",
+          "published_at": "2026-09-17T20:00:00Z",
+          "observed_at": "2026-09-18T16:21:27.270833Z",
+          "expires_at": "2026-09-24T20:00:00Z",
+          "impact": 1,
+          "confidence": 0.85,
+          "materiality": 0.8,
+          "materiality_reason": "Sustained sector condition.",
+          "exposure_links": [],
+          "scoring_eligible": true,
+          "source_details": {
+            "classification_source": "Yahoo Finance structured quote metadata",
+            "sector": "Energy",
+            "industry": "Oil & Gas Integrated",
+            "quoteType": "EQUITY",
+            "exchange": "NYQ",
+            "country": "United States",
+            "benchmark": "XLE",
+            "market_benchmark": "SPY",
+            "windows_sessions": [
+              21,
+              63
+            ],
+            "peer_scope": "sector ETF top-holdings sample, excluding target",
+            "observation_time": "2026-09-18T16:21:27.270833+00:00",
+            "peer_sample": [
+              "CVX",
+              "COP",
+              "MPC",
+              "PSX",
+              "VLO",
+              "SLB"
+            ],
+            "peer_coverage": 6,
+            "peers": [
+              {
+                "symbol": "CVX",
+                "return_21": 0.03731123926185953,
+                "return_63": 0.2018043205645461,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "COP",
+                "return_21": 0.026749932069452642,
+                "return_63": 0.20563223406067066,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "MPC",
+                "return_21": 0.155390053196232,
+                "return_63": 0.7297550645256086,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "PSX",
+                "return_21": 0.12616528509945968,
+                "return_63": 0.649012297147354,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "VLO",
+                "return_21": 0.17848882492542995,
+                "return_63": 0.7271729501821815,
+                "above_sma50": true,
+                "below_sma50": false
+              },
+              {
+                "symbol": "SLB",
+                "return_21": -0.016158114465555595,
+                "return_63": 0.040139562339378765,
+                "above_sma50": true,
+                "below_sma50": false
+              }
+            ],
+            "positive_return_breadth": 0.8333333333333334,
+            "above_sma50_breadth": 1.0,
+            "window_start": "2026-06-17",
+            "window_end": "2026-09-17"
+          },
+          "source_quality": "unknown",
+          "raw_provider": "industry",
+          "raw_provider_id": "XLE:industry_peer_breadth:2026-09-17"
+        },
+        {
+          "schema_version": "1.0",
+          "id": "industry:XOM:XLE:sector_performance:2026-09-17",
+          "ticker": "XOM",
+          "category": "industry",
+          "event_type": "sector_performance",
+          "title": "Sector trend and relative strength",
+          "summary": "Energy sector trend is strengthening, outperforming the broader market. XLE returned 1.3% / 18.8% over 21 / 63 sessions; relative to SPY: +1.9 / +15.6 percentage points.",
+          "source": "Yahoo Finance sector market data",
+          "source_type": "market_data",
+          "source_url": "https://finance.yahoo.com/quote/XLE/",
+          "published_at": "2026-09-17T20:00:00Z",
+          "observed_at": "2026-09-18T16:21:27.270833Z",
+          "expires_at": "2026-09-24T20:00:00Z",
+          "impact": 1,
+          "confidence": 0.9,
+          "materiality": 0.8,
+          "materiality_reason": "Sustained sector condition.",
+          "exposure_links": [],
+          "scoring_eligible": true,
+          "source_details": {
+            "classification_source": "Yahoo Finance structured quote metadata",
+            "sector": "Energy",
+            "industry": "Oil & Gas Integrated",
+            "quoteType": "EQUITY",
+            "exchange": "NYQ",
+            "country": "United States",
+            "benchmark": "XLE",
+            "market_benchmark": "SPY",
+            "windows_sessions": [
+              21,
+              63
+            ],
+            "peer_scope": "sector ETF top-holdings sample, excluding target",
+            "observation_time": "2026-09-18T16:21:27.270833+00:00",
+            "return_21": 0.012562861933478775,
+            "return_63": 0.1879462473180269,
+            "above_sma50": true,
+            "below_sma50": false,
+            "relative_21": 0.01888253949416574,
+            "relative_63": 0.1560894673878379,
+            "trend_direction": 1,
+            "relative_direction": 1,
+            "window_start": "2026-06-17",
+            "window_end": "2026-09-17"
+          },
+          "source_quality": "unknown",
+          "raw_provider": "industry",
+          "raw_provider_id": "XLE:sector_performance:2026-09-17"
+        }
+      ],
+      "label": "Positive"
+    },
+    "available_categories_before": 2,
+    "available_categories_after": 3,
+    "calls_including_market": {
+      "history": 7,
+      "classification": 1,
+      "holdings": 1
+    },
+    "cached_industry_calls": {
+      "history": 0,
+      "classification": 0,
+      "holdings": 0
+    },
+    "outlook_seconds": 3.630022299999837,
+    "cached_industry_seconds": 0.0003541999903973192
+  }
+]

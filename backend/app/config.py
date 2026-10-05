@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 from typing import Annotated, Literal
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import SecretStr, Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
@@ -34,6 +34,54 @@ class Settings(BaseSettings):
     )
     scanner_max_workers: int = Field(default=8, ge=1, le=16)
     log_level: Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"] = "INFO"
+
+    outlook_sec_enabled: bool = True
+    outlook_sec_documents_enabled: bool = True
+    outlook_sec_max_document_filings: int = Field(default=2, ge=1, le=3)
+    outlook_fred_enabled: bool = True
+    outlook_market_enabled: bool = True
+    outlook_industry_enabled: bool = True
+    outlook_fomc_enabled: bool = True
+    outlook_fomc_cache_ttl: int = Field(default=1800, ge=60)
+    outlook_macro_enabled: bool = True
+    outlook_macro_cache_ttl: int = Field(default=3600, ge=300, le=21600)
+    outlook_earnings_events_enabled: bool = True
+    outlook_earnings_calendar_cache_ttl: int = Field(default=21600, ge=300, le=86400)
+    outlook_geopolitical_enabled: bool = True
+    outlook_geopolitical_cache_ttl: int = Field(default=21600, ge=300)
+    outlook_industry_cache_ttl: int = Field(default=1800, ge=60)
+    outlook_classification_cache_ttl: int = Field(default=604800, ge=3600)
+    outlook_sec_user_agent: str = ""
+    fred_api_key: SecretStr = SecretStr("")
+    outlook_sec_cache_ttl: int = Field(default=3600, ge=60)
+    outlook_cik_cache_ttl: int = Field(default=86400, ge=3600)
+    outlook_sec_history_enabled: bool = False
+    outlook_historical_revenue_enabled: bool = False
+    outlook_historical_revenue_q4_derivation_enabled: bool = False
+    outlook_sec_history_cache_ttl: int = Field(default=21600, ge=300, le=86400)
+    outlook_sec_history_request_budget: int = Field(default=3, ge=2, le=3)
+    outlook_sec_history_max_source_facts: int = Field(default=256, ge=32, le=1024)
+    outlook_sec_history_max_quarters: int = Field(default=8, ge=1, le=8)
+    outlook_sec_history_max_annual_periods: int = Field(default=5, ge=0, le=5)
+    outlook_sec_q4_enabled: bool = False
+    outlook_sec_q4_cache_ttl: int = Field(default=21600, ge=300, le=86400)
+    outlook_sec_q4_request_budget: int = Field(default=4, ge=1, le=6)
+    outlook_sec_q4_max_candidate_filings: int = Field(default=2, ge=1, le=4)
+    outlook_sec_q4_documents_per_filing: int = Field(default=2, ge=1, le=2)
+    outlook_sec_q4_document_max_bytes: int = Field(default=1048576, ge=65536, le=4194304)
+    outlook_sec_q4_max_concurrency: int = Field(default=1, ge=1, le=2)
+    outlook_economic_cache_ttl: int = Field(default=21600, ge=300)
+    outlook_market_cache_ttl: int = Field(default=900, ge=60)
+    outlook_failure_cache_ttl: int = Field(default=60, ge=10)
+    outlook_http_timeout: float = Field(default=5, ge=1, le=15)
+    outlook_http_attempts: int = Field(default=1, ge=1, le=2)
+    outlook_sec_request_interval: float = Field(default=1, ge=1, le=60)
+    outlook_llm_enabled: bool = False
+    outlook_llm_provider: Literal["openai"] = "openai"
+    outlook_llm_model: str = "gpt-5.4-mini"
+    outlook_llm_timeout: float = Field(default=30, ge=5, le=120)
+    outlook_llm_cache_ttl: int = Field(default=3600, ge=60, le=86400)
+    openai_api_key: SecretStr = SecretStr("")
 
     supabase_auth_issuer: str | None = None
     supabase_auth_audience: str | None = None

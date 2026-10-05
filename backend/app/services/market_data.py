@@ -80,7 +80,8 @@ def _record_market_data_request(audit_context, ticker, period, interval, duratio
     stage_timings["market_data_fetching_seconds"] = stage_timings.get("market_data_fetching_seconds", 0.0) + duration
 
 
-def get_price_history(ticker: str, period: str = "max", interval: str = "1d", audit_context=None):
+def get_price_history(ticker: str, period: str = "max", interval: str = "1d", audit_context=None,
+                      *, auto_adjust: bool | None = None):
     ticker = str(ticker).strip().upper()
     if not VALID_TICKER_PATTERN.fullmatch(ticker):
         raise InvalidTickerError(ticker, f"Ticker format is invalid: {ticker!r}")
@@ -90,11 +91,12 @@ def get_price_history(ticker: str, period: str = "max", interval: str = "1d", au
     try:
         stock = yf.Ticker(ticker)
 
-        data = stock.history(
-            period=period,
-            interval=interval,
-            timeout=PRICE_HISTORY_TIMEOUT_SECONDS,
-        )
+        options = {"period": period, "interval": interval, "timeout": PRICE_HISTORY_TIMEOUT_SECONDS}
+        # Existing scanner/chart consumers retain the installed provider default. Outlook
+        # explicitly opts into corporate-action-adjusted prices through its own adapter.
+        if auto_adjust is not None:
+            options["auto_adjust"] = auto_adjust
+        data = stock.history(**options)
     except YFRateLimitError as exc:
         _record_market_data_request(audit_context, ticker, period, interval, perf_counter() - request_started_at, None, error=exc)
         LOGGER.warning(

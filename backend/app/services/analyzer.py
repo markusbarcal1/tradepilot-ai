@@ -18,14 +18,6 @@ TECHNICAL_FAMILY_WEIGHTS = {
     "price_structure": 15,
 }
 
-TRADE_QUALITY_SCORE_VERSION = "1.0"
-TRADE_QUALITY_FAMILY_WEIGHTS = {
-    "location": 30,
-    "confirmation": 25,
-    "risk_reward": 20,
-    "timing": 15,
-    "confluence": 10,
-}
 
 def safe_float(value, decimals=2):
     try:
@@ -462,131 +454,6 @@ def _technical_component_details(key, component, *, price, sma_20, sma_50, rsi,
     ]
 
 
-def _trade_component_details(key, component, *, price, sma_20, sma_50, rsi,
-                             rvol, macd, macd_signal, support_zone,
-                             resistance_zone, trade_setup):
-    inputs = component["inputs"]
-    if component["status"] == "unavailable":
-        return [_score_detail(
-            f"{key}_unavailable", "Scoring inputs", None, None,
-            component["max_score"], "unavailable",
-            component["negative_reasons"][0] if component["negative_reasons"] else
-            "Detailed scoring information is unavailable.",
-            "Data unavailable", availability="unavailable",
-        )]
-    if key == "confirmation":
-        volume_points = {"strong": 10, "supportive": 7, "light": 3}.get(
-            inputs["relative_volume_bucket"], 0)
-        macd_points = 8 if inputs["macd_above_signal"] else 0
-        rsi_points = {"supportive": 7, "stabilizing": 3, "extended": 2}.get(
-            inputs["rsi_bucket"], 0)
-        return [
-            _score_detail("volume_confirmation", "Volume Confirmation", rvol,
-                          volume_points if rvol is not None else None, 10, inputs["relative_volume_bucket"] or "unavailable",
-                          "Measures whether relative volume confirms the proposed entry.",
-                          f"{rvol:.2f}x" if rvol is not None else "Data unavailable",
-                          availability="available" if rvol is not None else "unavailable"),
-            _score_detail("macd_confirmation", "MACD Confirmation",
-                          inputs["macd_above_signal"], macd_points if inputs["macd_above_signal"] is not None else None, 8,
-                          "confirmed" if macd_points else "unavailable" if inputs["macd_above_signal"] is None else "unconfirmed",
-                          "Checks whether MACD is above its signal line.",
-                          "Confirmed" if macd_points else "Data unavailable" if inputs["macd_above_signal"] is None else "Not confirmed",
-                          availability="available" if inputs["macd_above_signal"] is not None else "unavailable"),
-            _score_detail("rsi_confirmation", "RSI Confirmation", rsi,
-                          rsi_points if rsi is not None else None, 7, inputs["rsi_bucket"] or "unavailable",
-                          "Measures whether RSI supports entry momentum without excessive extension.",
-                          f"{rsi:.1f}" if rsi is not None else "Data unavailable",
-                          availability="available" if rsi is not None else "unavailable"),
-        ]
-    if key == "risk_reward":
-        setup = trade_setup if isinstance(trade_setup, dict) else {}
-        entry, stop, target = setup.get("entry"), setup.get("stop"), setup.get("target")
-        ratio = None
-        if all(_valid_number(value, minimum=0) is not None for value in (entry, stop, target)):
-            risk = entry - stop
-            ratio = (target - entry) / risk if risk > 0 else None
-        return [_score_detail(
-            "reward_to_risk", "Reward / Risk Plan", ratio,
-            component["score"], component["max_score"],
-            inputs["reward_to_risk_bucket"] or "unavailable",
-            "Combines the planned entry, stop, target, reward-to-risk ratio, and stop width.",
-            f"{ratio:.2f}x · Entry ${entry:.2f} · Stop ${stop:.2f} · Target ${target:.2f}"
-            if ratio is not None else "Data unavailable",
-            f"Stop distance: {inputs['stop_distance_bucket'] or 'unavailable'}",
-        )]
-    if key == "timing":
-        stage_points = {"Breakout Watch": 5, "Pullback Bounce": 5, "Momentum Long": 3}.get(
-            inputs["setup_stage"], 0)
-        extension_points = {"early": 7, "reasonable": 5, "late": 2}.get(
-            inputs["moving_average_extension_bucket"], 0)
-        rsi_points = {"extended": 2, "constructive": 3}.get(
-            inputs["rsi_timing_bucket"], 0)
-        return [
-            _score_detail("setup_stage", "Setup Stage", inputs["setup_stage"],
-                          stage_points, 5, "available",
-                          "Rewards a defined entry stage.", inputs["setup_stage"]),
-            _score_detail("moving_average_extension", "Moving-Average Extension",
-                          inputs["moving_average_extension_bucket"], extension_points if inputs["moving_average_extension_bucket"] else None, 7,
-                          inputs["moving_average_extension_bucket"] or "unavailable",
-                          "Measures whether price is early, reasonable, late, or chasing.",
-                          str(inputs["moving_average_extension_bucket"] or "Data unavailable").replace("_", " ").title(),
-                          availability="available" if inputs["moving_average_extension_bucket"] else "unavailable"),
-            _score_detail("rsi_timing", "RSI Timing", rsi, rsi_points if rsi is not None else None, 3,
-                          inputs["rsi_timing_bucket"] or "unavailable",
-                          "Uses RSI to identify constructive or extended entry timing.",
-                          f"{rsi:.1f}" if rsi is not None else "Data unavailable",
-                          availability="available" if rsi is not None else "unavailable"),
-        ]
-    if key == "confluence":
-        aligned = inputs.get("aligned_families") or []
-        return [_score_detail(
-            "aligned_families", "Aligned Score Families", len(aligned),
-            component["score"], component["max_score"], component["status"],
-            "Counts independently supportive Location, Confirmation, Risk / Reward, and Timing families.",
-            f"{len(aligned)} of 4", ", ".join(label.replace("_", " ").title() for label in aligned) or "No aligned families",
-        )]
-
-    setup_type = inputs.get("setup_type")
-    support_bucket = inputs.get("support_distance_bucket")
-    resistance_bucket = inputs.get("resistance_distance_bucket")
-    ma_bucket = inputs.get("moving_average_distance_bucket")
-    if setup_type == "Breakout Watch":
-        points = [6 if support_bucket == "defined" else 0,
-                  18 if resistance_bucket == "breakout_nearby" else 10 if resistance_bucket == "breakout_developing" else 0,
-                  6 if ma_bucket == "controlled" else 0]
-    elif setup_type == "Pullback Bounce":
-        support_points = (18 + (4 if inputs.get("support_strength") in ("strong", "moderate") else 2)
-                          if support_bucket == "nearby" else 10 if support_bucket == "usable" else 0)
-        points = [support_points, 0, 8 if ma_bucket == "nearby" else 4 if ma_bucket == "usable" else 0]
-    else:
-        points = [10 if support_bucket == "usable" else 5 if support_bucket == "distant" else 0,
-                  12 if resistance_bucket == "ample_room" else 8 if resistance_bucket == "usable_room" else 0,
-                  8 if ma_bucket == "controlled" else 3 if ma_bucket == "extended" else 0]
-    if setup_type == "Breakout Watch":
-        labels = [
-            ("support_location", "Support Location", support_bucket, points[0], 6),
-            ("resistance_room", "Breakout Location", resistance_bucket, points[1], 18),
-            ("moving_average_location", "Moving-Average Location", ma_bucket, points[2], 6),
-        ]
-    elif setup_type == "Pullback Bounce":
-        labels = [
-            ("support_location", "Support Location", support_bucket, points[0], 22),
-            ("moving_average_location", "Moving-Average Location", ma_bucket, points[2], 8),
-        ]
-    else:
-        labels = [
-            ("support_location", "Support Location", support_bucket, points[0], 10),
-            ("resistance_room", "Resistance Room", resistance_bucket, points[1], 12),
-            ("moving_average_location", "Moving-Average Location", ma_bucket, points[2], 8),
-        ]
-    return [_score_detail(
-        detail_key, label, value, earned if value else None, maximum, value or "unavailable",
-        f"Evaluates {label.lower()} for the {setup_type} setup.",
-        str(value or "Data unavailable").replace("_", " ").title(),
-        availability="available" if value else "unavailable",
-    ) for detail_key, label, value, earned, maximum in labels]
-
-
 def score_trend_family(price, sma_20, sma_50):
     max_score = TECHNICAL_FAMILY_WEIGHTS["trend"]
     price = _valid_number(price, minimum=0)
@@ -834,387 +701,6 @@ def calculate_trend_score(price, sma_20, sma_50, rsi, rvol, macd, macd_signal,
         support_zone, resistance_zone,
     )
 
-def _bullish_setup(trade_setup):
-    return (
-        isinstance(trade_setup, dict)
-        and trade_setup.get("setup_bias") == "Bullish"
-        and trade_setup.get("setup_type") not in (None, "No Clear Setup")
-    )
-
-
-def _distance_pct(first, second):
-    first = _valid_number(first, minimum=0)
-    second = _valid_number(second, minimum=0)
-    if first is None or first <= 0 or second is None or second <= 0:
-        return None
-    return abs(first - second) / first * 100
-
-
-def score_trade_location(price, sma_20, sma_50, support_zone, resistance_zone, trade_setup):
-    max_score = TRADE_QUALITY_FAMILY_WEIGHTS["location"]
-    price = _valid_number(price, minimum=0)
-    sma_20 = _valid_number(sma_20, minimum=0)
-    sma_50 = _valid_number(sma_50, minimum=0)
-    support_mid, support_distance, support_strength = _zone_inputs(support_zone)
-    resistance_mid, resistance_distance, _ = _zone_inputs(resistance_zone)
-    setup_type = trade_setup.get("setup_type") if isinstance(trade_setup, dict) else None
-    valid_setup = _bullish_setup(trade_setup)
-    sma_distance = min(
-        [distance for distance in (
-            _distance_pct(price, sma_20), _distance_pct(price, sma_50)
-        ) if distance is not None],
-        default=None,
-    )
-    inputs = {
-        "valid_bullish_setup": valid_setup,
-        "setup_type": setup_type,
-        "support_distance_bucket": None,
-        "support_strength": support_strength,
-        "resistance_distance_bucket": None,
-        "moving_average_distance_bucket": None,
-    }
-    if price is None or price <= 0 or not valid_setup:
-        return _family_result(0, max_score, "unavailable", [],
-                              ["No valid bullish setup is available for location scoring"], inputs)
-
-    if support_mid is None or support_mid >= price:
-        support_distance = None
-    if resistance_mid is None or resistance_mid <= price:
-        resistance_distance = None
-
-    score = 0
-    positives = []
-    negatives = []
-    if setup_type == "Breakout Watch":
-        if resistance_distance is not None and resistance_distance <= 3:
-            score += 18
-            inputs["resistance_distance_bucket"] = "breakout_nearby"
-            positives.append("Price is close to the planned breakout level")
-        elif resistance_distance is not None and resistance_distance <= 5:
-            score += 10
-            inputs["resistance_distance_bucket"] = "breakout_developing"
-            positives.append("The breakout level is within developing range")
-        else:
-            negatives.append("The breakout level is not near the current price")
-        if support_distance is not None and support_distance <= 10:
-            score += 6
-            inputs["support_distance_bucket"] = "defined"
-            positives.append("Support provides a defined downside reference")
-        else:
-            negatives.append("Support is too distant or unavailable")
-        if sma_distance is not None and sma_distance <= 5:
-            score += 6
-            inputs["moving_average_distance_bucket"] = "controlled"
-            positives.append("Price remains reasonably close to a moving average")
-        else:
-            negatives.append("Price is extended from the available moving averages")
-    elif setup_type == "Pullback Bounce":
-        if support_distance is not None and support_distance <= 3:
-            score += 18
-            inputs["support_distance_bucket"] = "nearby"
-            positives.append("Price is close to support for the pullback setup")
-            score += 4 if support_strength in ("strong", "moderate") else 2
-        elif support_distance is not None and support_distance <= 6:
-            score += 10
-            inputs["support_distance_bucket"] = "usable"
-            positives.append("Support remains within usable range")
-        else:
-            negatives.append("The pullback is not close to a support reference")
-        if sma_distance is not None and sma_distance <= 3:
-            score += 8
-            inputs["moving_average_distance_bucket"] = "nearby"
-            positives.append("Price is near a moving average during the pullback")
-        elif sma_distance is not None and sma_distance <= 6:
-            score += 4
-            inputs["moving_average_distance_bucket"] = "usable"
-        else:
-            negatives.append("The pullback is extended from the moving averages")
-    else:  # Momentum Long
-        if support_distance is not None and support_distance <= 5:
-            score += 10
-            inputs["support_distance_bucket"] = "usable"
-            positives.append("Support is within a usable range")
-        elif support_distance is not None and support_distance <= 10:
-            score += 5
-            inputs["support_distance_bucket"] = "distant"
-        else:
-            negatives.append("Support is distant or unavailable")
-        if resistance_distance is not None and resistance_distance >= 8:
-            score += 12
-            inputs["resistance_distance_bucket"] = "ample_room"
-            positives.append("There is ample room before resistance")
-        elif resistance_distance is not None and resistance_distance >= 4:
-            score += 8
-            inputs["resistance_distance_bucket"] = "usable_room"
-            positives.append("There is usable room before resistance")
-        else:
-            negatives.append("Upside room before resistance is limited")
-        if sma_distance is not None and sma_distance <= 5:
-            score += 8
-            inputs["moving_average_distance_bucket"] = "controlled"
-            positives.append("Price is not excessively extended from its moving averages")
-        elif sma_distance is not None and sma_distance <= 10:
-            score += 3
-            inputs["moving_average_distance_bucket"] = "extended"
-        else:
-            negatives.append("Price is excessively extended from its moving averages")
-
-    status = "supportive" if score >= 21 else "mixed" if score >= 12 else "weak"
-    return _family_result(score, max_score, status, positives, negatives, inputs)
-
-
-def score_trade_confirmation(rsi, rvol, macd, macd_signal, trade_setup):
-    max_score = TRADE_QUALITY_FAMILY_WEIGHTS["confirmation"]
-    rsi = _valid_number(rsi, minimum=0, maximum=100)
-    rvol = _valid_number(rvol, minimum=0)
-    macd = _valid_number(macd)
-    macd_signal = _valid_number(macd_signal)
-    valid_setup = _bullish_setup(trade_setup)
-    inputs = {
-        "valid_bullish_setup": valid_setup,
-        "relative_volume_bucket": None,
-        "macd_above_signal": macd > macd_signal if macd is not None and macd_signal is not None else None,
-        "rsi_bucket": None,
-    }
-    if not valid_setup:
-        return _family_result(0, max_score, "unavailable", [],
-                              ["No valid bullish setup is available for confirmation scoring"], inputs)
-
-    score = 0
-    positives = []
-    negatives = []
-    if rvol is None:
-        negatives.append("Relative volume is unavailable")
-    elif rvol >= 2:
-        score += 10
-        inputs["relative_volume_bucket"] = "strong"
-        positives.append("Relative volume strongly confirms the setup")
-    elif rvol >= 1:
-        score += 7
-        inputs["relative_volume_bucket"] = "supportive"
-        positives.append("Relative volume supports the setup")
-    elif rvol >= 0.7:
-        score += 3
-        inputs["relative_volume_bucket"] = "light"
-        negatives.append("Volume confirmation is light")
-    else:
-        inputs["relative_volume_bucket"] = "weak"
-        negatives.append("Volume does not confirm the setup")
-
-    if macd is None or macd_signal is None:
-        negatives.append("MACD confirmation is unavailable")
-    elif macd > macd_signal:
-        score += 8
-        positives.append("MACD confirms bullish entry momentum")
-    else:
-        negatives.append("MACD does not confirm bullish entry momentum")
-
-    if rsi is None:
-        negatives.append("RSI confirmation is unavailable")
-    elif 50 <= rsi <= 70:
-        score += 7
-        inputs["rsi_bucket"] = "supportive"
-        positives.append("RSI supports the proposed entry")
-    elif 40 <= rsi < 50:
-        score += 3
-        inputs["rsi_bucket"] = "stabilizing"
-        negatives.append("RSI has not fully confirmed the entry")
-    elif rsi > 70:
-        score += 2
-        inputs["rsi_bucket"] = "extended"
-        negatives.append("RSI is extended")
-    else:
-        inputs["rsi_bucket"] = "weak"
-        negatives.append("RSI remains weak")
-
-    status = "supportive" if score >= 18 else "mixed" if score >= 10 else "weak"
-    return _family_result(score, max_score, status, positives, negatives, inputs)
-
-
-def score_trade_risk_reward(trade_setup):
-    max_score = TRADE_QUALITY_FAMILY_WEIGHTS["risk_reward"]
-    setup = trade_setup if isinstance(trade_setup, dict) else {}
-    entry = _valid_number(setup.get("entry"), minimum=0)
-    stop = _valid_number(setup.get("stop"), minimum=0)
-    target = _valid_number(setup.get("target"), minimum=0)
-    risk_pct = _valid_number(setup.get("risk_pct"), minimum=0)
-    valid = (_bullish_setup(setup) and entry is not None and entry > 0
-             and stop is not None and target is not None and stop < entry < target)
-    risk = entry - stop if valid else None
-    reward = target - entry if valid else None
-    ratio = reward / risk if valid and risk > 0 else None
-    inputs = {
-        "valid_trade_plan": valid and ratio is not None and math.isfinite(ratio),
-        "reward_to_risk_bucket": None,
-        "stop_distance_bucket": None,
-    }
-    if not inputs["valid_trade_plan"]:
-        return _family_result(0, max_score, "unavailable", [],
-                              ["A valid long entry, stop, and target are required"], inputs)
-
-    if ratio >= 3:
-        score, bucket = 20, "strong"
-    elif ratio >= 2:
-        score, bucket = 16, "good"
-    elif ratio >= 1.5:
-        score, bucket = 12, "moderate"
-    elif ratio >= 1:
-        score, bucket = 6, "limited"
-    else:
-        score, bucket = 2, "poor"
-    inputs["reward_to_risk_bucket"] = bucket
-    positives = [f"The planned reward-to-risk ratio is {round(ratio, 2)}:1"] if ratio >= 1.5 else []
-    negatives = [] if ratio >= 1.5 else [f"The planned reward-to-risk ratio is only {round(ratio, 2)}:1"]
-    if risk_pct is None:
-        risk_pct = risk / entry * 100
-    if risk_pct > 10:
-        score = min(score, 8)
-        inputs["stop_distance_bucket"] = "very_wide"
-        negatives.append("The planned stop is very wide")
-    elif risk_pct > 6:
-        score = max(0, score - 3)
-        inputs["stop_distance_bucket"] = "wide"
-        negatives.append("The planned stop is wide")
-    else:
-        inputs["stop_distance_bucket"] = "controlled"
-        positives.append("The planned stop distance is controlled")
-    status = "supportive" if score >= 14 else "mixed" if score >= 8 else "weak"
-    return _family_result(score, max_score, status, positives, negatives, inputs)
-
-
-def score_trade_timing(price, sma_20, sma_50, rsi, trade_setup):
-    max_score = TRADE_QUALITY_FAMILY_WEIGHTS["timing"]
-    price = _valid_number(price, minimum=0)
-    rsi = _valid_number(rsi, minimum=0, maximum=100)
-    setup_type = trade_setup.get("setup_type") if isinstance(trade_setup, dict) else None
-    valid_setup = _bullish_setup(trade_setup)
-    sma_distance = min(
-        [distance for distance in (
-            _distance_pct(price, sma_20), _distance_pct(price, sma_50)
-        ) if distance is not None],
-        default=None,
-    )
-    inputs = {
-        "valid_bullish_setup": valid_setup,
-        "setup_stage": setup_type,
-        "moving_average_extension_bucket": None,
-        "rsi_timing_bucket": None,
-    }
-    if price is None or price <= 0 or not valid_setup:
-        return _family_result(0, max_score, "unavailable", [],
-                              ["No valid bullish setup is available for timing scoring"], inputs)
-
-    stage_points = {"Breakout Watch": 5, "Pullback Bounce": 5, "Momentum Long": 3}.get(setup_type, 0)
-    score = stage_points
-    positives = ["The setup is at a defined entry stage"] if stage_points else []
-    negatives = []
-    if sma_distance is None:
-        negatives.append("Moving-average extension is unavailable")
-    elif sma_distance <= 3:
-        score += 7
-        inputs["moving_average_extension_bucket"] = "early"
-        positives.append("Price remains close to a moving-average reference")
-    elif sma_distance <= 6:
-        score += 5
-        inputs["moving_average_extension_bucket"] = "reasonable"
-        positives.append("Price extension remains reasonable")
-    elif sma_distance <= 10:
-        score += 2
-        inputs["moving_average_extension_bucket"] = "late"
-        negatives.append("The entry is becoming extended")
-    else:
-        inputs["moving_average_extension_bucket"] = "chasing"
-        negatives.append("Price is too extended from its moving averages")
-
-    if rsi is None:
-        negatives.append("RSI timing is unavailable")
-    elif rsi > 75:
-        inputs["rsi_timing_bucket"] = "very_extended"
-        negatives.append("RSI indicates a late, extended entry")
-    elif rsi > 70:
-        score += 2
-        inputs["rsi_timing_bucket"] = "extended"
-        negatives.append("RSI indicates some entry extension")
-    elif rsi >= 40:
-        score += 3
-        inputs["rsi_timing_bucket"] = "constructive"
-        positives.append("RSI timing is constructive")
-    else:
-        inputs["rsi_timing_bucket"] = "weak"
-        negatives.append("RSI does not show entry stabilization")
-    status = "supportive" if score >= 11 else "mixed" if score >= 6 else "weak"
-    return _family_result(score, max_score, status, positives, negatives, inputs)
-
-
-def score_trade_confluence(components, valid_setup):
-    max_score = TRADE_QUALITY_FAMILY_WEIGHTS["confluence"]
-    aligned = [
-        key for key in ("location", "confirmation", "risk_reward", "timing")
-        if components[key]["score"] >= components[key]["max_score"] * 0.6
-    ] if valid_setup else []
-    score = {0: 0, 1: 2, 2: 5, 3: 8, 4: 10}[len(aligned)]
-    inputs = {"valid_bullish_setup": valid_setup, "aligned_families": aligned}
-    positives = [f"{len(aligned)} independent trade-quality families are aligned"] if aligned else []
-    negatives = [] if len(aligned) >= 2 else ["Independent trade evidence has limited confluence"]
-    status = "supportive" if score >= 8 else "mixed" if score >= 5 else "weak"
-    return _family_result(score, max_score, status, positives, negatives, inputs)
-
-
-def _trade_quality_grade(score):
-    if score >= 80:
-        return "Excellent Entry"
-    if score >= 65:
-        return "Good Entry"
-    if score >= 50:
-        return "Average Entry"
-    if score >= 35:
-        return "Weak Entry"
-    return "Poor Entry"
-
-
-def calculate_trade_quality_score(price, sma_20, sma_50, rsi, rvol, macd,
-                                  macd_signal, support_zone, resistance_zone,
-                                  trade_setup):
-    components = {
-        "location": score_trade_location(
-            price, sma_20, sma_50, support_zone, resistance_zone, trade_setup
-        ),
-        "confirmation": score_trade_confirmation(rsi, rvol, macd, macd_signal, trade_setup),
-        "risk_reward": score_trade_risk_reward(trade_setup),
-        "timing": score_trade_timing(price, sma_20, sma_50, rsi, trade_setup),
-    }
-    components["confluence"] = score_trade_confluence(components, _bullish_setup(trade_setup))
-    for key, component in components.items():
-        component["details"] = _trade_component_details(
-            key, component, price=price, sma_20=sma_20, sma_50=sma_50,
-            rsi=rsi, rvol=rvol, macd=macd, macd_signal=macd_signal,
-            support_zone=support_zone, resistance_zone=resistance_zone,
-            trade_setup=trade_setup,
-        )
-    score = max(0, min(100, sum(component["score"] for component in components.values())))
-    positives = []
-    negatives = []
-    for component in components.values():
-        positives.extend(reason for reason in component["positive_reasons"] if reason not in positives)
-        negatives.extend(reason for reason in component["negative_reasons"] if reason not in negatives)
-    return {
-        "score": score,
-        "grade": _trade_quality_grade(score),
-        "positives": positives,
-        "negatives": negatives,
-        "version": TRADE_QUALITY_SCORE_VERSION,
-        "components": components,
-    }
-
-
-def calculate_entry_score(price, rvol, support_zone, resistance_zone, trade_setup,
-                          sma_20=None, sma_50=None, rsi=None, macd=None, macd_signal=None):
-    """Deprecated compatibility wrapper. Use calculate_trade_quality_score."""
-    return calculate_trade_quality_score(
-        price, sma_20, sma_50, rsi, rvol, macd, macd_signal,
-        support_zone, resistance_zone, trade_setup,
-    )
-
 def generate_trade_setup(price, trend, rsi, rvol, macd, macd_signal, macd_hist, support_zone, resistance_zone):
     setup_type = "No Clear Setup"
     setup_bias = "Neutral"
@@ -1427,7 +913,7 @@ def _record_audit_duration(audit_context, stage_name, duration):
     stage_timings[stage_name] = stage_timings.get(stage_name, 0.0) + duration
 
 
-def _record_symbol_result(audit_context, symbol, status, stage=None, reason=None, fetch_seconds=None, indicator_seconds=None, technical_score_seconds=None, trade_quality_score_seconds=None, setup_seconds=None, total_seconds=None):
+def _record_symbol_result(audit_context, symbol, status, stage=None, reason=None, fetch_seconds=None, indicator_seconds=None, technical_score_seconds=None, setup_seconds=None, total_seconds=None):
     if audit_context is None:
         return
 
@@ -1439,7 +925,6 @@ def _record_symbol_result(audit_context, symbol, status, stage=None, reason=None
         "fetch_seconds": round(fetch_seconds, 6) if fetch_seconds is not None else None,
         "indicator_seconds": round(indicator_seconds, 6) if indicator_seconds is not None else None,
         "technical_score_seconds": round(technical_score_seconds, 6) if technical_score_seconds is not None else None,
-        "trade_quality_score_seconds": round(trade_quality_score_seconds, 6) if trade_quality_score_seconds is not None else None,
         "setup_seconds": round(setup_seconds, 6) if setup_seconds is not None else None,
         "analysis_seconds": round(total_seconds, 6) if total_seconds is not None else None,
         "total_seconds": round(total_seconds, 6) if total_seconds is not None else None,
@@ -1503,7 +988,6 @@ def _analyze_ticker_uncached(ticker: str, period: str = "1y", interval: str = "1
     fetch_seconds = None
     indicator_seconds = None
     technical_score_seconds = None
-    trade_quality_score_seconds = None
     setup_seconds = None
 
     try:
@@ -1658,22 +1142,6 @@ def _analyze_ticker_uncached(ticker: str, period: str = "1y", interval: str = "1
     setup_seconds = perf_counter() - setup_started_at
     _record_audit_duration(audit_context, "trade_setup_generation_seconds", setup_seconds)
 
-    trade_quality_started_at = perf_counter()
-    trade_quality_score = calculate_trade_quality_score(
-        price,
-        sma_20,
-        sma_50,
-        rsi,
-        rvol,
-        macd,
-        macd_signal,
-        support_zone,
-        resistance_zone,
-        trade_setup,
-    )
-    trade_quality_score_seconds = perf_counter() - trade_quality_started_at
-    _record_audit_duration(audit_context, "trade_quality_scoring_seconds", trade_quality_score_seconds)
-
     response = {
         "ticker": ticker.upper(),
         "price": price,
@@ -1696,9 +1164,6 @@ def _analyze_ticker_uncached(ticker: str, period: str = "1y", interval: str = "1
         "technical_score": technical_score,
         # Deprecated compatibility alias. technical_score is canonical.
         "trend_score": technical_score,
-        "trade_quality_score": trade_quality_score,
-        # Deprecated compatibility alias. trade_quality_score is canonical.
-        "entry_score": trade_quality_score,
         "recommendation": recommendation,
         "period": period,
         "interval": interval,
@@ -1715,7 +1180,6 @@ def _analyze_ticker_uncached(ticker: str, period: str = "1y", interval: str = "1
             fetch_seconds=fetch_seconds,
             indicator_seconds=indicator_seconds,
             technical_score_seconds=technical_score_seconds,
-            trade_quality_score_seconds=trade_quality_score_seconds,
             setup_seconds=setup_seconds,
             total_seconds=total_seconds,
         )

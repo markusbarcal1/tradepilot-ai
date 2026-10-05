@@ -50,7 +50,7 @@ class PaperPersistenceTests(unittest.TestCase):
             set(inspect(self.engine).get_table_names()),
             {
                 "app_users", "paper_accounts", "paper_positions", "paper_trades",
-                "user_preferences", "watchlist_items",
+                "user_preferences", "watchlist_items", "expectation_snapshots",
             },
         )
         account = read_account(self.current_user)

@@ -1,0 +1,2638 @@
+{
+  "artifact_created_at": "2026-10-02T08:14:53.569464Z",
+  "budget": {
+    "attempts_charged": 8,
+    "maximum": 8,
+    "per_role": {
+      "AAPL-FY2025-FY": 1,
+      "AAPL-FY2025-Q1": 1,
+      "AAPL-FY2025-Q2": 1,
+      "AAPL-FY2025-Q3": 1,
+      "NVDA-FY2026-FY": 1,
+      "NVDA-FY2026-Q1": 1,
+      "NVDA-FY2026-Q2": 1,
+      "NVDA-FY2026-Q3": 1
+    },
+    "per_role_maximum": 1
+  },
+  "certification_complete": true,
+  "mode": "live",
+  "partitions": [
+    {
+      "concept_identity": {
+        "certified_records": [
+          {
+            "record_identity": "phase6b5c2a5w8:RevenueFromContractWithCustomerExcludingAssessedTax:2024-2025",
+            "source_package_sha256": "DECDD417D86FF7BFB5CA166C0CA1001017AEA873673544A8D7F91C34BF5D82DF",
+            "target_package_sha256": "A3B835925AD74030EB5BE865A26D7DFE44013081C4AB7204B6122316A685FFF4"
+          }
+        ],
+        "equivalence_policy_version": "us-gaap-2024-2025-revenue-concept-equivalence-1",
+        "original_qnames": [
+          {
+            "local_name": "RevenueFromContractWithCustomerExcludingAssessedTax",
+            "namespace_uri": "http://fasb.org/us-gaap/2025"
+          },
+          {
+            "local_name": "RevenueFromContractWithCustomerExcludingAssessedTax",
+            "namespace_uri": "http://fasb.org/us-gaap/2024"
+          },
+          {
+            "local_name": "RevenueFromContractWithCustomerExcludingAssessedTax",
+            "namespace_uri": "http://fasb.org/us-gaap/2024"
+          },
+          {
+            "local_name": "RevenueFromContractWithCustomerExcludingAssessedTax",
+            "namespace_uri": "http://fasb.org/us-gaap/2024"
+          }
+        ],
+        "state": "certified_cross_version_equivalence"
+      },
+      "partition_policy_version": "revenue-operand-partition-identity-2",
+      "reasons": [],
+      "residual_duration_days": 91,
+      "residual_period_end": "2025-09-27",
+      "residual_period_start": "2025-06-29",
+      "state": "valid",
+      "target_fiscal_year": 2025,
+      "ticker": "AAPL",
+      "validator_invoked": true
+    },
+    {
+      "concept_identity": {
+        "certified_records": [
+          {
+            "record_identity": "phase6b5c2a5w8:Revenues:2024-2025",
+            "source_package_sha256": "DECDD417D86FF7BFB5CA166C0CA1001017AEA873673544A8D7F91C34BF5D82DF",
+            "target_package_sha256": "A3B835925AD74030EB5BE865A26D7DFE44013081C4AB7204B6122316A685FFF4"
+          }
+        ],
+        "equivalence_policy_version": "us-gaap-2024-2025-revenue-concept-equivalence-1",
+        "original_qnames": [
+          {
+            "local_name": "Revenues",
+            "namespace_uri": "http://fasb.org/us-gaap/2025"
+          },
+          {
+            "local_name": "Revenues",
+            "namespace_uri": "http://fasb.org/us-gaap/2024"
+          },
+          {
+            "local_name": "Revenues",
+            "namespace_uri": "http://fasb.org/us-gaap/2025"
+          },
+          {
+            "local_name": "Revenues",
+            "namespace_uri": "http://fasb.org/us-gaap/2025"
+          }
+        ],
+        "state": "certified_cross_version_equivalence"
+      },
+      "partition_policy_version": "revenue-operand-partition-identity-2",
+      "reasons": [],
+      "residual_duration_days": 91,
+      "residual_period_end": "2026-01-25",
+      "residual_period_start": "2025-10-27",
+      "state": "valid",
+      "target_fiscal_year": 2026,
+      "ticker": "NVDA",
+      "validator_invoked": true
+    }
+  ],
+  "qualifier": "sec-inline-xbrl-revenue-operand-2",
+  "recomputed_manifest_fingerprint": "b272d3c69d169a5332e148839bec8ef37c2d4a234b81388db09eeb00efbce55b",
+  "requests": [
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 1,
+      "response_bytes": 1520316,
+      "role_key": "AAPL-FY2025-FY",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm"
+    },
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 2,
+      "response_bytes": 732697,
+      "role_key": "AAPL-FY2025-Q1",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000008/aapl-20241228.htm"
+    },
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 3,
+      "response_bytes": 890085,
+      "role_key": "AAPL-FY2025-Q2",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000057/aapl-20250329.htm"
+    },
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 4,
+      "response_bytes": 888156,
+      "role_key": "AAPL-FY2025-Q3",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000073/aapl-20250628.htm"
+    },
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 5,
+      "response_bytes": 1967924,
+      "role_key": "NVDA-FY2026-FY",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000021/nvda-20260125.htm"
+    },
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 6,
+      "response_bytes": 1132297,
+      "role_key": "NVDA-FY2026-Q1",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000116/nvda-20250427.htm"
+    },
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 7,
+      "response_bytes": 1349531,
+      "role_key": "NVDA-FY2026-Q2",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000209/nvda-20250727.htm"
+    },
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 8,
+      "response_bytes": 1381438,
+      "role_key": "NVDA-FY2026-Q3",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000230/nvda-20251026.htm"
+    }
+  ],
+  "reviewed_manifest_fingerprint": "b272d3c69d169a5332e148839bec8ef37c2d4a234b81388db09eeb00efbce55b",
+  "roles": [
+    {
+      "accession": "0000320193-25-000079",
+      "attempt_charged": true,
+      "compatible_candidate_count": 4,
+      "failure_reason": null,
+      "filing_date": "2025-10-31",
+      "fiscal_anchor_diagnostic": {
+        "anchors": [
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  1
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "2025",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "2025",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalYearFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  2
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "FY",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "FY",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalPeriodFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  28
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "2025-09-27",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "September\u00a027, 2025",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "applied",
+                "transform_categories": [
+                  "resolved:http://www.xbrl.org/inlineXBRL/transformation/2020-02-12#date-monthname-day-year-en"
+                ],
+                "transformed_canonical_value": "2025-09-27",
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentPeriodEndDate"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  26
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "10-K",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "10-K",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentType"
+          }
+        ],
+        "diagnostic_cap_exceeded": false,
+        "diagnostic_identity": "inline-revenue-fiscal-anchor-diagnostic-2",
+        "schema_version": "2"
+      },
+      "form": "10-K",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "partition_replay_completeness": {
+        "missing_fields": [],
+        "state": "complete"
+      },
+      "partition_replay_evidence": {
+        "accounting_basis": "gaap",
+        "canonical_unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure"
+        },
+        "context": {
+          "entity_scheme": "http://www.sec.gov/CIK",
+          "entity_value": "0000320193",
+          "explicit_dimensions": [],
+          "period_end": "2025-09-27",
+          "period_start": "2024-09-29",
+          "typed_dimension_count": 0
+        },
+        "expanded_qname": {
+          "local_name": "RevenueFromContractWithCustomerExcludingAssessedTax",
+          "namespace_uri": "http://fasb.org/us-gaap/2025"
+        },
+        "provenance": {
+          "context_id": "c-1",
+          "dei_anchor": {
+            "document_type": "10-K",
+            "fact_ordinals": [
+              1,
+              2,
+              26,
+              28
+            ],
+            "fiscal_period": "FY",
+            "fiscal_year": 2025,
+            "period_end": "2025-09-27"
+          },
+          "fact_ordinal": 99,
+          "node_ordinal": 4821,
+          "occurrence_ordinals": [
+            99,
+            413,
+            1024,
+            1116
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "inline-revenue-manifest-metadata-completion-1",
+          "unit_id": "usd"
+        },
+        "reporting_scope": "consolidated_entity",
+        "role": "FY",
+        "schema_version": "1",
+        "target_fiscal_year": 2025
+      },
+      "primary_document": "aapl-20250927.htm",
+      "qualified_operand": {
+        "accounting_basis": "gaap",
+        "currency": "USD",
+        "dimension_state": {
+          "explicit_count": 0,
+          "typed_count": 0
+        },
+        "duplicate_count": 3,
+        "duration_days": 364,
+        "exact_decimal_value": "416161000000",
+        "expanded_qname": {
+          "local_name": "RevenueFromContractWithCustomerExcludingAssessedTax",
+          "namespace_uri": "http://fasb.org/us-gaap/2025"
+        },
+        "period_end": "2025-09-27",
+        "period_start": "2024-09-29",
+        "provenance": {
+          "context_id": "c-1",
+          "dei_anchor": {
+            "document_type": "10-K",
+            "fact_ordinals": [
+              1,
+              2,
+              26,
+              28
+            ],
+            "fiscal_period": "FY",
+            "fiscal_year": 2025,
+            "period_end": "2025-09-27"
+          },
+          "fact_ordinal": 99,
+          "node_ordinal": 4821,
+          "occurrence_ordinals": [
+            99,
+            413,
+            1024,
+            1116
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "inline-revenue-manifest-metadata-completion-1",
+          "unit_id": "usd"
+        },
+        "scope": "consolidated_entity",
+        "unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure",
+          "unit_id": "usd"
+        }
+      },
+      "qualifier_failure_reasons": [],
+      "qualifier_invoked": true,
+      "qualifier_state": "qualified",
+      "report_period_end": "2025-09-27",
+      "response_bytes": 1520316,
+      "role": "FY",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm",
+      "supported_revenue_fact_count": 57,
+      "target_fiscal_year": 2025,
+      "ticker": "AAPL",
+      "transport_outcome": "success"
+    },
+    {
+      "accession": "0000320193-25-000008",
+      "attempt_charged": true,
+      "compatible_candidate_count": 2,
+      "failure_reason": null,
+      "filing_date": "2025-01-31",
+      "fiscal_anchor_diagnostic": {
+        "anchors": [
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  1
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "2025",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "2025",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalYearFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  2
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "Q1",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "Q1",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalPeriodFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  17
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "2024-12-28",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "December\u00a028, 2024",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "applied",
+                "transform_categories": [
+                  "resolved:http://www.xbrl.org/inlineXBRL/transformation/2020-02-12#date-monthname-day-year-en"
+                ],
+                "transformed_canonical_value": "2024-12-28",
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentPeriodEndDate"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  15
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "10-Q",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "10-Q",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentType"
+          }
+        ],
+        "diagnostic_cap_exceeded": false,
+        "diagnostic_identity": "inline-revenue-fiscal-anchor-diagnostic-2",
+        "schema_version": "2"
+      },
+      "form": "10-Q",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "partition_replay_completeness": {
+        "missing_fields": [],
+        "state": "complete"
+      },
+      "partition_replay_evidence": {
+        "accounting_basis": "gaap",
+        "canonical_unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure"
+        },
+        "context": {
+          "entity_scheme": "http://www.sec.gov/CIK",
+          "entity_value": "0000320193",
+          "explicit_dimensions": [],
+          "period_end": "2024-12-28",
+          "period_start": "2024-09-29",
+          "typed_dimension_count": 0
+        },
+        "expanded_qname": {
+          "local_name": "RevenueFromContractWithCustomerExcludingAssessedTax",
+          "namespace_uri": "http://fasb.org/us-gaap/2024"
+        },
+        "provenance": {
+          "context_id": "c-1",
+          "dei_anchor": {
+            "document_type": "10-Q",
+            "fact_ordinals": [
+              1,
+              2,
+              15,
+              17
+            ],
+            "fiscal_period": "Q1",
+            "fiscal_year": 2025,
+            "period_end": "2024-12-28"
+          },
+          "fact_ordinal": 67,
+          "node_ordinal": 1679,
+          "occurrence_ordinals": [
+            67,
+            288
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "phase6b5c2a5w1-preflight-1",
+          "unit_id": "usd"
+        },
+        "reporting_scope": "consolidated_entity",
+        "role": "Q1",
+        "schema_version": "1",
+        "target_fiscal_year": 2025
+      },
+      "primary_document": "aapl-20241228.htm",
+      "qualified_operand": {
+        "accounting_basis": "gaap",
+        "currency": "USD",
+        "dimension_state": {
+          "explicit_count": 0,
+          "typed_count": 0
+        },
+        "duplicate_count": 1,
+        "duration_days": 91,
+        "exact_decimal_value": "124300000000",
+        "expanded_qname": {
+          "local_name": "RevenueFromContractWithCustomerExcludingAssessedTax",
+          "namespace_uri": "http://fasb.org/us-gaap/2024"
+        },
+        "period_end": "2024-12-28",
+        "period_start": "2024-09-29",
+        "provenance": {
+          "context_id": "c-1",
+          "dei_anchor": {
+            "document_type": "10-Q",
+            "fact_ordinals": [
+              1,
+              2,
+              15,
+              17
+            ],
+            "fiscal_period": "Q1",
+            "fiscal_year": 2025,
+            "period_end": "2024-12-28"
+          },
+          "fact_ordinal": 67,
+          "node_ordinal": 1679,
+          "occurrence_ordinals": [
+            67,
+            288
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "phase6b5c2a5w1-preflight-1",
+          "unit_id": "usd"
+        },
+        "scope": "consolidated_entity",
+        "unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure",
+          "unit_id": "usd"
+        }
+      },
+      "qualifier_failure_reasons": [],
+      "qualifier_invoked": true,
+      "qualifier_state": "qualified",
+      "report_period_end": "2024-12-28",
+      "response_bytes": 732697,
+      "role": "Q1",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000008/aapl-20241228.htm",
+      "supported_revenue_fact_count": 28,
+      "target_fiscal_year": 2025,
+      "ticker": "AAPL",
+      "transport_outcome": "success"
+    },
+    {
+      "accession": "0000320193-25-000057",
+      "attempt_charged": true,
+      "compatible_candidate_count": 2,
+      "failure_reason": null,
+      "filing_date": "2025-05-02",
+      "fiscal_anchor_diagnostic": {
+        "anchors": [
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  1
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "2025",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "2025",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalYearFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  2
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "Q2",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "Q2",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalPeriodFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  15
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "2025-03-29",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "March\u00a029, 2025",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "applied",
+                "transform_categories": [
+                  "resolved:http://www.xbrl.org/inlineXBRL/transformation/2020-02-12#date-monthname-day-year-en"
+                ],
+                "transformed_canonical_value": "2025-03-29",
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentPeriodEndDate"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  13
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "10-Q",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "10-Q",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentType"
+          }
+        ],
+        "diagnostic_cap_exceeded": false,
+        "diagnostic_identity": "inline-revenue-fiscal-anchor-diagnostic-2",
+        "schema_version": "2"
+      },
+      "form": "10-Q",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "partition_replay_completeness": {
+        "missing_fields": [],
+        "state": "complete"
+      },
+      "partition_replay_evidence": {
+        "accounting_basis": "gaap",
+        "canonical_unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure"
+        },
+        "context": {
+          "entity_scheme": "http://www.sec.gov/CIK",
+          "entity_value": "0000320193",
+          "explicit_dimensions": [],
+          "period_end": "2025-03-29",
+          "period_start": "2024-12-29",
+          "typed_dimension_count": 0
+        },
+        "expanded_qname": {
+          "local_name": "RevenueFromContractWithCustomerExcludingAssessedTax",
+          "namespace_uri": "http://fasb.org/us-gaap/2024"
+        },
+        "provenance": {
+          "context_id": "c-20",
+          "dei_anchor": {
+            "document_type": "10-Q",
+            "fact_ordinals": [
+              1,
+              2,
+              13,
+              15
+            ],
+            "fiscal_period": "Q2",
+            "fiscal_year": 2025,
+            "period_end": "2025-03-29"
+          },
+          "fact_ordinal": 69,
+          "node_ordinal": 2005,
+          "occurrence_ordinals": [
+            69,
+            390
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "phase6b5c2a5w1-preflight-1",
+          "unit_id": "usd"
+        },
+        "reporting_scope": "consolidated_entity",
+        "role": "Q2",
+        "schema_version": "1",
+        "target_fiscal_year": 2025
+      },
+      "primary_document": "aapl-20250329.htm",
+      "qualified_operand": {
+        "accounting_basis": "gaap",
+        "currency": "USD",
+        "dimension_state": {
+          "explicit_count": 0,
+          "typed_count": 0
+        },
+        "duplicate_count": 1,
+        "duration_days": 91,
+        "exact_decimal_value": "95359000000",
+        "expanded_qname": {
+          "local_name": "RevenueFromContractWithCustomerExcludingAssessedTax",
+          "namespace_uri": "http://fasb.org/us-gaap/2024"
+        },
+        "period_end": "2025-03-29",
+        "period_start": "2024-12-29",
+        "provenance": {
+          "context_id": "c-20",
+          "dei_anchor": {
+            "document_type": "10-Q",
+            "fact_ordinals": [
+              1,
+              2,
+              13,
+              15
+            ],
+            "fiscal_period": "Q2",
+            "fiscal_year": 2025,
+            "period_end": "2025-03-29"
+          },
+          "fact_ordinal": 69,
+          "node_ordinal": 2005,
+          "occurrence_ordinals": [
+            69,
+            390
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "phase6b5c2a5w1-preflight-1",
+          "unit_id": "usd"
+        },
+        "scope": "consolidated_entity",
+        "unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure",
+          "unit_id": "usd"
+        }
+      },
+      "qualifier_failure_reasons": [],
+      "qualifier_invoked": true,
+      "qualifier_state": "qualified",
+      "report_period_end": "2025-03-29",
+      "response_bytes": 890085,
+      "role": "Q2",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000057/aapl-20250329.htm",
+      "supported_revenue_fact_count": 56,
+      "target_fiscal_year": 2025,
+      "ticker": "AAPL",
+      "transport_outcome": "success"
+    },
+    {
+      "accession": "0000320193-25-000073",
+      "attempt_charged": true,
+      "compatible_candidate_count": 2,
+      "failure_reason": null,
+      "filing_date": "2025-08-01",
+      "fiscal_anchor_diagnostic": {
+        "anchors": [
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  1
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "2025",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "2025",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalYearFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  2
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "Q3",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "Q3",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalPeriodFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  15
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "2025-06-28",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "June\u00a028, 2025",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "applied",
+                "transform_categories": [
+                  "resolved:http://www.xbrl.org/inlineXBRL/transformation/2020-02-12#date-monthname-day-year-en"
+                ],
+                "transformed_canonical_value": "2025-06-28",
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentPeriodEndDate"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  13
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "10-Q",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "10-Q",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentType"
+          }
+        ],
+        "diagnostic_cap_exceeded": false,
+        "diagnostic_identity": "inline-revenue-fiscal-anchor-diagnostic-2",
+        "schema_version": "2"
+      },
+      "form": "10-Q",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "partition_replay_completeness": {
+        "missing_fields": [],
+        "state": "complete"
+      },
+      "partition_replay_evidence": {
+        "accounting_basis": "gaap",
+        "canonical_unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure"
+        },
+        "context": {
+          "entity_scheme": "http://www.sec.gov/CIK",
+          "entity_value": "0000320193",
+          "explicit_dimensions": [],
+          "period_end": "2025-06-28",
+          "period_start": "2025-03-30",
+          "typed_dimension_count": 0
+        },
+        "expanded_qname": {
+          "local_name": "RevenueFromContractWithCustomerExcludingAssessedTax",
+          "namespace_uri": "http://fasb.org/us-gaap/2024"
+        },
+        "provenance": {
+          "context_id": "c-19",
+          "dei_anchor": {
+            "document_type": "10-Q",
+            "fact_ordinals": [
+              1,
+              2,
+              13,
+              15
+            ],
+            "fiscal_period": "Q3",
+            "fiscal_year": 2025,
+            "period_end": "2025-06-28"
+          },
+          "fact_ordinal": 66,
+          "node_ordinal": 2017,
+          "occurrence_ordinals": [
+            66,
+            389
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "phase6b5c2a5w1-preflight-1",
+          "unit_id": "usd"
+        },
+        "reporting_scope": "consolidated_entity",
+        "role": "Q3",
+        "schema_version": "1",
+        "target_fiscal_year": 2025
+      },
+      "primary_document": "aapl-20250628.htm",
+      "qualified_operand": {
+        "accounting_basis": "gaap",
+        "currency": "USD",
+        "dimension_state": {
+          "explicit_count": 0,
+          "typed_count": 0
+        },
+        "duplicate_count": 1,
+        "duration_days": 91,
+        "exact_decimal_value": "94036000000",
+        "expanded_qname": {
+          "local_name": "RevenueFromContractWithCustomerExcludingAssessedTax",
+          "namespace_uri": "http://fasb.org/us-gaap/2024"
+        },
+        "period_end": "2025-06-28",
+        "period_start": "2025-03-30",
+        "provenance": {
+          "context_id": "c-19",
+          "dei_anchor": {
+            "document_type": "10-Q",
+            "fact_ordinals": [
+              1,
+              2,
+              13,
+              15
+            ],
+            "fiscal_period": "Q3",
+            "fiscal_year": 2025,
+            "period_end": "2025-06-28"
+          },
+          "fact_ordinal": 66,
+          "node_ordinal": 2017,
+          "occurrence_ordinals": [
+            66,
+            389
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "phase6b5c2a5w1-preflight-1",
+          "unit_id": "usd"
+        },
+        "scope": "consolidated_entity",
+        "unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure",
+          "unit_id": "usd"
+        }
+      },
+      "qualifier_failure_reasons": [],
+      "qualifier_invoked": true,
+      "qualifier_state": "qualified",
+      "report_period_end": "2025-06-28",
+      "response_bytes": 888156,
+      "role": "Q3",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000073/aapl-20250628.htm",
+      "supported_revenue_fact_count": 56,
+      "target_fiscal_year": 2025,
+      "ticker": "AAPL",
+      "transport_outcome": "success"
+    },
+    {
+      "accession": "0001045810-26-000021",
+      "attempt_charged": true,
+      "compatible_candidate_count": 3,
+      "failure_reason": null,
+      "filing_date": "2026-02-25",
+      "fiscal_anchor_diagnostic": {
+        "anchors": [
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  1
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "2026",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "2026",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalYearFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  2
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "FY",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "FY",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalPeriodFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  14
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "2026-01-25",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "January\u00a025, 2026",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "applied",
+                "transform_categories": [
+                  "resolved:http://www.xbrl.org/inlineXBRL/transformation/2020-02-12#date-monthname-day-year-en"
+                ],
+                "transformed_canonical_value": "2026-01-25",
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentPeriodEndDate"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  12
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "10-K",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "10-K",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentType"
+          }
+        ],
+        "diagnostic_cap_exceeded": false,
+        "diagnostic_identity": "inline-revenue-fiscal-anchor-diagnostic-2",
+        "schema_version": "2"
+      },
+      "form": "10-K",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "partition_replay_completeness": {
+        "missing_fields": [],
+        "state": "complete"
+      },
+      "partition_replay_evidence": {
+        "accounting_basis": "gaap",
+        "canonical_unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure"
+        },
+        "context": {
+          "entity_scheme": "http://www.sec.gov/CIK",
+          "entity_value": "0001045810",
+          "explicit_dimensions": [],
+          "period_end": "2026-01-25",
+          "period_start": "2025-01-27",
+          "typed_dimension_count": 0
+        },
+        "expanded_qname": {
+          "local_name": "Revenues",
+          "namespace_uri": "http://fasb.org/us-gaap/2025"
+        },
+        "provenance": {
+          "context_id": "c-1",
+          "dei_anchor": {
+            "document_type": "10-K",
+            "fact_ordinals": [
+              1,
+              2,
+              12,
+              14
+            ],
+            "fiscal_period": "FY",
+            "fiscal_year": 2026,
+            "period_end": "2026-01-25"
+          },
+          "fact_ordinal": 77,
+          "node_ordinal": 6697,
+          "occurrence_ordinals": [
+            77,
+            1190,
+            1224
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "inline-revenue-manifest-metadata-completion-1",
+          "unit_id": "usd"
+        },
+        "reporting_scope": "consolidated_entity",
+        "role": "FY",
+        "schema_version": "1",
+        "target_fiscal_year": 2026
+      },
+      "primary_document": "nvda-20260125.htm",
+      "qualified_operand": {
+        "accounting_basis": "gaap",
+        "currency": "USD",
+        "dimension_state": {
+          "explicit_count": 0,
+          "typed_count": 0
+        },
+        "duplicate_count": 2,
+        "duration_days": 364,
+        "exact_decimal_value": "215938000000",
+        "expanded_qname": {
+          "local_name": "Revenues",
+          "namespace_uri": "http://fasb.org/us-gaap/2025"
+        },
+        "period_end": "2026-01-25",
+        "period_start": "2025-01-27",
+        "provenance": {
+          "context_id": "c-1",
+          "dei_anchor": {
+            "document_type": "10-K",
+            "fact_ordinals": [
+              1,
+              2,
+              12,
+              14
+            ],
+            "fiscal_period": "FY",
+            "fiscal_year": 2026,
+            "period_end": "2026-01-25"
+          },
+          "fact_ordinal": 77,
+          "node_ordinal": 6697,
+          "occurrence_ordinals": [
+            77,
+            1190,
+            1224
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "inline-revenue-manifest-metadata-completion-1",
+          "unit_id": "usd"
+        },
+        "scope": "consolidated_entity",
+        "unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure",
+          "unit_id": "usd"
+        }
+      },
+      "qualifier_failure_reasons": [],
+      "qualifier_invoked": true,
+      "qualifier_state": "qualified",
+      "report_period_end": "2026-01-25",
+      "response_bytes": 1967924,
+      "role": "FY",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000021/nvda-20260125.htm",
+      "supported_revenue_fact_count": 51,
+      "target_fiscal_year": 2026,
+      "ticker": "NVDA",
+      "transport_outcome": "success"
+    },
+    {
+      "accession": "0001045810-25-000116",
+      "attempt_charged": true,
+      "compatible_candidate_count": 4,
+      "failure_reason": null,
+      "filing_date": "2025-05-28",
+      "fiscal_anchor_diagnostic": {
+        "anchors": [
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  2
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "2026",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "2026",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalYearFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  3
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "Q1",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "Q1",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalPeriodFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  13
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "2025-04-27",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "April\u00a027, 2025",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "applied",
+                "transform_categories": [
+                  "resolved:http://www.xbrl.org/inlineXBRL/transformation/2020-02-12#date-monthname-day-year-en"
+                ],
+                "transformed_canonical_value": "2025-04-27",
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentPeriodEndDate"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  11
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2024"
+                ],
+                "normalized_semantic_value": "10-Q",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "10-Q",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentType"
+          }
+        ],
+        "diagnostic_cap_exceeded": false,
+        "diagnostic_identity": "inline-revenue-fiscal-anchor-diagnostic-2",
+        "schema_version": "2"
+      },
+      "form": "10-Q",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "partition_replay_completeness": {
+        "missing_fields": [],
+        "state": "complete"
+      },
+      "partition_replay_evidence": {
+        "accounting_basis": "gaap",
+        "canonical_unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure"
+        },
+        "context": {
+          "entity_scheme": "http://www.sec.gov/CIK",
+          "entity_value": "0001045810",
+          "explicit_dimensions": [],
+          "period_end": "2025-04-27",
+          "period_start": "2025-01-27",
+          "typed_dimension_count": 0
+        },
+        "expanded_qname": {
+          "local_name": "Revenues",
+          "namespace_uri": "http://fasb.org/us-gaap/2024"
+        },
+        "provenance": {
+          "context_id": "c-1",
+          "dei_anchor": {
+            "document_type": "10-Q",
+            "fact_ordinals": [
+              2,
+              3,
+              11,
+              13
+            ],
+            "fiscal_period": "Q1",
+            "fiscal_year": 2026,
+            "period_end": "2025-04-27"
+          },
+          "fact_ordinal": 35,
+          "node_ordinal": 2025,
+          "occurrence_ordinals": [
+            35,
+            721,
+            763,
+            788
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "phase6b5c2a5w1-preflight-1",
+          "unit_id": "usd"
+        },
+        "reporting_scope": "consolidated_entity",
+        "role": "Q1",
+        "schema_version": "1",
+        "target_fiscal_year": 2026
+      },
+      "primary_document": "nvda-20250427.htm",
+      "qualified_operand": {
+        "accounting_basis": "gaap",
+        "currency": "USD",
+        "dimension_state": {
+          "explicit_count": 0,
+          "typed_count": 0
+        },
+        "duplicate_count": 3,
+        "duration_days": 91,
+        "exact_decimal_value": "44062000000",
+        "expanded_qname": {
+          "local_name": "Revenues",
+          "namespace_uri": "http://fasb.org/us-gaap/2024"
+        },
+        "period_end": "2025-04-27",
+        "period_start": "2025-01-27",
+        "provenance": {
+          "context_id": "c-1",
+          "dei_anchor": {
+            "document_type": "10-Q",
+            "fact_ordinals": [
+              2,
+              3,
+              11,
+              13
+            ],
+            "fiscal_period": "Q1",
+            "fiscal_year": 2026,
+            "period_end": "2025-04-27"
+          },
+          "fact_ordinal": 35,
+          "node_ordinal": 2025,
+          "occurrence_ordinals": [
+            35,
+            721,
+            763,
+            788
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "phase6b5c2a5w1-preflight-1",
+          "unit_id": "usd"
+        },
+        "scope": "consolidated_entity",
+        "unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure",
+          "unit_id": "usd"
+        }
+      },
+      "qualifier_failure_reasons": [],
+      "qualifier_invoked": true,
+      "qualifier_state": "qualified",
+      "report_period_end": "2025-04-27",
+      "response_bytes": 1132297,
+      "role": "Q1",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000116/nvda-20250427.htm",
+      "supported_revenue_fact_count": 38,
+      "target_fiscal_year": 2026,
+      "ticker": "NVDA",
+      "transport_outcome": "success"
+    },
+    {
+      "accession": "0001045810-25-000209",
+      "attempt_charged": true,
+      "compatible_candidate_count": 3,
+      "failure_reason": null,
+      "filing_date": "2025-08-27",
+      "fiscal_anchor_diagnostic": {
+        "anchors": [
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  2
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "2026",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "2026",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalYearFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  3
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "Q2",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "Q2",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalPeriodFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  10
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "2025-07-27",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "July\u00a027, 2025",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "applied",
+                "transform_categories": [
+                  "resolved:http://www.xbrl.org/inlineXBRL/transformation/2020-02-12#date-monthname-day-year-en"
+                ],
+                "transformed_canonical_value": "2025-07-27",
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentPeriodEndDate"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  8
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "10-Q",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "10-Q",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentType"
+          }
+        ],
+        "diagnostic_cap_exceeded": false,
+        "diagnostic_identity": "inline-revenue-fiscal-anchor-diagnostic-2",
+        "schema_version": "2"
+      },
+      "form": "10-Q",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "partition_replay_completeness": {
+        "missing_fields": [],
+        "state": "complete"
+      },
+      "partition_replay_evidence": {
+        "accounting_basis": "gaap",
+        "canonical_unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure"
+        },
+        "context": {
+          "entity_scheme": "http://www.sec.gov/CIK",
+          "entity_value": "0001045810",
+          "explicit_dimensions": [],
+          "period_end": "2025-07-27",
+          "period_start": "2025-04-28",
+          "typed_dimension_count": 0
+        },
+        "expanded_qname": {
+          "local_name": "Revenues",
+          "namespace_uri": "http://fasb.org/us-gaap/2025"
+        },
+        "provenance": {
+          "context_id": "c-3",
+          "dei_anchor": {
+            "document_type": "10-Q",
+            "fact_ordinals": [
+              2,
+              3,
+              8,
+              10
+            ],
+            "fiscal_period": "Q2",
+            "fiscal_year": 2026,
+            "period_end": "2025-07-27"
+          },
+          "fact_ordinal": 32,
+          "node_ordinal": 2482,
+          "occurrence_ordinals": [
+            32,
+            950,
+            1002
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "phase6b5c2a5w1-preflight-1",
+          "unit_id": "usd"
+        },
+        "reporting_scope": "consolidated_entity",
+        "role": "Q2",
+        "schema_version": "1",
+        "target_fiscal_year": 2026
+      },
+      "primary_document": "nvda-20250727.htm",
+      "qualified_operand": {
+        "accounting_basis": "gaap",
+        "currency": "USD",
+        "dimension_state": {
+          "explicit_count": 0,
+          "typed_count": 0
+        },
+        "duplicate_count": 2,
+        "duration_days": 91,
+        "exact_decimal_value": "46743000000",
+        "expanded_qname": {
+          "local_name": "Revenues",
+          "namespace_uri": "http://fasb.org/us-gaap/2025"
+        },
+        "period_end": "2025-07-27",
+        "period_start": "2025-04-28",
+        "provenance": {
+          "context_id": "c-3",
+          "dei_anchor": {
+            "document_type": "10-Q",
+            "fact_ordinals": [
+              2,
+              3,
+              8,
+              10
+            ],
+            "fiscal_period": "Q2",
+            "fiscal_year": 2026,
+            "period_end": "2025-07-27"
+          },
+          "fact_ordinal": 32,
+          "node_ordinal": 2482,
+          "occurrence_ordinals": [
+            32,
+            950,
+            1002
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "phase6b5c2a5w1-preflight-1",
+          "unit_id": "usd"
+        },
+        "scope": "consolidated_entity",
+        "unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure",
+          "unit_id": "usd"
+        }
+      },
+      "qualifier_failure_reasons": [],
+      "qualifier_invoked": true,
+      "qualifier_state": "qualified",
+      "report_period_end": "2025-07-27",
+      "response_bytes": 1349531,
+      "role": "Q2",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000209/nvda-20250727.htm",
+      "supported_revenue_fact_count": 72,
+      "target_fiscal_year": 2026,
+      "ticker": "NVDA",
+      "transport_outcome": "success"
+    },
+    {
+      "accession": "0001045810-25-000230",
+      "attempt_charged": true,
+      "compatible_candidate_count": 3,
+      "failure_reason": null,
+      "filing_date": "2025-11-19",
+      "fiscal_anchor_diagnostic": {
+        "anchors": [
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  2
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "2026",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "2026",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalYearFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  3
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "Q3",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "Q3",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "hidden"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentFiscalPeriodFocus"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  11
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "2025-10-26",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "October\u00a026, 2025",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "applied",
+                "transform_categories": [
+                  "resolved:http://www.xbrl.org/inlineXBRL/transformation/2020-02-12#date-monthname-day-year-en"
+                ],
+                "transformed_canonical_value": "2025-10-26",
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentPeriodEndDate"
+          },
+          {
+            "comparison": "match",
+            "diagnostic_cap_exceeded": false,
+            "distinct_stripped_raw_value_count": 1,
+            "observation_count": 1,
+            "observations": [
+              {
+                "context_ref_absent_count": 0,
+                "context_ref_present_count": 1,
+                "continuation_target_categories": [
+                  "not_applicable"
+                ],
+                "continued_at_absent_count": 1,
+                "continued_at_present_count": 0,
+                "fact_ordinals": [
+                  9
+                ],
+                "namespace_identities": [
+                  "http://xbrl.sec.gov/dei/2025"
+                ],
+                "normalized_semantic_value": "10-Q",
+                "occurrence_count": 1,
+                "raw_lexical_category": "safe",
+                "raw_lexical_value": "10-Q",
+                "semantic_outcome": "parsed",
+                "source_kinds": [
+                  "inline"
+                ],
+                "transform_application_state": "not_applicable",
+                "transform_categories": [
+                  "absent"
+                ],
+                "transformed_canonical_value": null,
+                "visibility_categories": [
+                  "visible"
+                ]
+              }
+            ],
+            "qualification_branch": "anchor_valid",
+            "required_local_name": "DocumentType"
+          }
+        ],
+        "diagnostic_cap_exceeded": false,
+        "diagnostic_identity": "inline-revenue-fiscal-anchor-diagnostic-2",
+        "schema_version": "2"
+      },
+      "form": "10-Q",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "partition_replay_completeness": {
+        "missing_fields": [],
+        "state": "complete"
+      },
+      "partition_replay_evidence": {
+        "accounting_basis": "gaap",
+        "canonical_unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure"
+        },
+        "context": {
+          "entity_scheme": "http://www.sec.gov/CIK",
+          "entity_value": "0001045810",
+          "explicit_dimensions": [],
+          "period_end": "2025-10-26",
+          "period_start": "2025-07-28",
+          "typed_dimension_count": 0
+        },
+        "expanded_qname": {
+          "local_name": "Revenues",
+          "namespace_uri": "http://fasb.org/us-gaap/2025"
+        },
+        "provenance": {
+          "context_id": "c-3",
+          "dei_anchor": {
+            "document_type": "10-Q",
+            "fact_ordinals": [
+              2,
+              3,
+              9,
+              11
+            ],
+            "fiscal_period": "Q3",
+            "fiscal_year": 2026,
+            "period_end": "2025-10-26"
+          },
+          "fact_ordinal": 33,
+          "node_ordinal": 2513,
+          "occurrence_ordinals": [
+            33,
+            954,
+            1004
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "phase6b5c2a5w1-preflight-1",
+          "unit_id": "usd"
+        },
+        "reporting_scope": "consolidated_entity",
+        "role": "Q3",
+        "schema_version": "1",
+        "target_fiscal_year": 2026
+      },
+      "primary_document": "nvda-20251026.htm",
+      "qualified_operand": {
+        "accounting_basis": "gaap",
+        "currency": "USD",
+        "dimension_state": {
+          "explicit_count": 0,
+          "typed_count": 0
+        },
+        "duplicate_count": 2,
+        "duration_days": 91,
+        "exact_decimal_value": "57006000000",
+        "expanded_qname": {
+          "local_name": "Revenues",
+          "namespace_uri": "http://fasb.org/us-gaap/2025"
+        },
+        "period_end": "2025-10-26",
+        "period_start": "2025-07-28",
+        "provenance": {
+          "context_id": "c-3",
+          "dei_anchor": {
+            "document_type": "10-Q",
+            "fact_ordinals": [
+              2,
+              3,
+              9,
+              11
+            ],
+            "fiscal_period": "Q3",
+            "fiscal_year": 2026,
+            "period_end": "2025-10-26"
+          },
+          "fact_ordinal": 33,
+          "node_ordinal": 2513,
+          "occurrence_ordinals": [
+            33,
+            954,
+            1004
+          ],
+          "policy_version": "sec-inline-xbrl-revenue-operand-2",
+          "selector_policy": "phase6b5c2a5w1-preflight-1",
+          "unit_id": "usd"
+        },
+        "scope": "consolidated_entity",
+        "unit": {
+          "currency": "USD",
+          "denominator_measures": [],
+          "numerator_measures": [
+            {
+              "local_name": "USD",
+              "namespace_uri": "http://www.xbrl.org/2003/iso4217"
+            }
+          ],
+          "structural_form": "measure",
+          "unit_id": "usd"
+        }
+      },
+      "qualifier_failure_reasons": [],
+      "qualifier_invoked": true,
+      "qualifier_state": "qualified",
+      "report_period_end": "2025-10-26",
+      "response_bytes": 1381438,
+      "role": "Q3",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000230/nvda-20251026.htm",
+      "supported_revenue_fact_count": 68,
+      "target_fiscal_year": 2026,
+      "ticker": "NVDA",
+      "transport_outcome": "success"
+    }
+  ],
+  "runner": "inline-revenue-eight-document-certification-2",
+  "schema_version": "2",
+  "target_set": "AAPL-FY2025-NVDA-FY2026-FY-Q1-Q2-Q3"
+}

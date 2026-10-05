@@ -91,9 +91,9 @@ DEFAULT_SCANNER_MAX_WORKERS = settings.scanner_max_workers
 MIN_SCANNER_MAX_WORKERS = 1
 MAX_SCANNER_MAX_WORKERS = 16
 SCANNER_PROVIDER_FAILURE_CIRCUIT_THRESHOLD = 8
-DEFAULT_SCORING_PRIORITIES = ("technical", "trade_quality")
+DEFAULT_SCORING_PRIORITIES = ("technical",)
 VALID_SCORING_PRIORITIES = frozenset({
-    "technical", "trade_quality", "financial", "valuation",
+    "technical", "financial", "valuation",
 })
 
 
@@ -283,10 +283,6 @@ def _build_scan_results(analyses, stage_timings=None, scoring_priorities=None):
     filtering_start = perf_counter()
     for analysis in analyses:
         try:
-            trade_quality_score_data = (
-                analysis.get("trade_quality_score")
-                or analysis.get("entry_score", {})
-            )
             technical_score_data = (
                 analysis.get("technical_score")
                 or analysis.get("trend_score", {})
@@ -297,7 +293,6 @@ def _build_scan_results(analyses, stage_timings=None, scoring_priorities=None):
 
             financial_score_data = analysis.get("financial_score") or {}
             valuation_score_data = analysis.get("valuation_score") or {}
-            trade_quality_score = _score_value(trade_quality_score_data)
             technical_score = _score_value(technical_score_data)
             financial_score = _score_value(financial_score_data)
             valuation_score = _score_value(valuation_score_data)
@@ -318,7 +313,6 @@ def _build_scan_results(analyses, stage_timings=None, scoring_priorities=None):
 
             component_scores = {
                 "technical": technical_score,
-                "trade_quality": trade_quality_score,
                 "financial": financial_score,
                 "valuation": valuation_score,
             }
@@ -336,11 +330,6 @@ def _build_scan_results(analyses, stage_timings=None, scoring_priorities=None):
                 "ticker": analysis.get("ticker"),
                 "price": analysis.get("price"),
 
-                "trade_quality_score": trade_quality_score,
-                "trade_quality_grade": trade_quality_score_data.get("grade"),
-                # Deprecated compatibility aliases for older scanner clients.
-                "entry_score": trade_quality_score,
-                "entry_grade": trade_quality_score_data.get("grade"),
                 "technical_score": technical_score,
                 "technical_grade": technical_score_data.get("grade"),
                 # Deprecated compatibility aliases for older scanner clients.
@@ -384,7 +373,6 @@ def _build_scan_results(analyses, stage_timings=None, scoring_priorities=None):
     if use_legacy_sort:
         results.sort(
             key=lambda stock: (
-                -(stock["trade_quality_score"] or 0),
                 -(stock["technical_score"] or 0),
                 str(stock.get("ticker") or ""),
             )
@@ -877,7 +865,6 @@ def _summarize_audit(symbol_records, stage_timings, total_duration, universe_key
             "market_data_fetching_seconds": round(stage_timings.get("market_data_fetching_seconds", 0.0), 6),
             "indicator_calculation_seconds": round(stage_timings.get("indicator_calculation_seconds", 0.0), 6),
             "technical_scoring_seconds": round(stage_timings.get("technical_scoring_seconds", 0.0), 6),
-            "trade_quality_scoring_seconds": round(stage_timings.get("trade_quality_scoring_seconds", 0.0), 6),
             "trade_setup_generation_seconds": round(stage_timings.get("trade_setup_generation_seconds", 0.0), 6),
             "filtering_seconds": round(stage_timings.get("filtering_seconds", 0.0), 6),
             "sorting_seconds": round(stage_timings.get("sorting_seconds", 0.0), 6),
@@ -972,7 +959,6 @@ def scan_market(
         "market_data_fetching_seconds": 0.0,
         "indicator_calculation_seconds": 0.0,
         "technical_scoring_seconds": 0.0,
-        "trade_quality_scoring_seconds": 0.0,
         "trade_setup_generation_seconds": 0.0,
         "filtering_seconds": 0.0,
         "sorting_seconds": 0.0,

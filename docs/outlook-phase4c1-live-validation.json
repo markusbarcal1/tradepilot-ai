@@ -1,0 +1,2267 @@
+[
+  {
+    "ticker": "ABTC",
+    "status": "available",
+    "upcoming": [
+      {
+        "event": {
+          "event_id": "fomc:2026-10-28",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "Scheduled FOMC meeting decision date; meeting dates may be revised.",
+          "scheduled_date": "2026-10-28",
+          "scheduled_at": null,
+          "announced_at": null,
+          "effective_date": null,
+          "effective_at": null,
+          "expires_at": null,
+          "status": "upcoming",
+          "previous_value": null,
+          "expected_value": null,
+          "actual_value": null,
+          "change": null,
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Calendar",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:34.820738Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "The company description explicitly identifies Bitcoin mining. Monetary policy can affect financial conditions and crypto risk-asset conditions relevant to that business; stock direction is uncertain.",
+          "link": {
+            "kind": "industry",
+            "description": "The company description explicitly identifies Bitcoin mining. Monetary policy can affect financial conditions and crypto risk-asset conditions relevant to that business; stock direction is uncertain.",
+            "source_url": "https://finance.yahoo.com/quote/ABTC/profile/"
+          },
+          "relevance": "company_specific",
+          "directness": "business",
+          "confidence": 0.8,
+          "materiality": 0.6,
+          "direction": null
+        },
+        "directional_evidence": false
+      },
+      {
+        "event": {
+          "event_id": "fomc:2026-12-09",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "Scheduled FOMC meeting decision date; meeting dates may be revised.",
+          "scheduled_date": "2026-12-09",
+          "scheduled_at": null,
+          "announced_at": null,
+          "effective_date": null,
+          "effective_at": null,
+          "expires_at": null,
+          "status": "upcoming",
+          "previous_value": null,
+          "expected_value": null,
+          "actual_value": null,
+          "change": null,
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Calendar",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:34.820738Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "The company description explicitly identifies Bitcoin mining. Monetary policy can affect financial conditions and crypto risk-asset conditions relevant to that business; stock direction is uncertain.",
+          "link": {
+            "kind": "industry",
+            "description": "The company description explicitly identifies Bitcoin mining. Monetary policy can affect financial conditions and crypto risk-asset conditions relevant to that business; stock direction is uncertain.",
+            "source_url": "https://finance.yahoo.com/quote/ABTC/profile/"
+          },
+          "relevance": "company_specific",
+          "directness": "business",
+          "confidence": 0.8,
+          "materiality": 0.6,
+          "direction": null
+        },
+        "directional_evidence": false
+      }
+    ],
+    "recent": [
+      {
+        "event": {
+          "event_id": "fomc:2026-09-16",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "The Federal Reserve announced its target federal funds range decision.",
+          "scheduled_date": "2026-09-16",
+          "scheduled_at": null,
+          "announced_at": "2026-09-16T18:00:00Z",
+          "effective_date": "2026-09-17",
+          "effective_at": null,
+          "expires_at": "2026-12-15T18:00:00Z",
+          "status": "effective",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "expected_value": null,
+          "actual_value": {
+            "amount": null,
+            "lower": 3.75,
+            "upper": 4.0,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 25.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          },
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Statement",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+              "published_at": "2026-09-16T18:00:00Z",
+              "retrieved_at": "2026-09-19T07:04:36.481703Z"
+            },
+            {
+              "source": "Federal Reserve \u2014 Implementation Note",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a1.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:36.481703Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "The company description explicitly identifies Bitcoin mining. Monetary policy can affect financial conditions and crypto risk-asset conditions relevant to that business; stock direction is uncertain.",
+          "link": {
+            "kind": "industry",
+            "description": "The company description explicitly identifies Bitcoin mining. Monetary policy can affect financial conditions and crypto risk-asset conditions relevant to that business; stock direction is uncertain.",
+            "source_url": "https://finance.yahoo.com/quote/ABTC/profile/"
+          },
+          "relevance": "company_specific",
+          "directness": "business",
+          "confidence": 0.8,
+          "materiality": 0.6,
+          "direction": null
+        },
+        "directional_evidence": false
+      },
+      {
+        "event": {
+          "event_id": "fomc:2026-07-29",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "The Federal Reserve announced its target federal funds range decision.",
+          "scheduled_date": "2026-07-29",
+          "scheduled_at": null,
+          "announced_at": "2026-07-29T18:00:00Z",
+          "effective_date": "2026-07-30",
+          "effective_at": null,
+          "expires_at": "2026-10-27T18:00:00Z",
+          "status": "effective",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "expected_value": null,
+          "actual_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 0.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          },
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Statement",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm",
+              "published_at": "2026-07-29T18:00:00Z",
+              "retrieved_at": "2026-09-19T07:04:35.494659Z"
+            },
+            {
+              "source": "Federal Reserve \u2014 Implementation Note",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a1.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:35.494659Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "The company description explicitly identifies Bitcoin mining. Monetary policy can affect financial conditions and crypto risk-asset conditions relevant to that business; stock direction is uncertain.",
+          "link": {
+            "kind": "industry",
+            "description": "The company description explicitly identifies Bitcoin mining. Monetary policy can affect financial conditions and crypto risk-asset conditions relevant to that business; stock direction is uncertain.",
+            "source_url": "https://finance.yahoo.com/quote/ABTC/profile/"
+          },
+          "relevance": "company_specific",
+          "directness": "business",
+          "confidence": 0.8,
+          "materiality": 0.6,
+          "direction": null
+        },
+        "directional_evidence": false
+      }
+    ],
+    "diagnostics": {
+      "directional_evidence": false,
+      "dedup": "FOMC provenance never contributes independent support; existing FRED evidence unchanged.",
+      "probability_provider": "not_configured",
+      "cache_ttl_seconds": 1800,
+      "classification_cache_ttl_seconds": 604800,
+      "failure_backoff_seconds": 60,
+      "excluded": [],
+      "retrieved_at": "2026-09-19T07:04:34.820738+00:00",
+      "exposure": {
+        "matched": true,
+        "relevance": "company_specific",
+        "reason": "The company description explicitly identifies Bitcoin mining. Monetary policy can affect financial conditions and crypto risk-asset conditions relevant to that business; stock direction is uncertain.",
+        "industry": "Capital Markets"
+      },
+      "source_requests": 5,
+      "source_loads": 1,
+      "source_reads": 1,
+      "source_cache_hits": 0,
+      "classification_loads": 1
+    },
+    "outlook_evidence": [
+      {
+        "schema_version": "1.0",
+        "id": "fomc:2026-09-16:ABTC",
+        "ticker": "ABTC",
+        "category": "economic",
+        "event_type": "monetary_policy",
+        "title": "FOMC Rate Decision",
+        "summary": "The company description explicitly identifies Bitcoin mining. Monetary policy can affect financial conditions and crypto risk-asset conditions relevant to that business; stock direction is uncertain.",
+        "source": "Federal Reserve \u2014 FOMC Statement",
+        "source_type": "government_source",
+        "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+        "published_at": "2026-09-16T18:00:00Z",
+        "observed_at": "2026-09-19T07:04:36.481703Z",
+        "expires_at": "2026-12-15T18:00:00Z",
+        "impact": 0,
+        "confidence": 0.8,
+        "materiality": 0.6,
+        "materiality_reason": "The company description explicitly identifies Bitcoin mining. Monetary policy can affect financial conditions and crypto risk-asset conditions relevant to that business; stock direction is uncertain.",
+        "exposure_links": [
+          {
+            "kind": "industry",
+            "description": "The company description explicitly identifies Bitcoin mining. Monetary policy can affect financial conditions and crypto risk-asset conditions relevant to that business; stock direction is uncertain.",
+            "source_url": "https://finance.yahoo.com/quote/ABTC/profile/"
+          }
+        ],
+        "scoring_eligible": false,
+        "source_details": {
+          "external_event_id": "fomc:2026-09-16",
+          "direction_status": "uncertain",
+          "dedup_rule": "non_scoring_policy_context",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "actual_value": {
+            "amount": null,
+            "lower": 3.75,
+            "upper": 4.0,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 25.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          }
+        },
+        "source_quality": "primary_authoritative",
+        "raw_provider": "fomc",
+        "raw_provider_id": "fomc:2026-09-16"
+      },
+      {
+        "schema_version": "1.0",
+        "id": "fomc:2026-07-29:ABTC",
+        "ticker": "ABTC",
+        "category": "economic",
+        "event_type": "monetary_policy",
+        "title": "FOMC Rate Decision",
+        "summary": "The company description explicitly identifies Bitcoin mining. Monetary policy can affect financial conditions and crypto risk-asset conditions relevant to that business; stock direction is uncertain.",
+        "source": "Federal Reserve \u2014 FOMC Statement",
+        "source_type": "government_source",
+        "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm",
+        "published_at": "2026-07-29T18:00:00Z",
+        "observed_at": "2026-09-19T07:04:35.494659Z",
+        "expires_at": "2026-10-27T18:00:00Z",
+        "impact": 0,
+        "confidence": 0.8,
+        "materiality": 0.6,
+        "materiality_reason": "The company description explicitly identifies Bitcoin mining. Monetary policy can affect financial conditions and crypto risk-asset conditions relevant to that business; stock direction is uncertain.",
+        "exposure_links": [
+          {
+            "kind": "industry",
+            "description": "The company description explicitly identifies Bitcoin mining. Monetary policy can affect financial conditions and crypto risk-asset conditions relevant to that business; stock direction is uncertain.",
+            "source_url": "https://finance.yahoo.com/quote/ABTC/profile/"
+          }
+        ],
+        "scoring_eligible": false,
+        "source_details": {
+          "external_event_id": "fomc:2026-07-29",
+          "direction_status": "uncertain",
+          "dedup_rule": "non_scoring_policy_context",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "actual_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 0.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          }
+        },
+        "source_quality": "primary_authoritative",
+        "raw_provider": "fomc",
+        "raw_provider_id": "fomc:2026-07-29"
+      }
+    ]
+  },
+  {
+    "ticker": "NVDA",
+    "status": "available",
+    "upcoming": [
+      {
+        "event": {
+          "event_id": "fomc:2026-10-28",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "Scheduled FOMC meeting decision date; meeting dates may be revised.",
+          "scheduled_date": "2026-10-28",
+          "scheduled_at": null,
+          "announced_at": null,
+          "effective_date": null,
+          "effective_at": null,
+          "expires_at": null,
+          "status": "upcoming",
+          "previous_value": null,
+          "expected_value": null,
+          "actual_value": null,
+          "change": null,
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Calendar",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:34.820738Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+          "link": {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/NVDA/profile/"
+          },
+          "relevance": "broad",
+          "directness": "broad",
+          "confidence": 0.6,
+          "materiality": 0.3,
+          "direction": null
+        },
+        "directional_evidence": false
+      },
+      {
+        "event": {
+          "event_id": "fomc:2026-12-09",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "Scheduled FOMC meeting decision date; meeting dates may be revised.",
+          "scheduled_date": "2026-12-09",
+          "scheduled_at": null,
+          "announced_at": null,
+          "effective_date": null,
+          "effective_at": null,
+          "expires_at": null,
+          "status": "upcoming",
+          "previous_value": null,
+          "expected_value": null,
+          "actual_value": null,
+          "change": null,
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Calendar",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:34.820738Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+          "link": {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/NVDA/profile/"
+          },
+          "relevance": "broad",
+          "directness": "broad",
+          "confidence": 0.6,
+          "materiality": 0.3,
+          "direction": null
+        },
+        "directional_evidence": false
+      }
+    ],
+    "recent": [
+      {
+        "event": {
+          "event_id": "fomc:2026-09-16",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "The Federal Reserve announced its target federal funds range decision.",
+          "scheduled_date": "2026-09-16",
+          "scheduled_at": null,
+          "announced_at": "2026-09-16T18:00:00Z",
+          "effective_date": "2026-09-17",
+          "effective_at": null,
+          "expires_at": "2026-12-15T18:00:00Z",
+          "status": "effective",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "expected_value": null,
+          "actual_value": {
+            "amount": null,
+            "lower": 3.75,
+            "upper": 4.0,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 25.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          },
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Statement",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+              "published_at": "2026-09-16T18:00:00Z",
+              "retrieved_at": "2026-09-19T07:04:36.481703Z"
+            },
+            {
+              "source": "Federal Reserve \u2014 Implementation Note",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a1.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:36.481703Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+          "link": {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/NVDA/profile/"
+          },
+          "relevance": "broad",
+          "directness": "broad",
+          "confidence": 0.6,
+          "materiality": 0.3,
+          "direction": null
+        },
+        "directional_evidence": false
+      },
+      {
+        "event": {
+          "event_id": "fomc:2026-07-29",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "The Federal Reserve announced its target federal funds range decision.",
+          "scheduled_date": "2026-07-29",
+          "scheduled_at": null,
+          "announced_at": "2026-07-29T18:00:00Z",
+          "effective_date": "2026-07-30",
+          "effective_at": null,
+          "expires_at": "2026-10-27T18:00:00Z",
+          "status": "effective",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "expected_value": null,
+          "actual_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 0.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          },
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Statement",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm",
+              "published_at": "2026-07-29T18:00:00Z",
+              "retrieved_at": "2026-09-19T07:04:35.494659Z"
+            },
+            {
+              "source": "Federal Reserve \u2014 Implementation Note",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a1.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:35.494659Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+          "link": {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/NVDA/profile/"
+          },
+          "relevance": "broad",
+          "directness": "broad",
+          "confidence": 0.6,
+          "materiality": 0.3,
+          "direction": null
+        },
+        "directional_evidence": false
+      }
+    ],
+    "diagnostics": {
+      "directional_evidence": false,
+      "dedup": "FOMC provenance never contributes independent support; existing FRED evidence unchanged.",
+      "probability_provider": "not_configured",
+      "cache_ttl_seconds": 1800,
+      "classification_cache_ttl_seconds": 604800,
+      "failure_backoff_seconds": 60,
+      "excluded": [],
+      "retrieved_at": "2026-09-19T07:04:34.820738+00:00",
+      "exposure": {
+        "matched": true,
+        "relevance": "broad",
+        "reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+        "industry": "Semiconductors"
+      },
+      "source_requests": 5,
+      "source_loads": 1,
+      "source_reads": 2,
+      "source_cache_hits": 1,
+      "classification_loads": 2
+    },
+    "outlook_evidence": [
+      {
+        "schema_version": "1.0",
+        "id": "fomc:2026-09-16:NVDA",
+        "ticker": "NVDA",
+        "category": "economic",
+        "event_type": "monetary_policy",
+        "title": "FOMC Rate Decision",
+        "summary": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+        "source": "Federal Reserve \u2014 FOMC Statement",
+        "source_type": "government_source",
+        "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+        "published_at": "2026-09-16T18:00:00Z",
+        "observed_at": "2026-09-19T07:04:36.481703Z",
+        "expires_at": "2026-12-15T18:00:00Z",
+        "impact": 0,
+        "confidence": 0.6,
+        "materiality": 0.3,
+        "materiality_reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+        "exposure_links": [
+          {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/NVDA/profile/"
+          }
+        ],
+        "scoring_eligible": false,
+        "source_details": {
+          "external_event_id": "fomc:2026-09-16",
+          "direction_status": "uncertain",
+          "dedup_rule": "non_scoring_policy_context",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "actual_value": {
+            "amount": null,
+            "lower": 3.75,
+            "upper": 4.0,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 25.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          }
+        },
+        "source_quality": "primary_authoritative",
+        "raw_provider": "fomc",
+        "raw_provider_id": "fomc:2026-09-16"
+      },
+      {
+        "schema_version": "1.0",
+        "id": "fomc:2026-07-29:NVDA",
+        "ticker": "NVDA",
+        "category": "economic",
+        "event_type": "monetary_policy",
+        "title": "FOMC Rate Decision",
+        "summary": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+        "source": "Federal Reserve \u2014 FOMC Statement",
+        "source_type": "government_source",
+        "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm",
+        "published_at": "2026-07-29T18:00:00Z",
+        "observed_at": "2026-09-19T07:04:35.494659Z",
+        "expires_at": "2026-10-27T18:00:00Z",
+        "impact": 0,
+        "confidence": 0.6,
+        "materiality": 0.3,
+        "materiality_reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+        "exposure_links": [
+          {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/NVDA/profile/"
+          }
+        ],
+        "scoring_eligible": false,
+        "source_details": {
+          "external_event_id": "fomc:2026-07-29",
+          "direction_status": "uncertain",
+          "dedup_rule": "non_scoring_policy_context",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "actual_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 0.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          }
+        },
+        "source_quality": "primary_authoritative",
+        "raw_provider": "fomc",
+        "raw_provider_id": "fomc:2026-07-29"
+      }
+    ]
+  },
+  {
+    "ticker": "JPM",
+    "status": "available",
+    "upcoming": [
+      {
+        "event": {
+          "event_id": "fomc:2026-10-28",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "Scheduled FOMC meeting decision date; meeting dates may be revised.",
+          "scheduled_date": "2026-10-28",
+          "scheduled_at": null,
+          "announced_at": null,
+          "effective_date": null,
+          "effective_at": null,
+          "expires_at": null,
+          "status": "upcoming",
+          "previous_value": null,
+          "expected_value": null,
+          "actual_value": null,
+          "change": null,
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Calendar",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:34.820738Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "The classified financial business is exposed to funding costs, asset yields and credit demand. Their net effect is uncertain.",
+          "link": {
+            "kind": "industry",
+            "description": "The classified financial business is exposed to funding costs, asset yields and credit demand. Their net effect is uncertain.",
+            "source_url": "https://finance.yahoo.com/quote/JPM/profile/"
+          },
+          "relevance": "company_specific",
+          "directness": "industry",
+          "confidence": 0.8,
+          "materiality": 0.6,
+          "direction": null
+        },
+        "directional_evidence": false
+      },
+      {
+        "event": {
+          "event_id": "fomc:2026-12-09",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "Scheduled FOMC meeting decision date; meeting dates may be revised.",
+          "scheduled_date": "2026-12-09",
+          "scheduled_at": null,
+          "announced_at": null,
+          "effective_date": null,
+          "effective_at": null,
+          "expires_at": null,
+          "status": "upcoming",
+          "previous_value": null,
+          "expected_value": null,
+          "actual_value": null,
+          "change": null,
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Calendar",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:34.820738Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "The classified financial business is exposed to funding costs, asset yields and credit demand. Their net effect is uncertain.",
+          "link": {
+            "kind": "industry",
+            "description": "The classified financial business is exposed to funding costs, asset yields and credit demand. Their net effect is uncertain.",
+            "source_url": "https://finance.yahoo.com/quote/JPM/profile/"
+          },
+          "relevance": "company_specific",
+          "directness": "industry",
+          "confidence": 0.8,
+          "materiality": 0.6,
+          "direction": null
+        },
+        "directional_evidence": false
+      }
+    ],
+    "recent": [
+      {
+        "event": {
+          "event_id": "fomc:2026-09-16",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "The Federal Reserve announced its target federal funds range decision.",
+          "scheduled_date": "2026-09-16",
+          "scheduled_at": null,
+          "announced_at": "2026-09-16T18:00:00Z",
+          "effective_date": "2026-09-17",
+          "effective_at": null,
+          "expires_at": "2026-12-15T18:00:00Z",
+          "status": "effective",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "expected_value": null,
+          "actual_value": {
+            "amount": null,
+            "lower": 3.75,
+            "upper": 4.0,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 25.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          },
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Statement",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+              "published_at": "2026-09-16T18:00:00Z",
+              "retrieved_at": "2026-09-19T07:04:36.481703Z"
+            },
+            {
+              "source": "Federal Reserve \u2014 Implementation Note",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a1.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:36.481703Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "The classified financial business is exposed to funding costs, asset yields and credit demand. Their net effect is uncertain.",
+          "link": {
+            "kind": "industry",
+            "description": "The classified financial business is exposed to funding costs, asset yields and credit demand. Their net effect is uncertain.",
+            "source_url": "https://finance.yahoo.com/quote/JPM/profile/"
+          },
+          "relevance": "company_specific",
+          "directness": "industry",
+          "confidence": 0.8,
+          "materiality": 0.6,
+          "direction": null
+        },
+        "directional_evidence": false
+      },
+      {
+        "event": {
+          "event_id": "fomc:2026-07-29",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "The Federal Reserve announced its target federal funds range decision.",
+          "scheduled_date": "2026-07-29",
+          "scheduled_at": null,
+          "announced_at": "2026-07-29T18:00:00Z",
+          "effective_date": "2026-07-30",
+          "effective_at": null,
+          "expires_at": "2026-10-27T18:00:00Z",
+          "status": "effective",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "expected_value": null,
+          "actual_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 0.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          },
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Statement",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm",
+              "published_at": "2026-07-29T18:00:00Z",
+              "retrieved_at": "2026-09-19T07:04:35.494659Z"
+            },
+            {
+              "source": "Federal Reserve \u2014 Implementation Note",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a1.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:35.494659Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "The classified financial business is exposed to funding costs, asset yields and credit demand. Their net effect is uncertain.",
+          "link": {
+            "kind": "industry",
+            "description": "The classified financial business is exposed to funding costs, asset yields and credit demand. Their net effect is uncertain.",
+            "source_url": "https://finance.yahoo.com/quote/JPM/profile/"
+          },
+          "relevance": "company_specific",
+          "directness": "industry",
+          "confidence": 0.8,
+          "materiality": 0.6,
+          "direction": null
+        },
+        "directional_evidence": false
+      }
+    ],
+    "diagnostics": {
+      "directional_evidence": false,
+      "dedup": "FOMC provenance never contributes independent support; existing FRED evidence unchanged.",
+      "probability_provider": "not_configured",
+      "cache_ttl_seconds": 1800,
+      "classification_cache_ttl_seconds": 604800,
+      "failure_backoff_seconds": 60,
+      "excluded": [],
+      "retrieved_at": "2026-09-19T07:04:34.820738+00:00",
+      "exposure": {
+        "matched": true,
+        "relevance": "company_specific",
+        "reason": "The classified financial business is exposed to funding costs, asset yields and credit demand. Their net effect is uncertain.",
+        "industry": "Banks - Diversified"
+      },
+      "source_requests": 5,
+      "source_loads": 1,
+      "source_reads": 3,
+      "source_cache_hits": 2,
+      "classification_loads": 3
+    },
+    "outlook_evidence": [
+      {
+        "schema_version": "1.0",
+        "id": "fomc:2026-09-16:JPM",
+        "ticker": "JPM",
+        "category": "economic",
+        "event_type": "monetary_policy",
+        "title": "FOMC Rate Decision",
+        "summary": "The classified financial business is exposed to funding costs, asset yields and credit demand. Their net effect is uncertain.",
+        "source": "Federal Reserve \u2014 FOMC Statement",
+        "source_type": "government_source",
+        "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+        "published_at": "2026-09-16T18:00:00Z",
+        "observed_at": "2026-09-19T07:04:36.481703Z",
+        "expires_at": "2026-12-15T18:00:00Z",
+        "impact": 0,
+        "confidence": 0.8,
+        "materiality": 0.6,
+        "materiality_reason": "The classified financial business is exposed to funding costs, asset yields and credit demand. Their net effect is uncertain.",
+        "exposure_links": [
+          {
+            "kind": "industry",
+            "description": "The classified financial business is exposed to funding costs, asset yields and credit demand. Their net effect is uncertain.",
+            "source_url": "https://finance.yahoo.com/quote/JPM/profile/"
+          }
+        ],
+        "scoring_eligible": false,
+        "source_details": {
+          "external_event_id": "fomc:2026-09-16",
+          "direction_status": "uncertain",
+          "dedup_rule": "non_scoring_policy_context",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "actual_value": {
+            "amount": null,
+            "lower": 3.75,
+            "upper": 4.0,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 25.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          }
+        },
+        "source_quality": "primary_authoritative",
+        "raw_provider": "fomc",
+        "raw_provider_id": "fomc:2026-09-16"
+      },
+      {
+        "schema_version": "1.0",
+        "id": "fomc:2026-07-29:JPM",
+        "ticker": "JPM",
+        "category": "economic",
+        "event_type": "monetary_policy",
+        "title": "FOMC Rate Decision",
+        "summary": "The classified financial business is exposed to funding costs, asset yields and credit demand. Their net effect is uncertain.",
+        "source": "Federal Reserve \u2014 FOMC Statement",
+        "source_type": "government_source",
+        "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm",
+        "published_at": "2026-07-29T18:00:00Z",
+        "observed_at": "2026-09-19T07:04:35.494659Z",
+        "expires_at": "2026-10-27T18:00:00Z",
+        "impact": 0,
+        "confidence": 0.8,
+        "materiality": 0.6,
+        "materiality_reason": "The classified financial business is exposed to funding costs, asset yields and credit demand. Their net effect is uncertain.",
+        "exposure_links": [
+          {
+            "kind": "industry",
+            "description": "The classified financial business is exposed to funding costs, asset yields and credit demand. Their net effect is uncertain.",
+            "source_url": "https://finance.yahoo.com/quote/JPM/profile/"
+          }
+        ],
+        "scoring_eligible": false,
+        "source_details": {
+          "external_event_id": "fomc:2026-07-29",
+          "direction_status": "uncertain",
+          "dedup_rule": "non_scoring_policy_context",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "actual_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 0.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          }
+        },
+        "source_quality": "primary_authoritative",
+        "raw_provider": "fomc",
+        "raw_provider_id": "fomc:2026-07-29"
+      }
+    ]
+  },
+  {
+    "ticker": "XOM",
+    "status": "available",
+    "upcoming": [
+      {
+        "event": {
+          "event_id": "fomc:2026-10-28",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "Scheduled FOMC meeting decision date; meeting dates may be revised.",
+          "scheduled_date": "2026-10-28",
+          "scheduled_at": null,
+          "announced_at": null,
+          "effective_date": null,
+          "effective_at": null,
+          "expires_at": null,
+          "status": "upcoming",
+          "previous_value": null,
+          "expected_value": null,
+          "actual_value": null,
+          "change": null,
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Calendar",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:34.820738Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+          "link": {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/XOM/profile/"
+          },
+          "relevance": "broad",
+          "directness": "broad",
+          "confidence": 0.6,
+          "materiality": 0.3,
+          "direction": null
+        },
+        "directional_evidence": false
+      },
+      {
+        "event": {
+          "event_id": "fomc:2026-12-09",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "Scheduled FOMC meeting decision date; meeting dates may be revised.",
+          "scheduled_date": "2026-12-09",
+          "scheduled_at": null,
+          "announced_at": null,
+          "effective_date": null,
+          "effective_at": null,
+          "expires_at": null,
+          "status": "upcoming",
+          "previous_value": null,
+          "expected_value": null,
+          "actual_value": null,
+          "change": null,
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Calendar",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:34.820738Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+          "link": {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/XOM/profile/"
+          },
+          "relevance": "broad",
+          "directness": "broad",
+          "confidence": 0.6,
+          "materiality": 0.3,
+          "direction": null
+        },
+        "directional_evidence": false
+      }
+    ],
+    "recent": [
+      {
+        "event": {
+          "event_id": "fomc:2026-09-16",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "The Federal Reserve announced its target federal funds range decision.",
+          "scheduled_date": "2026-09-16",
+          "scheduled_at": null,
+          "announced_at": "2026-09-16T18:00:00Z",
+          "effective_date": "2026-09-17",
+          "effective_at": null,
+          "expires_at": "2026-12-15T18:00:00Z",
+          "status": "effective",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "expected_value": null,
+          "actual_value": {
+            "amount": null,
+            "lower": 3.75,
+            "upper": 4.0,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 25.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          },
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Statement",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+              "published_at": "2026-09-16T18:00:00Z",
+              "retrieved_at": "2026-09-19T07:04:36.481703Z"
+            },
+            {
+              "source": "Federal Reserve \u2014 Implementation Note",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a1.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:36.481703Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+          "link": {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/XOM/profile/"
+          },
+          "relevance": "broad",
+          "directness": "broad",
+          "confidence": 0.6,
+          "materiality": 0.3,
+          "direction": null
+        },
+        "directional_evidence": false
+      },
+      {
+        "event": {
+          "event_id": "fomc:2026-07-29",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "The Federal Reserve announced its target federal funds range decision.",
+          "scheduled_date": "2026-07-29",
+          "scheduled_at": null,
+          "announced_at": "2026-07-29T18:00:00Z",
+          "effective_date": "2026-07-30",
+          "effective_at": null,
+          "expires_at": "2026-10-27T18:00:00Z",
+          "status": "effective",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "expected_value": null,
+          "actual_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 0.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          },
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Statement",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm",
+              "published_at": "2026-07-29T18:00:00Z",
+              "retrieved_at": "2026-09-19T07:04:35.494659Z"
+            },
+            {
+              "source": "Federal Reserve \u2014 Implementation Note",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a1.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:35.494659Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+          "link": {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/XOM/profile/"
+          },
+          "relevance": "broad",
+          "directness": "broad",
+          "confidence": 0.6,
+          "materiality": 0.3,
+          "direction": null
+        },
+        "directional_evidence": false
+      }
+    ],
+    "diagnostics": {
+      "directional_evidence": false,
+      "dedup": "FOMC provenance never contributes independent support; existing FRED evidence unchanged.",
+      "probability_provider": "not_configured",
+      "cache_ttl_seconds": 1800,
+      "classification_cache_ttl_seconds": 604800,
+      "failure_backoff_seconds": 60,
+      "excluded": [],
+      "retrieved_at": "2026-09-19T07:04:34.820738+00:00",
+      "exposure": {
+        "matched": true,
+        "relevance": "broad",
+        "reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+        "industry": "Oil & Gas Integrated"
+      },
+      "source_requests": 5,
+      "source_loads": 1,
+      "source_reads": 4,
+      "source_cache_hits": 3,
+      "classification_loads": 4
+    },
+    "outlook_evidence": [
+      {
+        "schema_version": "1.0",
+        "id": "fomc:2026-09-16:XOM",
+        "ticker": "XOM",
+        "category": "economic",
+        "event_type": "monetary_policy",
+        "title": "FOMC Rate Decision",
+        "summary": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+        "source": "Federal Reserve \u2014 FOMC Statement",
+        "source_type": "government_source",
+        "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+        "published_at": "2026-09-16T18:00:00Z",
+        "observed_at": "2026-09-19T07:04:36.481703Z",
+        "expires_at": "2026-12-15T18:00:00Z",
+        "impact": 0,
+        "confidence": 0.6,
+        "materiality": 0.3,
+        "materiality_reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+        "exposure_links": [
+          {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/XOM/profile/"
+          }
+        ],
+        "scoring_eligible": false,
+        "source_details": {
+          "external_event_id": "fomc:2026-09-16",
+          "direction_status": "uncertain",
+          "dedup_rule": "non_scoring_policy_context",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "actual_value": {
+            "amount": null,
+            "lower": 3.75,
+            "upper": 4.0,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 25.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          }
+        },
+        "source_quality": "primary_authoritative",
+        "raw_provider": "fomc",
+        "raw_provider_id": "fomc:2026-09-16"
+      },
+      {
+        "schema_version": "1.0",
+        "id": "fomc:2026-07-29:XOM",
+        "ticker": "XOM",
+        "category": "economic",
+        "event_type": "monetary_policy",
+        "title": "FOMC Rate Decision",
+        "summary": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+        "source": "Federal Reserve \u2014 FOMC Statement",
+        "source_type": "government_source",
+        "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm",
+        "published_at": "2026-07-29T18:00:00Z",
+        "observed_at": "2026-09-19T07:04:35.494659Z",
+        "expires_at": "2026-10-27T18:00:00Z",
+        "impact": 0,
+        "confidence": 0.6,
+        "materiality": 0.3,
+        "materiality_reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+        "exposure_links": [
+          {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/XOM/profile/"
+          }
+        ],
+        "scoring_eligible": false,
+        "source_details": {
+          "external_event_id": "fomc:2026-07-29",
+          "direction_status": "uncertain",
+          "dedup_rule": "non_scoring_policy_context",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "actual_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 0.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          }
+        },
+        "source_quality": "primary_authoritative",
+        "raw_provider": "fomc",
+        "raw_provider_id": "fomc:2026-07-29"
+      }
+    ]
+  },
+  {
+    "ticker": "MSFT",
+    "status": "available",
+    "upcoming": [
+      {
+        "event": {
+          "event_id": "fomc:2026-10-28",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "Scheduled FOMC meeting decision date; meeting dates may be revised.",
+          "scheduled_date": "2026-10-28",
+          "scheduled_at": null,
+          "announced_at": null,
+          "effective_date": null,
+          "effective_at": null,
+          "expires_at": null,
+          "status": "upcoming",
+          "previous_value": null,
+          "expected_value": null,
+          "actual_value": null,
+          "change": null,
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Calendar",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:34.820738Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+          "link": {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/MSFT/profile/"
+          },
+          "relevance": "broad",
+          "directness": "broad",
+          "confidence": 0.6,
+          "materiality": 0.3,
+          "direction": null
+        },
+        "directional_evidence": false
+      },
+      {
+        "event": {
+          "event_id": "fomc:2026-12-09",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "Scheduled FOMC meeting decision date; meeting dates may be revised.",
+          "scheduled_date": "2026-12-09",
+          "scheduled_at": null,
+          "announced_at": null,
+          "effective_date": null,
+          "effective_at": null,
+          "expires_at": null,
+          "status": "upcoming",
+          "previous_value": null,
+          "expected_value": null,
+          "actual_value": null,
+          "change": null,
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Calendar",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:34.820738Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+          "link": {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/MSFT/profile/"
+          },
+          "relevance": "broad",
+          "directness": "broad",
+          "confidence": 0.6,
+          "materiality": 0.3,
+          "direction": null
+        },
+        "directional_evidence": false
+      }
+    ],
+    "recent": [
+      {
+        "event": {
+          "event_id": "fomc:2026-09-16",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "The Federal Reserve announced its target federal funds range decision.",
+          "scheduled_date": "2026-09-16",
+          "scheduled_at": null,
+          "announced_at": "2026-09-16T18:00:00Z",
+          "effective_date": "2026-09-17",
+          "effective_at": null,
+          "expires_at": "2026-12-15T18:00:00Z",
+          "status": "effective",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "expected_value": null,
+          "actual_value": {
+            "amount": null,
+            "lower": 3.75,
+            "upper": 4.0,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 25.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          },
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Statement",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+              "published_at": "2026-09-16T18:00:00Z",
+              "retrieved_at": "2026-09-19T07:04:36.481703Z"
+            },
+            {
+              "source": "Federal Reserve \u2014 Implementation Note",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a1.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:36.481703Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+          "link": {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/MSFT/profile/"
+          },
+          "relevance": "broad",
+          "directness": "broad",
+          "confidence": 0.6,
+          "materiality": 0.3,
+          "direction": null
+        },
+        "directional_evidence": false
+      },
+      {
+        "event": {
+          "event_id": "fomc:2026-07-29",
+          "event_type": "fomc_rate_decision",
+          "category": "economic",
+          "title": "FOMC Rate Decision",
+          "summary": "The Federal Reserve announced its target federal funds range decision.",
+          "scheduled_date": "2026-07-29",
+          "scheduled_at": null,
+          "announced_at": "2026-07-29T18:00:00Z",
+          "effective_date": "2026-07-30",
+          "effective_at": null,
+          "expires_at": "2026-10-27T18:00:00Z",
+          "status": "effective",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "expected_value": null,
+          "actual_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 0.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          },
+          "expectation": null,
+          "expectation_status": "unavailable",
+          "expectation_history": [],
+          "surprise": {
+            "status": "unavailable",
+            "difference": null,
+            "actual_outcome_probability": null,
+            "expectation_snapshot_id": null
+          },
+          "provenance": [
+            {
+              "source": "Federal Reserve \u2014 FOMC Statement",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm",
+              "published_at": "2026-07-29T18:00:00Z",
+              "retrieved_at": "2026-09-19T07:04:35.494659Z"
+            },
+            {
+              "source": "Federal Reserve \u2014 Implementation Note",
+              "source_type": "government_source",
+              "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a1.htm",
+              "published_at": null,
+              "retrieved_at": "2026-09-19T07:04:35.494659Z"
+            }
+          ],
+          "scope": {
+            "countries": [
+              "United States"
+            ],
+            "regions": [],
+            "industries": [],
+            "commodities": [],
+            "technologies": [],
+            "entities": [
+              "Federal Reserve"
+            ]
+          }
+        },
+        "exposure": {
+          "matched": true,
+          "reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+          "link": {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/MSFT/profile/"
+          },
+          "relevance": "broad",
+          "directness": "broad",
+          "confidence": 0.6,
+          "materiality": 0.3,
+          "direction": null
+        },
+        "directional_evidence": false
+      }
+    ],
+    "diagnostics": {
+      "directional_evidence": false,
+      "dedup": "FOMC provenance never contributes independent support; existing FRED evidence unchanged.",
+      "probability_provider": "not_configured",
+      "cache_ttl_seconds": 1800,
+      "classification_cache_ttl_seconds": 604800,
+      "failure_backoff_seconds": 60,
+      "excluded": [],
+      "retrieved_at": "2026-09-19T07:04:34.820738+00:00",
+      "exposure": {
+        "matched": true,
+        "relevance": "broad",
+        "reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+        "industry": "Software - Infrastructure"
+      },
+      "source_requests": 5,
+      "source_loads": 1,
+      "source_reads": 5,
+      "source_cache_hits": 4,
+      "classification_loads": 5
+    },
+    "outlook_evidence": [
+      {
+        "schema_version": "1.0",
+        "id": "fomc:2026-09-16:MSFT",
+        "ticker": "MSFT",
+        "category": "economic",
+        "event_type": "monetary_policy",
+        "title": "FOMC Rate Decision",
+        "summary": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+        "source": "Federal Reserve \u2014 FOMC Statement",
+        "source_type": "government_source",
+        "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
+        "published_at": "2026-09-16T18:00:00Z",
+        "observed_at": "2026-09-19T07:04:36.481703Z",
+        "expires_at": "2026-12-15T18:00:00Z",
+        "impact": 0,
+        "confidence": 0.6,
+        "materiality": 0.3,
+        "materiality_reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+        "exposure_links": [
+          {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/MSFT/profile/"
+          }
+        ],
+        "scoring_eligible": false,
+        "source_details": {
+          "external_event_id": "fomc:2026-09-16",
+          "direction_status": "uncertain",
+          "dedup_rule": "non_scoring_policy_context",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "actual_value": {
+            "amount": null,
+            "lower": 3.75,
+            "upper": 4.0,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 25.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          }
+        },
+        "source_quality": "primary_authoritative",
+        "raw_provider": "fomc",
+        "raw_provider_id": "fomc:2026-09-16"
+      },
+      {
+        "schema_version": "1.0",
+        "id": "fomc:2026-07-29:MSFT",
+        "ticker": "MSFT",
+        "category": "economic",
+        "event_type": "monetary_policy",
+        "title": "FOMC Rate Decision",
+        "summary": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+        "source": "Federal Reserve \u2014 FOMC Statement",
+        "source_type": "government_source",
+        "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm",
+        "published_at": "2026-07-29T18:00:00Z",
+        "observed_at": "2026-09-19T07:04:35.494659Z",
+        "expires_at": "2026-10-27T18:00:00Z",
+        "impact": 0,
+        "confidence": 0.6,
+        "materiality": 0.3,
+        "materiality_reason": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+        "exposure_links": [
+          {
+            "kind": "industry",
+            "description": "US-listed equity: monetary policy provides broad financing and discount-rate context. No enhanced company-specific sensitivity or stock direction is established.",
+            "source_url": "https://finance.yahoo.com/quote/MSFT/profile/"
+          }
+        ],
+        "scoring_eligible": false,
+        "source_details": {
+          "external_event_id": "fomc:2026-07-29",
+          "direction_status": "uncertain",
+          "dedup_rule": "non_scoring_policy_context",
+          "previous_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "actual_value": {
+            "amount": null,
+            "lower": 3.5,
+            "upper": 3.75,
+            "text": null,
+            "unit": "percent"
+          },
+          "change": {
+            "amount": 0.0,
+            "lower": null,
+            "upper": null,
+            "text": null,
+            "unit": "basis_points"
+          }
+        },
+        "source_quality": "primary_authoritative",
+        "raw_provider": "fomc",
+        "raw_provider_id": "fomc:2026-07-29"
+      }
+    ]
+  }
+]

@@ -1,0 +1,328 @@
+{
+  "artifact_created_at": "2026-10-02T05:18:06.283907Z",
+  "budget": {
+    "attempts_charged": 8,
+    "maximum": 8,
+    "per_role": {
+      "AAPL-FY2025-FY": 1,
+      "AAPL-FY2025-Q1": 1,
+      "AAPL-FY2025-Q2": 1,
+      "AAPL-FY2025-Q3": 1,
+      "NVDA-FY2026-FY": 1,
+      "NVDA-FY2026-Q1": 1,
+      "NVDA-FY2026-Q2": 1,
+      "NVDA-FY2026-Q3": 1
+    },
+    "per_role_maximum": 1
+  },
+  "certification_complete": false,
+  "mode": "live",
+  "partitions": [
+    {
+      "reasons": [
+        "partition_unavailable"
+      ],
+      "residual_duration_days": null,
+      "residual_period_end": null,
+      "residual_period_start": null,
+      "state": "unavailable",
+      "target_fiscal_year": 2025,
+      "ticker": "AAPL",
+      "validator_invoked": false
+    },
+    {
+      "reasons": [
+        "partition_unavailable"
+      ],
+      "residual_duration_days": null,
+      "residual_period_end": null,
+      "residual_period_start": null,
+      "state": "unavailable",
+      "target_fiscal_year": 2026,
+      "ticker": "NVDA",
+      "validator_invoked": false
+    }
+  ],
+  "qualifier": "sec-inline-xbrl-revenue-operand-1",
+  "recomputed_manifest_fingerprint": "b272d3c69d169a5332e148839bec8ef37c2d4a234b81388db09eeb00efbce55b",
+  "requests": [
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 1,
+      "response_bytes": 1520316,
+      "role_key": "AAPL-FY2025-FY",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm"
+    },
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 2,
+      "response_bytes": 732697,
+      "role_key": "AAPL-FY2025-Q1",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000008/aapl-20241228.htm"
+    },
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 3,
+      "response_bytes": 890085,
+      "role_key": "AAPL-FY2025-Q2",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000057/aapl-20250329.htm"
+    },
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 4,
+      "response_bytes": 888156,
+      "role_key": "AAPL-FY2025-Q3",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000073/aapl-20250628.htm"
+    },
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 5,
+      "response_bytes": 1967924,
+      "role_key": "NVDA-FY2026-FY",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000021/nvda-20260125.htm"
+    },
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 6,
+      "response_bytes": 1132297,
+      "role_key": "NVDA-FY2026-Q1",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000116/nvda-20250427.htm"
+    },
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 7,
+      "response_bytes": 1349531,
+      "role_key": "NVDA-FY2026-Q2",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000209/nvda-20250727.htm"
+    },
+    {
+      "attempt_charged": true,
+      "http_status": 200,
+      "ordinal_attempt": 8,
+      "response_bytes": 1381438,
+      "role_key": "NVDA-FY2026-Q3",
+      "transport_outcome": "success",
+      "url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000230/nvda-20251026.htm"
+    }
+  ],
+  "reviewed_manifest_fingerprint": "b272d3c69d169a5332e148839bec8ef37c2d4a234b81388db09eeb00efbce55b",
+  "roles": [
+    {
+      "accession": "0000320193-25-000079",
+      "attempt_charged": true,
+      "compatible_candidate_count": 0,
+      "failure_reason": "qualifier_conflict",
+      "filing_date": "2025-10-31",
+      "form": "10-K",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "primary_document": "aapl-20250927.htm",
+      "qualified_operand": null,
+      "qualifier_failure_reasons": [
+        "fiscal_anchor_conflict"
+      ],
+      "qualifier_invoked": true,
+      "qualifier_state": "conflict",
+      "report_period_end": "2025-09-27",
+      "response_bytes": 1520316,
+      "role": "FY",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm",
+      "supported_revenue_fact_count": 0,
+      "target_fiscal_year": 2025,
+      "ticker": "AAPL",
+      "transport_outcome": "success"
+    },
+    {
+      "accession": "0000320193-25-000008",
+      "attempt_charged": true,
+      "compatible_candidate_count": 0,
+      "failure_reason": "qualifier_conflict",
+      "filing_date": "2025-01-31",
+      "form": "10-Q",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "primary_document": "aapl-20241228.htm",
+      "qualified_operand": null,
+      "qualifier_failure_reasons": [
+        "fiscal_anchor_conflict"
+      ],
+      "qualifier_invoked": true,
+      "qualifier_state": "conflict",
+      "report_period_end": "2024-12-28",
+      "response_bytes": 732697,
+      "role": "Q1",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000008/aapl-20241228.htm",
+      "supported_revenue_fact_count": 0,
+      "target_fiscal_year": 2025,
+      "ticker": "AAPL",
+      "transport_outcome": "success"
+    },
+    {
+      "accession": "0000320193-25-000057",
+      "attempt_charged": true,
+      "compatible_candidate_count": 0,
+      "failure_reason": "qualifier_conflict",
+      "filing_date": "2025-05-02",
+      "form": "10-Q",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "primary_document": "aapl-20250329.htm",
+      "qualified_operand": null,
+      "qualifier_failure_reasons": [
+        "fiscal_anchor_conflict"
+      ],
+      "qualifier_invoked": true,
+      "qualifier_state": "conflict",
+      "report_period_end": "2025-03-29",
+      "response_bytes": 890085,
+      "role": "Q2",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000057/aapl-20250329.htm",
+      "supported_revenue_fact_count": 0,
+      "target_fiscal_year": 2025,
+      "ticker": "AAPL",
+      "transport_outcome": "success"
+    },
+    {
+      "accession": "0000320193-25-000073",
+      "attempt_charged": true,
+      "compatible_candidate_count": 0,
+      "failure_reason": "qualifier_conflict",
+      "filing_date": "2025-08-01",
+      "form": "10-Q",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "primary_document": "aapl-20250628.htm",
+      "qualified_operand": null,
+      "qualifier_failure_reasons": [
+        "fiscal_anchor_conflict"
+      ],
+      "qualifier_invoked": true,
+      "qualifier_state": "conflict",
+      "report_period_end": "2025-06-28",
+      "response_bytes": 888156,
+      "role": "Q3",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000073/aapl-20250628.htm",
+      "supported_revenue_fact_count": 0,
+      "target_fiscal_year": 2025,
+      "ticker": "AAPL",
+      "transport_outcome": "success"
+    },
+    {
+      "accession": "0001045810-26-000021",
+      "attempt_charged": true,
+      "compatible_candidate_count": 0,
+      "failure_reason": "qualifier_conflict",
+      "filing_date": "2026-02-25",
+      "form": "10-K",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "primary_document": "nvda-20260125.htm",
+      "qualified_operand": null,
+      "qualifier_failure_reasons": [
+        "fiscal_anchor_conflict"
+      ],
+      "qualifier_invoked": true,
+      "qualifier_state": "conflict",
+      "report_period_end": "2026-01-25",
+      "response_bytes": 1967924,
+      "role": "FY",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000021/nvda-20260125.htm",
+      "supported_revenue_fact_count": 0,
+      "target_fiscal_year": 2026,
+      "ticker": "NVDA",
+      "transport_outcome": "success"
+    },
+    {
+      "accession": "0001045810-25-000116",
+      "attempt_charged": true,
+      "compatible_candidate_count": 0,
+      "failure_reason": "qualifier_conflict",
+      "filing_date": "2025-05-28",
+      "form": "10-Q",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "primary_document": "nvda-20250427.htm",
+      "qualified_operand": null,
+      "qualifier_failure_reasons": [
+        "fiscal_anchor_conflict"
+      ],
+      "qualifier_invoked": true,
+      "qualifier_state": "conflict",
+      "report_period_end": "2025-04-27",
+      "response_bytes": 1132297,
+      "role": "Q1",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000116/nvda-20250427.htm",
+      "supported_revenue_fact_count": 0,
+      "target_fiscal_year": 2026,
+      "ticker": "NVDA",
+      "transport_outcome": "success"
+    },
+    {
+      "accession": "0001045810-25-000209",
+      "attempt_charged": true,
+      "compatible_candidate_count": 0,
+      "failure_reason": "qualifier_conflict",
+      "filing_date": "2025-08-27",
+      "form": "10-Q",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "primary_document": "nvda-20250727.htm",
+      "qualified_operand": null,
+      "qualifier_failure_reasons": [
+        "fiscal_anchor_conflict"
+      ],
+      "qualifier_invoked": true,
+      "qualifier_state": "conflict",
+      "report_period_end": "2025-07-27",
+      "response_bytes": 1349531,
+      "role": "Q2",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000209/nvda-20250727.htm",
+      "supported_revenue_fact_count": 0,
+      "target_fiscal_year": 2026,
+      "ticker": "NVDA",
+      "transport_outcome": "success"
+    },
+    {
+      "accession": "0001045810-25-000230",
+      "attempt_charged": true,
+      "compatible_candidate_count": 0,
+      "failure_reason": "qualifier_conflict",
+      "filing_date": "2025-11-19",
+      "form": "10-Q",
+      "http_status": 200,
+      "parser_cap_states": [],
+      "primary_document": "nvda-20251026.htm",
+      "qualified_operand": null,
+      "qualifier_failure_reasons": [
+        "fiscal_anchor_conflict"
+      ],
+      "qualifier_invoked": true,
+      "qualifier_state": "conflict",
+      "report_period_end": "2025-10-26",
+      "response_bytes": 1381438,
+      "role": "Q3",
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581025000230/nvda-20251026.htm",
+      "supported_revenue_fact_count": 0,
+      "target_fiscal_year": 2026,
+      "ticker": "NVDA",
+      "transport_outcome": "success"
+    }
+  ],
+  "runner": "inline-revenue-eight-document-certification-1",
+  "schema_version": "1",
+  "target_set": "AAPL-FY2025-NVDA-FY2026-FY-Q1-Q2-Q3"
+}

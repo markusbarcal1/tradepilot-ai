@@ -1,0 +1,30 @@
+{
+  "id": "federal-register:2026-00789",
+  "ticker": "GLOBAL",
+  "title": "Revision to License Review Policy for Advanced Computing Commodities",
+  "extracted_text": "",
+  "description": "The Bureau of Industry and Security (BIS) is revising its license review policy for exports of certain semiconductors to China and Macau--changing it from a presumption of denial to a case-by-case review. The semiconductors covered by this rule are the Nvidia H200 and its equivalents, as well as less advanced chips--provided that (1) the semiconductors are commercially available in the United States at the time of publication of this rule and (2) the exporter certifies that: there is sufficient supply of this product in the United States; production of this product for exports to China will not divert global foundry capacity for similar or more advanced products for end users in the United States; the recipient has demonstrated sufficient security procedures; and the item undergoes independent, third-party testing in the United States to verify its performance specifications.",
+  "published_at": "2026-01-15T00:00:00Z",
+  "observed_at": "2026-09-18T16:56:49.641058Z",
+  "source_name": "Federal Register / BIS",
+  "source_type": "government_source",
+  "source_url": "https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities",
+  "provider": "geopolitical",
+  "provider_document_id": "2026-00789",
+  "source_quality": "primary_authoritative",
+  "related_tickers": [],
+  "metadata": {
+    "document_number": "2026-00789",
+    "publication_date": "2026-01-15",
+    "effective_on": "2026-01-15",
+    "type": "Rule",
+    "regulation_id_numbers": [
+      "0694-AK43"
+    ],
+    "correction_of": null,
+    "action": "Final rule.",
+    "dates": "Effective date: The effective date of this rule is January 15, 2026."
+  },
+  "tables": [],
+  "reporting_identity": null
+}

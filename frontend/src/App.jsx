@@ -3,6 +3,7 @@ import {
   analyzeTicker as fetchAnalysis,
   analyzeFinancials as fetchFinancials,
   analyzeValuation as fetchValuation,
+  generateAIAnalysis,
   analyzeTickers as fetchBatchAnalysis,
   addWatchlistSymbol,
   getScannerPreferences,
@@ -20,6 +21,7 @@ import ChartPanel from "./components/ChartPanel";
 import ScorePanel from "./components/ScorePanel";
 import FinancialScorePanel from "./components/FinancialScorePanel";
 import ValuationScorePanel from "./components/ValuationScorePanel";
+import AIAnalysisPage from "./components/AIAnalysisPage";
 import SetupPanel from "./components/SetupPanel";
 import QuickTradePanel from "./components/QuickTradePanel";
 import PaperPortfolioSummary from "./components/PaperPortfolioSummary";
@@ -59,6 +61,7 @@ function App({ userEmail, onSignOut }) {
   const { showToast } = useToast();
   const analysisRequestRef = useRef({ controller: null, id: 0 });
   const financialRequestRef = useRef({ controller: null, id: 0 });
+  const aiAnalysisRequestRef = useRef({ controller: null, id: 0 });
   const valuationRequestRef = useRef({ controller: null, id: 0 });
   const validationRequestRef = useRef({ controller: null, id: 0 });
   const watchlistRequestRef = useRef({ controller: null, id: 0 });
@@ -77,6 +80,13 @@ function App({ userEmail, onSignOut }) {
   const [financialAnalysis, setFinancialAnalysis] = useState(null);
   const [financialLoading, setFinancialLoading] = useState(false);
   const [financialError, setFinancialError] = useState("");
+  const [aiAnalysis, setAIAnalysis] = useState(null);
+  const [aiDraftTicker, setAIDraftTicker] = useState(null);
+  const [analyzedTicker, setAnalyzedTicker] = useState(null);
+  const [aiAnalysisLoading, setAIAnalysisLoading] = useState(false);
+  const [analyzingTicker, setAnalyzingTicker] = useState(null);
+  const [aiAnalysisError, setAIAnalysisError] = useState("");
+  const [aiAnalysisErrorTicker, setAIAnalysisErrorTicker] = useState(null);
   const [valuationAnalysis, setValuationAnalysis] = useState(null);
   const [valuationLoading, setValuationLoading] = useState(false);
   const [valuationError, setValuationError] = useState("");
@@ -105,6 +115,39 @@ function App({ userEmail, onSignOut }) {
       setWatchlistError("");
     }, 2500);
   };
+
+  const requestAIAnalysis = useCallback(async (symbol) => {
+    aiAnalysisRequestRef.current.controller?.abort();
+    const controller = new AbortController();
+    const requestId = aiAnalysisRequestRef.current.id + 1;
+    aiAnalysisRequestRef.current = { controller, id: requestId };
+    setAIAnalysisLoading(true);
+    setAnalyzingTicker(symbol);
+    setAIAnalysisError("");
+    setAIAnalysisErrorTicker(null);
+
+    try {
+      const response = await generateAIAnalysis(symbol, { signal: controller.signal });
+      if (aiAnalysisRequestRef.current.id !== requestId) return;
+      if (response.data?.status !== "available" || !response.data?.analysis || !response.data?.research
+          || response.data.research.ticker?.trim().toUpperCase() !== symbol) {
+        throw new Error("AI analysis unavailable");
+      }
+      setAIAnalysis(response.data);
+      setAnalyzedTicker(symbol);
+      setAIAnalysisError("");
+    } catch (err) {
+      if (isRequestCanceled(err) || aiAnalysisRequestRef.current.id !== requestId) return;
+      console.error("Could not load AI analysis:", err);
+      setAIAnalysisError("Analysis unavailable.");
+      setAIAnalysisErrorTicker(symbol);
+    } finally {
+      if (aiAnalysisRequestRef.current.id === requestId) {
+        setAIAnalysisLoading(false);
+        setAnalyzingTicker(null);
+      }
+    }
+  }, []);
 
   const loadFinancialAnalysis = useCallback(async (symbol, options = {}) => {
     financialRequestRef.current.controller?.abort();
@@ -256,7 +299,6 @@ function App({ userEmail, onSignOut }) {
       (response.data.results || []).forEach((item) => {
         scoreMap[item.ticker] = {
           technical: (item.technical_score ?? item.trend_score)?.score,
-          quality: (item.trade_quality_score ?? item.entry_score)?.score,
         };
       });
 
@@ -325,6 +367,13 @@ function App({ userEmail, onSignOut }) {
     if (!cleanTicker) return;
 
     analyzeTicker(cleanTicker, timeframe);
+  };
+
+  const handleAIAnalyzeClick = (requestedTicker = aiDraftTicker) => {
+    const cleanTicker = String(requestedTicker || "").trim().toUpperCase();
+    if (!/^[A-Z0-9.-]{1,15}$/.test(cleanTicker)) return;
+    setAIDraftTicker(cleanTicker);
+    requestAIAnalysis(cleanTicker);
   };
 
   const handleWatchlistSelect = (symbol) => {
@@ -438,7 +487,10 @@ function App({ userEmail, onSignOut }) {
       return;
     }
 
-    if (["dashboard", "watchlist", "scanner"].includes(view)) {
+    if (["dashboard", "watchlist", "scanner", "ai-analysis"].includes(view)) {
+      if (view === "ai-analysis" && aiDraftTicker === null) {
+        setAIDraftTicker(ticker.trim().toUpperCase());
+      }
       setCurrentView(view);
     }
   };
@@ -572,11 +624,13 @@ function App({ userEmail, onSignOut }) {
       analysisRequestRef.current.controller?.abort();
       financialRequestRef.current.controller?.abort();
       valuationRequestRef.current.controller?.abort();
+      aiAnalysisRequestRef.current.controller?.abort();
       validationRequestRef.current.controller?.abort();
       watchlistRequestRef.current.controller?.abort();
       analysisRequestRef.current.id += 1;
       financialRequestRef.current.id += 1;
       valuationRequestRef.current.id += 1;
+      aiAnalysisRequestRef.current.id += 1;
       validationRequestRef.current.id += 1;
       watchlistRequestRef.current.id += 1;
       window.clearTimeout(scannerPreferencesTimerRef.current);
@@ -649,6 +703,21 @@ function App({ userEmail, onSignOut }) {
             onToggleTheme={handleToggleTheme}
           />
 
+          {currentView === "ai-analysis" && (
+            <AIAnalysisPage
+              draftTicker={aiDraftTicker || ""}
+              onDraftTickerChange={setAIDraftTicker}
+              analyzedTicker={analyzedTicker}
+              result={aiAnalysis}
+              loading={aiAnalysisLoading}
+              analyzingTicker={analyzingTicker}
+              error={aiAnalysisError}
+              errorTicker={aiAnalysisErrorTicker}
+              onAnalyze={handleAIAnalyzeClick}
+              theme={theme}
+            />
+          )}
+
           {currentView === "portfolio" && (
             <PortfolioPage
               portfolio={paperPortfolio}
@@ -701,13 +770,6 @@ function App({ userEmail, onSignOut }) {
                       key={`technical-${analysis.ticker}-${analysis.period}-${analysis.interval}`}
                       title="Technical Score"
                       scoreData={analysis.technical_score ?? analysis.trend_score}
-                      embedded
-                    />
-
-                    <ScorePanel
-                      key={`quality-${analysis.ticker}-${analysis.period}-${analysis.interval}`}
-                      title="Trade Quality Score"
-                      scoreData={analysis.trade_quality_score ?? analysis.entry_score}
                       embedded
                     />
 

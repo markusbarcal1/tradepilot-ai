@@ -7,7 +7,6 @@ export function isValidAnalysisResponse(data) {
     && data.ticker.trim()
     && Array.isArray(data.chart_data)
     && data.technical_score
-    && data.trade_quality_score
   );
 }
 

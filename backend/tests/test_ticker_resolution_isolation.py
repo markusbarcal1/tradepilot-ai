@@ -13,7 +13,6 @@ def successful_analysis(symbol):
     return {
         "ticker": symbol,
         "price": 100,
-        "trade_quality_score": {"score": 80, "grade": "Good Entry"},
         "technical_score": {"score": 85, "grade": "Bullish"},
         "trade_setup": {
             "setup_type": "Momentum Continuation",

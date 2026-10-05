@@ -1,0 +1,985 @@
+{
+  "accepted_periods": [],
+  "amendments": [],
+  "cik": "0001755953",
+  "comparison_eligibility": [],
+  "issuer": "American Bitcoin Corp.",
+  "missing_periods": [],
+  "observations": [],
+  "rejected": [
+    {
+      "accession": "0001193125-26-329472",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2026,
+      "metric": "diluted_eps",
+      "period_end": "2026-06-30",
+      "period_start": "2026-01-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-26-329472",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2026,
+      "metric": "diluted_eps",
+      "period_end": "2026-06-30",
+      "period_start": "2026-04-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-26-209008",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2026,
+      "metric": "diluted_eps",
+      "period_end": "2026-03-31",
+      "period_start": "2026-01-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-26-127278",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2025,
+      "metric": "diluted_eps",
+      "period_end": "2025-12-31",
+      "period_start": "2025-01-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-25-281390",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2025,
+      "metric": "diluted_eps",
+      "period_end": "2025-09-30",
+      "period_start": "2025-01-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-26-329472",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2026,
+      "metric": "diluted_eps",
+      "period_end": "2025-06-30",
+      "period_start": "2025-01-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-26-329472",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2026,
+      "metric": "diluted_eps",
+      "period_end": "2025-06-30",
+      "period_start": "2025-04-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001213900-25-076632",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2025,
+      "metric": "diluted_eps",
+      "period_end": "2025-06-30",
+      "period_start": "2025-01-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-26-329472",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2026,
+      "metric": "revenue",
+      "period_end": "2026-06-30",
+      "period_start": "2026-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001193125-26-329472",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2026,
+      "metric": "diluted_eps",
+      "period_end": "2026-06-30",
+      "period_start": "2026-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001193125-26-127278",
+      "concept": "Revenues",
+      "fiscal_period": "FY",
+      "fiscal_year": 2025,
+      "metric": "revenue",
+      "period_end": "2025-12-31",
+      "period_start": "2025-01-01",
+      "reason": "annual_period_not_normalized_in_this_phase"
+    },
+    {
+      "accession": "0001193125-26-127278",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "FY",
+      "fiscal_year": 2025,
+      "metric": "diluted_eps",
+      "period_end": "2025-12-31",
+      "period_start": "2025-01-01",
+      "reason": "annual_period_not_normalized_in_this_phase"
+    },
+    {
+      "accession": "0001193125-25-281390",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2025,
+      "metric": "revenue",
+      "period_end": "2025-09-30",
+      "period_start": "2025-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001193125-25-281390",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2025,
+      "metric": "diluted_eps",
+      "period_end": "2025-09-30",
+      "period_start": "2025-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001193125-26-329472",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2026,
+      "metric": "revenue",
+      "period_end": "2025-06-30",
+      "period_start": "2025-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001193125-26-329472",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2026,
+      "metric": "diluted_eps",
+      "period_end": "2025-06-30",
+      "period_start": "2025-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-25-076632",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2025,
+      "metric": "revenue",
+      "period_end": "2025-06-30",
+      "period_start": "2025-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-25-076632",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2025,
+      "metric": "diluted_eps",
+      "period_end": "2025-06-30",
+      "period_start": "2025-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-25-026404",
+      "concept": "Revenues",
+      "fiscal_period": "FY",
+      "fiscal_year": 2024,
+      "metric": "revenue",
+      "period_end": "2024-12-31",
+      "period_start": "2024-01-01",
+      "reason": "annual_period_not_normalized_in_this_phase"
+    },
+    {
+      "accession": "0001213900-25-026404",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "FY",
+      "fiscal_year": 2024,
+      "metric": "diluted_eps",
+      "period_end": "2024-12-31",
+      "period_start": "2024-01-01",
+      "reason": "annual_period_not_normalized_in_this_phase"
+    },
+    {
+      "accession": "0001193125-25-281390",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2025,
+      "metric": "revenue",
+      "period_end": "2024-09-30",
+      "period_start": "2024-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001193125-25-281390",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2025,
+      "metric": "diluted_eps",
+      "period_end": "2024-09-30",
+      "period_start": "2024-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-24-097500",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2024,
+      "metric": "revenue",
+      "period_end": "2024-09-30",
+      "period_start": "2024-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-24-097500",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2024,
+      "metric": "diluted_eps",
+      "period_end": "2024-09-30",
+      "period_start": "2024-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-25-076632",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2025,
+      "metric": "revenue",
+      "period_end": "2024-06-30",
+      "period_start": "2024-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-25-076632",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2025,
+      "metric": "diluted_eps",
+      "period_end": "2024-06-30",
+      "period_start": "2024-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-24-068996",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2024,
+      "metric": "revenue",
+      "period_end": "2024-06-30",
+      "period_start": "2024-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-24-068996",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2024,
+      "metric": "diluted_eps",
+      "period_end": "2024-06-30",
+      "period_start": "2024-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-24-028732",
+      "concept": "Revenues",
+      "fiscal_period": "FY",
+      "fiscal_year": 2023,
+      "metric": "revenue",
+      "period_end": "2023-12-31",
+      "period_start": "2023-01-01",
+      "reason": "annual_period_not_normalized_in_this_phase"
+    },
+    {
+      "accession": "0001213900-24-028732",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "FY",
+      "fiscal_year": 2023,
+      "metric": "diluted_eps",
+      "period_end": "2023-12-31",
+      "period_start": "2023-01-01",
+      "reason": "annual_period_not_normalized_in_this_phase"
+    },
+    {
+      "accession": "0001213900-24-097500",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2024,
+      "metric": "revenue",
+      "period_end": "2023-09-30",
+      "period_start": "2023-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-24-097500",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2024,
+      "metric": "diluted_eps",
+      "period_end": "2023-09-30",
+      "period_start": "2023-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-23-087102",
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2023,
+      "metric": "revenue",
+      "period_end": "2023-09-30",
+      "period_start": "2023-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-23-087102",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2023,
+      "metric": "revenue",
+      "period_end": "2023-09-30",
+      "period_start": "2023-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-23-087102",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2023,
+      "metric": "diluted_eps",
+      "period_end": "2023-09-30",
+      "period_start": "2023-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-24-068996",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2024,
+      "metric": "revenue",
+      "period_end": "2023-06-30",
+      "period_start": "2023-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-24-068996",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2024,
+      "metric": "diluted_eps",
+      "period_end": "2023-06-30",
+      "period_start": "2023-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-23-067028",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2023,
+      "metric": "revenue",
+      "period_end": "2023-06-30",
+      "period_start": "2023-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-23-067028",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2023,
+      "metric": "diluted_eps",
+      "period_end": "2023-06-30",
+      "period_start": "2023-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-23-021526",
+      "concept": "Revenues",
+      "fiscal_period": "FY",
+      "fiscal_year": 2022,
+      "metric": "revenue",
+      "period_end": "2022-12-31",
+      "period_start": "2022-01-01",
+      "reason": "annual_period_not_normalized_in_this_phase"
+    },
+    {
+      "accession": "0001213900-23-087102",
+      "concept": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2023,
+      "metric": "revenue",
+      "period_end": "2022-09-30",
+      "period_start": "2022-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-23-087102",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2023,
+      "metric": "revenue",
+      "period_end": "2022-09-30",
+      "period_start": "2022-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-23-087102",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2023,
+      "metric": "diluted_eps",
+      "period_end": "2022-09-30",
+      "period_start": "2022-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-22-072131",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2022,
+      "metric": "revenue",
+      "period_end": "2022-09-30",
+      "period_start": "2022-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-22-072131",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2022,
+      "metric": "diluted_eps",
+      "period_end": "2022-09-30",
+      "period_start": "2022-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-23-067028",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2023,
+      "metric": "revenue",
+      "period_end": "2022-06-30",
+      "period_start": "2022-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-23-067028",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2023,
+      "metric": "diluted_eps",
+      "period_end": "2022-06-30",
+      "period_start": "2022-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-22-047356",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2022,
+      "metric": "revenue",
+      "period_end": "2022-06-30",
+      "period_start": "2022-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-22-047356",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2022,
+      "metric": "diluted_eps",
+      "period_end": "2022-06-30",
+      "period_start": "2022-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-22-016675",
+      "concept": "Revenues",
+      "fiscal_period": "FY",
+      "fiscal_year": 2021,
+      "metric": "revenue",
+      "period_end": "2021-12-31",
+      "period_start": "2021-01-01",
+      "reason": "annual_period_not_normalized_in_this_phase"
+    },
+    {
+      "accession": "0001213900-22-072131",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2022,
+      "metric": "revenue",
+      "period_end": "2021-09-30",
+      "period_start": "2021-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-22-072131",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2022,
+      "metric": "diluted_eps",
+      "period_end": "2021-09-30",
+      "period_start": "2021-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-21-058570",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2021,
+      "metric": "revenue",
+      "period_end": "2021-09-30",
+      "period_start": "2021-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-22-047356",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2022,
+      "metric": "revenue",
+      "period_end": "2021-06-30",
+      "period_start": "2021-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-22-047356",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2022,
+      "metric": "diluted_eps",
+      "period_end": "2021-06-30",
+      "period_start": "2021-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-21-042136",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2021,
+      "metric": "revenue",
+      "period_end": "2021-06-30",
+      "period_start": "2021-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-21-058570",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2021,
+      "metric": "revenue",
+      "period_end": "2020-09-30",
+      "period_start": "2020-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-21-042136",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2021,
+      "metric": "revenue",
+      "period_end": "2020-06-30",
+      "period_start": "2020-01-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-20-012380",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2020,
+      "metric": "revenue",
+      "period_end": "2020-03-31",
+      "period_start": "2019-07-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-20-003402",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2020,
+      "metric": "revenue",
+      "period_end": "2019-12-31",
+      "period_start": "2019-07-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-20-012380",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2020,
+      "metric": "revenue",
+      "period_end": "2019-06-30",
+      "period_start": "2018-07-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-20-012380",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2020,
+      "metric": "revenue",
+      "period_end": "2019-03-31",
+      "period_start": "2018-07-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-20-003402",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2020,
+      "metric": "revenue",
+      "period_end": "2018-12-31",
+      "period_start": "2018-07-01",
+      "reason": "not_standalone_quarter"
+    },
+    {
+      "accession": "0001213900-23-087102",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2023,
+      "metric": "diluted_eps",
+      "period_end": "2023-09-30",
+      "period_start": "2023-07-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-23-087102",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2023,
+      "metric": "diluted_eps",
+      "period_end": "2022-09-30",
+      "period_start": "2022-07-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-24-042504",
+      "concept": "Revenues",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2024,
+      "metric": "revenue",
+      "period_end": "2024-03-31",
+      "period_start": "2024-01-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-24-042504",
+      "concept": "Revenues",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2024,
+      "metric": "revenue",
+      "period_end": "2023-03-31",
+      "period_start": "2023-01-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-24-042504",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2024,
+      "metric": "diluted_eps",
+      "period_end": "2024-03-31",
+      "period_start": "2024-01-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-24-042504",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2024,
+      "metric": "diluted_eps",
+      "period_end": "2023-03-31",
+      "period_start": "2023-01-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-24-068996",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2024,
+      "metric": "revenue",
+      "period_end": "2024-06-30",
+      "period_start": "2024-04-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-24-068996",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2024,
+      "metric": "revenue",
+      "period_end": "2023-06-30",
+      "period_start": "2023-04-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-24-068996",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2024,
+      "metric": "diluted_eps",
+      "period_end": "2024-06-30",
+      "period_start": "2024-04-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-24-068996",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2024,
+      "metric": "diluted_eps",
+      "period_end": "2023-06-30",
+      "period_start": "2023-04-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-24-097500",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2024,
+      "metric": "revenue",
+      "period_end": "2024-09-30",
+      "period_start": "2024-07-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-24-097500",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2024,
+      "metric": "revenue",
+      "period_end": "2023-09-30",
+      "period_start": "2023-07-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-24-097500",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2024,
+      "metric": "diluted_eps",
+      "period_end": "2024-09-30",
+      "period_start": "2024-07-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-24-097500",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2024,
+      "metric": "diluted_eps",
+      "period_end": "2023-09-30",
+      "period_start": "2023-07-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-25-044194",
+      "concept": "Revenues",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2025,
+      "metric": "revenue",
+      "period_end": "2025-03-31",
+      "period_start": "2025-01-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-25-044194",
+      "concept": "Revenues",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2025,
+      "metric": "revenue",
+      "period_end": "2024-03-31",
+      "period_start": "2024-01-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-25-044194",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2025,
+      "metric": "diluted_eps",
+      "period_end": "2025-03-31",
+      "period_start": "2025-01-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-25-044194",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2025,
+      "metric": "diluted_eps",
+      "period_end": "2024-03-31",
+      "period_start": "2024-01-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-25-076632",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2025,
+      "metric": "revenue",
+      "period_end": "2025-06-30",
+      "period_start": "2025-04-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-25-076632",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2025,
+      "metric": "revenue",
+      "period_end": "2024-06-30",
+      "period_start": "2024-04-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-25-076632",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2025,
+      "metric": "diluted_eps",
+      "period_end": "2025-06-30",
+      "period_start": "2025-04-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001213900-25-076632",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2025,
+      "metric": "diluted_eps",
+      "period_end": "2024-06-30",
+      "period_start": "2024-04-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001193125-25-281390",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2025,
+      "metric": "revenue",
+      "period_end": "2025-09-30",
+      "period_start": "2025-07-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001193125-25-281390",
+      "concept": "Revenues",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2025,
+      "metric": "revenue",
+      "period_end": "2024-09-30",
+      "period_start": "2024-07-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001193125-26-209008",
+      "concept": "Revenues",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2026,
+      "metric": "revenue",
+      "period_end": "2026-03-31",
+      "period_start": "2026-01-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001193125-26-209008",
+      "concept": "Revenues",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2026,
+      "metric": "revenue",
+      "period_end": "2025-03-31",
+      "period_start": "2025-01-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001193125-26-209008",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2026,
+      "metric": "diluted_eps",
+      "period_end": "2026-03-31",
+      "period_start": "2026-01-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001193125-26-209008",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2026,
+      "metric": "diluted_eps",
+      "period_end": "2025-03-31",
+      "period_start": "2025-01-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001193125-26-329472",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2026,
+      "metric": "revenue",
+      "period_end": "2026-06-30",
+      "period_start": "2026-04-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001193125-26-329472",
+      "concept": "Revenues",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2026,
+      "metric": "revenue",
+      "period_end": "2025-06-30",
+      "period_start": "2025-04-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001193125-26-329472",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2026,
+      "metric": "diluted_eps",
+      "period_end": "2026-06-30",
+      "period_start": "2026-04-01",
+      "reason": "ambiguous_quarterly_context"
+    },
+    {
+      "accession": "0001193125-26-329472",
+      "concept": "EarningsPerShareDiluted",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2026,
+      "metric": "diluted_eps",
+      "period_end": "2025-06-30",
+      "period_start": "2025-04-01",
+      "reason": "ambiguous_quarterly_context"
+    }
+  ],
+  "request_and_cache_statistics": {
+    "accepted_observation_count": 0,
+    "attempts": 1,
+    "cache_hits": 0,
+    "cache_loads": 1,
+    "cache_reads": 1,
+    "cache_ttl_seconds": 21600,
+    "concurrent_behavior": "single_flight_per_ticker",
+    "failure_cache_ttl_seconds": 60,
+    "max_annual_periods_inspected": 5,
+    "max_quarterly_periods": 8,
+    "max_source_facts": 256,
+    "processed_fact_count": 129,
+    "rejected_fact_count": 95,
+    "request_budget": 3,
+    "requests": 3,
+    "source_fact_count": 163,
+    "source_status": "unavailable",
+    "timeout_seconds": 5.0
+  },
+  "schema_version": "1",
+  "sources": [],
+  "status": "unavailable",
+  "ticker": "ABTC"
+}

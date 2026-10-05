@@ -25,11 +25,11 @@ from app.repositories.users import UserRepository
 
 
 BASELINE_REVISION = "20260828_01"
-HEAD_REVISION = "20260902_03"
+HEAD_REVISION = "20260920_04"
 LEGACY_TABLES = {"paper_account", "paper_positions", "paper_trades"}
 CURRENT_TABLES = {
     "app_users", "paper_accounts", "paper_positions", "paper_trades",
-    "watchlist_items", "user_preferences", "alembic_version",
+    "watchlist_items", "user_preferences", "expectation_snapshots", "alembic_version",
 }
 EMAIL_PATTERN = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 

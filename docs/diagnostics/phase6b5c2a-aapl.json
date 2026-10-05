@@ -1,0 +1,2595 @@
+{
+  "accepted_periods": [],
+  "amendments": [],
+  "cik": "0000320193",
+  "comparison_eligibility": [],
+  "issuer": "Apple Inc.",
+  "missing_periods": [],
+  "observations": [],
+  "rejected": [
+    {
+      "accession": "0001193125-09-214859",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2009,
+      "metric": "diluted_eps",
+      "period_end": "2007-09-29",
+      "period_start": "2006-10-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-012091",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2009,
+      "metric": "diluted_eps",
+      "period_end": "2007-09-29",
+      "period_start": "2006-10-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-09-153165",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2009,
+      "metric": "diluted_eps",
+      "period_end": "2008-06-28",
+      "period_start": "2007-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-09-153165",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2009,
+      "metric": "diluted_eps",
+      "period_end": "2008-06-28",
+      "period_start": "2008-03-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-09-214859",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2009,
+      "metric": "diluted_eps",
+      "period_end": "2008-09-27",
+      "period_start": "2007-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-012091",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2009,
+      "metric": "diluted_eps",
+      "period_end": "2008-09-27",
+      "period_start": "2007-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-238044",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2008-09-27",
+      "period_start": "2007-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-012085",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2008-12-27",
+      "period_start": "2008-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-238044",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2008-12-27",
+      "period_start": "2008-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-088957",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2009-03-28",
+      "period_start": "2008-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-088957",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2009-03-28",
+      "period_start": "2008-12-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-238044",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2009-03-28",
+      "period_start": "2008-12-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-09-153165",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2009,
+      "metric": "diluted_eps",
+      "period_end": "2009-06-27",
+      "period_start": "2008-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-162840",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2009-06-27",
+      "period_start": "2008-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-09-153165",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2009,
+      "metric": "diluted_eps",
+      "period_end": "2009-06-27",
+      "period_start": "2009-03-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-162840",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2009-06-27",
+      "period_start": "2009-03-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-238044",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2009-06-27",
+      "period_start": "2009-03-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-09-214859",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2009,
+      "metric": "diluted_eps",
+      "period_end": "2009-09-26",
+      "period_start": "2008-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-012091",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2009,
+      "metric": "diluted_eps",
+      "period_end": "2009-09-26",
+      "period_start": "2008-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-238044",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2009-09-26",
+      "period_start": "2008-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-282113",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2009-09-26",
+      "period_start": "2008-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-238044",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2009-09-26",
+      "period_start": "2009-06-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-012085",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2009-12-26",
+      "period_start": "2009-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-238044",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2009-12-26",
+      "period_start": "2009-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-010144",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2009-12-26",
+      "period_start": "2009-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-282113",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2009-12-26",
+      "period_start": "2009-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-088957",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2010-03-27",
+      "period_start": "2009-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-104388",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2010-03-27",
+      "period_start": "2009-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-088957",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2010-03-27",
+      "period_start": "2009-12-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-238044",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2010-03-27",
+      "period_start": "2009-12-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-104388",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2010-03-27",
+      "period_start": "2009-12-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-282113",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2010-03-27",
+      "period_start": "2009-12-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-162840",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2010-06-26",
+      "period_start": "2009-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-192493",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2010-06-26",
+      "period_start": "2009-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-162840",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2010-06-26",
+      "period_start": "2010-03-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-238044",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2010-06-26",
+      "period_start": "2010-03-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-192493",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2010-06-26",
+      "period_start": "2010-03-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-282113",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2010-06-26",
+      "period_start": "2010-03-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-238044",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2010-09-25",
+      "period_start": "2009-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-282113",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2010-09-25",
+      "period_start": "2009-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-444068",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2010-09-25",
+      "period_start": "2009-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-170623",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2010-09-25",
+      "period_start": "2009-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-10-238044",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2010,
+      "metric": "diluted_eps",
+      "period_end": "2010-09-25",
+      "period_start": "2010-06-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-282113",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2010-09-25",
+      "period_start": "2010-06-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-010144",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2010-12-25",
+      "period_start": "2010-09-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-282113",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2010-12-25",
+      "period_start": "2010-09-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-023398",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2010-12-25",
+      "period_start": "2010-09-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-444068",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2010-12-25",
+      "period_start": "2010-09-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-170623",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2010-12-25",
+      "period_start": "2010-09-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-104388",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2011-03-26",
+      "period_start": "2010-09-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-182321",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2011-03-26",
+      "period_start": "2010-09-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-104388",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2011-03-26",
+      "period_start": "2010-12-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-282113",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2011-03-26",
+      "period_start": "2010-12-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-182321",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2011-03-26",
+      "period_start": "2010-12-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-444068",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2011-03-26",
+      "period_start": "2010-12-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-170623",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2011-03-26",
+      "period_start": "2010-12-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-192493",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2011-06-25",
+      "period_start": "2010-09-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-314552",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2011-06-25",
+      "period_start": "2010-09-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-192493",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2011-06-25",
+      "period_start": "2011-03-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-282113",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2011-06-25",
+      "period_start": "2011-03-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-314552",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2011-06-25",
+      "period_start": "2011-03-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-444068",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2011-06-25",
+      "period_start": "2011-03-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-170623",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2011-06-25",
+      "period_start": "2011-03-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-282113",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2011-09-24",
+      "period_start": "2010-09-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-444068",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2011-09-24",
+      "period_start": "2010-09-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-170623",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2011-09-24",
+      "period_start": "2010-09-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-416534",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2011-09-24",
+      "period_start": "2010-09-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-11-282113",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2011,
+      "metric": "diluted_eps",
+      "period_end": "2011-09-24",
+      "period_start": "2011-06-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-444068",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2011-09-24",
+      "period_start": "2011-06-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-170623",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2011-09-24",
+      "period_start": "2011-06-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-023398",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2011-12-31",
+      "period_start": "2011-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-444068",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2011-12-31",
+      "period_start": "2011-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-022339",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2011-12-31",
+      "period_start": "2011-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-170623",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2011-12-31",
+      "period_start": "2011-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-416534",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2011-12-31",
+      "period_start": "2011-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-182321",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2012-03-31",
+      "period_start": "2011-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-168288",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2012-03-31",
+      "period_start": "2011-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-182321",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2012-03-31",
+      "period_start": "2012-01-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-444068",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2012-03-31",
+      "period_start": "2012-01-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-168288",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2012-03-31",
+      "period_start": "2012-01-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-170623",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2012-03-31",
+      "period_start": "2012-01-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-416534",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2012-03-31",
+      "period_start": "2012-01-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-314552",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2012-06-30",
+      "period_start": "2011-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-300670",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2012-06-30",
+      "period_start": "2011-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-314552",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2012-06-30",
+      "period_start": "2012-04-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-444068",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2012-06-30",
+      "period_start": "2012-04-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-170623",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2012-06-30",
+      "period_start": "2012-04-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-300670",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2012-06-30",
+      "period_start": "2012-04-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-416534",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2012-06-30",
+      "period_start": "2012-04-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-444068",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2012-09-29",
+      "period_start": "2011-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-170623",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2012-09-29",
+      "period_start": "2011-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-416534",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2012-09-29",
+      "period_start": "2011-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-383437",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2012-09-29",
+      "period_start": "2011-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-023732",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": null,
+      "fiscal_year": null,
+      "metric": "diluted_eps",
+      "period_end": "2012-09-29",
+      "period_start": "2011-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-12-444068",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2012-09-29",
+      "period_start": "2012-07-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-170623",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2012,
+      "metric": "diluted_eps",
+      "period_end": "2012-09-29",
+      "period_start": "2012-07-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-416534",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2012-09-29",
+      "period_start": "2012-07-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-022339",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2012-12-29",
+      "period_start": "2012-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-416534",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2012-12-29",
+      "period_start": "2012-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-024487",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2012-12-29",
+      "period_start": "2012-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-383437",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2012-12-29",
+      "period_start": "2012-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-023732",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": null,
+      "fiscal_year": null,
+      "metric": "diluted_eps",
+      "period_end": "2012-12-29",
+      "period_start": "2012-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-168288",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2013-03-30",
+      "period_start": "2012-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-157311",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2013-03-30",
+      "period_start": "2012-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-168288",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2013-03-30",
+      "period_start": "2012-12-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-416534",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2013-03-30",
+      "period_start": "2012-12-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-157311",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2013-03-30",
+      "period_start": "2012-12-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-383437",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2013-03-30",
+      "period_start": "2012-12-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-023732",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": null,
+      "fiscal_year": null,
+      "metric": "diluted_eps",
+      "period_end": "2013-03-30",
+      "period_start": "2012-12-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-300670",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2013-06-29",
+      "period_start": "2012-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-277160",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2013-06-29",
+      "period_start": "2012-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-300670",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2013-06-29",
+      "period_start": "2013-03-31",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-416534",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2013-06-29",
+      "period_start": "2013-03-31",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-277160",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2013-06-29",
+      "period_start": "2013-03-31",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-383437",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2013-06-29",
+      "period_start": "2013-03-31",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-023732",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": null,
+      "fiscal_year": null,
+      "metric": "diluted_eps",
+      "period_end": "2013-06-29",
+      "period_start": "2013-03-31",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-416534",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2013-09-28",
+      "period_start": "2012-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-383437",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2013-09-28",
+      "period_start": "2012-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-023732",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": null,
+      "fiscal_year": null,
+      "metric": "diluted_eps",
+      "period_end": "2013-09-28",
+      "period_start": "2012-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-356351",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2013-09-28",
+      "period_start": "2012-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-13-416534",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2013,
+      "metric": "diluted_eps",
+      "period_end": "2013-09-28",
+      "period_start": "2013-06-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-383437",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2013-09-28",
+      "period_start": "2013-06-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-023732",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": null,
+      "fiscal_year": null,
+      "metric": "diluted_eps",
+      "period_end": "2013-09-28",
+      "period_start": "2013-06-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-024487",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2013-12-28",
+      "period_start": "2013-09-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-383437",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2013-12-28",
+      "period_start": "2013-09-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-023697",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2013-12-28",
+      "period_start": "2013-09-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-023732",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": null,
+      "fiscal_year": null,
+      "metric": "diluted_eps",
+      "period_end": "2013-12-28",
+      "period_start": "2013-09-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-356351",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2013-12-28",
+      "period_start": "2013-09-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-157311",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2014-03-29",
+      "period_start": "2013-09-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-153166",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2014-03-29",
+      "period_start": "2013-09-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-157311",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2014-03-29",
+      "period_start": "2013-12-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-383437",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2014-03-29",
+      "period_start": "2013-12-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-023732",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": null,
+      "fiscal_year": null,
+      "metric": "diluted_eps",
+      "period_end": "2014-03-29",
+      "period_start": "2013-12-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-153166",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2014-03-29",
+      "period_start": "2013-12-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-356351",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2014-03-29",
+      "period_start": "2013-12-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-277160",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2014-06-28",
+      "period_start": "2013-09-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-259935",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2014-06-28",
+      "period_start": "2013-09-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-277160",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2014-06-28",
+      "period_start": "2014-03-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-383437",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2014-06-28",
+      "period_start": "2014-03-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-023732",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": null,
+      "fiscal_year": null,
+      "metric": "diluted_eps",
+      "period_end": "2014-06-28",
+      "period_start": "2014-03-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-259935",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2014-06-28",
+      "period_start": "2014-03-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-356351",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2014-06-28",
+      "period_start": "2014-03-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-383437",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2014-09-27",
+      "period_start": "2013-09-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-023732",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": null,
+      "fiscal_year": null,
+      "metric": "diluted_eps",
+      "period_end": "2014-09-27",
+      "period_start": "2013-09-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-356351",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2014-09-27",
+      "period_start": "2013-09-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-16-020309",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2014-09-27",
+      "period_start": "2013-09-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-14-383437",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2014,
+      "metric": "diluted_eps",
+      "period_end": "2014-09-27",
+      "period_start": "2014-06-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-023732",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": null,
+      "fiscal_year": null,
+      "metric": "diluted_eps",
+      "period_end": "2014-09-27",
+      "period_start": "2014-06-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-356351",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2014-09-27",
+      "period_start": "2014-06-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-023697",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2014-12-27",
+      "period_start": "2014-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-356351",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2014-12-27",
+      "period_start": "2014-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-16-439878",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2014-12-27",
+      "period_start": "2014-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-16-020309",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2014-12-27",
+      "period_start": "2014-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-153166",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2015-03-28",
+      "period_start": "2014-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-16-559625",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2015-03-28",
+      "period_start": "2014-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-153166",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2015-03-28",
+      "period_start": "2014-12-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-356351",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2015-03-28",
+      "period_start": "2014-12-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-16-559625",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2015-03-28",
+      "period_start": "2014-12-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-16-020309",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2015-03-28",
+      "period_start": "2014-12-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-259935",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2015-06-27",
+      "period_start": "2014-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-16-017809",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2015-06-27",
+      "period_start": "2014-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-259935",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2015-06-27",
+      "period_start": "2015-03-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-356351",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2015-06-27",
+      "period_start": "2015-03-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-16-017809",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2015-06-27",
+      "period_start": "2015-03-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-16-020309",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2015-06-27",
+      "period_start": "2015-03-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-356351",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2015-09-26",
+      "period_start": "2014-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-16-020309",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2015-09-26",
+      "period_start": "2014-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-17-000070",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2015-09-26",
+      "period_start": "2014-09-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-15-356351",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2015,
+      "metric": "diluted_eps",
+      "period_end": "2015-09-26",
+      "period_start": "2015-06-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-16-020309",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2015-09-26",
+      "period_start": "2015-06-28",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-16-439878",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2015-12-26",
+      "period_start": "2015-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-16-020309",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2015-12-26",
+      "period_start": "2015-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-17-000717",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2015-12-26",
+      "period_start": "2015-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-17-000070",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2015-12-26",
+      "period_start": "2015-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-16-559625",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2016-03-26",
+      "period_start": "2015-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-17-004790",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2016-03-26",
+      "period_start": "2015-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001193125-16-559625",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2016-03-26",
+      "period_start": "2015-12-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-16-020309",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2016-03-26",
+      "period_start": "2015-12-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-17-004790",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2016-03-26",
+      "period_start": "2015-12-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-17-000070",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2016-03-26",
+      "period_start": "2015-12-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-16-017809",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2016-06-25",
+      "period_start": "2015-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-17-000009",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2016-06-25",
+      "period_start": "2015-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-16-017809",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2016-06-25",
+      "period_start": "2016-03-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-16-020309",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2016-06-25",
+      "period_start": "2016-03-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-17-000009",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2016-06-25",
+      "period_start": "2016-03-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-17-000070",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2016-06-25",
+      "period_start": "2016-03-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-16-020309",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2016-09-24",
+      "period_start": "2015-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-17-000070",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2016-09-24",
+      "period_start": "2015-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000145",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2016-09-24",
+      "period_start": "2015-09-27",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-16-020309",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2016,
+      "metric": "diluted_eps",
+      "period_end": "2016-09-24",
+      "period_start": "2016-06-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-17-000070",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2016-09-24",
+      "period_start": "2016-06-26",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-17-000717",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2016-12-31",
+      "period_start": "2016-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-17-000070",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2016-12-31",
+      "period_start": "2016-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000007",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2016-12-31",
+      "period_start": "2016-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000145",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2016-12-31",
+      "period_start": "2016-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-17-004790",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2017-04-01",
+      "period_start": "2016-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000070",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2017-04-01",
+      "period_start": "2016-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0001628280-17-004790",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2017-04-01",
+      "period_start": "2017-01-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-17-000070",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2017-04-01",
+      "period_start": "2017-01-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000070",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2017-04-01",
+      "period_start": "2017-01-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000145",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2017-04-01",
+      "period_start": "2017-01-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-17-000009",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2017-07-01",
+      "period_start": "2016-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000100",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2017-07-01",
+      "period_start": "2016-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-17-000009",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2017-07-01",
+      "period_start": "2017-04-02",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-17-000070",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2017-07-01",
+      "period_start": "2017-04-02",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000100",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2017-07-01",
+      "period_start": "2017-04-02",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000145",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2017-07-01",
+      "period_start": "2017-04-02",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-17-000070",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2017-09-30",
+      "period_start": "2016-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000145",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2017-09-30",
+      "period_start": "2016-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000119",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2017-09-30",
+      "period_start": "2016-09-25",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-17-000070",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2017,
+      "metric": "diluted_eps",
+      "period_end": "2017-09-30",
+      "period_start": "2017-07-02",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000145",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2017-09-30",
+      "period_start": "2017-07-02",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000007",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2017-12-30",
+      "period_start": "2017-10-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000145",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2017-12-30",
+      "period_start": "2017-10-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000010",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2017-12-30",
+      "period_start": "2017-10-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000119",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2017-12-30",
+      "period_start": "2017-10-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000070",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2018-03-31",
+      "period_start": "2017-10-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000066",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2018-03-31",
+      "period_start": "2017-10-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000070",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2018-03-31",
+      "period_start": "2017-12-31",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000145",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2018-03-31",
+      "period_start": "2017-12-31",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000066",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2018-03-31",
+      "period_start": "2017-12-31",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000119",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2018-03-31",
+      "period_start": "2017-12-31",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000100",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2018-06-30",
+      "period_start": "2017-10-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000076",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2018-06-30",
+      "period_start": "2017-10-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000100",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2018-06-30",
+      "period_start": "2018-04-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000145",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2018-06-30",
+      "period_start": "2018-04-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000076",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2018-06-30",
+      "period_start": "2018-04-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000119",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2018-06-30",
+      "period_start": "2018-04-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000145",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2018-09-29",
+      "period_start": "2017-10-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000119",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2018-09-29",
+      "period_start": "2017-10-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-20-000096",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2020,
+      "metric": "diluted_eps",
+      "period_end": "2018-09-29",
+      "period_start": "2017-10-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-18-000145",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2018,
+      "metric": "diluted_eps",
+      "period_end": "2018-09-29",
+      "period_start": "2018-07-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000119",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2018-09-29",
+      "period_start": "2018-07-01",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000010",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2018-12-29",
+      "period_start": "2018-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000119",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2018-12-29",
+      "period_start": "2018-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-20-000010",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2020,
+      "metric": "diluted_eps",
+      "period_end": "2018-12-29",
+      "period_start": "2018-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-20-000096",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2020,
+      "metric": "diluted_eps",
+      "period_end": "2018-12-29",
+      "period_start": "2018-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000066",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2019-03-30",
+      "period_start": "2018-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-20-000052",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2020,
+      "metric": "diluted_eps",
+      "period_end": "2019-03-30",
+      "period_start": "2018-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000066",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2019-03-30",
+      "period_start": "2018-12-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000119",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2019-03-30",
+      "period_start": "2018-12-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-20-000052",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q2",
+      "fiscal_year": 2020,
+      "metric": "diluted_eps",
+      "period_end": "2019-03-30",
+      "period_start": "2018-12-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-20-000096",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2020,
+      "metric": "diluted_eps",
+      "period_end": "2019-03-30",
+      "period_start": "2018-12-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000076",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2019-06-29",
+      "period_start": "2018-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-20-000062",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2020,
+      "metric": "diluted_eps",
+      "period_end": "2019-06-29",
+      "period_start": "2018-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000076",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2019-06-29",
+      "period_start": "2019-03-31",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000119",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2019-06-29",
+      "period_start": "2019-03-31",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-20-000062",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q3",
+      "fiscal_year": 2020,
+      "metric": "diluted_eps",
+      "period_end": "2019-06-29",
+      "period_start": "2019-03-31",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-20-000096",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2020,
+      "metric": "diluted_eps",
+      "period_end": "2019-06-29",
+      "period_start": "2019-03-31",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000119",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2019-09-28",
+      "period_start": "2018-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-20-000096",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2020,
+      "metric": "diluted_eps",
+      "period_end": "2019-09-28",
+      "period_start": "2018-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-21-000105",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2021,
+      "metric": "diluted_eps",
+      "period_end": "2019-09-28",
+      "period_start": "2018-09-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-19-000119",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2019,
+      "metric": "diluted_eps",
+      "period_end": "2019-09-28",
+      "period_start": "2019-06-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-20-000096",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2020,
+      "metric": "diluted_eps",
+      "period_end": "2019-09-28",
+      "period_start": "2019-06-30",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-20-000010",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "Q1",
+      "fiscal_year": 2020,
+      "metric": "diluted_eps",
+      "period_end": "2019-12-28",
+      "period_start": "2019-09-29",
+      "reason": "basic_eps_not_diluted"
+    },
+    {
+      "accession": "0000320193-20-000096",
+      "concept": "EarningsPerShareBasic",
+      "fiscal_period": "FY",
+      "fiscal_year": 2020,
+      "metric": "diluted_eps",
+      "period_end": "2019-12-28",
+      "period_start": "2019-09-29",
+      "reason": "basic_eps_not_diluted"
+    }
+  ],
+  "request_and_cache_statistics": {
+    "accepted_observation_count": 0,
+    "attempts": 1,
+    "cache_hits": 0,
+    "cache_loads": 1,
+    "cache_reads": 1,
+    "cache_ttl_seconds": 21600,
+    "concurrent_behavior": "single_flight_per_ticker",
+    "failure_cache_ttl_seconds": 60,
+    "max_annual_periods_inspected": 5,
+    "max_quarterly_periods": 8,
+    "max_source_facts": 256,
+    "processed_fact_count": 143,
+    "rejected_fact_count": 256,
+    "request_budget": 3,
+    "requests": 3,
+    "source_fact_count": 932,
+    "source_status": "unavailable",
+    "timeout_seconds": 5.0
+  },
+  "schema_version": "1",
+  "sources": [],
+  "status": "unavailable",
+  "ticker": "AAPL"
+}

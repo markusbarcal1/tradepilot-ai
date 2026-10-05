@@ -62,7 +62,6 @@ class ScannerEligibilityTests(unittest.TestCase):
             return {
                 "ticker": symbol,
                 "price": 10.5,
-                "trade_quality_score": {"score": 80, "grade": "Good Entry"},
                 "technical_score": {"score": 85, "grade": "Bullish"},
                 "trade_setup": {
                     "setup_type": "Momentum Continuation",

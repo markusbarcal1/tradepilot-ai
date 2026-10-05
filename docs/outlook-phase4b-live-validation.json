@@ -1,0 +1,1486 @@
+[
+  {
+    "ticker": "AAPL",
+    "assessed_at": "2026-09-18T17:03:01.362065+00:00",
+    "diagnostics": {
+      "source_document_count": 21,
+      "normalized_event_count": 1,
+      "current_event_count": 1,
+      "source_complete": true,
+      "source_retrieved_at": "2026-09-18T17:03:01.091699+00:00",
+      "matched": [],
+      "excluded": [
+        {
+          "document_number": "C1-2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17231",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17230",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16078",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14942",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14132",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-06851",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-02262",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-01059",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-22137",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19858",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19846",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19508",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19001",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18992",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18015",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-17893",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16735",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16724",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-00789",
+          "reason": "no_controlled_product_industry_relationship"
+        }
+      ],
+      "classification": {
+        "sector": "Technology",
+        "industry": "Consumer Electronics",
+        "quoteType": "EQUITY",
+        "exchange": "NMS",
+        "country": "United States"
+      },
+      "candidates": [
+        {
+          "document_number": "2026-00789",
+          "title": "Revision to License Review Policy for Advanced Computing Commodities",
+          "product_group": "advanced_computing",
+          "countries": [
+            "China",
+            "Macau"
+          ],
+          "change": "conditional_licensing_relief",
+          "interpretation_exclusion": null,
+          "published_at": "2026-01-15T00:00:00+00:00",
+          "effective_at": "2026-01-15T00:00:00+00:00",
+          "review_expires_at": "2027-01-15T00:00:00+00:00",
+          "source_url": "https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities"
+        }
+      ],
+      "status": "no_supported_exposure"
+    },
+    "geopolitical": {
+      "status": "insufficient_data",
+      "value": null,
+      "summary": "Insufficient independent evidence: 0 qualifying events.",
+      "factors": [],
+      "evidence_count": 0,
+      "confidence": null,
+      "evidence": [],
+      "label": null
+    },
+    "provider_status": {
+      "sec": "available",
+      "fred": "available",
+      "market": "available",
+      "industry": "available",
+      "geopolitical": "no_evidence"
+    },
+    "categories_before": 3,
+    "categories_after": 3,
+    "calls": {
+      "source": 1,
+      "classification": 0
+    },
+    "cached_calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "outlook_seconds": 18.953926799993496,
+    "cached_geopolitical_seconds": 0.0012675000034505501
+  },
+  {
+    "ticker": "NVDA",
+    "assessed_at": "2026-09-18T17:03:06.097532+00:00",
+    "diagnostics": {
+      "source_document_count": 21,
+      "normalized_event_count": 1,
+      "current_event_count": 1,
+      "source_complete": true,
+      "source_retrieved_at": "2026-09-18T17:03:01.091699+00:00",
+      "matched": [
+        {
+          "document_number": "2026-00789",
+          "product_group": "advanced_computing",
+          "exposure": "Semiconductors",
+          "reason": "NVDA is classified in Semiconductors; this matches the controlled advanced computing industry relationship. This establishes industry-level exposure, not a verified product qualification, customer relationship, or revenue percentage.",
+          "impact": 1,
+          "source_url": "https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities"
+        }
+      ],
+      "excluded": [
+        {
+          "document_number": "C1-2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17231",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17230",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16078",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14942",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14132",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-06851",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-02262",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-01059",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-22137",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19858",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19846",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19508",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19001",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18992",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18015",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-17893",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16735",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16724",
+          "reason": "unsupported_product_or_event_class"
+        }
+      ],
+      "classification": {
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "quoteType": "EQUITY",
+        "exchange": "NMS",
+        "country": "United States"
+      },
+      "candidates": [
+        {
+          "document_number": "2026-00789",
+          "title": "Revision to License Review Policy for Advanced Computing Commodities",
+          "product_group": "advanced_computing",
+          "countries": [
+            "China",
+            "Macau"
+          ],
+          "change": "conditional_licensing_relief",
+          "interpretation_exclusion": null,
+          "published_at": "2026-01-15T00:00:00+00:00",
+          "effective_at": "2026-01-15T00:00:00+00:00",
+          "review_expires_at": "2027-01-15T00:00:00+00:00",
+          "source_url": "https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities"
+        }
+      ],
+      "status": "available"
+    },
+    "geopolitical": {
+      "status": "insufficient_data",
+      "value": null,
+      "summary": "Insufficient independent evidence: 1 qualifying events.",
+      "factors": [],
+      "evidence_count": 1,
+      "confidence": 0.7999999999999999,
+      "evidence": [
+        {
+          "schema_version": "1.0",
+          "id": "geopolitical:NVDA:2026-00789",
+          "ticker": "NVDA",
+          "category": "geopolitical",
+          "event_type": "export_control",
+          "title": "China, Macau: advanced computing export licensing",
+          "summary": "A shift from presumption of denial to case-by-case review creates a conditional export licensing opportunity; approval is not guaranteed. Destinations: China, Macau. NVDA is classified in Semiconductors; this matches the controlled advanced computing industry relationship. This establishes industry-level exposure, not a verified product qualification, customer relationship, or revenue percentage.",
+          "source": "Federal Register / Bureau of Industry and Security",
+          "source_type": "government_source",
+          "source_url": "https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities",
+          "published_at": "2026-01-15T00:00:00Z",
+          "observed_at": "2026-09-18T17:03:01.091699Z",
+          "expires_at": "2027-01-15T00:00:00Z",
+          "impact": 1,
+          "confidence": 0.8,
+          "materiality": 0.6,
+          "materiality_reason": "Direct product-to-industry match; company-specific transactions are unverified.",
+          "exposure_links": [
+            {
+              "kind": "industry",
+              "description": "NVDA is classified in Semiconductors; this matches the controlled advanced computing industry relationship. This establishes industry-level exposure, not a verified product qualification, customer relationship, or revenue percentage.",
+              "source_url": "https://finance.yahoo.com/quote/NVDA/profile/"
+            }
+          ],
+          "scoring_eligible": true,
+          "source_details": {
+            "source_document_id": "federal-register:2026-00789",
+            "document_number": "2026-00789",
+            "publication_title": "Revision to License Review Policy for Advanced Computing Commodities",
+            "effective_at": "2026-01-15T00:00:00+00:00",
+            "review_expires_at": "2027-01-15T00:00:00+00:00",
+            "countries": [
+              "China",
+              "Macau"
+            ],
+            "product_group": "advanced_computing",
+            "policy_change": "conditional_licensing_relief",
+            "action_ids": [
+              "0694-AK43"
+            ],
+            "sector": "Technology",
+            "industry": "Semiconductors",
+            "exposure_reason": "NVDA is classified in Semiconductors; this matches the controlled advanced computing industry relationship. This establishes industry-level exposure, not a verified product qualification, customer relationship, or revenue percentage.",
+            "classification_source": "Yahoo Finance structured metadata",
+            "interpreter": "geopolitical-export-controls-v1",
+            "effective_date_text": "Effective date: The effective date of this rule is January 15, 2026."
+          },
+          "source_quality": "primary_authoritative",
+          "raw_provider": "geopolitical",
+          "raw_provider_id": "bis:advanced_computing:China,Macau"
+        }
+      ],
+      "label": null
+    },
+    "provider_status": {
+      "sec": "available",
+      "fred": "available",
+      "market": "available",
+      "industry": "available",
+      "geopolitical": "available"
+    },
+    "categories_before": 3,
+    "categories_after": 3,
+    "calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "cached_calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "outlook_seconds": 4.732985499998904,
+    "cached_geopolitical_seconds": 0.0011272999981883913
+  },
+  {
+    "ticker": "TSLA",
+    "assessed_at": "2026-09-18T17:03:11.656029+00:00",
+    "diagnostics": {
+      "source_document_count": 21,
+      "normalized_event_count": 1,
+      "current_event_count": 1,
+      "source_complete": true,
+      "source_retrieved_at": "2026-09-18T17:03:01.091699+00:00",
+      "matched": [],
+      "excluded": [
+        {
+          "document_number": "C1-2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17231",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17230",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16078",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14942",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14132",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-06851",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-02262",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-01059",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-22137",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19858",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19846",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19508",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19001",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18992",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18015",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-17893",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16735",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16724",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-00789",
+          "reason": "no_controlled_product_industry_relationship"
+        }
+      ],
+      "classification": {
+        "sector": "Consumer Cyclical",
+        "industry": "Auto Manufacturers",
+        "quoteType": "EQUITY",
+        "exchange": "NMS",
+        "country": "United States"
+      },
+      "candidates": [
+        {
+          "document_number": "2026-00789",
+          "title": "Revision to License Review Policy for Advanced Computing Commodities",
+          "product_group": "advanced_computing",
+          "countries": [
+            "China",
+            "Macau"
+          ],
+          "change": "conditional_licensing_relief",
+          "interpretation_exclusion": null,
+          "published_at": "2026-01-15T00:00:00+00:00",
+          "effective_at": "2026-01-15T00:00:00+00:00",
+          "review_expires_at": "2027-01-15T00:00:00+00:00",
+          "source_url": "https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities"
+        }
+      ],
+      "status": "no_supported_exposure"
+    },
+    "geopolitical": {
+      "status": "insufficient_data",
+      "value": null,
+      "summary": "Insufficient independent evidence: 0 qualifying events.",
+      "factors": [],
+      "evidence_count": 0,
+      "confidence": null,
+      "evidence": [],
+      "label": null
+    },
+    "provider_status": {
+      "sec": "available",
+      "fred": "available",
+      "market": "available",
+      "industry": "available",
+      "geopolitical": "no_evidence"
+    },
+    "categories_before": 3,
+    "categories_after": 3,
+    "calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "cached_calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "outlook_seconds": 5.553977200004738,
+    "cached_geopolitical_seconds": 0.0015410000050906092
+  },
+  {
+    "ticker": "JPM",
+    "assessed_at": "2026-09-18T17:03:17.029283+00:00",
+    "diagnostics": {
+      "source_document_count": 21,
+      "normalized_event_count": 1,
+      "current_event_count": 1,
+      "source_complete": true,
+      "source_retrieved_at": "2026-09-18T17:03:01.091699+00:00",
+      "matched": [],
+      "excluded": [
+        {
+          "document_number": "C1-2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17231",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17230",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16078",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14942",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14132",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-06851",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-02262",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-01059",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-22137",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19858",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19846",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19508",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19001",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18992",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18015",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-17893",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16735",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16724",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-00789",
+          "reason": "no_controlled_product_industry_relationship"
+        }
+      ],
+      "classification": {
+        "sector": "Financial Services",
+        "industry": "Banks - Diversified",
+        "quoteType": "EQUITY",
+        "exchange": "NYQ",
+        "country": "United States"
+      },
+      "candidates": [
+        {
+          "document_number": "2026-00789",
+          "title": "Revision to License Review Policy for Advanced Computing Commodities",
+          "product_group": "advanced_computing",
+          "countries": [
+            "China",
+            "Macau"
+          ],
+          "change": "conditional_licensing_relief",
+          "interpretation_exclusion": null,
+          "published_at": "2026-01-15T00:00:00+00:00",
+          "effective_at": "2026-01-15T00:00:00+00:00",
+          "review_expires_at": "2027-01-15T00:00:00+00:00",
+          "source_url": "https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities"
+        }
+      ],
+      "status": "no_supported_exposure"
+    },
+    "geopolitical": {
+      "status": "insufficient_data",
+      "value": null,
+      "summary": "Insufficient independent evidence: 0 qualifying events.",
+      "factors": [],
+      "evidence_count": 0,
+      "confidence": null,
+      "evidence": [],
+      "label": null
+    },
+    "provider_status": {
+      "sec": "available",
+      "fred": "available",
+      "market": "available",
+      "industry": "available",
+      "geopolitical": "no_evidence"
+    },
+    "categories_before": 3,
+    "categories_after": 3,
+    "calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "cached_calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "outlook_seconds": 5.368099700004677,
+    "cached_geopolitical_seconds": 0.0017318000027444214
+  },
+  {
+    "ticker": "XOM",
+    "assessed_at": "2026-09-18T17:03:20.806421+00:00",
+    "diagnostics": {
+      "source_document_count": 21,
+      "normalized_event_count": 1,
+      "current_event_count": 1,
+      "source_complete": true,
+      "source_retrieved_at": "2026-09-18T17:03:01.091699+00:00",
+      "matched": [],
+      "excluded": [
+        {
+          "document_number": "C1-2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17231",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17230",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16078",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14942",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14132",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-06851",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-02262",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-01059",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-22137",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19858",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19846",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19508",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19001",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18992",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18015",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-17893",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16735",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16724",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-00789",
+          "reason": "no_controlled_product_industry_relationship"
+        }
+      ],
+      "classification": {
+        "sector": "Energy",
+        "industry": "Oil & Gas Integrated",
+        "quoteType": "EQUITY",
+        "exchange": "NYQ",
+        "country": "United States"
+      },
+      "candidates": [
+        {
+          "document_number": "2026-00789",
+          "title": "Revision to License Review Policy for Advanced Computing Commodities",
+          "product_group": "advanced_computing",
+          "countries": [
+            "China",
+            "Macau"
+          ],
+          "change": "conditional_licensing_relief",
+          "interpretation_exclusion": null,
+          "published_at": "2026-01-15T00:00:00+00:00",
+          "effective_at": "2026-01-15T00:00:00+00:00",
+          "review_expires_at": "2027-01-15T00:00:00+00:00",
+          "source_url": "https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities"
+        }
+      ],
+      "status": "no_supported_exposure"
+    },
+    "geopolitical": {
+      "status": "insufficient_data",
+      "value": null,
+      "summary": "Insufficient independent evidence: 0 qualifying events.",
+      "factors": [],
+      "evidence_count": 0,
+      "confidence": null,
+      "evidence": [],
+      "label": null
+    },
+    "provider_status": {
+      "sec": "available",
+      "fred": "available",
+      "market": "available",
+      "industry": "available",
+      "geopolitical": "no_evidence"
+    },
+    "categories_before": 3,
+    "categories_after": 3,
+    "calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "cached_calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "outlook_seconds": 3.7735385000123642,
+    "cached_geopolitical_seconds": 0.0011733999999705702
+  },
+  {
+    "ticker": "MSFT",
+    "assessed_at": "2026-09-18T17:03:25.653749+00:00",
+    "diagnostics": {
+      "source_document_count": 21,
+      "normalized_event_count": 1,
+      "current_event_count": 1,
+      "source_complete": true,
+      "source_retrieved_at": "2026-09-18T17:03:01.091699+00:00",
+      "matched": [],
+      "excluded": [
+        {
+          "document_number": "C1-2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17231",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17230",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16078",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14942",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14132",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-06851",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-02262",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-01059",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-22137",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19858",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19846",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19508",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19001",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18992",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18015",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-17893",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16735",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16724",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-00789",
+          "reason": "no_controlled_product_industry_relationship"
+        }
+      ],
+      "classification": {
+        "sector": "Technology",
+        "industry": "Software - Infrastructure",
+        "quoteType": "EQUITY",
+        "exchange": "NMS",
+        "country": "United States"
+      },
+      "candidates": [
+        {
+          "document_number": "2026-00789",
+          "title": "Revision to License Review Policy for Advanced Computing Commodities",
+          "product_group": "advanced_computing",
+          "countries": [
+            "China",
+            "Macau"
+          ],
+          "change": "conditional_licensing_relief",
+          "interpretation_exclusion": null,
+          "published_at": "2026-01-15T00:00:00+00:00",
+          "effective_at": "2026-01-15T00:00:00+00:00",
+          "review_expires_at": "2027-01-15T00:00:00+00:00",
+          "source_url": "https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities"
+        }
+      ],
+      "status": "no_supported_exposure"
+    },
+    "geopolitical": {
+      "status": "insufficient_data",
+      "value": null,
+      "summary": "Insufficient independent evidence: 0 qualifying events.",
+      "factors": [],
+      "evidence_count": 0,
+      "confidence": null,
+      "evidence": [],
+      "label": null
+    },
+    "provider_status": {
+      "sec": "available",
+      "fred": "available",
+      "market": "available",
+      "industry": "available",
+      "geopolitical": "no_evidence"
+    },
+    "categories_before": 3,
+    "categories_after": 3,
+    "calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "cached_calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "outlook_seconds": 4.84295469999779,
+    "cached_geopolitical_seconds": 0.0010711999930208549
+  },
+  {
+    "ticker": "KO",
+    "assessed_at": "2026-09-18T17:03:32.058856+00:00",
+    "diagnostics": {
+      "source_document_count": 21,
+      "normalized_event_count": 1,
+      "current_event_count": 1,
+      "source_complete": true,
+      "source_retrieved_at": "2026-09-18T17:03:01.091699+00:00",
+      "matched": [],
+      "excluded": [
+        {
+          "document_number": "C1-2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17231",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17230",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16078",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14942",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14132",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-06851",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-02262",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-01059",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-22137",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19858",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19846",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19508",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19001",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18992",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18015",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-17893",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16735",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16724",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-00789",
+          "reason": "no_controlled_product_industry_relationship"
+        }
+      ],
+      "classification": {
+        "sector": "Consumer Defensive",
+        "industry": "Beverages - Non-Alcoholic",
+        "quoteType": "EQUITY",
+        "exchange": "NYQ",
+        "country": "United States"
+      },
+      "candidates": [
+        {
+          "document_number": "2026-00789",
+          "title": "Revision to License Review Policy for Advanced Computing Commodities",
+          "product_group": "advanced_computing",
+          "countries": [
+            "China",
+            "Macau"
+          ],
+          "change": "conditional_licensing_relief",
+          "interpretation_exclusion": null,
+          "published_at": "2026-01-15T00:00:00+00:00",
+          "effective_at": "2026-01-15T00:00:00+00:00",
+          "review_expires_at": "2027-01-15T00:00:00+00:00",
+          "source_url": "https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities"
+        }
+      ],
+      "status": "no_supported_exposure"
+    },
+    "geopolitical": {
+      "status": "insufficient_data",
+      "value": null,
+      "summary": "Insufficient independent evidence: 0 qualifying events.",
+      "factors": [],
+      "evidence_count": 0,
+      "confidence": null,
+      "evidence": [],
+      "label": null
+    },
+    "provider_status": {
+      "sec": "available",
+      "fred": "available",
+      "market": "available",
+      "industry": "available",
+      "geopolitical": "no_evidence"
+    },
+    "categories_before": 3,
+    "categories_after": 3,
+    "calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "cached_calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "outlook_seconds": 6.401545900007477,
+    "cached_geopolitical_seconds": 0.0010417999874334782
+  },
+  {
+    "ticker": "AMD",
+    "assessed_at": "2026-09-18T17:03:36.745051+00:00",
+    "diagnostics": {
+      "source_document_count": 21,
+      "normalized_event_count": 1,
+      "current_event_count": 1,
+      "source_complete": true,
+      "source_retrieved_at": "2026-09-18T17:03:01.091699+00:00",
+      "matched": [
+        {
+          "document_number": "2026-00789",
+          "product_group": "advanced_computing",
+          "exposure": "Semiconductors",
+          "reason": "AMD is classified in Semiconductors; this matches the controlled advanced computing industry relationship. This establishes industry-level exposure, not a verified product qualification, customer relationship, or revenue percentage.",
+          "impact": 1,
+          "source_url": "https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities"
+        }
+      ],
+      "excluded": [
+        {
+          "document_number": "C1-2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17231",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17230",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16078",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14942",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14132",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-06851",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-02262",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-01059",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-22137",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19858",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19846",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19508",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19001",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18992",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18015",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-17893",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16735",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16724",
+          "reason": "unsupported_product_or_event_class"
+        }
+      ],
+      "classification": {
+        "sector": "Technology",
+        "industry": "Semiconductors",
+        "quoteType": "EQUITY",
+        "exchange": "NMS",
+        "country": "United States"
+      },
+      "candidates": [
+        {
+          "document_number": "2026-00789",
+          "title": "Revision to License Review Policy for Advanced Computing Commodities",
+          "product_group": "advanced_computing",
+          "countries": [
+            "China",
+            "Macau"
+          ],
+          "change": "conditional_licensing_relief",
+          "interpretation_exclusion": null,
+          "published_at": "2026-01-15T00:00:00+00:00",
+          "effective_at": "2026-01-15T00:00:00+00:00",
+          "review_expires_at": "2027-01-15T00:00:00+00:00",
+          "source_url": "https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities"
+        }
+      ],
+      "status": "available"
+    },
+    "geopolitical": {
+      "status": "insufficient_data",
+      "value": null,
+      "summary": "Insufficient independent evidence: 1 qualifying events.",
+      "factors": [],
+      "evidence_count": 1,
+      "confidence": 0.7999999999999999,
+      "evidence": [
+        {
+          "schema_version": "1.0",
+          "id": "geopolitical:AMD:2026-00789",
+          "ticker": "AMD",
+          "category": "geopolitical",
+          "event_type": "export_control",
+          "title": "China, Macau: advanced computing export licensing",
+          "summary": "A shift from presumption of denial to case-by-case review creates a conditional export licensing opportunity; approval is not guaranteed. Destinations: China, Macau. AMD is classified in Semiconductors; this matches the controlled advanced computing industry relationship. This establishes industry-level exposure, not a verified product qualification, customer relationship, or revenue percentage.",
+          "source": "Federal Register / Bureau of Industry and Security",
+          "source_type": "government_source",
+          "source_url": "https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities",
+          "published_at": "2026-01-15T00:00:00Z",
+          "observed_at": "2026-09-18T17:03:01.091699Z",
+          "expires_at": "2027-01-15T00:00:00Z",
+          "impact": 1,
+          "confidence": 0.8,
+          "materiality": 0.6,
+          "materiality_reason": "Direct product-to-industry match; company-specific transactions are unverified.",
+          "exposure_links": [
+            {
+              "kind": "industry",
+              "description": "AMD is classified in Semiconductors; this matches the controlled advanced computing industry relationship. This establishes industry-level exposure, not a verified product qualification, customer relationship, or revenue percentage.",
+              "source_url": "https://finance.yahoo.com/quote/AMD/profile/"
+            }
+          ],
+          "scoring_eligible": true,
+          "source_details": {
+            "source_document_id": "federal-register:2026-00789",
+            "document_number": "2026-00789",
+            "publication_title": "Revision to License Review Policy for Advanced Computing Commodities",
+            "effective_at": "2026-01-15T00:00:00+00:00",
+            "review_expires_at": "2027-01-15T00:00:00+00:00",
+            "countries": [
+              "China",
+              "Macau"
+            ],
+            "product_group": "advanced_computing",
+            "policy_change": "conditional_licensing_relief",
+            "action_ids": [
+              "0694-AK43"
+            ],
+            "sector": "Technology",
+            "industry": "Semiconductors",
+            "exposure_reason": "AMD is classified in Semiconductors; this matches the controlled advanced computing industry relationship. This establishes industry-level exposure, not a verified product qualification, customer relationship, or revenue percentage.",
+            "classification_source": "Yahoo Finance structured metadata",
+            "interpreter": "geopolitical-export-controls-v1",
+            "effective_date_text": "Effective date: The effective date of this rule is January 15, 2026."
+          },
+          "source_quality": "primary_authoritative",
+          "raw_provider": "geopolitical",
+          "raw_provider_id": "bis:advanced_computing:China,Macau"
+        }
+      ],
+      "label": null
+    },
+    "provider_status": {
+      "sec": "available",
+      "fred": "available",
+      "market": "available",
+      "industry": "available",
+      "geopolitical": "available"
+    },
+    "categories_before": 3,
+    "categories_after": 3,
+    "calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "cached_calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "outlook_seconds": 4.681517600009101,
+    "cached_geopolitical_seconds": 0.0013952000008430332
+  },
+  {
+    "ticker": "AMAT",
+    "assessed_at": "2026-09-18T17:03:41.738558+00:00",
+    "diagnostics": {
+      "source_document_count": 21,
+      "normalized_event_count": 1,
+      "current_event_count": 1,
+      "source_complete": true,
+      "source_retrieved_at": "2026-09-18T17:03:01.091699+00:00",
+      "matched": [],
+      "excluded": [
+        {
+          "document_number": "C1-2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17231",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-17230",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16628",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-16078",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14942",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-14132",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-06851",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-02262",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-01059",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-22137",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19858",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19846",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19508",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-19001",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18992",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-18015",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-17893",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16735",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2025-16724",
+          "reason": "unsupported_product_or_event_class"
+        },
+        {
+          "document_number": "2026-00789",
+          "reason": "no_controlled_product_industry_relationship"
+        }
+      ],
+      "classification": {
+        "sector": "Technology",
+        "industry": "Semiconductor Equipment & Materials",
+        "quoteType": "EQUITY",
+        "exchange": "NMS",
+        "country": "United States"
+      },
+      "candidates": [
+        {
+          "document_number": "2026-00789",
+          "title": "Revision to License Review Policy for Advanced Computing Commodities",
+          "product_group": "advanced_computing",
+          "countries": [
+            "China",
+            "Macau"
+          ],
+          "change": "conditional_licensing_relief",
+          "interpretation_exclusion": null,
+          "published_at": "2026-01-15T00:00:00+00:00",
+          "effective_at": "2026-01-15T00:00:00+00:00",
+          "review_expires_at": "2027-01-15T00:00:00+00:00",
+          "source_url": "https://www.federalregister.gov/documents/2026/01/15/2026-00789/revision-to-license-review-policy-for-advanced-computing-commodities"
+        }
+      ],
+      "status": "no_supported_exposure"
+    },
+    "geopolitical": {
+      "status": "insufficient_data",
+      "value": null,
+      "summary": "Insufficient independent evidence: 0 qualifying events.",
+      "factors": [],
+      "evidence_count": 0,
+      "confidence": null,
+      "evidence": [],
+      "label": null
+    },
+    "provider_status": {
+      "sec": "available",
+      "fred": "available",
+      "market": "available",
+      "industry": "available",
+      "geopolitical": "no_evidence"
+    },
+    "categories_before": 3,
+    "categories_after": 3,
+    "calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "cached_calls": {
+      "source": 0,
+      "classification": 0
+    },
+    "outlook_seconds": 4.988947899997584,
+    "cached_geopolitical_seconds": 0.001064700001734309
+  }
+]

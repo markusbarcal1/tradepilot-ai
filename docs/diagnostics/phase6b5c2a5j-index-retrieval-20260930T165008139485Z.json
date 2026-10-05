@@ -1,0 +1,408 @@
+{
+  "budget": {
+    "attempts": 10,
+    "class_attempts": {
+      "current_submissions": 2,
+      "earnings_exhibit": 0,
+      "filing_index": 4,
+      "selected_primary_document": 4
+    },
+    "class_limits": {
+      "current_submissions": 2,
+      "earnings_exhibit": 4,
+      "filing_index": 4,
+      "selected_primary_document": 4
+    },
+    "maximum": 14,
+    "per_issuer": {
+      "AAPL": 5,
+      "NVDA": 5
+    },
+    "per_issuer_maximum": 7,
+    "per_target_document_limits": {
+      "earnings_exhibit": 1,
+      "filing_index": 1,
+      "selected_primary_document": 1
+    }
+  },
+  "discovery_policy": "bounded-filing-window-item-202-1",
+  "index_policy": "sec-index-json-ex99-earnings-1",
+  "mode": "live",
+  "parser": "direct-q4-1",
+  "requests": [
+    {
+      "fiscal_year": 2024,
+      "http_status": 200,
+      "ordinal_attempt": 1,
+      "received_bytes": 163840,
+      "request_class": "current_submissions",
+      "ticker": "AAPL",
+      "transport_outcome": "success"
+    },
+    {
+      "fiscal_year": 2024,
+      "http_status": 200,
+      "ordinal_attempt": 2,
+      "received_bytes": 40561,
+      "request_class": "selected_primary_document",
+      "ticker": "AAPL",
+      "transport_outcome": "success"
+    },
+    {
+      "fiscal_year": 2024,
+      "http_status": 200,
+      "ordinal_attempt": 3,
+      "received_bytes": 1994,
+      "request_class": "filing_index",
+      "ticker": "AAPL",
+      "transport_outcome": "success"
+    },
+    {
+      "fiscal_year": 2025,
+      "http_status": 200,
+      "ordinal_attempt": 4,
+      "received_bytes": 39163,
+      "request_class": "selected_primary_document",
+      "ticker": "AAPL",
+      "transport_outcome": "success"
+    },
+    {
+      "fiscal_year": 2025,
+      "http_status": 200,
+      "ordinal_attempt": 5,
+      "received_bytes": 1890,
+      "request_class": "filing_index",
+      "ticker": "AAPL",
+      "transport_outcome": "success"
+    },
+    {
+      "fiscal_year": 2025,
+      "http_status": 200,
+      "ordinal_attempt": 6,
+      "received_bytes": 159785,
+      "request_class": "current_submissions",
+      "ticker": "NVDA",
+      "transport_outcome": "success"
+    },
+    {
+      "fiscal_year": 2025,
+      "http_status": 200,
+      "ordinal_attempt": 7,
+      "received_bytes": 24731,
+      "request_class": "selected_primary_document",
+      "ticker": "NVDA",
+      "transport_outcome": "success"
+    },
+    {
+      "fiscal_year": 2025,
+      "http_status": 200,
+      "ordinal_attempt": 8,
+      "received_bytes": 1980,
+      "request_class": "filing_index",
+      "ticker": "NVDA",
+      "transport_outcome": "success"
+    },
+    {
+      "fiscal_year": 2026,
+      "http_status": 200,
+      "ordinal_attempt": 9,
+      "received_bytes": 25487,
+      "request_class": "selected_primary_document",
+      "ticker": "NVDA",
+      "transport_outcome": "success"
+    },
+    {
+      "fiscal_year": 2026,
+      "http_status": 200,
+      "ordinal_attempt": 10,
+      "received_bytes": 1876,
+      "request_class": "filing_index",
+      "ticker": "NVDA",
+      "transport_outcome": "success"
+    }
+  ],
+  "runner": "direct-q4-candidate-retrieval-2",
+  "schema_version": "1",
+  "targets": [
+    {
+      "discovery": {
+        "binding_status": "bound",
+        "boundary_status": "resolved",
+        "candidate_cardinality": 1
+      },
+      "exhibit": {
+        "content_classification": null,
+        "http_status": null,
+        "parser": {
+          "accepted_observations_count": 0,
+          "candidate_observations_count": 0,
+          "conflict_state": false,
+          "diluted_eps_available": false,
+          "parser_invoked": false,
+          "rejection_categories": [],
+          "rejection_categories_capped": false,
+          "revenue_available": false,
+          "source_family": null
+        },
+        "received_bytes": null,
+        "request_attempted": false,
+        "transport_outcome": null
+      },
+      "fiscal_year": 2024,
+      "index": {
+        "ambiguous": false,
+        "content_classification": "sec_index_json",
+        "diagnostics": {
+          "ambiguous_eligible_exhibits": 0,
+          "count_limit": 512,
+          "count_semantics": "sequential_first_failure",
+          "counts_capped": false,
+          "distinct_eligible_earnings_exhibits": 0,
+          "document_entries_examined": 18,
+          "entries_rejected_by_description_semantics": 0,
+          "entries_rejected_by_exhibit_type": 18,
+          "entries_rejected_by_unsafe_identity": 0,
+          "ex99_family_entries_examined": 0,
+          "index_policy_version": "sec-index-json-ex99-earnings-1"
+        },
+        "http_status": 200,
+        "received_bytes": 1994,
+        "request_attempted": true,
+        "required": true,
+        "transport_outcome": "success"
+      },
+      "primary": {
+        "content_classification": "html_like",
+        "http_status": 200,
+        "parser": {
+          "accepted_observations_count": 0,
+          "candidate_observations_count": 0,
+          "conflict_state": false,
+          "diluted_eps_available": false,
+          "parser_invoked": true,
+          "rejection_categories": [],
+          "rejection_categories_capped": false,
+          "revenue_available": false,
+          "source_family": "earnings_release_table"
+        },
+        "received_bytes": 40561,
+        "relationship_count": 0,
+        "request_attempted": true,
+        "transport_outcome": "success"
+      },
+      "reason": "no_eligible_index_exhibit",
+      "status": "unavailable",
+      "ticker": "AAPL"
+    },
+    {
+      "discovery": {
+        "binding_status": "bound",
+        "boundary_status": "resolved",
+        "candidate_cardinality": 1
+      },
+      "exhibit": {
+        "content_classification": null,
+        "http_status": null,
+        "parser": {
+          "accepted_observations_count": 0,
+          "candidate_observations_count": 0,
+          "conflict_state": false,
+          "diluted_eps_available": false,
+          "parser_invoked": false,
+          "rejection_categories": [],
+          "rejection_categories_capped": false,
+          "revenue_available": false,
+          "source_family": null
+        },
+        "received_bytes": null,
+        "request_attempted": false,
+        "transport_outcome": null
+      },
+      "fiscal_year": 2025,
+      "index": {
+        "ambiguous": false,
+        "content_classification": "sec_index_json",
+        "diagnostics": {
+          "ambiguous_eligible_exhibits": 0,
+          "count_limit": 512,
+          "count_semantics": "sequential_first_failure",
+          "counts_capped": false,
+          "distinct_eligible_earnings_exhibits": 0,
+          "document_entries_examined": 17,
+          "entries_rejected_by_description_semantics": 0,
+          "entries_rejected_by_exhibit_type": 17,
+          "entries_rejected_by_unsafe_identity": 0,
+          "ex99_family_entries_examined": 0,
+          "index_policy_version": "sec-index-json-ex99-earnings-1"
+        },
+        "http_status": 200,
+        "received_bytes": 1890,
+        "request_attempted": true,
+        "required": true,
+        "transport_outcome": "success"
+      },
+      "primary": {
+        "content_classification": "html_like",
+        "http_status": 200,
+        "parser": {
+          "accepted_observations_count": 0,
+          "candidate_observations_count": 0,
+          "conflict_state": false,
+          "diluted_eps_available": false,
+          "parser_invoked": true,
+          "rejection_categories": [],
+          "rejection_categories_capped": false,
+          "revenue_available": false,
+          "source_family": "earnings_release_table"
+        },
+        "received_bytes": 39163,
+        "relationship_count": 0,
+        "request_attempted": true,
+        "transport_outcome": "success"
+      },
+      "reason": "no_eligible_index_exhibit",
+      "status": "unavailable",
+      "ticker": "AAPL"
+    },
+    {
+      "discovery": {
+        "binding_status": "bound",
+        "boundary_status": "resolved",
+        "candidate_cardinality": 1
+      },
+      "exhibit": {
+        "content_classification": null,
+        "http_status": null,
+        "parser": {
+          "accepted_observations_count": 0,
+          "candidate_observations_count": 0,
+          "conflict_state": false,
+          "diluted_eps_available": false,
+          "parser_invoked": false,
+          "rejection_categories": [],
+          "rejection_categories_capped": false,
+          "revenue_available": false,
+          "source_family": null
+        },
+        "received_bytes": null,
+        "request_attempted": false,
+        "transport_outcome": null
+      },
+      "fiscal_year": 2025,
+      "index": {
+        "ambiguous": false,
+        "content_classification": "sec_index_json",
+        "diagnostics": {
+          "ambiguous_eligible_exhibits": 0,
+          "count_limit": 512,
+          "count_semantics": "sequential_first_failure",
+          "counts_capped": false,
+          "distinct_eligible_earnings_exhibits": 0,
+          "document_entries_examined": 18,
+          "entries_rejected_by_description_semantics": 0,
+          "entries_rejected_by_exhibit_type": 18,
+          "entries_rejected_by_unsafe_identity": 0,
+          "ex99_family_entries_examined": 0,
+          "index_policy_version": "sec-index-json-ex99-earnings-1"
+        },
+        "http_status": 200,
+        "received_bytes": 1980,
+        "request_attempted": true,
+        "required": true,
+        "transport_outcome": "success"
+      },
+      "primary": {
+        "content_classification": "html_like",
+        "http_status": 200,
+        "parser": {
+          "accepted_observations_count": 0,
+          "candidate_observations_count": 0,
+          "conflict_state": false,
+          "diluted_eps_available": false,
+          "parser_invoked": true,
+          "rejection_categories": [],
+          "rejection_categories_capped": false,
+          "revenue_available": false,
+          "source_family": "earnings_release_table"
+        },
+        "received_bytes": 24731,
+        "relationship_count": 0,
+        "request_attempted": true,
+        "transport_outcome": "success"
+      },
+      "reason": "no_eligible_index_exhibit",
+      "status": "unavailable",
+      "ticker": "NVDA"
+    },
+    {
+      "discovery": {
+        "binding_status": "bound",
+        "boundary_status": "resolved",
+        "candidate_cardinality": 1
+      },
+      "exhibit": {
+        "content_classification": null,
+        "http_status": null,
+        "parser": {
+          "accepted_observations_count": 0,
+          "candidate_observations_count": 0,
+          "conflict_state": false,
+          "diluted_eps_available": false,
+          "parser_invoked": false,
+          "rejection_categories": [],
+          "rejection_categories_capped": false,
+          "revenue_available": false,
+          "source_family": null
+        },
+        "received_bytes": null,
+        "request_attempted": false,
+        "transport_outcome": null
+      },
+      "fiscal_year": 2026,
+      "index": {
+        "ambiguous": false,
+        "content_classification": "sec_index_json",
+        "diagnostics": {
+          "ambiguous_eligible_exhibits": 0,
+          "count_limit": 512,
+          "count_semantics": "sequential_first_failure",
+          "counts_capped": false,
+          "distinct_eligible_earnings_exhibits": 0,
+          "document_entries_examined": 17,
+          "entries_rejected_by_description_semantics": 0,
+          "entries_rejected_by_exhibit_type": 17,
+          "entries_rejected_by_unsafe_identity": 0,
+          "ex99_family_entries_examined": 0,
+          "index_policy_version": "sec-index-json-ex99-earnings-1"
+        },
+        "http_status": 200,
+        "received_bytes": 1876,
+        "request_attempted": true,
+        "required": true,
+        "transport_outcome": "success"
+      },
+      "primary": {
+        "content_classification": "html_like",
+        "http_status": 200,
+        "parser": {
+          "accepted_observations_count": 0,
+          "candidate_observations_count": 0,
+          "conflict_state": false,
+          "diluted_eps_available": false,
+          "parser_invoked": true,
+          "rejection_categories": [],
+          "rejection_categories_capped": false,
+          "revenue_available": false,
+          "source_family": "earnings_release_table"
+        },
+        "received_bytes": 25487,
+        "relationship_count": 0,
+        "request_attempted": true,
+        "transport_outcome": "success"
+      },
+      "reason": "no_eligible_index_exhibit",
+      "status": "unavailable",
+      "ticker": "NVDA"
+    }
+  ]
+}

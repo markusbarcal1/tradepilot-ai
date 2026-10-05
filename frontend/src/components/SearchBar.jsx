@@ -11,7 +11,7 @@ function SearchBar({ ticker, setTicker, onAnalyze, loading }) {
       />
 
       <button onClick={onAnalyze} disabled={loading}>
-        {loading ? <span className="button-spinner"></span> : "Analyze"}
+        {loading ? <span className="button-spinner"></span> : "GO"}
       </button>
     </div>
   );
