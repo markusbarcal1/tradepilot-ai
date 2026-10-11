@@ -1,7 +1,9 @@
 """Immutable contracts for unregistered revenue-history snapshot orchestration."""
 from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, model_validator
-from app.models.outlook_financial_history import HistoricalFinancialSnapshot
+from app.models.outlook_financial_history import (
+    AnnualRevenueDiagnostics, AnnualRevenueObservation, HistoricalFinancialSnapshot,
+)
 from app.models.outlook_revenue_filing_document import RevenueFilingDocumentBatchResult, RevenueFilingDocumentRequestAccounting
 from app.models.outlook_revenue_filing_selection import RevenueFilingSelectionResult, SecSubmissionsSelectionInput
 from app.models.outlook_revenue_history_series import RevenueHistoricalSeriesResult
@@ -46,6 +48,8 @@ class RevenueHistorySnapshotResult(SnapshotModel):
     reconciliation: RevenueQ4ReconciliationResult | None = None
     series: RevenueHistoricalSeriesResult | None = None
     projection: RevenueResearchProjectionResult | None = None
+    annual_revenue_observations: tuple[AnnualRevenueObservation, ...] = Field(default=(), max_length=5)
+    annual_revenue_diagnostics: AnnualRevenueDiagnostics | None = None
     evidence_fingerprint: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
     request_accounting: RevenueSnapshotRequestAccounting
 

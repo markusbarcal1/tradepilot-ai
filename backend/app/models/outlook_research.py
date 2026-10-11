@@ -275,6 +275,18 @@ class RevenueHistoryPoint(ResearchModel):
     yoy: RevenueHistoryGrowth
 
 
+class AnnualRevenuePoint(ResearchModel):
+    fiscal_year: int
+    period_start: Date
+    period_end: Date
+    exact_revenue: Decimal
+    currency: Literal["USD"]
+    observation_type: Literal["reported", "certified_derived", "projected"]
+    yoy_growth_pct: Decimal | None = None
+    source_ids: tuple[str, ...] = ()
+    provenance_label: str
+
+
 class RevenueHistoryResearch(ResearchModel):
     schema_version: Literal["1"] = "1"
     availability: Literal["available", "insufficient_data", "conflict", "unavailable"]
@@ -291,6 +303,7 @@ class RevenueHistoryResearch(ResearchModel):
     qoq_comparison_count: int = 0
     yoy_comparison_count: int = 0
     points: tuple[RevenueHistoryPoint, ...] = Field(default=(), max_length=8)
+    annual_points: tuple[AnnualRevenuePoint, ...] = Field(default=(), max_length=5)
 
 
 class ResearchPresentation(ResearchModel):

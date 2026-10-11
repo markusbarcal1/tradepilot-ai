@@ -11,6 +11,7 @@ from app.models.outlook_event import EventSource, ExternalEvent
 from app.models.outlook_evidence import OutlookEvidence
 from app.models.outlook_reporting import ReportingIdentity
 from app.models.outlook_research import (EconomicResearch, EarningsResearch, EventResearch,
+    AnnualRevenuePoint,
     IndustryHistory, IndustryHistoryCoverage, IndustryHistoryPoint, IndustryHistoryWindow,
     IndustryResearch, MarketBenchmark, MarketResearch, MarketVolatility, ResearchBenchmark,
     ResearchBreadth, ResearchCatalyst, ResearchComparison, ResearchEvent, ResearchMetric,
@@ -354,17 +355,25 @@ def _evidence_events(rows: Iterable[OutlookEvidence], category, sources, empty_m
     return EventResearch(events=tuple(events), empty_message=empty_message)
 
 
-def _revenue_history(projection: RevenueResearchProjectionResult | None):
+def _revenue_history(projection: RevenueResearchProjectionResult | None, annual_observations=(), sources=None):
     """Map reviewed projection fields only; never calculate financial values here."""
+    annual_points = tuple(AnnualRevenuePoint(fiscal_year=row.fiscal_year,
+        period_start=row.period_start, period_end=row.period_end,
+        exact_revenue=row.exact_revenue, currency=row.currency,
+        observation_type=row.classification, yoy_growth_pct=row.yoy_growth_pct,
+        source_ids=((sources.add(row.source_url, "SEC EDGAR", row.provenance_label,
+            "regulatory_filing", row.filing_date),) if sources is not None else ()),
+        provenance_label=row.provenance_label) for row in annual_observations)
     if projection is None:
         return RevenueHistoryResearch(availability="unavailable",
-            reasons=("revenue_projection_not_supplied",))
+            reasons=("revenue_projection_not_supplied",), annual_points=annual_points)
     if projection.state != "available" or projection.summary is None:
         availability = "conflict" if projection.state == "conflict" else (
             "insufficient_data" if "research_eligible_series_required" in projection.reasons
             else "unavailable")
         return RevenueHistoryResearch(availability=availability,
-            policy=projection.projection_policy, reasons=projection.reasons)
+            policy=projection.projection_policy, reasons=projection.reasons,
+            annual_points=annual_points)
     points = tuple(RevenueHistoryPoint(fiscal_year=row.fiscal_year,
         fiscal_quarter=row.fiscal_quarter, display_label=row.display_label,
         period_start=row.period_start, period_end=row.period_end,
@@ -392,12 +401,13 @@ def _revenue_history(projection: RevenueResearchProjectionResult | None):
         latest_yoy_growth_pct=summary.latest_yoy_growth_pct,
         qoq_comparison_count=summary.available_qoq_comparisons,
         yoy_comparison_count=summary.available_yoy_comparisons,
-        points=points)
+        points=points, annual_points=annual_points)
 
 
 def build_research_presentation(outlook: OutlookResponse, packet: OutlookContextPacket,
                                 analysis: AIOutlookResponse, *, as_of=None,
-                                revenue_projection: RevenueResearchProjectionResult | None = None):
+                                revenue_projection: RevenueResearchProjectionResult | None = None,
+                                annual_revenue_observations=()):
     """Assemble bounded display data; never changes intelligence or parses AI prose."""
     sources = _Sources()
     earnings = _earnings(outlook, sources)
@@ -419,5 +429,6 @@ def build_research_presentation(outlook: OutlookResponse, packet: OutlookContext
     return ResearchPresentation(as_of=as_of or datetime.now(timezone.utc), ticker=outlook.ticker,
         earnings=earnings, industry=industry, economic=economic, market=market,
         company=company, geopolitical=geopolitical,
-        revenue_history=_revenue_history(revenue_projection), what_to_watch=tuple(catalysts),
+        revenue_history=_revenue_history(revenue_projection, annual_revenue_observations, sources),
+        what_to_watch=tuple(catalysts),
         sources=tuple(sorted(sources.rows.values(), key=lambda row: row.id)))

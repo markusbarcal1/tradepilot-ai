@@ -114,6 +114,8 @@ class RevenueHistorySnapshotService:
         except Exception: return self._empty(ticker, "historical_acquisition_unavailable")
         if not isinstance(acquisition, RevenueHistoricalAcquisition): return self._empty(ticker, "historical_acquisition_unavailable")
         historical = acquisition.snapshot
+        annual = historical.annual_revenue_observations
+        annual_diagnostics = historical.diagnostics.annual_revenue
         adapted = tuple(filter(None, (adapt_historical_revenue(row) for row in historical.observations)))
         series = self.assemble_series(adapted); projection = self.project_research(series)
         accounting = self._accounting(acquisition)
@@ -121,6 +123,8 @@ class RevenueHistorySnapshotService:
             return RevenueHistorySnapshotResult(snapshot_policy=SNAPSHOT_POLICY, ticker=ticker,
                 state="available", historical_evidence_fingerprint=acquisition.evidence_fingerprint,
                 q4_skip_reason="direct_history_eligible", series=series, projection=projection,
+                annual_revenue_observations=annual,
+                annual_revenue_diagnostics=annual_diagnostics,
                 evidence_fingerprint=_fingerprint(acquisition, self.settings.outlook_historical_revenue_q4_derivation_enabled,
                     series=series, projection=projection), request_accounting=accounting)
         if not self.settings.outlook_historical_revenue_q4_derivation_enabled:
@@ -129,6 +133,8 @@ class RevenueHistorySnapshotService:
                 reasons=("q4_derivation_disabled", *projection.reasons),
                 historical_evidence_fingerprint=acquisition.evidence_fingerprint,
                 q4_skip_reason="q4_derivation_disabled", series=series, projection=projection,
+                annual_revenue_observations=annual,
+                annual_revenue_diagnostics=annual_diagnostics,
                 request_accounting=accounting)
         target_state, request = identify_useful_q4_target(historical)
         if target_state != "selected":
@@ -136,13 +142,16 @@ class RevenueHistorySnapshotService:
             return RevenueHistorySnapshotResult(snapshot_policy=SNAPSHOT_POLICY, ticker=ticker,
                 state="insufficient_data", reasons=(reason,), historical_evidence_fingerprint=acquisition.evidence_fingerprint,
                 q4_considered=True, q4_skip_reason=reason, series=series, projection=projection,
+                annual_revenue_observations=annual,
+                annual_revenue_diagnostics=annual_diagnostics,
                 request_accounting=accounting)
         if acquisition.submissions is None:
             return RevenueHistorySnapshotResult(snapshot_policy=SNAPSHOT_POLICY, ticker=ticker,
                 state="unavailable", reasons=("submissions_metadata_unavailable",),
                 historical_evidence_fingerprint=acquisition.evidence_fingerprint, q4_considered=True,
                 q4_attempted=True, target_fiscal_year=request.target_fiscal_year, series=series,
-                projection=projection, request_accounting=accounting)
+                projection=projection, annual_revenue_observations=annual,
+                annual_revenue_diagnostics=annual_diagnostics, request_accounting=accounting)
         selection = self.select_filings(request, acquisition.submissions)
         if selection.state != "selected": return self._failure(ticker, acquisition, accounting, series, projection,
             "conflict" if selection.state in {"ambiguous", "conflict"} else "insufficient_data",
@@ -176,10 +185,15 @@ class RevenueHistorySnapshotService:
             q4_attempted=True, target_fiscal_year=request.target_fiscal_year, selection=selection,
             retrieval=retrieval, runtime_input=runtime, derivation=derivation,
             reconciliation=reconciliation, series=final_series, projection=final_projection,
+            annual_revenue_observations=annual,
+            annual_revenue_diagnostics=annual_diagnostics,
             evidence_fingerprint=fingerprint, request_accounting=accounting)
 
     def _failure(self, ticker, acquisition, accounting, series, projection, state, reason, request, **stages):
         return RevenueHistorySnapshotResult(snapshot_policy=SNAPSHOT_POLICY, ticker=ticker, state=state,
             reasons=(reason,), historical_evidence_fingerprint=acquisition.evidence_fingerprint,
             q4_considered=True, q4_attempted=True, target_fiscal_year=request.target_fiscal_year,
-            series=series, projection=projection, request_accounting=accounting, **stages)
+            series=series, projection=projection,
+            annual_revenue_observations=acquisition.snapshot.annual_revenue_observations,
+            annual_revenue_diagnostics=acquisition.snapshot.diagnostics.annual_revenue,
+            request_accounting=accounting, **stages)

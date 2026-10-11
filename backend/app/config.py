@@ -63,6 +63,7 @@ class Settings(BaseSettings):
     outlook_sec_history_max_source_facts: int = Field(default=256, ge=32, le=1024)
     outlook_sec_history_max_quarters: int = Field(default=8, ge=1, le=8)
     outlook_sec_history_max_annual_periods: int = Field(default=5, ge=0, le=5)
+    outlook_sec_history_max_annual_source_facts: int = Field(default=128, ge=16, le=512)
     outlook_sec_q4_enabled: bool = False
     outlook_sec_q4_cache_ttl: int = Field(default=21600, ge=300, le=86400)
     outlook_sec_q4_request_budget: int = Field(default=4, ge=1, le=6)

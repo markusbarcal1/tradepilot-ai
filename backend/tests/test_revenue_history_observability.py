@@ -6,6 +6,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from app.models.outlook_financial_history import AnnualRevenueDiagnostics, AnnualRevenueYearOutcome
 from app.models.outlook_revenue_filing_document import RevenueFilingDocumentRequestAccounting
 from app.models.outlook_revenue_history_snapshot import (
     RevenueHistorySnapshotResult,
@@ -30,10 +31,11 @@ def available_projection():
 
 def snapshot(*, state="unavailable", reasons=("feature_disabled",), projection=None,
         cache=None, historical_logical=0, historical_attempts=0, documents=None,
-        total_attempts=0, considered=False, attempted=False, target=None):
+        total_attempts=0, considered=False, attempted=False, target=None, annual_diagnostics=None):
     return RevenueHistorySnapshotResult(snapshot_policy="revenue-history-snapshot-1",
         ticker="AAPL", state=state, reasons=reasons, projection=projection,
         q4_considered=considered, q4_attempted=attempted, target_fiscal_year=target,
+        annual_revenue_diagnostics=annual_diagnostics,
         evidence_fingerprint="0" * 64 if state == "available" else None,
         request_accounting=RevenueSnapshotRequestAccounting(
             acquisition_cache_state=cache,
@@ -184,3 +186,23 @@ def test_logging_failure_does_not_change_valid_result(monkeypatch):
     monkeypatch.setattr(module.LOGGER, "log", lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError("logging failed")))
     value = snapshot()
     assert observe_revenue_snapshot(Service(value), "AAPL", settings()) is value
+
+
+def test_annual_year_outcomes_are_bounded_sanitized_structured_logging(emitted):
+    diagnostics = AnnualRevenueDiagnostics(discovered_fiscal_year_count=2,
+        certified_fiscal_year_count=1, retained_fiscal_year_count=1,
+        year_outcomes=(
+            AnnualRevenueYearOutcome(fiscal_year=2024, discovered_candidate_count=0,
+                validated_candidate_count=0, state="no_supported_candidate",
+                reasons=("no_supported_candidate",)),
+            AnnualRevenueYearOutcome(fiscal_year=2025, discovered_candidate_count=1,
+                validated_candidate_count=1, state="certified"),))
+    observe_revenue_snapshot(Service(snapshot(annual_diagnostics=diagnostics)),
+        "AAPL", settings(master=True))
+    _, message, fields = event(emitted)
+    assert fields["annual_source_limit_state"] == "complete"
+    assert fields["annual_year_outcomes"][0] == {"fiscal_year": 2024,
+        "discovered_candidate_count": 0, "validated_candidate_count": 0,
+        "state": "no_supported_candidate", "reasons": ["no_supported_candidate"]}
+    for forbidden in ("exact_revenue", "source_url", "accession", "evidence_identity", "filing_contents"):
+        assert forbidden not in message

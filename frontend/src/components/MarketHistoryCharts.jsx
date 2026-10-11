@@ -6,7 +6,8 @@ const THEMES = {
   light: { background: "#f8fafc", text: "#475569", grid: "#e2e8f0", border: "#cbd5e1" },
 };
 const chartOptions = (theme, height, formatter) => { const colors = THEMES[theme] || THEMES.dark; return { height, autoSize: true,
-  layout: { background: { type: ColorType.Solid, color: colors.background }, textColor: colors.text },
+  layout: { background: { type: ColorType.Solid, color: colors.background }, textColor: colors.text,
+    attributionLogo: true },
   grid: { vertLines: { color: colors.grid }, horzLines: { color: colors.grid } },
   rightPriceScale: { borderColor: colors.border }, timeScale: { borderColor: colors.border, rightOffset: 2, barSpacing: 7, minBarSpacing: 3 },
   crosshair: { mode: CrosshairMode.Normal }, localization: { priceFormatter: formatter } }; };

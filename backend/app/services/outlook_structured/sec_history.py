@@ -12,6 +12,7 @@ import re
 from threading import RLock
 
 from app.models.outlook_financial_history import (
+    AnnualRevenueDiagnostics, AnnualRevenueObservation, AnnualRevenueYearOutcome,
     HistoricalFinancialDiagnostics, HistoricalFinancialObservation,
     HistoricalFinancialSnapshot, MissingFinancialPeriod, RejectedFinancialFact,
 )
@@ -110,8 +111,12 @@ def _acquisition_fingerprint(snapshot, submissions):
     observations = [row.model_dump(mode="json", exclude={"retrieved_at", "acceptance_time"})
         for row in snapshot.observations]
     rejected = [row.model_dump(mode="json") for row in snapshot.rejected]
+    annual = [row.model_dump(mode="json", exclude={"retrieved_at", "acceptance_time"})
+        for row in snapshot.annual_revenue_observations]
     content = {"policy": ACQUISITION_POLICY, "ticker": snapshot.ticker,
         "issuer": snapshot.issuer, "cik": snapshot.cik, "observations": observations,
+        "annual_revenue_observations": annual,
+        "annual_revenue_diagnostics": snapshot.diagnostics.annual_revenue.model_dump(mode="json"),
         "rejected": rejected, "missing_periods": [row.model_dump(mode="json") for row in snapshot.missing_periods],
         "submissions": submissions.model_dump(mode="json")}
     canonical = json.dumps(content, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
@@ -196,7 +201,8 @@ def comparison_compatibility(left, right, comparison):
 
 def normalize_companyfacts(companyfacts, submissions, ticker, retrieved_at, *,
                            max_source_facts=256, max_quarters=8,
-                           max_annual_periods=5, request_diagnostics=None):
+                           max_annual_periods=5, max_annual_source_facts=128,
+                           request_diagnostics=None):
     """Normalize only explicit standalone quarterly revenue and diluted EPS facts."""
     symbol = str(ticker).strip().upper()
     cik = str(companyfacts.get("cik") or "").zfill(10)
@@ -250,7 +256,6 @@ def normalize_companyfacts(companyfacts, submissions, ticker, retrieved_at, *,
         if len(raw) >= max_source_facts:
             break
 
-    annual_seen = defaultdict(set)
     for metric, concept, expected_unit, share_basis, unit, row in raw[:max_source_facts]:
         if processed >= max_source_facts:
             break
@@ -269,10 +274,6 @@ def normalize_companyfacts(companyfacts, submissions, ticker, retrieved_at, *,
         duration = (end - start).days + 1
         fp = row.get("fp")
         if fp == "FY" and duration > QUARTER_MAX_DAYS:
-            year = row.get("fy")
-            if year in annual_seen[metric] or len(annual_seen[metric]) >= max_annual_periods:
-                continue
-            annual_seen[metric].add(year)
             reject(concept, "annual_period_not_normalized_in_this_phase", row, metric)
             continue
         if not QUARTER_MIN_DAYS <= duration <= QUARTER_MAX_DAYS:
@@ -420,6 +421,132 @@ def normalize_companyfacts(companyfacts, submissions, ticker, retrieved_at, *,
 
     observations.sort(key=lambda row: (row.metric, row.fiscal_year, row.fiscal_quarter,
         row.filing_date, row.accession))
+
+    # Annual revenue has an independent bounded pass. Grouping by fiscal year
+    # happens before the budget is applied so a year is never partially examined.
+    annual_source_rows = []
+    for concept in REVENUE_CONCEPTS:
+        for row in rows_for(concept, "USD"):
+            start, end = _date(row.get("start")), _date(row.get("end"))
+            if row.get("fp") == "FY" and start and end and start <= end and (end - start).days + 1 > QUARTER_MAX_DAYS:
+                annual_source_rows.append((concept, row, start, end))
+    annual_groups = defaultdict(list)
+    invalid_annual_identity = []
+    for item in annual_source_rows:
+        year = item[1].get("fy")
+        if isinstance(year, int): annual_groups[year].append(item)
+        else: invalid_annual_identity.append(item)
+    ordered_years = sorted(annual_groups, key=lambda year: max(
+        (item[3], str(item[1].get("filed") or ""), str(item[1].get("accn") or ""))
+        for item in annual_groups[year]), reverse=True)
+    admitted, source_limit_excluded = [], []
+    annual_year_reasons = defaultdict(set)
+    charged = 0
+    for index, year in enumerate(ordered_years):
+        group = annual_groups[year]
+        if charged + len(group) > max_annual_source_facts:
+            source_limit_excluded.extend(ordered_years[index:])
+            break
+        admitted.extend(group); charged += len(group)
+    for year in source_limit_excluded:
+        annual_year_reasons[year].add("annual_source_limit_exceeded")
+        for concept, row, _, _ in annual_groups[year]:
+            reject(concept, "annual_source_limit_exceeded", row, "revenue")
+    for concept, row, _, _ in invalid_annual_identity:
+        reject(concept, "annual_fiscal_identity_invalid", row, "revenue")
+
+    annual_candidates = []
+    annual_validation_rejections = len(invalid_annual_identity) + sum(
+        len(annual_groups[year]) for year in source_limit_excluded)
+    for concept, row, start, end in admitted:
+        form = row.get("form"); filed = _date(row.get("filed")); year = row.get("fy")
+        duration = (end - start).days + 1
+        if not filed:
+            reject(concept, "invalid_period_or_filing_date", row, "revenue"); annual_year_reasons[year].add("invalid_period_or_filing_date"); annual_validation_rejections += 1; continue
+        if form not in ("10-K", "10-K/A"):
+            reject(concept, "annual_filing_context_invalid", row, "revenue"); annual_year_reasons[year].add("annual_filing_context_invalid"); annual_validation_rejections += 1; continue
+        if not 300 <= duration <= 380:
+            reject(concept, "annual_period_duration_invalid", row, "revenue"); annual_year_reasons[year].add("annual_period_duration_invalid"); annual_validation_rejections += 1; continue
+        value = _decimal(row.get("val")); accession = str(row.get("accn") or "")
+        if value is None or not ACCESSION.fullmatch(accession):
+            reject(concept, "invalid_value_or_accession", row, "revenue"); annual_year_reasons[year].add("invalid_value_or_accession"); annual_validation_rejections += 1; continue
+        metadata = submission_rows.get(accession)
+        if not metadata or metadata.get("form") != form or _date(metadata.get("report_date")) != end:
+            reject(concept, "annual_filing_context_invalid", row, "revenue"); annual_year_reasons[year].add("annual_filing_context_invalid"); annual_validation_rejections += 1; continue
+        annual_candidates.append({"concept": concept, "unit": "USD", "row": row,
+            "start": start, "end": end, "filed": filed, "duration": duration,
+            "value": value, "accession": accession,
+            "accepted": _datetime(metadata.get("accepted")),
+            "url": _source_url(cik, accession, metadata.get("primary_document")),
+            "fiscal_year": year})
+
+    certified_annual_observations = []
+    conflicted_annual_years = set()
+    by_annual_year = defaultdict(list)
+    for candidate in annual_candidates:
+        by_annual_year[candidate["fiscal_year"]].append(candidate)
+    for year, period_rows in sorted(by_annual_year.items()):
+        concepts = {row["concept"] for row in period_rows}
+        contexts = {(row["start"], row["end"]) for row in period_rows}
+        if len(concepts) != 1 or len(contexts) != 1:
+            conflicted_annual_years.add(year)
+            reason = "ambiguous_concept_mapping" if len(concepts) != 1 else "ambiguous_annual_context"
+            annual_year_reasons[year].add(reason)
+            for row in period_rows:
+                reject(row["concept"], reason, row["row"], "revenue")
+            continue
+        unique = {}
+        for row in period_rows:
+            key = (row["accession"], row["value"], row["start"], row["end"], row["unit"])
+            if key in unique:
+                reject(row["concept"], "duplicate_source_fact", row["row"], "revenue")
+            else:
+                unique[key] = row
+        versions = sorted(unique.values(), key=lambda row: (row["filed"], row["accepted"] or
+            datetime.combine(row["filed"], datetime.min.time(), tzinfo=timezone.utc), row["accession"]))
+        if len(versions) > MAX_VERSIONS_PER_PERIOD:
+            for row in versions[:-MAX_VERSIONS_PER_PERIOD]:
+                reject(row["concept"], "version_limit_exceeded", row["row"], "revenue")
+            versions = versions[-MAX_VERSIONS_PER_PERIOD:]
+        amendments = [row for row in versions if row["row"].get("form") == "10-K/A"]
+        conflicting_amendments = (len(amendments) > 1 and
+            amendments[-1]["filed"] == amendments[-2]["filed"] and
+            amendments[-1]["value"] != amendments[-2]["value"])
+        if (len({row["value"] for row in versions}) > 1 and
+                (not amendments or versions[-1] is not amendments[-1])) or conflicting_amendments:
+            conflicted_annual_years.add(year)
+            annual_year_reasons[year].add("unresolved_annual_version_conflict")
+            for row in versions:
+                reject(row["concept"], "unresolved_annual_version_conflict", row["row"], "revenue")
+            continue
+        selected = amendments[-1] if amendments else versions[-1]
+        certified_annual_observations.append(AnnualRevenueObservation(
+            observation_id=sha256(f"{symbol}|annual|{year}|{selected['accession']}|{selected['value']}".encode()).hexdigest()[:24],
+            issuer=issuer, ticker=symbol, cik=cik, fiscal_year=year,
+            period_start=selected["start"], period_end=selected["end"],
+            duration_days=selected["duration"], exact_revenue=selected["value"],
+            original_concept=selected["concept"], accession=selected["accession"],
+            form=selected["row"]["form"], filing_date=selected["filed"],
+            acceptance_time=selected["accepted"], source_url=selected["url"],
+            retrieved_at=retrieved_at, provenance_label=("SEC 10-K/A annual revenue (amended)"
+                if selected["row"]["form"] == "10-K/A" else "SEC 10-K annual revenue")))
+    certified_annual_observations.sort(key=lambda row: (row.period_end, row.filing_date,
+        row.acceptance_time or datetime.combine(row.filing_date, datetime.min.time(), tzinfo=timezone.utc),
+        row.fiscal_year))
+    annual_observations = (sorted(certified_annual_observations[-max_annual_periods:],
+        key=lambda row: row.fiscal_year) if max_annual_periods else [])
+    retained_years = {row.fiscal_year for row in annual_observations}
+    certified_years = {row.fiscal_year for row in certified_annual_observations}
+    excluded_years = tuple(sorted(set(ordered_years) - retained_years))
+    annual_rejected_candidate_count = annual_validation_rejections + sum(
+        len(by_annual_year[year]) for year in conflicted_annual_years)
+    annual_by_year = {row.fiscal_year: row for row in annual_observations}
+    annual_observations = [row.model_copy(update={"yoy_growth_pct":
+        ((row.exact_revenue - annual_by_year[row.fiscal_year - 1].exact_revenue) /
+         annual_by_year[row.fiscal_year - 1].exact_revenue * Decimal("100"))
+        if row.fiscal_year - 1 in annual_by_year and
+           annual_by_year[row.fiscal_year - 1].exact_revenue != 0 else None})
+        for row in annual_observations]
     missing = []
     for metric in SUPPORTED:
         current = [row for row in observations if row.metric == metric and row.version_status == "current"]
@@ -436,6 +563,42 @@ def normalize_companyfacts(companyfacts, submissions, ticker, retrieved_at, *,
     metric_count = len({row.metric for row in observations if row.version_status == "current"})
     status = "available" if metric_count == 2 else "partial" if current_count else "conflict" if has_conflict else "unavailable"
     details = request_diagnostics or {}
+    if ordered_years:
+        diagnostic_years = list(range(min(ordered_years), max(ordered_years) + 1))[-16:]
+    else:
+        diagnostic_years = []
+    year_outcomes = []
+    for year in diagnostic_years:
+        discovered_count = len(annual_groups.get(year, ()))
+        validated_count = len(by_annual_year.get(year, ()))
+        if year in source_limit_excluded:
+            state, reasons = "source_limit_excluded", ("annual_source_limit_exceeded",)
+        elif year in conflicted_annual_years:
+            state, reasons = "conflict", tuple(sorted(annual_year_reasons[year]))
+        elif year in retained_years:
+            state, reasons = "certified", ()
+        elif year in certified_years:
+            state, reasons = "retention_excluded", ("annual_retention_limit",)
+        elif discovered_count:
+            state, reasons = "rejected", tuple(sorted(annual_year_reasons[year]))
+        else:
+            state, reasons = "no_supported_candidate", ("no_supported_candidate",)
+        year_outcomes.append(AnnualRevenueYearOutcome(fiscal_year=year,
+            discovered_candidate_count=discovered_count,
+            validated_candidate_count=validated_count, state=state, reasons=reasons))
+    annual_diagnostics = AnnualRevenueDiagnostics(
+        source_limit_state="limit_exceeded" if source_limit_excluded else "complete",
+        source_fact_limit=max_annual_source_facts,
+        discovered_source_fact_count=len(annual_source_rows),
+        discovered_fiscal_year_count=len(annual_groups),
+        validated_candidate_count=len(annual_candidates),
+        rejected_candidate_count=annual_rejected_candidate_count,
+        conflicted_fiscal_year_count=len(conflicted_annual_years),
+        certified_fiscal_year_count=len(certified_annual_observations),
+        retained_fiscal_year_count=len(annual_observations),
+        excluded_fiscal_years=excluded_years[:64],
+        source_limit_excluded_fiscal_years=tuple(source_limit_excluded[:64]),
+        year_outcomes=tuple(year_outcomes))
     diagnostics = HistoricalFinancialDiagnostics(source_status=status,
         requests=details.get("requests", 0), cache_reads=details.get("cache_reads", 0),
         cache_loads=details.get("cache_loads", 0), cache_hits=details.get("cache_hits", 0),
@@ -445,9 +608,10 @@ def normalize_companyfacts(companyfacts, submissions, ticker, retrieved_at, *,
         failure_cache_ttl_seconds=details.get("failure_cache_ttl_seconds", 60),
         timeout_seconds=details.get("timeout_seconds", 5), attempts=details.get("attempts", 1),
         max_source_facts=max_source_facts, max_quarterly_periods=max_quarters,
-        max_annual_periods_inspected=max_annual_periods)
+        max_annual_periods_inspected=max_annual_periods, annual_revenue=annual_diagnostics)
     return HistoricalFinancialSnapshot(ticker=symbol, issuer=issuer, cik=cik,
         retrieved_at=retrieved_at, status=status, observations=tuple(observations),
+        annual_revenue_observations=tuple(annual_observations),
         rejected=tuple(rejected), missing_periods=tuple(missing[:32]), diagnostics=diagnostics)
 
 
@@ -491,6 +655,7 @@ class SecHistoricalFinancialProvider:
             max_source_facts=self.settings.outlook_sec_history_max_source_facts,
             max_quarters=self.settings.outlook_sec_history_max_quarters,
             max_annual_periods=self.settings.outlook_sec_history_max_annual_periods,
+            max_annual_source_facts=self.settings.outlook_sec_history_max_annual_source_facts,
             request_diagnostics={"requests": budget[0],
                 "request_budget": self.settings.outlook_sec_history_request_budget,
                 "cache_ttl_seconds": self.settings.outlook_sec_history_cache_ttl,

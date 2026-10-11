@@ -42,7 +42,7 @@ def _fields(result, settings, elapsed_ms):
     total_logical = (historical_logical + document_logical
         if isinstance(historical_logical, int) and isinstance(document_logical, int)
         else historical_logical if isinstance(historical_logical, int) and documents is None else None)
-    return {
+    fields = {
         "event": EVENT_NAME,
         "ticker": _ticker(getattr(result, "ticker", "")),
         "master_enabled": bool(settings.outlook_historical_revenue_enabled),
@@ -65,6 +65,14 @@ def _fields(result, settings, elapsed_ms):
         "projection_state": getattr(projection, "state", None),
         "elapsed_ms": max(0, round(elapsed_ms)),
     }
+    annual = getattr(result, "annual_revenue_diagnostics", None)
+    if annual is not None:
+        fields["annual_source_limit_state"] = annual.source_limit_state
+        fields["annual_discovered_fiscal_year_count"] = annual.discovered_fiscal_year_count
+        fields["annual_certified_fiscal_year_count"] = annual.certified_fiscal_year_count
+        fields["annual_retained_fiscal_year_count"] = annual.retained_fiscal_year_count
+        fields["annual_year_outcomes"] = [row.model_dump(mode="json") for row in annual.year_outcomes]
+    return fields
 
 
 def _emit(level, fields):

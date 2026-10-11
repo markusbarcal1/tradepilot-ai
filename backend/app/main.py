@@ -129,7 +129,8 @@ def outlook_analysis(ticker: str):
     return AIResearchReportResult(status="available", analysis=generated.response,
         research=build_research_presentation(deterministic, packet, generated.response,
                                              as_of=packet.generated_at,
-                                             revenue_projection=revenue_projection))
+                                             revenue_projection=revenue_projection,
+                                             annual_revenue_observations=revenue_snapshot.annual_revenue_observations))
 
 
 @protected_router.get("/financial-analysis/{ticker}")

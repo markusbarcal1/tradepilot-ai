@@ -138,6 +138,7 @@ function getChartOptions(theme) {
     layout: {
       background: { type: ColorType.Solid, color: colors.background },
       textColor: colors.text,
+      attributionLogo: true,
     },
     grid: {
       vertLines: { color: colors.grid },

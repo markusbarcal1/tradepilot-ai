@@ -9,7 +9,8 @@ const THEMES = {
 function options(theme, height) {
   const colors = THEMES[theme] || THEMES.dark;
   return { height, autoSize: true,
-    layout: { background: { type: ColorType.Solid, color: colors.background }, textColor: colors.text },
+    layout: { background: { type: ColorType.Solid, color: colors.background }, textColor: colors.text,
+      attributionLogo: true },
     grid: { vertLines: { color: colors.grid }, horzLines: { color: colors.grid } },
     rightPriceScale: { borderColor: colors.border },
     timeScale: { borderColor: colors.border, timeVisible: false, rightOffset: 2, barSpacing: 7, minBarSpacing: 3 },
