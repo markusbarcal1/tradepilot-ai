@@ -296,6 +296,10 @@ body {
 .revenue-history { margin: 18px 0; }
 .revenue-history-chart { min-height: 280px; }
 .research-chart-legend .revenue-actual i { background: #38bdf8; }
+.research-chart-legend .revenue-derived i { width: 10px; height: 10px; border-radius: 2px; background: #f59e0b; }
+.revenue-history-modes { display: flex; flex-shrink: 0; gap: 5px; }
+.revenue-history-modes button { min-width: 72px; padding: 6px 9px; border: 1px solid var(--border-color); border-radius: 6px; background: transparent; color: var(--text-secondary); cursor: pointer; }
+.revenue-history-modes button[aria-pressed="true"] { background: var(--text-info); border-color: var(--text-info); color: #fff; }
 .revenue-history-tooltip { min-width: 190px; }
 .value-positive { color: var(--text-positive) !important; } .value-negative { color: var(--text-negative) !important; }
 .value-neutral { color: var(--text-secondary-strong) !important; }
@@ -407,6 +411,8 @@ body {
   .research-performance-header { display: grid; }
   .research-timeframes { width: 100%; }
   .research-timeframes button { flex: 1; }
+  .revenue-history-modes { width: 100%; }
+  .revenue-history-modes button { flex: 1; }
   .research-chart-main { min-height: 260px; }
   .research-chart-relative { min-height: 150px; }
   .market-chart-equity { min-height: 260px; }
