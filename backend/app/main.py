@@ -17,7 +17,9 @@ from app.services.outlook import analyze_outlook
 from app.services.outlook_ai import (OpenAIOutlookIntelligenceProvider,
     build_context_packet, generate_intelligence)
 from app.services.outlook_research import build_research_presentation
-from app.services.revenue_history_runtime import get_revenue_history_snapshot_service
+from app.services.revenue_history_runtime import (
+    get_historical_financial_acquisition, get_revenue_history_snapshot_service,
+)
 from app.services.revenue_history_observability import observe_revenue_snapshot
 from app.services.outlook_structured.revenue_history_snapshot import projection_from_revenue_snapshot
 from app.services.analyzer import analyze_ticker, analyze_tickers
@@ -126,11 +128,21 @@ def outlook_analysis(ticker: str):
     revenue_snapshot = observe_revenue_snapshot(
         get_revenue_history_snapshot_service(), ticker, settings)
     revenue_projection = projection_from_revenue_snapshot(revenue_snapshot)
+    eps_snapshot = None
+    eps_unavailable_reason = "feature_disabled"
+    if settings.outlook_historical_eps_enabled:
+        try:
+            eps_snapshot = get_historical_financial_acquisition(ticker).snapshot
+            eps_unavailable_reason = None
+        except Exception:
+            eps_unavailable_reason = "historical_acquisition_unavailable"
     return AIResearchReportResult(status="available", analysis=generated.response,
         research=build_research_presentation(deterministic, packet, generated.response,
                                              as_of=packet.generated_at,
                                              revenue_projection=revenue_projection,
-                                             annual_revenue_observations=revenue_snapshot.annual_revenue_observations))
+                                             annual_revenue_observations=revenue_snapshot.annual_revenue_observations,
+                                             eps_snapshot=eps_snapshot,
+                                             eps_unavailable_reason=eps_unavailable_reason))
 
 
 @protected_router.get("/financial-analysis/{ticker}")

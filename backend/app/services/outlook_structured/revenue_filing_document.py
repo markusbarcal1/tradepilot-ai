@@ -46,6 +46,18 @@ class DocumentTransportResponse:
     content_length: int | None = None
 
 
+@dataclass(frozen=True)
+class BoundFilingDocumentResult:
+    state: str
+    reason: str | None
+    canonical_url: str
+    body: bytes | None = None
+    fingerprint: str | None = None
+    content_type: str | None = None
+    cache_state: str | None = None
+    http_attempts_charged: int = 0
+
+
 class _NoRedirect(HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         raise DocumentTransportError("redirect_rejected", status=code)
@@ -219,6 +231,51 @@ class RevenueFilingDocumentRetriever:
             issuer=selection.issuer, cik=selection.cik,
             target_fiscal_year=selection.target_fiscal_year, documents=tuple(documents),
             request_accounting=RevenueFilingDocumentRequestAccounting(**base))
+
+    def retrieve_bound(self, *, cik, accession, primary_document, source_url):
+        """Retrieve one exactly bound SEC primary filing through the shared cache/gate."""
+        holder = type("BoundDocument", (), {"cik": str(cik), "accession": str(accession),
+            "primary_document": str(primary_document)})()
+        try:
+            canonical = _canonical(holder)
+        except (TypeError, ValueError):
+            return BoundFilingDocumentResult("conflict", "url_policy_rejected", str(source_url or ""))
+        parts = urlsplit(str(source_url or ""))
+        if (str(source_url) != canonical or parts.scheme != "https" or
+                parts.hostname != "www.sec.gov" or parts.username or parts.password or
+                parts.query or parts.fragment or "%" in parts.path or ".." in parts.path):
+            return BoundFilingDocumentResult("conflict", "url_policy_rejected", canonical)
+        key = (POLICY_VERSION, str(cik), str(accession), str(primary_document))
+        mode, entry, flight = self.cache.acquire(key)
+        if mode == "follower":
+            flight.wait(); mode, entry, _ = self.cache.acquire(key)
+        if mode == "cached":
+            if entry.reason:
+                return BoundFilingDocumentResult("unavailable", entry.reason, canonical,
+                    cache_state="failure_hit")
+            return BoundFilingDocumentResult("available", None, canonical, body=entry.body,
+                fingerprint=entry.fingerprint, content_type=entry.content_type,
+                cache_state="success_hit")
+        try:
+            self.rate_gate.wait(self.request_interval)
+            response = self.transport.request(canonical, timeout=self.timeout,
+                max_bytes=self.max_bytes, user_agent=self.user_agent)
+            entry = self._accept(canonical, response)
+        except TimeoutError:
+            entry = self._failed_entry("timeout")
+        except OSError:
+            entry = self._failed_entry("connection_failure")
+        except DocumentTransportError as exc:
+            entry = self._failed_entry(exc.reason)
+        except Exception:
+            entry = self._failed_entry("transport_failure")
+        self.cache.finish(key, entry)
+        if entry.reason:
+            return BoundFilingDocumentResult("unavailable", entry.reason, canonical,
+                cache_state="miss", http_attempts_charged=1)
+        return BoundFilingDocumentResult("available", None, canonical, body=entry.body,
+            fingerprint=entry.fingerprint, content_type=entry.content_type,
+            cache_state="miss", http_attempts_charged=1)
 
     def _accept(self, url, response):
         if response.final_url != url: raise DocumentTransportError("redirect_rejected")

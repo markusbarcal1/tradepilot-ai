@@ -306,6 +306,65 @@ class RevenueHistoryResearch(ResearchModel):
     annual_points: tuple[AnnualRevenuePoint, ...] = Field(default=(), max_length=5)
 
 
+EPSHistoryReason = Literal[
+    "feature_disabled",
+    "historical_acquisition_unavailable",
+    "no_certified_observations",
+    "missing_fiscal_periods",
+    "conflicted_fiscal_periods",
+    "source_limit_exceeded",
+]
+
+
+class EPSHistoryAvailability(ResearchModel):
+    state: Literal["available", "partial", "conflict", "unavailable"] = "unavailable"
+    reasons: tuple[EPSHistoryReason, ...] = Field(default=(), max_length=6)
+    observation_count: int = Field(default=0, ge=0, le=8)
+    earliest_fiscal_period: str | None = None
+    latest_fiscal_period: str | None = None
+
+
+class AnnualEPSHistoryPoint(ResearchModel):
+    fiscal_year: int = Field(ge=1900, le=2200)
+    period_start: Date
+    period_end: Date
+    exact_eps: Decimal
+    unit: Literal["USD_per_share"] = "USD_per_share"
+    observation_type: Literal["reported"] = "reported"
+    reporting_status: Literal["original", "amended"]
+    disclosure_type: Literal["original_period", "later_comparative"] = "original_period"
+    split_adjustment_status: Literal["not_established", "explicit_retrospective"] = "not_established"
+    comparison_break_before: bool = False
+    provenance_label: str
+    source_ids: tuple[str, ...] = Field(min_length=1, max_length=2)
+
+
+class QuarterlyEPSHistoryPoint(ResearchModel):
+    fiscal_year: int = Field(ge=1900, le=2200)
+    fiscal_quarter: Literal["Q1", "Q2", "Q3", "Q4"]
+    period_start: Date
+    period_end: Date
+    exact_eps: Decimal
+    unit: Literal["USD_per_share"] = "USD_per_share"
+    observation_type: Literal["reported"] = "reported"
+    reporting_status: Literal["original", "amended"]
+    comparison_break_before: bool = False
+    provenance_label: str
+    source_ids: tuple[str, ...] = Field(min_length=1, max_length=2)
+
+
+class EPSHistoryResearch(ResearchModel):
+    schema_version: Literal["1"] = "1"
+    certification_policy: Literal["sec-gaap-diluted-eps-history-1"] = "sec-gaap-diluted-eps-history-1"
+    share_basis: Literal["diluted"] = "diluted"
+    accounting_basis: Literal["gaap"] = "gaap"
+    unit: Literal["USD_per_share"] = "USD_per_share"
+    annual: EPSHistoryAvailability = Field(default_factory=EPSHistoryAvailability)
+    quarterly: EPSHistoryAvailability = Field(default_factory=EPSHistoryAvailability)
+    annual_points: tuple[AnnualEPSHistoryPoint, ...] = Field(default=(), max_length=5)
+    quarterly_points: tuple[QuarterlyEPSHistoryPoint, ...] = Field(default=(), max_length=8)
+
+
 class ResearchPresentation(ResearchModel):
     schema_version: Literal["2"] = "2"
     as_of: AwareDatetime
@@ -317,6 +376,7 @@ class ResearchPresentation(ResearchModel):
     company: EventResearch
     geopolitical: EventResearch
     revenue_history: RevenueHistoryResearch
+    eps_history: EPSHistoryResearch = Field(default_factory=EPSHistoryResearch)
     what_to_watch: tuple[ResearchCatalyst, ...] = ()
     sources: tuple[ResearchSource, ...] = ()
 

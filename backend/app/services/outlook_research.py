@@ -11,12 +11,12 @@ from app.models.outlook_event import EventSource, ExternalEvent
 from app.models.outlook_evidence import OutlookEvidence
 from app.models.outlook_reporting import ReportingIdentity
 from app.models.outlook_research import (EconomicResearch, EarningsResearch, EventResearch,
-    AnnualRevenuePoint,
+    AnnualEPSHistoryPoint, AnnualRevenuePoint, EPSHistoryAvailability, EPSHistoryResearch,
     IndustryHistory, IndustryHistoryCoverage, IndustryHistoryPoint, IndustryHistoryWindow,
     IndustryResearch, MarketBenchmark, MarketResearch, MarketVolatility, ResearchBenchmark,
     ResearchBreadth, ResearchCatalyst, ResearchComparison, ResearchEvent, ResearchMetric,
     ResearchPresentation, ResearchSeries, ResearchSeriesPoint, ResearchSource,
-    RevenueHistoryGrowth, RevenueHistoryPoint, RevenueHistoryResearch)
+    QuarterlyEPSHistoryPoint, RevenueHistoryGrowth, RevenueHistoryPoint, RevenueHistoryResearch)
 from app.models.outlook_revenue_research import RevenueResearchProjectionResult
 
 
@@ -404,10 +404,82 @@ def _revenue_history(projection: RevenueResearchProjectionResult | None, annual_
         points=points, annual_points=annual_points)
 
 
+def _eps_availability(points, *, conflicts=False, missing=False, source_limited=False, annual=False):
+    reasons = []
+    if conflicts:
+        reasons.append("conflicted_fiscal_periods")
+    if missing:
+        reasons.append("missing_fiscal_periods")
+    if source_limited:
+        reasons.append("source_limit_exceeded")
+    if points:
+        state = "partial" if reasons else "available"
+        first, last = points[0], points[-1]
+        earliest = f"FY{first.fiscal_year}" if annual else f"FY{first.fiscal_year}:{first.fiscal_quarter}"
+        latest = f"FY{last.fiscal_year}" if annual else f"FY{last.fiscal_year}:{last.fiscal_quarter}"
+    else:
+        state = "conflict" if conflicts else "unavailable"
+        reasons = reasons or ["no_certified_observations"]
+        earliest = latest = None
+    return EPSHistoryAvailability(state=state, reasons=tuple(reasons),
+        observation_count=len(points), earliest_fiscal_period=earliest,
+        latest_fiscal_period=latest)
+
+
+def _eps_history(snapshot=None, sources=None, unavailable_reason=None):
+    """Project certified SEC EPS facts without financial calculation or acquisition."""
+    if unavailable_reason is not None:
+        unavailable = EPSHistoryAvailability(reasons=(unavailable_reason,))
+        return EPSHistoryResearch(annual=unavailable, quarterly=unavailable)
+    if snapshot is None:
+        unavailable = EPSHistoryAvailability(reasons=("historical_acquisition_unavailable",))
+        return EPSHistoryResearch(annual=unavailable, quarterly=unavailable)
+    sources = sources or _Sources()
+    annual_rows = sorted(snapshot.annual_eps_observations, key=lambda row: row.fiscal_year)
+    annual_points = tuple(AnnualEPSHistoryPoint(fiscal_year=row.fiscal_year,
+        period_start=row.period_start, period_end=row.period_end, exact_eps=row.exact_eps,
+        reporting_status="amended" if row.form == "10-K/A" else "original",
+        disclosure_type=row.disclosure_type,
+        split_adjustment_status=row.split_adjustment_status,
+        comparison_break_before=row.comparison_break_before,
+        provenance_label=row.provenance_label,
+        source_ids=(sources.add(row.source_url, "SEC EDGAR", row.provenance_label,
+            "regulatory_filing", row.filing_date),)) for row in annual_rows)
+    quarterly_rows = sorted((row for row in snapshot.observations
+        if row.metric == "diluted_eps" and row.version_status == "current"),
+        key=lambda row: (row.fiscal_year, int(row.fiscal_quarter[1])))
+    quarterly_points = tuple(QuarterlyEPSHistoryPoint(fiscal_year=row.fiscal_year,
+        fiscal_quarter=row.fiscal_quarter, period_start=row.period_start,
+        period_end=row.period_end, exact_eps=row.normalized_value,
+        reporting_status="amended" if row.form in ("10-Q/A", "10-K/A") else "original",
+        comparison_break_before=index > 0 and row.accession != quarterly_rows[index - 1].accession,
+        provenance_label=("SEC amended filing GAAP diluted EPS" if row.form in ("10-Q/A", "10-K/A")
+            else "SEC filing GAAP diluted EPS"),
+        source_ids=(sources.add(row.source_url, "SEC EDGAR",
+            "SEC amended filing GAAP diluted EPS" if row.form in ("10-Q/A", "10-K/A")
+            else "SEC filing GAAP diluted EPS", "regulatory_filing", row.filing_date),))
+        for index, row in enumerate(quarterly_rows))
+    diagnostics = snapshot.diagnostics.eps
+    annual_years = {row.fiscal_year for row in annual_points}
+    annual_missing = bool(annual_years and any(
+        min(annual_years) <= row.fiscal_year <= max(annual_years) and
+        row.state == "no_supported_candidate" for row in diagnostics.annual.year_outcomes))
+    annual = _eps_availability(annual_points,
+        conflicts=diagnostics.annual.conflicted_fiscal_year_count > 0,
+        missing=annual_missing,
+        source_limited=diagnostics.annual.source_limit_state == "limit_exceeded", annual=True)
+    quarterly = _eps_availability(quarterly_points,
+        conflicts=diagnostics.quarterly.conflicted_quarter_count > 0,
+        missing=bool(diagnostics.quarterly.missing_periods), annual=False)
+    return EPSHistoryResearch(annual=annual, quarterly=quarterly,
+        annual_points=annual_points, quarterly_points=quarterly_points)
+
+
 def build_research_presentation(outlook: OutlookResponse, packet: OutlookContextPacket,
                                 analysis: AIOutlookResponse, *, as_of=None,
                                 revenue_projection: RevenueResearchProjectionResult | None = None,
-                                annual_revenue_observations=()):
+                                annual_revenue_observations=(), eps_snapshot=None,
+                                eps_unavailable_reason="feature_disabled"):
     """Assemble bounded display data; never changes intelligence or parses AI prose."""
     sources = _Sources()
     earnings = _earnings(outlook, sources)
@@ -430,5 +502,6 @@ def build_research_presentation(outlook: OutlookResponse, packet: OutlookContext
         earnings=earnings, industry=industry, economic=economic, market=market,
         company=company, geopolitical=geopolitical,
         revenue_history=_revenue_history(revenue_projection, annual_revenue_observations, sources),
+        eps_history=_eps_history(eps_snapshot, sources, eps_unavailable_reason),
         what_to_watch=tuple(catalysts),
         sources=tuple(sorted(sources.rows.values(), key=lambda row: row.id)))

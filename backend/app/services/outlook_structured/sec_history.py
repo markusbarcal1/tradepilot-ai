@@ -12,7 +12,9 @@ import re
 from threading import RLock
 
 from app.models.outlook_financial_history import (
+    AnnualEpsComparabilityEvidence, AnnualEpsDiagnostics, AnnualEpsObservation, AnnualEpsYearOutcome,
     AnnualRevenueDiagnostics, AnnualRevenueObservation, AnnualRevenueYearOutcome,
+    EpsHistoryDiagnostics, QuarterlyEpsDiagnostics,
     HistoricalFinancialDiagnostics, HistoricalFinancialObservation,
     HistoricalFinancialSnapshot, MissingFinancialPeriod, RejectedFinancialFact,
 )
@@ -113,10 +115,17 @@ def _acquisition_fingerprint(snapshot, submissions):
     rejected = [row.model_dump(mode="json") for row in snapshot.rejected]
     annual = [row.model_dump(mode="json", exclude={"retrieved_at", "acceptance_time"})
         for row in snapshot.annual_revenue_observations]
+    annual_eps = [row.model_dump(mode="json", exclude={"retrieved_at", "acceptance_time"})
+        for row in snapshot.annual_eps_observations]
+    annual_eps_sources = [row.model_dump(mode="json", exclude={"retrieved_at", "acceptance_time"})
+        for row in snapshot.annual_eps_source_observations]
     content = {"policy": ACQUISITION_POLICY, "ticker": snapshot.ticker,
         "issuer": snapshot.issuer, "cik": snapshot.cik, "observations": observations,
         "annual_revenue_observations": annual,
         "annual_revenue_diagnostics": snapshot.diagnostics.annual_revenue.model_dump(mode="json"),
+        "annual_eps_observations": annual_eps,
+        "annual_eps_source_observations": annual_eps_sources,
+        "eps_diagnostics": snapshot.diagnostics.eps.model_dump(mode="json"),
         "rejected": rejected, "missing_periods": [row.model_dump(mode="json") for row in snapshot.missing_periods],
         "submissions": submissions.model_dump(mode="json")}
     canonical = json.dumps(content, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
@@ -202,6 +211,8 @@ def comparison_compatibility(left, right, comparison):
 def normalize_companyfacts(companyfacts, submissions, ticker, retrieved_at, *,
                            max_source_facts=256, max_quarters=8,
                            max_annual_periods=5, max_annual_source_facts=128,
+                           max_annual_eps_periods=5, max_annual_eps_source_facts=128,
+                           annual_eps_comparability_evidence=(),
                            request_diagnostics=None):
     """Normalize only explicit standalone quarterly revenue and diluted EPS facts."""
     symbol = str(ticker).strip().upper()
@@ -547,6 +558,286 @@ def normalize_companyfacts(companyfacts, submissions, ticker, retrieved_at, *,
         if row.fiscal_year - 1 in annual_by_year and
            annual_by_year[row.fiscal_year - 1].exact_revenue != 0 else None})
         for row in annual_observations]
+
+    # Annual diluted EPS is certified in an independent bounded pass. EPS is a
+    # signed per-share ratio, so no revenue outcome, positivity rule, growth
+    # calculation, or Q4 arithmetic participates in this policy.
+    quarterly_eps_validated_candidate_count = sum(
+        candidate["metric"] == "diluted_eps" for candidate in resolved_candidates)
+    quarterly_eps_rejection_reasons = tuple(sorted({row.reason for row in rejected
+        if row.metric == "diluted_eps"}))[:32]
+    quarterly_eps_rejected_fact_count = sum(row.metric == "diluted_eps" for row in rejected)
+    annual_eps_rejected_start = len(rejected)
+    annual_eps_source_rows = []
+    eps_node = us_gaap.get(DILUTED_EPS_CONCEPT, {})
+    eps_units = eps_node.get("units", {}) if isinstance(eps_node, dict) else {}
+    for unit, rows in eps_units.items():
+        if not isinstance(rows, list):
+            continue
+        for row in rows:
+            start, end = _date(row.get("start")), _date(row.get("end"))
+            if row.get("fp") == "FY" and start and end and start <= end and (end - start).days + 1 > QUARTER_MAX_DAYS:
+                annual_eps_source_rows.append((row, start, end, unit))
+    annual_eps_groups = defaultdict(list)
+    invalid_annual_eps_identity = []
+    for item in annual_eps_source_rows:
+        year = item[0].get("fy")
+        if isinstance(year, int):
+            annual_eps_groups[year].append(item)
+        else:
+            invalid_annual_eps_identity.append(item)
+    ordered_eps_years = sorted(annual_eps_groups, key=lambda year: max(
+        (item[2], str(item[0].get("filed") or ""), str(item[0].get("accn") or ""))
+        for item in annual_eps_groups[year]), reverse=True)
+    admitted_eps, eps_source_limit_excluded = [], []
+    annual_eps_year_reasons = defaultdict(set)
+    charged_eps = 0
+    for index, year in enumerate(ordered_eps_years):
+        group = annual_eps_groups[year]
+        if charged_eps + len(group) > max_annual_eps_source_facts:
+            eps_source_limit_excluded.extend(ordered_eps_years[index:])
+            break
+        admitted_eps.extend(group)
+        charged_eps += len(group)
+    for year in eps_source_limit_excluded:
+        annual_eps_year_reasons[year].add("annual_source_limit_exceeded")
+        for row, _, _, _ in annual_eps_groups[year]:
+            reject(DILUTED_EPS_CONCEPT, "annual_source_limit_exceeded", row, "diluted_eps")
+    for row, _, _, _ in invalid_annual_eps_identity:
+        reject(DILUTED_EPS_CONCEPT, "annual_fiscal_identity_invalid", row, "diluted_eps")
+
+    evidence_by_accession = {}
+    for item in annual_eps_comparability_evidence:
+        evidence = (item if isinstance(item, AnnualEpsComparabilityEvidence) else
+            AnnualEpsComparabilityEvidence.model_validate(item))
+        if evidence.accession in evidence_by_accession:
+            raise ValueError("duplicate_annual_eps_comparability_evidence")
+        evidence_by_accession[evidence.accession] = evidence
+
+    def has_comparability_evidence(candidate):
+        evidence = evidence_by_accession.get(candidate["accession"])
+        return bool(evidence and evidence.source_url == candidate["url"])
+
+    annual_eps_candidates = []
+    annual_eps_validation_rejections = len(invalid_annual_eps_identity) + sum(
+        len(annual_eps_groups[year]) for year in eps_source_limit_excluded)
+    for row, start, end, unit in admitted_eps:
+        form = row.get("form"); filed = _date(row.get("filed")); year = row.get("fy")
+        duration = (end - start).days + 1
+        if unit != "USD/shares":
+            reject(DILUTED_EPS_CONCEPT, "incompatible_unit", row, "diluted_eps"); annual_eps_year_reasons[year].add("incompatible_unit"); annual_eps_validation_rejections += 1; continue
+        if not filed:
+            reject(DILUTED_EPS_CONCEPT, "invalid_period_or_filing_date", row, "diluted_eps"); annual_eps_year_reasons[year].add("invalid_period_or_filing_date"); annual_eps_validation_rejections += 1; continue
+        if form not in ("10-K", "10-K/A"):
+            reject(DILUTED_EPS_CONCEPT, "annual_filing_context_invalid", row, "diluted_eps"); annual_eps_year_reasons[year].add("annual_filing_context_invalid"); annual_eps_validation_rejections += 1; continue
+        if not 300 <= duration <= 380:
+            reject(DILUTED_EPS_CONCEPT, "annual_period_duration_invalid", row, "diluted_eps"); annual_eps_year_reasons[year].add("annual_period_duration_invalid"); annual_eps_validation_rejections += 1; continue
+        value = _decimal(row.get("val")); accession = str(row.get("accn") or "")
+        if value is None or not ACCESSION.fullmatch(accession):
+            reject(DILUTED_EPS_CONCEPT, "invalid_value_or_accession", row, "diluted_eps"); annual_eps_year_reasons[year].add("invalid_value_or_accession"); annual_eps_validation_rejections += 1; continue
+        metadata = submission_rows.get(accession)
+        if not metadata or metadata.get("form") != form:
+            reject(DILUTED_EPS_CONCEPT, "annual_filing_context_invalid", row, "diluted_eps"); annual_eps_year_reasons[year].add("annual_filing_context_invalid"); annual_eps_validation_rejections += 1; continue
+        annual_eps_candidates.append({"unit": unit, "row": row, "start": start,
+            "end": end, "filed": filed, "duration": duration, "value": value,
+            "accession": accession, "accepted": _datetime(metadata.get("accepted")),
+            "report_date": _date(metadata.get("report_date")),
+            "url": _source_url(cik, accession, metadata.get("primary_document")),
+            "claimed_fiscal_year": year})
+
+    # A full-year context is owned by the one original-period filing whose SEC
+    # submissions report date exactly matches the fact period end. Later 10-K
+    # comparative disclosures may inherit that identity only when the anchor is
+    # unique; the host filing's FY is never assumed to be the represented year.
+    by_annual_eps_context = defaultdict(list)
+    for candidate in annual_eps_candidates:
+        by_annual_eps_context[(candidate["start"], candidate["end"])].append(candidate)
+    anchored_contexts_by_year = defaultdict(set)
+    for context, context_rows in by_annual_eps_context.items():
+        for row in context_rows:
+            if row["report_date"] == row["end"]:
+                anchored_contexts_by_year[row["claimed_fiscal_year"]].add(context)
+    ambiguous_anchor_years = {year for year, contexts in anchored_contexts_by_year.items()
+        if len(contexts) > 1}
+    preconflicted_annual_eps_years = set(ambiguous_anchor_years)
+    resolved_annual_eps_candidates = []
+    for context_rows in by_annual_eps_context.values():
+        anchors = {row["claimed_fiscal_year"] for row in context_rows
+            if row["report_date"] == row["end"]}
+        if len(anchors) != 1 or bool(anchors & ambiguous_anchor_years):
+            for row in context_rows:
+                year = row["claimed_fiscal_year"]
+                annual_eps_year_reasons[year].add("ambiguous_annual_context")
+                reject(DILUTED_EPS_CONCEPT, "ambiguous_annual_context", row["row"], "diluted_eps")
+            continue
+        represented_year = next(iter(anchors))
+        for row in context_rows:
+            row["fiscal_year"] = represented_year
+            row["disclosure_type"] = ("original_period" if row["report_date"] == row["end"]
+                else "later_comparative")
+            resolved_annual_eps_candidates.append(row)
+
+    certified_annual_eps = []
+    annual_eps_source_observations = []
+    conflicted_annual_eps_years = set(preconflicted_annual_eps_years)
+    by_annual_eps_year = defaultdict(list)
+    for candidate in resolved_annual_eps_candidates:
+        by_annual_eps_year[candidate["fiscal_year"]].append(candidate)
+    selected_by_year = {}
+    parent = {}
+
+    def find(year):
+        parent.setdefault(year, year)
+        if parent[year] != year:
+            parent[year] = find(parent[year])
+        return parent[year]
+
+    def union(left, right):
+        left_root, right_root = find(left), find(right)
+        if left_root != right_root:
+            parent[max(left_root, right_root)] = min(left_root, right_root)
+
+    for year, period_rows in sorted(by_annual_eps_year.items()):
+        unique = {}
+        for row in period_rows:
+            key = (row["accession"], row["value"], row["start"], row["end"], row["unit"])
+            if key in unique:
+                reject(DILUTED_EPS_CONCEPT, "duplicate_source_fact", row["row"], "diluted_eps")
+            else:
+                unique[key] = row
+        versions = sorted(unique.values(), key=lambda row: (row["filed"], row["accepted"] or
+            datetime.combine(row["filed"], datetime.min.time(), tzinfo=timezone.utc), row["accession"]))
+        if len(versions) > MAX_VERSIONS_PER_PERIOD:
+            for row in versions[:-MAX_VERSIONS_PER_PERIOD]:
+                reject(DILUTED_EPS_CONCEPT, "version_limit_exceeded", row["row"], "diluted_eps")
+            versions = versions[-MAX_VERSIONS_PER_PERIOD:]
+        original_versions = [row for row in versions if row["disclosure_type"] == "original_period"]
+        comparative_versions = [row for row in versions if row["disclosure_type"] == "later_comparative"]
+        amendments = [row for row in original_versions if row["row"].get("form") == "10-K/A"]
+        conflicting_amendments = (len(amendments) > 1 and
+            amendments[-1]["filed"] == amendments[-2]["filed"] and
+            amendments[-1]["value"] != amendments[-2]["value"])
+        if not original_versions or ((len({row["value"] for row in original_versions}) > 1 and
+                (not amendments or original_versions[-1] is not amendments[-1])) or conflicting_amendments):
+            conflicted_annual_eps_years.add(year)
+            annual_eps_year_reasons[year].add("unresolved_annual_version_conflict")
+            for row in versions:
+                reject(DILUTED_EPS_CONCEPT, "unresolved_annual_version_conflict", row["row"], "diluted_eps")
+            continue
+        original = amendments[-1] if amendments else original_versions[-1]
+        eligible_adjusted = [row for row in comparative_versions
+            if row["value"] != original["value"] and has_comparability_evidence(row)]
+        if len({row["value"] for row in eligible_adjusted}) > 1:
+            conflicted_annual_eps_years.add(year)
+            annual_eps_year_reasons[year].add("conflicting_comparative_adjustments")
+            for row in eligible_adjusted:
+                reject(DILUTED_EPS_CONCEPT, "conflicting_comparative_adjustments", row["row"], "diluted_eps")
+            continue
+        selected = eligible_adjusted[-1] if eligible_adjusted else original
+        selected_by_year[year] = selected
+        find(year)
+        for comparative in comparative_versions:
+            same_value = comparative["value"] == original["value"]
+            has_evidence = has_comparability_evidence(comparative)
+            if same_value or has_evidence:
+                union(year, comparative["claimed_fiscal_year"])
+            elif comparative["value"] != original["value"]:
+                reject(DILUTED_EPS_CONCEPT, "comparative_adjustment_evidence_missing",
+                    comparative["row"], "diluted_eps")
+        # Retain every validated source version internally. Public selection is
+        # constructed only after comparison groups and breaks are finalized.
+        for version in versions:
+            explicit = has_comparability_evidence(version)
+            annual_eps_source_observations.append(AnnualEpsObservation(
+                observation_id=sha256(f"{symbol}|annual_eps_source|{year}|{version['accession']}|{version['value']}".encode()).hexdigest()[:24],
+                issuer=issuer, ticker=symbol, cik=cik, fiscal_year=year,
+                period_start=version["start"], period_end=version["end"], duration_days=version["duration"],
+                exact_eps=version["value"], accession=version["accession"], form=version["row"]["form"],
+                filing_date=version["filed"], acceptance_time=version["accepted"], source_url=version["url"],
+                retrieved_at=retrieved_at, disclosure_type=version["disclosure_type"],
+                split_adjustment_status="explicit_retrospective" if explicit else "not_established",
+                share_basis_comparability="established" if explicit or version["value"] == original["value"] else "unknown",
+                comparison_group=f"FY{find(year)}",
+                provenance_label=("SEC 10-K/A comparative annual GAAP diluted EPS (amended)"
+                    if version["disclosure_type"] == "later_comparative" and version["row"]["form"] == "10-K/A" else
+                    "SEC 10-K comparative annual GAAP diluted EPS" if version["disclosure_type"] == "later_comparative" else
+                    "SEC 10-K/A annual GAAP diluted EPS (amended)" if version["row"]["form"] == "10-K/A" else
+                    "SEC 10-K annual GAAP diluted EPS")))
+
+    annual_eps_source_observations = [row.model_copy(update={
+        "comparison_group": f"FY{find(row.fiscal_year)}"}) for row in annual_eps_source_observations]
+    prior_root = None
+    for year, selected in sorted(selected_by_year.items()):
+        root = find(year)
+        group_members = {item for item in parent if find(item) == root}
+        explicit = has_comparability_evidence(selected)
+        break_before = prior_root is not None and root != prior_root
+        certified_annual_eps.append(AnnualEpsObservation(
+            observation_id=sha256(f"{symbol}|annual_eps|{year}|{selected['accession']}|{selected['value']}".encode()).hexdigest()[:24],
+            issuer=issuer, ticker=symbol, cik=cik, fiscal_year=year,
+            period_start=selected["start"], period_end=selected["end"],
+            duration_days=selected["duration"], exact_eps=selected["value"],
+            accession=selected["accession"], form=selected["row"]["form"],
+            filing_date=selected["filed"], acceptance_time=selected["accepted"],
+            source_url=selected["url"], retrieved_at=retrieved_at,
+            disclosure_type=selected["disclosure_type"],
+            split_adjustment_status="explicit_retrospective" if explicit else "not_established",
+            share_basis_comparability="established" if explicit or len(group_members) > 1 else "unknown",
+            comparison_group=f"FY{root}", comparison_break_before=break_before,
+            provenance_label=("SEC 10-K/A comparative annual GAAP diluted EPS (amended)"
+                if selected["disclosure_type"] == "later_comparative" and selected["row"]["form"] == "10-K/A" else
+                "SEC 10-K comparative annual GAAP diluted EPS" if selected["disclosure_type"] == "later_comparative" else
+                "SEC 10-K/A annual GAAP diluted EPS (amended)" if selected["row"]["form"] == "10-K/A" else
+                "SEC 10-K annual GAAP diluted EPS")))
+        prior_root = root
+    certified_annual_eps.sort(key=lambda row: (row.period_end, row.filing_date,
+        row.acceptance_time or datetime.combine(row.filing_date, datetime.min.time(), tzinfo=timezone.utc),
+        row.fiscal_year))
+    annual_eps_observations = (sorted(certified_annual_eps[-max_annual_eps_periods:],
+        key=lambda row: row.fiscal_year) if max_annual_eps_periods else [])
+    retained_eps_years = {row.fiscal_year for row in annual_eps_observations}
+    certified_eps_years = {row.fiscal_year for row in certified_annual_eps}
+    excluded_eps_years = tuple(sorted(set(ordered_eps_years) - retained_eps_years))
+    annual_eps_rejected_candidate_count = annual_eps_validation_rejections + sum(
+        len(by_annual_eps_year[year]) for year in conflicted_annual_eps_years)
+    diagnostic_eps_years = (list(range(min(ordered_eps_years), max(ordered_eps_years) + 1))[-16:]
+        if ordered_eps_years else [])
+    annual_eps_outcomes = []
+    for year in diagnostic_eps_years:
+        discovered_count = len(annual_eps_groups.get(year, ()))
+        validated_count = len(by_annual_eps_year.get(year, ()))
+        if year in eps_source_limit_excluded:
+            state, reasons = "source_limit_excluded", ("annual_source_limit_exceeded",)
+        elif year in conflicted_annual_eps_years:
+            state, reasons = "conflict", tuple(sorted(annual_eps_year_reasons[year]))
+        elif year in retained_eps_years:
+            state, reasons = "certified", ()
+        elif year in certified_eps_years:
+            state, reasons = "retention_excluded", ("annual_retention_limit",)
+        elif discovered_count:
+            state, reasons = "rejected", tuple(sorted(annual_eps_year_reasons[year]))
+        else:
+            state, reasons = "no_supported_candidate", ("no_supported_candidate",)
+        annual_eps_outcomes.append(AnnualEpsYearOutcome(fiscal_year=year,
+            discovered_candidate_count=discovered_count,
+            validated_candidate_count=validated_count, state=state, reasons=reasons))
+    annual_eps_diagnostics = AnnualEpsDiagnostics(
+        state=("partial" if annual_eps_observations and conflicted_annual_eps_years else
+            "available" if annual_eps_observations else
+            "conflict" if conflicted_annual_eps_years else "unavailable"),
+        source_limit_state="limit_exceeded" if eps_source_limit_excluded else "complete",
+        source_fact_limit=max_annual_eps_source_facts,
+        discovered_source_fact_count=len(annual_eps_source_rows),
+        discovered_fiscal_year_count=len(annual_eps_groups),
+        validated_candidate_count=len(resolved_annual_eps_candidates),
+        rejected_candidate_count=annual_eps_rejected_candidate_count,
+        conflicted_fiscal_year_count=len(conflicted_annual_eps_years),
+        certified_fiscal_year_count=len(certified_annual_eps),
+        retained_fiscal_year_count=len(annual_eps_observations),
+        excluded_fiscal_years=excluded_eps_years[:64],
+        source_limit_excluded_fiscal_years=tuple(eps_source_limit_excluded[:64]),
+        rejection_reasons=tuple(sorted({row.reason for row in rejected[annual_eps_rejected_start:]}))[:32],
+        year_outcomes=tuple(annual_eps_outcomes))
     missing = []
     for metric in SUPPORTED:
         current = [row for row in observations if row.metric == metric and row.version_status == "current"]
@@ -599,6 +890,25 @@ def normalize_companyfacts(companyfacts, submissions, ticker, retrieved_at, *,
         excluded_fiscal_years=excluded_years[:64],
         source_limit_excluded_fiscal_years=tuple(source_limit_excluded[:64]),
         year_outcomes=tuple(year_outcomes))
+    quarterly_eps_rows = [row for row in observations if row.metric == "diluted_eps"]
+    quarterly_eps_current = [row for row in quarterly_eps_rows if row.version_status == "current"]
+    quarterly_eps_conflicts = {(row.fiscal_year, row.fiscal_quarter) for row in quarterly_eps_rows
+        if row.version_status == "conflict"}
+    eps_missing = tuple(f"FY{row.fiscal_year}:{row.fiscal_quarter}" for row in missing
+        if row.metric == "diluted_eps")
+    quarterly_eps_source_count = sum(len(rows) for rows in eps_units.values() if isinstance(rows, list))
+    eps_diagnostics = EpsHistoryDiagnostics(annual=annual_eps_diagnostics,
+        quarterly=QuarterlyEpsDiagnostics(
+            state=("partial" if quarterly_eps_current and quarterly_eps_conflicts else
+                "available" if quarterly_eps_current else
+                "conflict" if quarterly_eps_conflicts else "unavailable"),
+            retained_period_limit=max_quarters,
+            discovered_source_fact_count=quarterly_eps_source_count,
+            validated_candidate_count=quarterly_eps_validated_candidate_count,
+            certified_quarter_count=len(quarterly_eps_current),
+            conflicted_quarter_count=len(quarterly_eps_conflicts),
+            missing_periods=eps_missing[:32], rejected_fact_count=quarterly_eps_rejected_fact_count,
+            rejection_reasons=quarterly_eps_rejection_reasons))
     diagnostics = HistoricalFinancialDiagnostics(source_status=status,
         requests=details.get("requests", 0), cache_reads=details.get("cache_reads", 0),
         cache_loads=details.get("cache_loads", 0), cache_hits=details.get("cache_hits", 0),
@@ -608,10 +918,19 @@ def normalize_companyfacts(companyfacts, submissions, ticker, retrieved_at, *,
         failure_cache_ttl_seconds=details.get("failure_cache_ttl_seconds", 60),
         timeout_seconds=details.get("timeout_seconds", 5), attempts=details.get("attempts", 1),
         max_source_facts=max_source_facts, max_quarterly_periods=max_quarters,
-        max_annual_periods_inspected=max_annual_periods, annual_revenue=annual_diagnostics)
+        max_annual_periods_inspected=max_annual_periods, annual_revenue=annual_diagnostics,
+        eps=eps_diagnostics,
+        eps_document_evidence_state=details.get("eps_document_evidence_state", "not_requested"),
+        eps_document_logical_requests=details.get("eps_document_logical_requests", 0),
+        eps_document_http_attempts=details.get("eps_document_http_attempts", 0),
+        eps_document_cache_hits=details.get("eps_document_cache_hits", 0),
+        eps_document_failures=details.get("eps_document_failures", 0),
+        eps_document_failure_reasons=details.get("eps_document_failure_reasons", ()))
     return HistoricalFinancialSnapshot(ticker=symbol, issuer=issuer, cik=cik,
         retrieved_at=retrieved_at, status=status, observations=tuple(observations),
         annual_revenue_observations=tuple(annual_observations),
+        annual_eps_observations=tuple(annual_eps_observations),
+        annual_eps_source_observations=tuple(annual_eps_source_observations[-64:]),
         rejected=tuple(rejected), missing_periods=tuple(missing[:32]), diagnostics=diagnostics)
 
 
@@ -620,13 +939,15 @@ class SecHistoricalFinancialProvider:
     name = "sec_historical_financials"
 
     def __init__(self, settings, client=None, clock=lambda: datetime.now(timezone.utc), *,
-            cache_clock=None, enabled=None):
+            cache_clock=None, enabled=None, eps_evidence_enabled=False, eps_evidence_loader=None):
         self.settings, self.client, self.clock = settings, client or JsonClient(settings), clock
         self.mapping_cache = Cache(settings.outlook_failure_cache_ttl, capacity=1)
         self.history_cache = _PerKeyCache(settings.outlook_failure_cache_ttl,
             clock=cache_clock, capacity=128)
         self.lock = RLock()
         self.cache_reads = self.cache_loads = self.requests = 0
+        self.eps_evidence_enabled = eps_evidence_enabled
+        self.eps_evidence_loader = eps_evidence_loader
         active = settings.outlook_sec_history_enabled if enabled is None else enabled
         self.unavailable_reason = ("disabled" if not active else
             "missing_configuration" if not re.search(r"\S+@\S+\.\S+", settings.outlook_sec_user_agent) else None)
@@ -651,17 +972,48 @@ class SecHistoricalFinancialProvider:
             raise ProviderUnavailable("sec_ticker_not_found")
         companyfacts = self._get(f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json", budget)
         submissions = self._get(f"https://data.sec.gov/submissions/CIK{cik}.json", budget)
+        request_diagnostics = {"requests": budget[0],
+            "request_budget": self.settings.outlook_sec_history_request_budget,
+            "cache_ttl_seconds": self.settings.outlook_sec_history_cache_ttl,
+            "failure_cache_ttl_seconds": self.settings.outlook_failure_cache_ttl,
+            "timeout_seconds": self.settings.outlook_http_timeout,
+            "attempts": self.settings.outlook_http_attempts}
         snapshot = normalize_companyfacts(companyfacts, submissions, symbol, self.clock(),
             max_source_facts=self.settings.outlook_sec_history_max_source_facts,
             max_quarters=self.settings.outlook_sec_history_max_quarters,
             max_annual_periods=self.settings.outlook_sec_history_max_annual_periods,
             max_annual_source_facts=self.settings.outlook_sec_history_max_annual_source_facts,
-            request_diagnostics={"requests": budget[0],
-                "request_budget": self.settings.outlook_sec_history_request_budget,
-                "cache_ttl_seconds": self.settings.outlook_sec_history_cache_ttl,
-                "failure_cache_ttl_seconds": self.settings.outlook_failure_cache_ttl,
-                "timeout_seconds": self.settings.outlook_http_timeout,
-                "attempts": self.settings.outlook_http_attempts})
+            request_diagnostics=request_diagnostics)
+        if self.eps_evidence_enabled and self.eps_evidence_loader is not None:
+            try:
+                result = self.eps_evidence_loader(snapshot)
+                state = ("available" if result.evidence and not result.failures else
+                    "partial" if result.evidence else
+                    "budget_exhausted" if "request_budget_exhausted" in result.reasons else
+                    "rejected" if result.logical_documents else "not_required")
+                snapshot = normalize_companyfacts(companyfacts, submissions, symbol, self.clock(),
+                    max_source_facts=self.settings.outlook_sec_history_max_source_facts,
+                    max_quarters=self.settings.outlook_sec_history_max_quarters,
+                    max_annual_periods=self.settings.outlook_sec_history_max_annual_periods,
+                    max_annual_source_facts=self.settings.outlook_sec_history_max_annual_source_facts,
+                    annual_eps_comparability_evidence=result.evidence,
+                    request_diagnostics={**request_diagnostics,
+                        "eps_document_evidence_state": state,
+                        "eps_document_logical_requests": min(result.logical_documents, 2),
+                        "eps_document_http_attempts": result.http_attempts,
+                        "eps_document_cache_hits": result.cache_hits,
+                        "eps_document_failures": min(result.failures, 2),
+                        "eps_document_failure_reasons": result.reasons})
+            except Exception:
+                snapshot = normalize_companyfacts(companyfacts, submissions, symbol, self.clock(),
+                    max_source_facts=self.settings.outlook_sec_history_max_source_facts,
+                    max_quarters=self.settings.outlook_sec_history_max_quarters,
+                    max_annual_periods=self.settings.outlook_sec_history_max_annual_periods,
+                    max_annual_source_facts=self.settings.outlook_sec_history_max_annual_source_facts,
+                    request_diagnostics={**request_diagnostics,
+                        "eps_document_evidence_state": "loader_error",
+                        "eps_document_failures": 1,
+                        "eps_document_failure_reasons": ("loader_error",)})
         typed_submissions = adapt_sec_submissions(submissions, issuer=snapshot.issuer,
             cik=snapshot.cik, source_identity=f"sec-submissions:CIK{snapshot.cik}:recent")
         return RevenueHistoricalAcquisition(snapshot=snapshot, submissions=typed_submissions,

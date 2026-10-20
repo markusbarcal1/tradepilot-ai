@@ -58,6 +58,7 @@ class Settings(BaseSettings):
     outlook_sec_history_enabled: bool = False
     outlook_historical_revenue_enabled: bool = False
     outlook_historical_revenue_q4_derivation_enabled: bool = False
+    outlook_historical_eps_enabled: bool = False
     outlook_sec_history_cache_ttl: int = Field(default=21600, ge=300, le=86400)
     outlook_sec_history_request_budget: int = Field(default=3, ge=2, le=3)
     outlook_sec_history_max_source_facts: int = Field(default=256, ge=32, le=1024)
